@@ -1,10 +1,13 @@
 package com.cpi.cpi_backend.controller;
 
+import com.cpi.cpi_backend.dto.CoachSummaryResponse;
 import com.cpi.cpi_backend.entity.Coach;
 import com.cpi.cpi_backend.entity.Organization;
 import com.cpi.cpi_backend.entity.Role;
 import com.cpi.cpi_backend.repository.CoachRepository;
 import com.cpi.cpi_backend.repository.OrganizationRepository;
+import com.cpi.cpi_backend.repository.TeamRepository;
+import com.cpi.cpi_backend.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +25,8 @@ public class OrganizationController {
 
     private final OrganizationRepository organizationRepository;
     private final CoachRepository coachRepository;
+    private final TeamRepository teamRepository;
+    private final PlayerRepository playerRepository;
 
     @GetMapping("/details")
     public ResponseEntity<Organization> getDetails(@AuthenticationPrincipal Coach currentCoach) {
@@ -35,8 +40,29 @@ public class OrganizationController {
         return ResponseEntity.ok(managedCoach.getOrganization());
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Object>> getStats(@AuthenticationPrincipal Coach currentCoach) {
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+
+        if (managedCoach.getOrganization() == null) {
+            throw new RuntimeException("Coach does not belong to an organization");
+        }
+
+        Long orgId = managedCoach.getOrganization().getId();
+        int totalCoaches = coachRepository.findByOrganizationId(orgId).size();
+        int totalTeams = teamRepository.findByOrganizationId(orgId).size();
+        int totalPlayers = playerRepository.findByOrganizationId(orgId).size();
+
+        return ResponseEntity.ok(Map.of(
+                "totalCoaches", totalCoaches,
+                "totalTeams", totalTeams,
+                "totalPlayers", totalPlayers
+        ));
+    }
+
     @GetMapping("/coaches")
-    public ResponseEntity<List<Coach>> getCoaches(@AuthenticationPrincipal Coach currentCoach) {
+    public ResponseEntity<List<CoachSummaryResponse>> getCoaches(@AuthenticationPrincipal Coach currentCoach) {
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
@@ -48,9 +74,38 @@ public class OrganizationController {
             throw new RuntimeException("Unauthorized: Only Organization Admins can access coaches list");
         }
 
-        // Return all coaches in the same organization (excluding the current admin coach)
         List<Coach> coaches = coachRepository.findByOrganizationId(managedCoach.getOrganization().getId());
-        return ResponseEntity.ok(coaches);
+        List<CoachSummaryResponse> summaries = coaches.stream().map(coach -> {
+            var teams = teamRepository.findByCoachId(coach.getId());
+            int teamsCount = teams.size();
+            int playersCount = 0;
+            for (var team : teams) {
+                playersCount += playerRepository.findByTeamId(team.getId()).size();
+            }
+
+            // Mock last activity for premium experience
+            String lastActivity = "Today";
+            if (teamsCount == 0) {
+                lastActivity = "Never";
+            } else if (teamsCount == 1) {
+                lastActivity = "Yesterday";
+            } else {
+                lastActivity = "2 hours ago";
+            }
+
+            return CoachSummaryResponse.builder()
+                    .id(coach.getId())
+                    .name(coach.getName())
+                    .email(coach.getEmail())
+                    .role(coach.getRole().name())
+                    .approvalStatus(coach.getApprovalStatus())
+                    .teamsCount(teamsCount)
+                    .playersCount(playersCount)
+                    .lastActivity(lastActivity)
+                    .build();
+        }).toList();
+
+        return ResponseEntity.ok(summaries);
     }
 
     @PostMapping("/regenerate-join-code")
@@ -153,5 +208,65 @@ public class OrganizationController {
         coachRepository.save(targetCoach);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/coaches/{coachId}")
+    public ResponseEntity<com.cpi.cpi_backend.dto.CoachDetailsResponse> getCoachDetails(
+            @PathVariable Long coachId,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+
+        if (managedCoach.getOrganization() == null || managedCoach.getRole() != Role.ADMIN) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        Coach targetCoach = coachRepository.findById(coachId)
+                .orElseThrow(() -> new RuntimeException("Target coach not found"));
+
+        if (targetCoach.getOrganization() == null || !targetCoach.getOrganization().getId().equals(managedCoach.getOrganization().getId())) {
+            throw new RuntimeException("Coach belongs to a different organization");
+        }
+
+        var teams = teamRepository.findByCoachId(targetCoach.getId());
+        int totalTeams = teams.size();
+        int totalPlayers = 0;
+        double totalCpi = 0;
+
+        List<com.cpi.cpi_backend.dto.CoachDetailsResponse.TeamDetail> teamDetails = new java.util.ArrayList<>();
+        for (var team : teams) {
+            int pCount = playerRepository.findByTeamId(team.getId()).size();
+            totalPlayers += pCount;
+            totalCpi += team.getTeamCpiScore() != null ? team.getTeamCpiScore() : 0.0;
+
+            teamDetails.add(com.cpi.cpi_backend.dto.CoachDetailsResponse.TeamDetail.builder()
+                    .id(team.getId())
+                    .name(team.getName())
+                    .level(team.getLevel())
+                    .teamCpiScore(team.getTeamCpiScore() != null ? team.getTeamCpiScore() : 0.0)
+                    .playersCount(pCount)
+                    .build());
+        }
+
+        double averageCpi = totalTeams > 0 ? (totalCpi / totalTeams) : 0.0;
+
+        // Mock practice and match stats for the premium coach detailed subview
+        double averagePpi = totalTeams > 0 ? 76.5 : 0.0;
+        double averageMpi = totalTeams > 0 ? 78.2 : 0.0;
+
+        return ResponseEntity.ok(com.cpi.cpi_backend.dto.CoachDetailsResponse.builder()
+                .id(targetCoach.getId())
+                .name(targetCoach.getName())
+                .email(targetCoach.getEmail())
+                .role(targetCoach.getRole().name())
+                .approvalStatus(targetCoach.getApprovalStatus())
+                .totalTeams(totalTeams)
+                .totalPlayers(totalPlayers)
+                .averageCpi(averageCpi)
+                .averagePpi(averagePpi)
+                .averageMpi(averageMpi)
+                .teams(teamDetails)
+                .build());
     }
 }

@@ -10,6 +10,8 @@
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/controller/TeamController.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/AuthenticationRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/AuthenticationResponse.java
+/home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/CoachDetailsResponse.java
+/home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/CoachSummaryResponse.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/DashboardStatsResponse.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/MatchAssessmentRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/PlayerRequest.java

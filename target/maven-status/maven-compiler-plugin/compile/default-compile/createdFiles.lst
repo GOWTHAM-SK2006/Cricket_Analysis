@@ -12,7 +12,9 @@ com/cpi/cpi_backend/entity/Organization.class
 com/cpi/cpi_backend/entity/PracticeAssessment.class
 com/cpi/cpi_backend/entity/MatchAssessment.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$TrendDto$TrendDtoBuilder.class
+com/cpi/cpi_backend/dto/CoachDetailsResponse$TeamDetail.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$ActivityDto.class
+com/cpi/cpi_backend/dto/CoachSummaryResponse$CoachSummaryResponseBuilder.class
 com/cpi/cpi_backend/security/WebMvcConfig.class
 com/cpi/cpi_backend/entity/Organization$OrganizationBuilder.class
 com/cpi/cpi_backend/entity/Player$PlayerBuilder.class
@@ -34,6 +36,9 @@ com/cpi/cpi_backend/security/JwtAuthenticationFilter.class
 com/cpi/cpi_backend/dto/AuthenticationResponse.class
 com/cpi/cpi_backend/controller/TeamController.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$TeamPerformanceDto.class
+com/cpi/cpi_backend/dto/CoachSummaryResponse.class
+com/cpi/cpi_backend/dto/CoachDetailsResponse$TeamDetail$TeamDetailBuilder.class
+com/cpi/cpi_backend/dto/CoachDetailsResponse$CoachDetailsResponseBuilder.class
 com/cpi/cpi_backend/entity/Role.class
 com/cpi/cpi_backend/repository/OrganizationRepository.class
 com/cpi/cpi_backend/CpiBackendApplication.class
@@ -53,6 +58,7 @@ com/cpi/cpi_backend/dto/RegisterRequest.class
 com/cpi/cpi_backend/repository/CoachRepository.class
 com/cpi/cpi_backend/controller/MatchController.class
 com/cpi/cpi_backend/controller/DashboardController.class
+com/cpi/cpi_backend/dto/CoachDetailsResponse.class
 com/cpi/cpi_backend/repository/PracticeAssessmentRepository.class
 com/cpi/cpi_backend/controller/PracticeController.class
 com/cpi/cpi_backend/entity/Coach$CoachBuilder.class

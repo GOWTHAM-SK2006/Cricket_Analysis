@@ -26,6 +26,7 @@ export default function TeamsPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   
   // Modals state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -44,11 +45,12 @@ export default function TeamsPage() {
       const [teamsRes, playersRes, profileRes] = await Promise.all([
         api.get("/teams"),
         api.get("/players"),
-        api.get("/profile").catch(() => ({ data: { organization: null } }))
+        api.get("/profile").catch(() => ({ data: { role: null, organization: null } }))
       ]);
       setTeams(teamsRes.data);
       setPlayers(playersRes.data);
       setOrganization(profileRes.data?.organization || null);
+      setUserRole(profileRes.data?.role || null);
     } catch (error: any) {
       console.error("Failed to fetch teams page data", error);
       setError("Failed to load data. Please try again.");
@@ -142,18 +144,15 @@ export default function TeamsPage() {
             Create, update, and manage your squads, training level categories, and performance index trackers.
           </p>
         </div>
-        <button 
-          onClick={() => hasOrganization && setShowCreateModal(true)}
-          disabled={!hasOrganization}
-          className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition-all ${
-            hasOrganization 
-              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 cursor-pointer hover:scale-[1.03] active:scale-[0.98]" 
-              : "bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-not-allowed opacity-60"
-          }`}
-        >
-          <Plus className="w-5 h-5" />
-          Create Team
-        </button>
+        {hasOrganization && userRole !== "ADMIN" && (
+          <button 
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition-all bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 cursor-pointer hover:scale-[1.03] active:scale-[0.98]"
+          >
+            <Plus className="w-5 h-5" />
+            Create Team
+          </button>
+        )}
       </div>
 
       {!hasOrganization && !loading && (
@@ -231,17 +230,14 @@ export default function TeamsPage() {
           <p className="text-zinc-400 mb-8 leading-relaxed">
             Get started by organizing your squads. Once created, you can add players, track performance scores, and analyze ratings.
           </p>
-          <button 
-            onClick={() => hasOrganization && setShowCreateModal(true)}
-            disabled={!hasOrganization}
-            className={`px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg ${
-              hasOrganization 
-                ? "bg-white text-black hover:bg-zinc-200 cursor-pointer" 
-                : "bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-not-allowed opacity-60"
-            }`}
-          >
-            Create Team Now
-          </button>
+          {hasOrganization && userRole !== "ADMIN" && (
+            <button 
+              onClick={() => setShowCreateModal(true)}
+              className="px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg bg-white text-black hover:bg-zinc-200 cursor-pointer"
+            >
+              Create Team Now
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

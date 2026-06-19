@@ -27,7 +27,18 @@ public class TeamController {
 
     @GetMapping
     public ResponseEntity<List<Team>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
-        return ResponseEntity.ok(teamRepository.findByCoachId(currentCoach.getId()));
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+
+        if (managedCoach.getOrganization() == null) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
+            return ResponseEntity.ok(teamRepository.findByOrganizationId(managedCoach.getOrganization().getId()));
+        } else {
+            return ResponseEntity.ok(teamRepository.findByCoachId(managedCoach.getId()));
+        }
     }
 
     @PostMapping
@@ -36,19 +47,27 @@ public class TeamController {
             @RequestBody TeamRequest request,
             @AuthenticationPrincipal Coach currentCoach
     ) {
-        // Re-fetch coach within the current persistence context to avoid detached entity issues
-        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+        Coach creatorCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
-        com.cpi.cpi_backend.entity.Organization org = managedCoach.getOrganization();
+        com.cpi.cpi_backend.entity.Organization org = creatorCoach.getOrganization();
         if (org == null || !organizationRepository.existsById(org.getId())) {
             throw new RuntimeException("Please create or join an organization before creating teams.");
+        }
+
+        Coach assignedCoach = creatorCoach;
+        if (creatorCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN && request.getCoachId() != null) {
+            assignedCoach = coachRepository.findById(request.getCoachId())
+                    .orElseThrow(() -> new RuntimeException("Target coach not found"));
+            if (assignedCoach.getOrganization() == null || !assignedCoach.getOrganization().getId().equals(org.getId())) {
+                throw new RuntimeException("Target coach does not belong to your organization");
+            }
         }
 
         Team team = Team.builder()
                 .name(request.getName())
                 .level(request.getLevel())
-                .coach(managedCoach)
+                .coach(assignedCoach)
                 .teamCpiScore(0.0)
                 .organization(org)
                 .build();

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class TeamRequest {
     private String name;
     private String level;
+    private Long coachId;
 }
