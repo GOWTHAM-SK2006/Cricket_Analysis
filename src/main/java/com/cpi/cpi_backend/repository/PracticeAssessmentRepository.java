@@ -23,4 +23,6 @@ public interface PracticeAssessmentRepository extends JpaRepository<PracticeAsse
 
     @Query("SELECT pa FROM PracticeAssessment pa JOIN FETCH pa.player p WHERE p.organization.id = :orgId ORDER BY pa.createdAt DESC")
     List<PracticeAssessment> findTop10ByOrganizationIdOrderByCreatedAtDesc(@Param("orgId") Long orgId);
+
+    List<PracticeAssessment> findBySessionId(Long sessionId);
 }

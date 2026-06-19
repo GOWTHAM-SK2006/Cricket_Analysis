@@ -4,6 +4,7 @@ com/cpi/cpi_backend/dto/AuthenticationRequest$AuthenticationRequestBuilder.class
 com/cpi/cpi_backend/entity/MatchAssessment$MatchAssessmentBuilder.class
 com/cpi/cpi_backend/dto/MatchAssessmentRequest.class
 com/cpi/cpi_backend/security/SecurityConfiguration.class
+com/cpi/cpi_backend/dto/PracticeSessionRequest.class
 com/cpi/cpi_backend/repository/TeamRepository.class
 com/cpi/cpi_backend/dto/PracticeAssessmentRequest.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$ActivityDto$ActivityDtoBuilder.class
@@ -12,6 +13,8 @@ com/cpi/cpi_backend/entity/Organization.class
 com/cpi/cpi_backend/entity/PracticeAssessment.class
 com/cpi/cpi_backend/entity/MatchAssessment.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$TrendDto$TrendDtoBuilder.class
+com/cpi/cpi_backend/repository/PracticeSessionRepository.class
+com/cpi/cpi_backend/entity/PracticeSession$PracticeSessionBuilder.class
 com/cpi/cpi_backend/dto/CoachDetailsResponse$TeamDetail.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$ActivityDto.class
 com/cpi/cpi_backend/dto/CoachSummaryResponse$CoachSummaryResponseBuilder.class
@@ -38,7 +41,9 @@ com/cpi/cpi_backend/controller/TeamController.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$TeamPerformanceDto.class
 com/cpi/cpi_backend/dto/CoachSummaryResponse.class
 com/cpi/cpi_backend/dto/CoachDetailsResponse$TeamDetail$TeamDetailBuilder.class
+com/cpi/cpi_backend/entity/PracticeSession.class
 com/cpi/cpi_backend/dto/CoachDetailsResponse$CoachDetailsResponseBuilder.class
+com/cpi/cpi_backend/dto/PracticeSessionDetailsResponse.class
 com/cpi/cpi_backend/entity/Role.class
 com/cpi/cpi_backend/repository/OrganizationRepository.class
 com/cpi/cpi_backend/CpiBackendApplication.class
@@ -46,6 +51,7 @@ com/cpi/cpi_backend/security/ApplicationConfig.class
 com/cpi/cpi_backend/security/JwtService.class
 com/cpi/cpi_backend/controller/OrganizationController.class
 com/cpi/cpi_backend/entity/Player.class
+com/cpi/cpi_backend/dto/PracticeSessionDetailsResponse$PracticeSessionDetailsResponseBuilder.class
 com/cpi/cpi_backend/dto/TeamRequest$TeamRequestBuilder.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$TrendDto.class
 com/cpi/cpi_backend/entity/Coach.class
@@ -57,6 +63,7 @@ com/cpi/cpi_backend/dto/PlayerRequest.class
 com/cpi/cpi_backend/dto/RegisterRequest.class
 com/cpi/cpi_backend/repository/CoachRepository.class
 com/cpi/cpi_backend/controller/MatchController.class
+com/cpi/cpi_backend/dto/PracticeSessionRequest$AssessmentDto.class
 com/cpi/cpi_backend/controller/DashboardController.class
 com/cpi/cpi_backend/dto/CoachDetailsResponse.class
 com/cpi/cpi_backend/repository/PracticeAssessmentRepository.class

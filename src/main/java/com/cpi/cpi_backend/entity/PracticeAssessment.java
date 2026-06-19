@@ -22,9 +22,15 @@ public class PracticeAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "organization", "creatorCoach", "teams", "team"})
     private Player player;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private PracticeSession session;
 
     @Column(nullable = false)
     private LocalDate date;

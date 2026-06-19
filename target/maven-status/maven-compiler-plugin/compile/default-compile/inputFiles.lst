@@ -16,6 +16,8 @@
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/MatchAssessmentRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/PlayerRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/PracticeAssessmentRequest.java
+/home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/PracticeSessionDetailsResponse.java
+/home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/PracticeSessionRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/RegisterRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/dto/TeamRequest.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/Coach.java
@@ -23,6 +25,7 @@
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/Organization.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/Player.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/PracticeAssessment.java
+/home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/PracticeSession.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/Role.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/entity/Team.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/repository/CoachRepository.java
@@ -30,6 +33,7 @@
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/repository/OrganizationRepository.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/repository/PlayerRepository.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/repository/PracticeAssessmentRepository.java
+/home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/repository/PracticeSessionRepository.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/repository/TeamRepository.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/security/ApplicationConfig.java
 /home/gowtham/Desktop/Cricket_Analysis/src/main/java/com/cpi/cpi_backend/security/JwtAuthenticationFilter.java
