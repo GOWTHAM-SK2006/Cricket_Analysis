@@ -13,7 +13,8 @@ import {
   ChevronRight, 
   Play, 
   Check, 
-  ChevronLeft 
+  Trash2, 
+  X 
 } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -86,9 +87,14 @@ export default function PracticePage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedSessionDetails, setSelectedSessionDetails] = useState<SessionDetails | null>(null);
 
+  // Modals & Pool state
+  const [allPoolPlayers, setAllPoolPlayers] = useState<Player[]>([]);
+  const [isAddPlayerOpen, setIsAddPlayerOpen] = useState(false);
+  const [isAssessModalOpen, setIsAssessModalOpen] = useState(false);
+  const [assessingPlayer, setAssessingPlayer] = useState<Player | null>(null);
+
   // Draft / Live State
   const [sessionDate, setSessionDate] = useState("");
-  const [currentIdx, setCurrentIdx] = useState(0);
   const [assessmentsState, setAssessmentsState] = useState<Record<number, {
     technique: number;
     intensity: number;
@@ -99,6 +105,17 @@ export default function PracticePage() {
     notes: string;
     isScored: boolean;
   }>>({});
+
+  // Temporary scores in the active assessment modal
+  const [tempScores, setTempScores] = useState<Record<string, number>>({
+    Technique: 5,
+    Intensity: 5,
+    Execution: 5,
+    Adaptability: 5,
+    Discipline: 5,
+    Focus: 5,
+  });
+  const [tempNotes, setTempNotes] = useState("");
 
   // Status State
   const [loading, setLoading] = useState(true);
@@ -138,29 +155,36 @@ export default function PracticePage() {
     }
   };
 
+  const loadTeamPlayers = async (teamId: number) => {
+    const response = await api.get(`/players/team/${teamId}`);
+    setPlayers(response.data);
+
+    // Maintain assessments state for new players while keeping existing scores
+    setAssessmentsState(prev => {
+      const updated = { ...prev };
+      response.data.forEach((p: Player) => {
+        if (!updated[p.id]) {
+          updated[p.id] = {
+            technique: 5,
+            intensity: 5,
+            execution: 5,
+            adaptability: 5,
+            discipline: 5,
+            focus: 5,
+            notes: "",
+            isScored: false
+          };
+        }
+      });
+      return updated;
+    });
+  };
+
   const handleSelectTeam = async (team: Team) => {
     setLoading(true);
     setSelectedTeam(team);
     try {
-      const response = await api.get(`/players/team/${team.id}`);
-      const teamPlayers = response.data;
-      setPlayers(teamPlayers);
-      
-      // Initialize assessments state
-      const initialAssessments: typeof assessmentsState = {};
-      teamPlayers.forEach((p: Player) => {
-        initialAssessments[p.id] = {
-          technique: 5,
-          intensity: 5,
-          execution: 5,
-          adaptability: 5,
-          discipline: 5,
-          focus: 5,
-          notes: "",
-          isScored: false
-        };
-      });
-      setAssessmentsState(initialAssessments);
+      await loadTeamPlayers(team.id);
       setView("session_draft");
     } catch (err) {
       console.error("Error fetching players for team:", err);
@@ -170,60 +194,107 @@ export default function PracticePage() {
     }
   };
 
+  // Add existing player to team
+  const handleOpenAddPlayer = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/players");
+      setAllPoolPlayers(response.data);
+      setIsAddPlayerOpen(true);
+    } catch (err) {
+      console.error("Error fetching player pool:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddPlayerToTeam = async (playerId: number) => {
+    if (!selectedTeam) return;
+    try {
+      await api.post(`/teams/${selectedTeam.id}/players/${playerId}`);
+      await loadTeamPlayers(selectedTeam.id);
+      setIsAddPlayerOpen(false);
+    } catch (err: any) {
+      console.error("Failed to add player to team:", err);
+      alert(err.response?.data?.message || "Could not add player.");
+    }
+  };
+
+  const handleRemovePlayerFromTeam = async (playerId: number) => {
+    if (!selectedTeam) return;
+    if (!confirm("Are you sure you want to remove this player from the team?")) return;
+    try {
+      await api.delete(`/teams/${selectedTeam.id}/players/${playerId}`);
+      await loadTeamPlayers(selectedTeam.id);
+    } catch (err: any) {
+      console.error("Failed to remove player:", err);
+      alert(err.response?.data?.message || "Could not remove player.");
+    }
+  };
+
   const handleStartLivePractice = () => {
     if (players.length === 0) {
       setMessage({ type: "error", text: "No players in this team to assess." });
       return;
     }
-    setCurrentIdx(0);
     setView("live_practice");
   };
 
-  const handleScoreChange = (metric: string, val: number) => {
-    const activePlayer = players[currentIdx];
-    if (!activePlayer) return;
-
-    setAssessmentsState(prev => {
-      const pState = prev[activePlayer.id] || {
-        technique: 5,
-        intensity: 5,
-        execution: 5,
-        adaptability: 5,
-        discipline: 5,
-        focus: 5,
-        notes: "",
-        isScored: false
-      };
-      
-      return {
-        ...prev,
-        [activePlayer.id]: {
-          ...pState,
-          [metric.toLowerCase()]: val,
-          isScored: true
-        }
-      };
+  // Click player card to assess
+  const handleOpenAssessPlayer = (player: Player) => {
+    setAssessingPlayer(player);
+    const existing = assessmentsState[player.id];
+    setTempScores({
+      Technique: existing?.technique ?? 5,
+      Intensity: existing?.intensity ?? 5,
+      Execution: existing?.execution ?? 5,
+      Adaptability: existing?.adaptability ?? 5,
+      Discipline: existing?.discipline ?? 5,
+      Focus: existing?.focus ?? 5,
     });
+    setTempNotes(existing?.notes ?? "");
+    setIsAssessModalOpen(true);
   };
 
-  const handleNotesChange = (notes: string) => {
-    const activePlayer = players[currentIdx];
-    if (!activePlayer) return;
+  const handleSaveAssessmentScores = () => {
+    if (!assessingPlayer) return;
 
-    setAssessmentsState(prev => {
-      const pState = prev[activePlayer.id];
-      return {
-        ...prev,
-        [activePlayer.id]: {
-          ...pState,
-          notes
-        }
-      };
-    });
+    setAssessmentsState(prev => ({
+      ...prev,
+      [assessingPlayer.id]: {
+        technique: tempScores["Technique"],
+        intensity: tempScores["Intensity"],
+        execution: tempScores["Execution"],
+        adaptability: tempScores["Adaptability"],
+        discipline: tempScores["Discipline"],
+        focus: tempScores["Focus"],
+        notes: tempNotes,
+        isScored: true
+      }
+    }));
+
+    setIsAssessModalOpen(false);
+    setAssessingPlayer(null);
+  };
+
+  const getPlayerPpiInLiveSession = (playerId: number) => {
+    const a = assessmentsState[playerId];
+    if (!a || !a.isScored) return null;
+    const sum = a.technique + a.intensity + a.execution + a.adaptability + a.discipline + a.focus;
+    return (sum / 6.0).toFixed(1);
   };
 
   const countScoredPlayers = () => {
-    return Object.values(assessmentsState).filter(a => a.isScored).length;
+    let count = 0;
+    players.forEach(p => {
+      if (assessmentsState[p.id]?.isScored) count++;
+    });
+    return count;
+  };
+
+  const isAllPlayersScored = () => {
+    if (players.length === 0) return false;
+    return players.every(p => assessmentsState[p.id]?.isScored);
   };
 
   const handleCompleteSession = async () => {
@@ -280,13 +351,9 @@ export default function PracticePage() {
     }
   };
 
-  const getActivePpiScore = () => {
-    const activePlayer = players[currentIdx];
-    if (!activePlayer) return "5.0";
-    const a = assessmentsState[activePlayer.id];
-    if (!a) return "5.0";
-    const sum = a.technique + a.intensity + a.execution + a.adaptability + a.discipline + a.focus;
-    return (sum / 6.0).toFixed(1);
+  // Get only pool players who are not already in the team roster
+  const getFilteredPoolPlayers = () => {
+    return allPoolPlayers.filter(p => !players.some(tp => tp.id === p.id));
   };
 
   if (loading) {
@@ -492,27 +559,50 @@ export default function PracticePage() {
             {/* Right Roster Card */}
             <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-xl space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white">Team Roster</h3>
-                <span className="text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-zinc-400">
-                  {players.length} Players
-                </span>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Team Roster</h3>
+                  <p className="text-zinc-400 text-xs mt-0.5">Manage player pool before starting the session.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleOpenAddPlayer}
+                    className="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs px-3.5 py-2 rounded-xl transition-all font-medium flex items-center gap-1.5"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Existing Player
+                  </button>
+                  <span className="text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-zinc-400 font-semibold">
+                    {players.length} Players
+                  </span>
+                </div>
               </div>
 
               {players.length === 0 ? (
-                <p className="text-zinc-500 py-12 text-center text-sm">
-                  This team doesn't have any players assigned. Go to Teams page to add players first.
-                </p>
+                <div className="py-16 text-center">
+                  <p className="text-zinc-500 text-sm">
+                    This team doesn't have any players assigned. Click "Add Existing Player" to assign players to this team.
+                  </p>
+                </div>
               ) : (
                 <div className="divide-y divide-white/5">
                   {players.map((player) => (
-                    <div key={player.id} className="py-4 flex items-center justify-between">
+                    <div key={player.id} className="py-4 flex items-center justify-between group">
                       <div>
                         <div className="font-semibold text-white">{player.name}</div>
                         <div className="text-xs text-zinc-500">{player.role}</div>
                       </div>
-                      <div className="text-right">
-                        <span className="text-xs text-zinc-500 block">Current PPI</span>
-                        <span className="font-bold text-orange-400">{player.ppiScore ? player.ppiScore.toFixed(1) : "N/A"}</span>
+                      <div className="flex items-center gap-6">
+                        <div className="text-right">
+                          <span className="text-[10px] text-zinc-500 block uppercase">PPI Score</span>
+                          <span className="font-bold text-orange-400">{player.ppiScore ? player.ppiScore.toFixed(1) : "N/A"}</span>
+                        </div>
+                        <button
+                          onClick={() => handleRemovePlayerFromTeam(player.id)}
+                          className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                          title="Remove Player from Team"
+                        >
+                          <Trash2 className="w-4.5 h-4.5" />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -524,129 +614,93 @@ export default function PracticePage() {
       )}
 
       {/* VIEW: LIVE PRACTICE MODE */}
-      {view === "live_practice" && players[currentIdx] && (
-        <div className="space-y-6 max-w-4xl mx-auto">
-          {/* Top Wizard Indicator */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl space-y-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-400">
-                Live Practice: <strong className="text-white">{selectedTeam?.name}</strong>
-              </span>
-              <span className="text-orange-500 font-bold">
-                {currentIdx + 1} of {players.length} players assessed
-              </span>
+      {view === "live_practice" && selectedTeam && (
+        <div className="space-y-6">
+          {/* Top Progress & Complete Button bar */}
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex-1 space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-zinc-400">
+                  Live Session: <strong className="text-white">{selectedTeam.name}</strong>
+                </span>
+                <span className="text-orange-500 font-bold">
+                  {countScoredPlayers()} of {players.length} players completed
+                </span>
+              </div>
+              <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
+                <div 
+                  className="bg-orange-500 h-full transition-all duration-300"
+                  style={{ width: `${(countScoredPlayers() / players.length) * 100}%` }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
-              <div 
-                className="bg-orange-500 h-full transition-all duration-300"
-                style={{ width: `${((currentIdx + 1) / players.length) * 100}%` }}
-              />
-            </div>
+
+            <button
+              onClick={handleCompleteSession}
+              disabled={saving || !isAllPlayersScored()}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-6 py-4 font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Check className="w-5 h-5" />
+                  Complete Practice Session
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Main Assessment Sliders Card */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-xl space-y-8">
-            <div className="flex items-center justify-between border-b border-white/10 pb-6">
-              <div>
-                <div className="text-xs text-zinc-500 font-semibold uppercase tracking-wider mb-1">Evaluating Player</div>
-                <h2 className="text-3xl font-extrabold text-white">{players[currentIdx].name}</h2>
-                <p className="text-zinc-400 text-sm mt-0.5">{players[currentIdx].role}</p>
-              </div>
-              <div className="text-right bg-white/5 border border-white/10 px-5 py-2.5 rounded-2xl backdrop-blur-xl">
-                <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider block">Player PPI</span>
-                <span className="text-3xl font-black text-orange-500">{getActivePpiScore()}</span>
-              </div>
-            </div>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white px-2">Assess Players</h2>
+            <p className="text-zinc-400 text-xs px-2 -mt-2">Click on any player card to score and write assessments.</p>
 
-            {/* Metrics Sliders */}
-            <div className="space-y-6">
-              {METRICS.map((metric) => {
-                const metricKey = metric.toLowerCase();
-                const activePlayerId = players[currentIdx].id;
-                const activeVal = assessmentsState[activePlayerId]?.[metricKey as keyof typeof assessmentsState[number]] as number || 5;
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {players.map((player) => {
+                const livePpi = getPlayerPpiInLiveSession(player.id);
+                const isCompleted = assessmentsState[player.id]?.isScored;
 
                 return (
-                  <div key={metric} className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <label className="font-semibold text-zinc-300 text-sm">{metric}</label>
-                      <span className="text-orange-400 font-bold bg-orange-500/10 px-3 py-1 rounded-lg border border-orange-500/20 text-xs">
-                        {activeVal} / 10
-                      </span>
+                  <div
+                    key={player.id}
+                    onClick={() => handleOpenAssessPlayer(player)}
+                    className={`border p-6 rounded-3xl cursor-pointer transition-all hover:bg-white/[0.04] flex flex-col justify-between h-40 ${
+                      isCompleted 
+                        ? "bg-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/50" 
+                        : "bg-white/5 border-white/10 hover:border-orange-500/30"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-white text-lg truncate pr-2">{player.name}</h4>
+                        {isCompleted ? (
+                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
+                            <Check className="w-3 h-3" />
+                            Completed
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold text-zinc-500 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                            Pending
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-zinc-400 text-xs mt-1">{player.role}</p>
                     </div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      step="1"
-                      value={activeVal}
-                      onChange={(e) => handleScoreChange(metric, parseInt(e.target.value))}
-                      className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                    />
+
+                    <div className="flex items-center justify-between border-t border-white/5 pt-4">
+                      <span className="text-xs text-zinc-500">Live PPI</span>
+                      {isCompleted ? (
+                        <span className="text-emerald-400 font-extrabold text-lg">{livePpi}</span>
+                      ) : (
+                        <span className="text-zinc-500 text-xs italic">Not assessed</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
-            </div>
-
-            {/* Notes */}
-            <div className="border-t border-white/10 pt-6">
-              <label className="text-sm font-semibold text-zinc-300 block mb-2">Performance Notes</label>
-              <textarea
-                rows={3}
-                value={assessmentsState[players[currentIdx].id]?.notes || ""}
-                onChange={(e) => handleNotesChange(e.target.value)}
-                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 transition-colors text-sm"
-                placeholder={`Observations on ${players[currentIdx].name}'s technique, drive, or form...`}
-              />
-            </div>
-
-            {/* Bottom Actions */}
-            <div className="flex items-center justify-between border-t border-white/10 pt-6 gap-4">
-              <button
-                onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
-                disabled={currentIdx === 0}
-                className="bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl px-5 py-3 font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5"
-              >
-                <ChevronLeft className="w-5 h-5" />
-                Previous
-              </button>
-
-              {currentIdx < players.length - 1 ? (
-                <button
-                  onClick={() => {
-                    // Mark as scored
-                    setAssessmentsState(prev => ({
-                      ...prev,
-                      [players[currentIdx].id]: {
-                        ...prev[players[currentIdx].id],
-                        isScored: true
-                      }
-                    }));
-                    setCurrentIdx(prev => prev + 1);
-                  }}
-                  className="bg-orange-600 hover:bg-orange-500 text-white rounded-xl px-6 py-3 font-semibold transition-all flex items-center gap-1.5"
-                >
-                  Next Player
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              ) : (
-                <button
-                  onClick={handleCompleteSession}
-                  disabled={saving}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-8 py-3.5 font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-2"
-                >
-                  {saving ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Completing...
-                    </>
-                  ) : (
-                    <>
-                      <Check className="w-5 h-5" />
-                      Complete Session
-                    </>
-                  )}
-                </button>
-              )}
             </div>
           </div>
         </div>
@@ -750,6 +804,124 @@ export default function PracticePage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD EXISTING PLAYER */}
+      {isAddPlayerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-zinc-950 border border-white/10 rounded-3xl w-full max-w-lg p-6 space-y-6 shadow-2xl relative">
+            <button
+              onClick={() => setIsAddPlayerOpen(false)}
+              className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div>
+              <h3 className="text-xl font-bold text-white">Add Existing Player</h3>
+              <p className="text-xs text-zinc-400 mt-1">Select a player from your organization roster to add to this team.</p>
+            </div>
+
+            <div className="max-h-[300px] overflow-y-auto divide-y divide-white/5 pr-2">
+              {getFilteredPoolPlayers().length === 0 ? (
+                <p className="text-zinc-500 text-sm text-center py-8">No other available players to add.</p>
+              ) : (
+                getFilteredPoolPlayers().map(player => (
+                  <div key={player.id} className="py-3 flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-white text-sm">{player.name}</div>
+                      <div className="text-[10px] text-zinc-500">{player.role}</div>
+                    </div>
+                    <button
+                      onClick={() => handleAddPlayerToTeam(player.id)}
+                      className="bg-orange-600 hover:bg-orange-500 text-white rounded-lg p-1.5 text-xs font-semibold transition-all"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: INDIVIDUAL PLAYER ASSESSMENT */}
+      {isAssessModalOpen && assessingPlayer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-zinc-950 border border-white/10 rounded-3xl w-full max-w-xl p-6 md:p-8 space-y-6 shadow-2xl relative my-8">
+            <button
+              onClick={() => {
+                setIsAssessModalOpen(false);
+                setAssessingPlayer(null);
+              }}
+              className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="border-b border-white/5 pb-4">
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Assessment for</span>
+              <h3 className="text-2xl font-black text-white">{assessingPlayer.name}</h3>
+              <p className="text-zinc-400 text-xs mt-0.5">{assessingPlayer.role}</p>
+            </div>
+
+            {/* Metric Sliders */}
+            <div className="space-y-5">
+              {METRICS.map((metric) => (
+                <div key={metric} className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <label className="font-semibold text-zinc-300">{metric}</label>
+                    <span className="text-orange-400 font-bold bg-orange-500/10 px-2.5 py-0.5 rounded border border-orange-500/20 text-xs">
+                      {tempScores[metric]} / 10
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={tempScores[metric]}
+                    onChange={(e) => setTempScores({ ...tempScores, [metric]: parseInt(e.target.value) })}
+                    className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Notes */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-zinc-300 block">Coach Comments / Notes</label>
+              <textarea
+                rows={3}
+                value={tempNotes}
+                onChange={(e) => setTempNotes(e.target.value)}
+                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 transition-colors text-sm"
+                placeholder={`Observations on ${assessingPlayer.name}'s practice form...`}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-3 border-t border-white/5 pt-4">
+              <button
+                onClick={() => {
+                  setIsAssessModalOpen(false);
+                  setAssessingPlayer(null);
+                }}
+                className="bg-white/5 hover:bg-white/10 text-white rounded-xl px-5 py-3 text-sm font-semibold transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveAssessmentScores}
+                className="bg-orange-600 hover:bg-orange-500 text-white rounded-xl px-6 py-3 text-sm font-bold transition-all shadow-[0_0_15px_rgba(249,115,22,0.3)] flex items-center gap-1.5"
+              >
+                <Check className="w-4 h-4" />
+                Save Assessment
+              </button>
             </div>
           </div>
         </div>
