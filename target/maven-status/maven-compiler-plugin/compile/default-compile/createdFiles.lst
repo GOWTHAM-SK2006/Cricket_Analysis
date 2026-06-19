@@ -24,6 +24,7 @@ com/cpi/cpi_backend/dto/PlayerRequest$PlayerRequestBuilder.class
 com/cpi/cpi_backend/controller/AuthController.class
 com/cpi/cpi_backend/dto/PlayerRequest.class
 com/cpi/cpi_backend/dto/RegisterRequest.class
+com/cpi/cpi_backend/controller/GlobalExceptionHandler.class
 com/cpi/cpi_backend/dto/AuthenticationRequest.class
 com/cpi/cpi_backend/repository/CoachRepository.class
 com/cpi/cpi_backend/entity/Coach$CoachBuilder.class

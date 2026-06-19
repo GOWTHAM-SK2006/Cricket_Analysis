@@ -9,6 +9,7 @@ import com.cpi.cpi_backend.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,15 +28,22 @@ public class PlayerController {
     }
 
     @GetMapping("/team/{teamId}")
+    @Transactional(readOnly = true)
     public ResponseEntity<List<Player>> getTeamPlayers(
             @PathVariable Long teamId,
             @AuthenticationPrincipal Coach currentCoach
     ) {
-        // ideally add a check to make sure teamId belongs to currentCoach
+        // Verify the team belongs to the current coach
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+        if (!team.getCoach().getId().equals(currentCoach.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
         return ResponseEntity.ok(playerRepository.findByTeamId(teamId));
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<Player> createPlayer(
             @RequestBody PlayerRequest request,
             @AuthenticationPrincipal Coach currentCoach
@@ -62,6 +70,7 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<Player> updatePlayer(
             @PathVariable Long id,
             @RequestBody PlayerRequest request,
@@ -94,6 +103,7 @@ public class PlayerController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<Void> deletePlayer(
             @PathVariable Long id,
             @AuthenticationPrincipal Coach currentCoach
@@ -110,3 +120,4 @@ public class PlayerController {
         return ResponseEntity.noContent().build();
     }
 }
+
