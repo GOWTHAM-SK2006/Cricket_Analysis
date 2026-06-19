@@ -25,6 +25,7 @@ export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
+  const [organization, setOrganization] = useState<any>(null);
   
   // Modals state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -40,12 +41,14 @@ export default function TeamsPage() {
   const fetchData = async () => {
     try {
       setError(null);
-      const [teamsRes, playersRes] = await Promise.all([
+      const [teamsRes, playersRes, profileRes] = await Promise.all([
         api.get("/teams"),
-        api.get("/players")
+        api.get("/players"),
+        api.get("/profile").catch(() => ({ data: { organization: null } }))
       ]);
       setTeams(teamsRes.data);
       setPlayers(playersRes.data);
+      setOrganization(profileRes.data?.organization || null);
     } catch (error: any) {
       console.error("Failed to fetch teams page data", error);
       setError("Failed to load data. Please try again.");
@@ -125,6 +128,8 @@ export default function TeamsPage() {
     ? teams.reduce((acc, curr) => acc + curr.teamCpiScore, 0) / teams.length 
     : 0;
 
+  const hasOrganization = organization && organization.id;
+
   return (
     <div className="space-y-8 pb-12">
       {/* Header section */}
@@ -137,16 +142,26 @@ export default function TeamsPage() {
             Create, update, and manage your squads, training level categories, and performance index trackers.
           </p>
         </div>
-        <motion.button 
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all cursor-pointer"
+        <button 
+          onClick={() => hasOrganization && setShowCreateModal(true)}
+          disabled={!hasOrganization}
+          className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition-all ${
+            hasOrganization 
+              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 cursor-pointer hover:scale-[1.03] active:scale-[0.98]" 
+              : "bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-not-allowed opacity-60"
+          }`}
         >
           <Plus className="w-5 h-5" />
           Create Team
-        </motion.button>
+        </button>
       </div>
+
+      {!hasOrganization && !loading && (
+        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-200 px-4 py-3.5 rounded-xl flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+          <p className="text-sm font-medium">Please create or join an organization before creating teams.</p>
+        </div>
+      )}
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-xl flex items-center gap-3">
@@ -217,8 +232,13 @@ export default function TeamsPage() {
             Get started by organizing your squads. Once created, you can add players, track performance scores, and analyze ratings.
           </p>
           <button 
-            onClick={() => setShowCreateModal(true)}
-            className="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-zinc-200 transition-colors shadow-lg cursor-pointer"
+            onClick={() => hasOrganization && setShowCreateModal(true)}
+            disabled={!hasOrganization}
+            className={`px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg ${
+              hasOrganization 
+                ? "bg-white text-black hover:bg-zinc-200 cursor-pointer" 
+                : "bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-not-allowed opacity-60"
+            }`}
           >
             Create Team Now
           </button>

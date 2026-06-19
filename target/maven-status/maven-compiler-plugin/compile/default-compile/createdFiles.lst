@@ -42,6 +42,7 @@ com/cpi/cpi_backend/entity/Player.class
 com/cpi/cpi_backend/dto/TeamRequest$TeamRequestBuilder.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse$TrendDto.class
 com/cpi/cpi_backend/entity/Coach.class
+com/cpi/cpi_backend/controller/ProfileController.class
 com/cpi/cpi_backend/dto/AuthenticationResponse$AuthenticationResponseBuilder.class
 com/cpi/cpi_backend/dto/PlayerRequest$PlayerRequestBuilder.class
 com/cpi/cpi_backend/repository/MatchAssessmentRepository.class

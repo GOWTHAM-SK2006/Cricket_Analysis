@@ -22,13 +22,22 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private final com.cpi.cpi_backend.repository.OrganizationRepository organizationRepository;
+
     public AuthenticationResponse register(RegisterRequest request) {
+        // Automatically create a new organization for the coach
+        var org = com.cpi.cpi_backend.entity.Organization.builder()
+                .name(request.getName() + " Academy")
+                .joinCode(java.util.UUID.randomUUID().toString().substring(0, 8))
+                .build();
+        org = organizationRepository.save(org);
+
         var user = Coach.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
-                .organizationId(1L)
+                .organization(org)
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);

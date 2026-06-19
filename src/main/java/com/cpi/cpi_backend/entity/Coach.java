@@ -36,10 +36,9 @@ public class Coach implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Maps to the existing organization_id column in the database.
-    // Auto-populated during registration; teams/players inherit this value.
-    @Column(name = "organization_id")
-    private Long organizationId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -62,7 +62,7 @@ public class PlayerController {
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
                 .team(team)
-                .organizationId(team.getOrganizationId())
+                .organization(team.getOrganization())
                 .ppiScore(0.0)
                 .mpiScore(0.0)
                 .build();

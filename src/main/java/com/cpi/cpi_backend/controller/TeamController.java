@@ -23,6 +23,7 @@ public class TeamController {
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final CoachRepository coachRepository;
+    private final com.cpi.cpi_backend.repository.OrganizationRepository organizationRepository;
 
     @GetMapping
     public ResponseEntity<List<Team>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
@@ -39,15 +40,17 @@ public class TeamController {
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
-        // Inherit organizationId from the coach; default to 1 for legacy accounts
-        Long orgId = managedCoach.getOrganizationId() != null ? managedCoach.getOrganizationId() : 1L;
+        com.cpi.cpi_backend.entity.Organization org = managedCoach.getOrganization();
+        if (org == null || !organizationRepository.existsById(org.getId())) {
+            throw new RuntimeException("Please create or join an organization before creating teams.");
+        }
 
         Team team = Team.builder()
                 .name(request.getName())
                 .level(request.getLevel())
                 .coach(managedCoach)
                 .teamCpiScore(0.0)
-                .organizationId(orgId)
+                .organization(org)
                 .build();
         return ResponseEntity.ok(teamRepository.save(team));
     }

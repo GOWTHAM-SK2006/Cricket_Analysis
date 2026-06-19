@@ -37,10 +37,9 @@ public class Player {
     private Double ppiScore;
     private Double mpiScore;
 
-    // Maps to the existing organization_id column in the database.
-    // Automatically inherited from the team's organizationId during player creation.
-    @Column(name = "organization_id")
-    private Long organizationId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
