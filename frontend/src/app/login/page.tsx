@@ -88,6 +88,16 @@ export default function LoginPage() {
               />
             </div>
 
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-white/10 bg-black/50 text-orange-600 focus:ring-orange-500 focus:ring-offset-0 focus:ring-0 accent-orange-600"
+                />
+                <span className="text-sm text-zinc-300">Remember Me</span>
+              </label>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
