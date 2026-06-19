@@ -22,4 +22,9 @@ public class Organization {
     private String name;
 
     private String logoUrl;
+
+    // This column exists in the Railway database from a previous deployment
+    // with a NOT NULL constraint. Must be mapped to avoid insert failures.
+    @Column(name = "join_code")
+    private String joinCode;
 }

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 /**
  * Seeds the default Organization row on startup so that the foreign key
  * constraint on teams.organization_id is always satisfiable.
@@ -22,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
             organizationRepository.save(
                     Organization.builder()
                             .name("Default Academy")
+                            .joinCode(UUID.randomUUID().toString().substring(0, 8))
                             .build()
             );
         }
