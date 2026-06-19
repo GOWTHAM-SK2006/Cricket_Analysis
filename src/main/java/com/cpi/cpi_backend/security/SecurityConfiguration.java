@@ -24,15 +24,11 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Public: Auth endpoints
+                        // Protected: Only API endpoints (except auth) require JWT
                         .requestMatchers("/api/auth/**").permitAll()
-                        // Public: All static frontend assets (HTML, JS, CSS, images, fonts)
-                        .requestMatchers(
-                                "/", "/*.html", "/*.js", "/*.css", "/*.ico", "/*.png", "/*.svg",
-                                "/_next/**", "/images/**", "/fonts/**", "/favicon.ico"
-                        ).permitAll()
-                        // Everything else requires JWT
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/**").authenticated()
+                        // Public: Everything else is frontend (HTML, JS, CSS, pages)
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
