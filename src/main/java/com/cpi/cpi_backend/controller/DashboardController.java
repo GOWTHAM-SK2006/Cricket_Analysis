@@ -126,10 +126,11 @@ public class DashboardController {
         }
 
         for (Player player : players) {
+            String teamName = player.getTeam() != null ? player.getTeam().getName() : "Unassigned";
             activities.add(DashboardStatsResponse.ActivityDto.builder()
                     .type("PLAYER_ADDED")
                     .title("Player Added")
-                    .description("Player '" + player.getName() + "' was added to team '" + player.getTeam().getName() + "'.")
+                    .description("Player '" + player.getName() + "' was added to team '" + teamName + "'.")
                     .timestamp(player.getCreatedAt())
                     .build());
         }

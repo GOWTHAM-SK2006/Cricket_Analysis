@@ -35,7 +35,17 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            String acceptHeader = request.getHeader("Accept");
+                            if (acceptHeader != null && acceptHeader.contains("application/json")) {
+                                response.setStatus(200);
+                                response.setContentType("application/json");
+                                response.getWriter().write("{\"message\":\"Logged out successfully\",\"status\":200}");
+                                response.getWriter().flush();
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")

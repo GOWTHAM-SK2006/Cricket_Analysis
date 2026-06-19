@@ -29,10 +29,15 @@ public class Player {
     private String battingStyle;
     private String bowlingStyle;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id", nullable = false)
-    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Team team;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "player_teams",
+        joinColumns = @JoinColumn(name = "player_id"),
+        inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "coach", "organization"})
+    @Builder.Default
+    private java.util.Set<Team> teams = new java.util.HashSet<>();
 
     private Double ppiScore;
     private Double mpiScore;
@@ -43,4 +48,24 @@ public class Player {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Transient
+    public Team getTeam() {
+        if (teams == null || teams.isEmpty()) {
+            return null;
+        }
+        return teams.stream()
+                .min(java.util.Comparator.comparing(Team::getId))
+                .orElse(null);
+    }
+
+    public void setTeam(Team team) {
+        if (this.teams == null) {
+            this.teams = new java.util.HashSet<>();
+        }
+        this.teams.clear();
+        if (team != null) {
+            this.teams.add(team);
+        }
+    }
 }

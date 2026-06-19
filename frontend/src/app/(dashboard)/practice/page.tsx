@@ -17,7 +17,10 @@ const METRICS = [
 interface Player {
   id: number;
   name: string;
-  team: {
+  teams?: {
+    name: string;
+  }[];
+  team?: {
     name: string;
   };
 }
@@ -144,7 +147,7 @@ export default function PracticePage() {
               <option value="">Choose a player...</option>
               {players.map((p) => (
                 <option key={p.id} value={p.id} className="bg-zinc-900">
-                  {p.name} ({p.team?.name || "No Team"})
+                  {p.name} ({p.teams && p.teams.length > 0 ? p.teams.map(t => t.name).join(", ") : p.team?.name || "No Team"})
                 </option>
               ))}
             </select>

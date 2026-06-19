@@ -30,15 +30,31 @@ public class PlayerController {
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
         if (managedCoach.getRole() == Role.ADMIN) {
-            // Admin can access any team in their organization
             if (team.getOrganization() == null || managedCoach.getOrganization() == null ||
                 !team.getOrganization().getId().equals(managedCoach.getOrganization().getId())) {
                 throw new RuntimeException("Unauthorized: Team belongs to a different organization");
             }
         } else {
-            // Normal coach can only access their own teams
             if (!team.getCoach().getId().equals(managedCoach.getId())) {
                 throw new RuntimeException("Unauthorized: You do not manage this team");
+            }
+        }
+    }
+
+    private void checkAccess(Player player, Coach currentCoach) {
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+
+        if (managedCoach.getRole() == Role.ADMIN) {
+            if (player.getOrganization() == null || managedCoach.getOrganization() == null ||
+                !player.getOrganization().getId().equals(managedCoach.getOrganization().getId())) {
+                throw new RuntimeException("Unauthorized");
+            }
+        } else {
+            boolean hasAccess = player.getTeams().stream()
+                    .anyMatch(t -> t.getCoach().getId().equals(managedCoach.getId()));
+            if (!hasAccess) {
+                throw new RuntimeException("Unauthorized");
             }
         }
     }
@@ -52,11 +68,7 @@ public class PlayerController {
             return ResponseEntity.ok(List.of());
         }
 
-        if (managedCoach.getRole() == Role.ADMIN) {
-            return ResponseEntity.ok(playerRepository.findByOrganizationId(managedCoach.getOrganization().getId()));
-        } else {
-            return ResponseEntity.ok(playerRepository.findByTeamCoachId(managedCoach.getId()));
-        }
+        return ResponseEntity.ok(playerRepository.findByOrganizationId(managedCoach.getOrganization().getId()));
     }
 
     @GetMapping("/team/{teamId}")
@@ -89,11 +101,12 @@ public class PlayerController {
                 .role(request.getRole())
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
-                .team(team)
                 .organization(team.getOrganization())
                 .ppiScore(0.0)
                 .mpiScore(0.0)
                 .build();
+                
+        player.setTeam(team);
                 
         return ResponseEntity.ok(playerRepository.save(player));
     }
@@ -108,14 +121,16 @@ public class PlayerController {
         Player player = playerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
-        checkAccess(player.getTeam(), currentCoach);
+        checkAccess(player, currentCoach);
 
-        // Ensure coach has access to new team if teamId is changed
-        if (!player.getTeam().getId().equals(request.getTeamId())) {
-            Team newTeam = teamRepository.findById(request.getTeamId())
-                    .orElseThrow(() -> new RuntimeException("New team not found"));
-            checkAccess(newTeam, currentCoach);
-            player.setTeam(newTeam);
+        if (request.getTeamId() != null) {
+            boolean hasTeam = player.getTeams().stream().anyMatch(t -> t.getId().equals(request.getTeamId()));
+            if (!hasTeam) {
+                Team newTeam = teamRepository.findById(request.getTeamId())
+                        .orElseThrow(() -> new RuntimeException("New team not found"));
+                checkAccess(newTeam, currentCoach);
+                player.setTeam(newTeam);
+            }
         }
 
         player.setName(request.getName());
@@ -135,7 +150,7 @@ public class PlayerController {
         Player player = playerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
-        checkAccess(player.getTeam(), currentCoach);
+        checkAccess(player, currentCoach);
 
         playerRepository.delete(player);
         return ResponseEntity.noContent().build();

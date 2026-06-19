@@ -18,7 +18,8 @@ interface Player {
   bowlingStyle: string;
   ppiScore: number;
   mpiScore: number;
-  team: Team;
+  teams?: Team[];
+  team?: Team;
 }
 
 export default function PlayersPage() {
@@ -161,7 +162,10 @@ export default function PlayersPage() {
   // Filtered players
   const filteredPlayers = players.filter(player => {
     const matchesSearch = player.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTeam = selectedTeamFilter === "all" || String(player.team.id) === selectedTeamFilter;
+    const matchesTeam = selectedTeamFilter === "all" || 
+      (player.teams && player.teams.length > 0
+        ? player.teams.some(t => String(t.id) === selectedTeamFilter)
+        : player.team && String(player.team.id) === selectedTeamFilter);
     const matchesRole = selectedRoleFilter === "all" || player.role === selectedRoleFilter;
     return matchesSearch && matchesTeam && matchesRole;
   });
@@ -352,7 +356,9 @@ export default function PlayersPage() {
                       {player.name}
                     </h3>
                     <p className="text-xs text-orange-500/90 font-medium tracking-tight">
-                      {player.team?.name || "Unassigned"}
+                      {player.teams && player.teams.length > 0 
+                        ? player.teams.map(t => t.name).join(", ") 
+                        : player.team?.name || "Unassigned"}
                     </p>
                   </div>
                 </div>

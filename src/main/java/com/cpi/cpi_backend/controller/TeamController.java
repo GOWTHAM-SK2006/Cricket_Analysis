@@ -7,6 +7,7 @@ import com.cpi.cpi_backend.entity.Player;
 import com.cpi.cpi_backend.repository.CoachRepository;
 import com.cpi.cpi_backend.repository.TeamRepository;
 import com.cpi.cpi_backend.repository.PlayerRepository;
+import com.cpi.cpi_backend.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +24,23 @@ public class TeamController {
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final CoachRepository coachRepository;
-    private final com.cpi.cpi_backend.repository.OrganizationRepository organizationRepository;
+    private final OrganizationRepository organizationRepository;
+
+    private void checkAccess(Team team, Coach currentCoach) {
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+
+        if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
+            if (team.getOrganization() == null || managedCoach.getOrganization() == null ||
+                !team.getOrganization().getId().equals(managedCoach.getOrganization().getId())) {
+                throw new RuntimeException("Unauthorized: Team belongs to a different organization");
+            }
+        } else {
+            if (!team.getCoach().getId().equals(managedCoach.getId())) {
+                throw new RuntimeException("Unauthorized: You do not manage this team");
+            }
+        }
+    }
 
     @GetMapping
     public ResponseEntity<List<Team>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
@@ -84,9 +101,7 @@ public class TeamController {
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        if (!team.getCoach().getId().equals(currentCoach.getId())) {
-            throw new RuntimeException("Unauthorized");
-        }
+        checkAccess(team, currentCoach);
 
         team.setName(request.getName());
         team.setLevel(request.getLevel());
@@ -103,15 +118,79 @@ public class TeamController {
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        if (!team.getCoach().getId().equals(currentCoach.getId())) {
-            throw new RuntimeException("Unauthorized");
+        checkAccess(team, currentCoach);
+
+        // Decouple players of the team instead of deleting completely
+        List<Player> players = playerRepository.findByTeamId(id);
+        for (Player player : players) {
+            player.getTeams().remove(team);
+            playerRepository.save(player);
         }
 
-        // Delete players of the team first to prevent foreign key violations
-        List<Player> players = playerRepository.findByTeamId(id);
-        playerRepository.deleteAll(players);
-
         teamRepository.delete(team);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{teamId}/players/{playerId}")
+    @Transactional
+    public ResponseEntity<Void> addPlayerToTeam(
+            @PathVariable Long teamId,
+            @PathVariable Long playerId,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        checkAccess(team, currentCoach);
+
+        if (team.getOrganization() == null || player.getOrganization() == null ||
+            !team.getOrganization().getId().equals(player.getOrganization().getId())) {
+            throw new RuntimeException("Unauthorized: Team and player must be in the same organization");
+        }
+
+        player.getTeams().add(team);
+        playerRepository.save(player);
+
+        // Recalculate Team average CPI score
+        List<Player> teamPlayers = playerRepository.findByTeamId(team.getId());
+        double teamCpi = teamPlayers.stream()
+                .mapToDouble(p -> ((p.getPpiScore() != null ? p.getPpiScore() : 0.0) + (p.getMpiScore() != null ? p.getMpiScore() : 0.0)) / 2.0)
+                .average()
+                .orElse(0.0);
+        team.setTeamCpiScore(teamCpi);
+        teamRepository.save(team);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{teamId}/players/{playerId}")
+    @Transactional
+    public ResponseEntity<Void> removePlayerFromTeam(
+            @PathVariable Long teamId,
+            @PathVariable Long playerId,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        checkAccess(team, currentCoach);
+
+        player.getTeams().remove(team);
+        playerRepository.save(player);
+
+        // Recalculate Team average CPI score
+        List<Player> teamPlayers = playerRepository.findByTeamId(team.getId());
+        double teamCpi = teamPlayers.stream()
+                .mapToDouble(p -> ((p.getPpiScore() != null ? p.getPpiScore() : 0.0) + (p.getMpiScore() != null ? p.getMpiScore() : 0.0)) / 2.0)
+                .average()
+                .orElse(0.0);
+        team.setTeamCpiScore(teamCpi);
+        teamRepository.save(team);
+
         return ResponseEntity.noContent().build();
     }
 }

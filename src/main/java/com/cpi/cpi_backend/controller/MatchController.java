@@ -8,6 +8,7 @@ import com.cpi.cpi_backend.entity.Team;
 import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.MatchAssessmentRepository;
 import com.cpi.cpi_backend.repository.TeamRepository;
+import com.cpi.cpi_backend.repository.CoachRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,7 @@ public class MatchController {
     private final MatchAssessmentRepository matchAssessmentRepository;
     private final PlayerRepository playerRepository;
     private final TeamRepository teamRepository;
+    private final CoachRepository coachRepository;
 
     @PostMapping
     @Transactional
@@ -35,7 +37,16 @@ public class MatchController {
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
         // Verify authorization
-        if (!player.getTeam().getCoach().getId().equals(currentCoach.getId())) {
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+        boolean authorized = false;
+        if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
+            authorized = player.getOrganization() != null && managedCoach.getOrganization() != null &&
+                    player.getOrganization().getId().equals(managedCoach.getOrganization().getId());
+        } else {
+            authorized = player.getTeams().stream().anyMatch(t -> t.getCoach().getId().equals(managedCoach.getId()));
+        }
+        if (!authorized) {
             throw new RuntimeException("Unauthorized");
         }
 
@@ -67,15 +78,16 @@ public class MatchController {
         player.setMpiScore(avgMpi);
         playerRepository.save(player);
 
-        // Recalculate Team average CPI score
-        Team team = player.getTeam();
-        List<Player> teamPlayers = playerRepository.findByTeamId(team.getId());
-        double teamCpi = teamPlayers.stream()
-                .mapToDouble(p -> ((p.getPpiScore() != null ? p.getPpiScore() : 0.0) + (p.getMpiScore() != null ? p.getMpiScore() : 0.0)) / 2.0)
-                .average()
-                .orElse(0.0);
-        team.setTeamCpiScore(teamCpi);
-        teamRepository.save(team);
+        // Recalculate Team average CPI score for all teams the player belongs to
+        for (Team team : player.getTeams()) {
+            List<Player> teamPlayers = playerRepository.findByTeamId(team.getId());
+            double teamCpi = teamPlayers.stream()
+                    .mapToDouble(p -> ((p.getPpiScore() != null ? p.getPpiScore() : 0.0) + (p.getMpiScore() != null ? p.getMpiScore() : 0.0)) / 2.0)
+                    .average()
+                    .orElse(0.0);
+            team.setTeamCpiScore(teamCpi);
+            teamRepository.save(team);
+        }
 
         return ResponseEntity.ok(saved);
     }
@@ -88,7 +100,16 @@ public class MatchController {
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
-        if (!player.getTeam().getCoach().getId().equals(currentCoach.getId())) {
+        Coach managedCoach = coachRepository.findById(currentCoach.getId())
+                .orElseThrow(() -> new RuntimeException("Coach not found"));
+        boolean authorized = false;
+        if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
+            authorized = player.getOrganization() != null && managedCoach.getOrganization() != null &&
+                    player.getOrganization().getId().equals(managedCoach.getOrganization().getId());
+        } else {
+            authorized = player.getTeams().stream().anyMatch(t -> t.getCoach().getId().equals(managedCoach.getId()));
+        }
+        if (!authorized) {
             throw new RuntimeException("Unauthorized");
         }
 

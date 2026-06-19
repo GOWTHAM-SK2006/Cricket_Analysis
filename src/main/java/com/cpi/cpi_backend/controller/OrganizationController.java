@@ -78,10 +78,13 @@ public class OrganizationController {
         List<CoachSummaryResponse> summaries = coaches.stream().map(coach -> {
             var teams = teamRepository.findByCoachId(coach.getId());
             int teamsCount = teams.size();
-            int playersCount = 0;
+            java.util.Set<Long> uniquePlayerIds = new java.util.HashSet<>();
             for (var team : teams) {
-                playersCount += playerRepository.findByTeamId(team.getId()).size();
+                for (var player : playerRepository.findByTeamId(team.getId())) {
+                    uniquePlayerIds.add(player.getId());
+                }
             }
+            int playersCount = uniquePlayerIds.size();
 
             // Mock last activity for premium experience
             String lastActivity = "Today";
@@ -231,13 +234,16 @@ public class OrganizationController {
 
         var teams = teamRepository.findByCoachId(targetCoach.getId());
         int totalTeams = teams.size();
-        int totalPlayers = 0;
         double totalCpi = 0;
+        java.util.Set<Long> uniquePlayerIds = new java.util.HashSet<>();
 
         List<com.cpi.cpi_backend.dto.CoachDetailsResponse.TeamDetail> teamDetails = new java.util.ArrayList<>();
         for (var team : teams) {
-            int pCount = playerRepository.findByTeamId(team.getId()).size();
-            totalPlayers += pCount;
+            var teamPlayers = playerRepository.findByTeamId(team.getId());
+            int pCount = teamPlayers.size();
+            for (var p : teamPlayers) {
+                uniquePlayerIds.add(p.getId());
+            }
             totalCpi += team.getTeamCpiScore() != null ? team.getTeamCpiScore() : 0.0;
 
             teamDetails.add(com.cpi.cpi_backend.dto.CoachDetailsResponse.TeamDetail.builder()
@@ -248,6 +254,7 @@ public class OrganizationController {
                     .playersCount(pCount)
                     .build());
         }
+        int totalPlayers = uniquePlayerIds.size();
 
         double averageCpi = totalTeams > 0 ? (totalCpi / totalTeams) : 0.0;
 

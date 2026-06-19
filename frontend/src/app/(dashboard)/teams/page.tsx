@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { Users, Plus, Loader2, Pencil, Trash2, X, AlertTriangle, Shield, TrendingUp } from "lucide-react";
+import { Users, Plus, Loader2, Pencil, Trash2, X, AlertTriangle, Shield, TrendingUp, ChevronDown, ChevronUp, PlusCircle, UserMinus, UserPlus } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface Team {
@@ -16,6 +16,7 @@ interface Player {
   id: number;
   name: string;
   role: string;
+  teams?: { id: number; name: string }[];
   team?: {
     id: number;
   };
@@ -32,6 +33,12 @@ export default function TeamsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [deletingTeam, setDeletingTeam] = useState<Team | null>(null);
+
+  // Expanded team & Add existing player state
+  const [expandedTeamId, setExpandedTeamId] = useState<number | null>(null);
+  const [showAddExistingModal, setShowAddExistingModal] = useState(false);
+  const [activeTeamForAdd, setActiveTeamForAdd] = useState<Team | null>(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string>("");
 
   // Form states
   const [newTeam, setNewTeam] = useState({ name: "", level: "" });
@@ -118,9 +125,65 @@ export default function TeamsPage() {
     }
   };
 
-  // Helper to count players for each team
+  // Helper to count players for each team (supporting many-to-many)
   const getPlayerCount = (teamId: number) => {
-    return players.filter(p => p.team?.id === teamId).length;
+    return players.filter(p => {
+      if (p.teams && p.teams.length > 0) {
+        return p.teams.some(t => t.id === teamId);
+      }
+      return p.team?.id === teamId;
+    }).length;
+  };
+
+  // Helper to get players in a team
+  const getTeamPlayers = (teamId: number) => {
+    return players.filter(p => {
+      if (p.teams && p.teams.length > 0) {
+        return p.teams.some(t => t.id === teamId);
+      }
+      return p.team?.id === teamId;
+    });
+  };
+
+  // Helper to get players in organization NOT in this team
+  const getAvailablePlayersForTeam = (teamId: number) => {
+    return players.filter(p => {
+      const isInTeam = p.teams && p.teams.length > 0
+        ? p.teams.some(t => t.id === teamId)
+        : p.team?.id === teamId;
+      return !isInTeam;
+    });
+  };
+
+  const handleAddExistingPlayer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeTeamForAdd || !selectedPlayerId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await api.post(`/teams/${activeTeamForAdd.id}/players/${selectedPlayerId}`);
+      setShowAddExistingModal(false);
+      setSelectedPlayerId("");
+      setActiveTeamForAdd(null);
+      await fetchData();
+    } catch (err: any) {
+      console.error("Failed to add player to team", err);
+      setError(err.response?.data?.message || "Failed to add player. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRemovePlayerFromTeam = async (teamId: number, playerId: number) => {
+    if (!confirm("Are you sure you want to remove this player from this team?")) return;
+    setError(null);
+    try {
+      await api.delete(`/teams/${teamId}/players/${playerId}`);
+      await fetchData();
+    } catch (err: any) {
+      console.error("Failed to remove player from team", err);
+      setError(err.response?.data?.message || "Failed to remove player. Please try again.");
+    }
   };
 
   // Statistics
@@ -295,6 +358,67 @@ export default function TeamsPage() {
                       {team.teamCpiScore > 0 ? team.teamCpiScore.toFixed(1) : "0.0"}
                     </p>
                   </div>
+                </div>
+
+                {/* Collapsible Player Roster & Management */}
+                <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
+                  <button
+                    onClick={() => setExpandedTeamId(expandedTeamId === team.id ? null : team.id)}
+                    className="flex items-center justify-between w-full text-xs font-semibold text-zinc-400 hover:text-white transition-colors py-1 cursor-pointer"
+                  >
+                    <span>{expandedTeamId === team.id ? "Hide Squad Roster" : "View Squad Roster"}</span>
+                    {expandedTeamId === team.id ? (
+                      <ChevronUp className="w-4 h-4 text-orange-500" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {expandedTeamId === team.id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3 overflow-hidden"
+                      >
+                        <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+                          {getTeamPlayers(team.id).length === 0 ? (
+                            <p className="text-xs text-zinc-500 italic py-2 text-center">No players assigned yet.</p>
+                          ) : (
+                            getTeamPlayers(team.id).map(player => (
+                              <div key={player.id} className="flex justify-between items-center bg-white/5 border border-white/5 hover:bg-white/10 px-3 py-2 rounded-xl transition-all">
+                                <div>
+                                  <p className="text-xs font-semibold text-white">{player.name}</p>
+                                  <p className="text-[10px] text-zinc-500">{player.role}</p>
+                                </div>
+                                <button
+                                  onClick={() => handleRemovePlayerFromTeam(team.id, player.id)}
+                                  className="p-1 rounded-md text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                                  title="Remove from squad"
+                                >
+                                  <UserMinus className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ))
+                          )}
+                        </div>
+
+                        {/* Add Existing Player Trigger */}
+                        <button
+                          onClick={() => {
+                            setActiveTeamForAdd(team);
+                            setShowAddExistingModal(true);
+                          }}
+                          className="flex items-center justify-center gap-1.5 w-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/25 hover:border-orange-500/40 text-orange-400 hover:text-orange-300 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer mt-2"
+                        >
+                          <UserPlus className="w-4 h-4" />
+                          Add Existing Player
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             );
@@ -492,7 +616,7 @@ export default function TeamsPage() {
                 <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
                   Are you sure you want to delete <span className="text-white font-semibold">"{deletingTeam.name}"</span>?
                   <br />
-                  <span className="text-red-400 font-medium">This will permanently delete all {getPlayerCount(deletingTeam.id)} players associated with this squad.</span> This action cannot be undone.
+                  <span className="text-orange-400 font-medium">This will dissociate all {getPlayerCount(deletingTeam.id)} players from this squad. The players will remain in the organization pool.</span> This action cannot be undone.
                 </p>
 
                 <div className="flex gap-3 w-full">
@@ -518,6 +642,102 @@ export default function TeamsPage() {
                   </button>
                 </div>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ADD EXISTING PLAYER MODAL */}
+      <AnimatePresence>
+        {showAddExistingModal && activeTeamForAdd && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setShowAddExistingModal(false);
+                setActiveTeamForAdd(null);
+                setSelectedPlayerId("");
+              }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+            {/* Modal Box */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-[#0f0f0f] border border-white/10 w-full max-w-md rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                  <UserPlus className="w-6 h-6 text-orange-500" />
+                  Add Existing Player
+                </h3>
+                <button 
+                  onClick={() => {
+                    setShowAddExistingModal(false);
+                    setActiveTeamForAdd(null);
+                    setSelectedPlayerId("");
+                  }}
+                  className="p-1 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddExistingPlayer} className="space-y-6">
+                <div>
+                  <p className="text-sm text-zinc-400 mb-4">
+                    Assign a player from the organization pool to <span className="text-white font-semibold">{activeTeamForAdd.name}</span>.
+                  </p>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">Select Player</label>
+                  <select 
+                    required 
+                    value={selectedPlayerId} 
+                    onChange={e => setSelectedPlayerId(e.target.value)} 
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                  >
+                    <option value="" className="bg-zinc-950 text-zinc-500">-- Choose a Player --</option>
+                    {getAvailablePlayersForTeam(activeTeamForAdd.id).map(p => (
+                      <option key={p.id} value={p.id} className="bg-zinc-950 text-white">
+                        {p.name} ({p.role})
+                      </option>
+                    ))}
+                  </select>
+                  {getAvailablePlayersForTeam(activeTeamForAdd.id).length === 0 && (
+                    <p className="text-xs text-amber-500 mt-2">All players in the organization are already assigned to this team.</p>
+                  )}
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowAddExistingModal(false);
+                      setActiveTeamForAdd(null);
+                      setSelectedPlayerId("");
+                    }}
+                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-all cursor-pointer text-center"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={submitting || !selectedPlayerId}
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {submitting ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      "Add to Squad"
+                    )}
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}
