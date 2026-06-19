@@ -65,11 +65,6 @@ export default function PlayersPage() {
       ]);
       setPlayers(playersRes.data);
       setTeams(teamsRes.data);
-
-      // Pre-select first team in creation form if available
-      if (teamsRes.data.length > 0 && !newPlayer.teamId) {
-        setNewPlayer(prev => ({ ...prev, teamId: String(teamsRes.data[0].id) }));
-      }
     } catch (err: any) {
       console.error("Failed to fetch players page data", err);
       setError("Failed to load players and teams data.");
@@ -84,16 +79,12 @@ export default function PlayersPage() {
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPlayer.teamId) {
-      setError("Please select a team.");
-      return;
-    }
     setSubmitting(true);
     setError(null);
     try {
       await api.post("/players", {
         ...newPlayer,
-        teamId: Number(newPlayer.teamId)
+        teamId: newPlayer.teamId ? Number(newPlayer.teamId) : null
       });
       setShowAddModal(false);
       setNewPlayer({
@@ -101,7 +92,7 @@ export default function PlayersPage() {
         role: "Batsman",
         battingStyle: "Right-hand bat",
         bowlingStyle: "Right-arm Fast",
-        teamId: teams.length > 0 ? String(teams[0].id) : ""
+        teamId: ""
       });
       await fetchData();
     } catch (err: any) {
@@ -119,7 +110,7 @@ export default function PlayersPage() {
       role: player.role,
       battingStyle: player.battingStyle,
       bowlingStyle: player.bowlingStyle,
-      teamId: String(player.team.id)
+      teamId: player.team ? String(player.team.id) : ""
     });
   };
 
@@ -131,7 +122,7 @@ export default function PlayersPage() {
     try {
       await api.put(`/players/${editingPlayer.id}`, {
         ...editFormData,
-        teamId: Number(editFormData.teamId)
+        teamId: editFormData.teamId ? Number(editFormData.teamId) : null
       });
       setEditingPlayer(null);
       await fetchData();
@@ -193,20 +184,12 @@ export default function PlayersPage() {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowAddModal(true)}
-          disabled={teams.length === 0}
-          className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all cursor-pointer"
         >
           <Plus className="w-5 h-5" />
           Add Player
         </motion.button>
       </div>
-
-      {teams.length === 0 && !loading && (
-        <div className="bg-orange-500/10 border border-orange-500/20 text-orange-200 px-4 py-3 rounded-xl flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-orange-400 flex-shrink-0" />
-          <p className="text-sm">You must create at least one team before you can manage players.</p>
-        </div>
-      )}
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-xl flex items-center gap-3">
@@ -308,8 +291,7 @@ export default function PlayersPage() {
           {players.length === 0 && (
             <button 
               onClick={() => setShowAddModal(true)}
-              disabled={teams.length === 0}
-              className="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-zinc-200 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-zinc-200 transition-colors shadow-lg cursor-pointer"
             >
               Add First Player
             </button>
@@ -383,11 +365,11 @@ export default function PlayersPage() {
               <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-white/10 text-center">
                 <div className="bg-white/5 border border-white/5 rounded-2xl py-2 px-3">
                   <p className="text-zinc-500 text-[10px] uppercase tracking-wider mb-0.5">PPI Rating</p>
-                  <p className="font-extrabold text-orange-500 text-base">{player.ppiScore.toFixed(1)}</p>
+                  <p className="font-extrabold text-orange-500 text-base">{player.ppiScore ? player.ppiScore.toFixed(1) : "0.0"}</p>
                 </div>
                 <div className="bg-white/5 border border-white/5 rounded-2xl py-2 px-3">
                   <p className="text-zinc-500 text-[10px] uppercase tracking-wider mb-0.5">MPI Rating</p>
-                  <p className="font-extrabold text-emerald-400 text-base">{player.mpiScore.toFixed(1)}</p>
+                  <p className="font-extrabold text-emerald-400 text-base">{player.mpiScore ? player.mpiScore.toFixed(1) : "0.0"}</p>
                 </div>
               </div>
             </motion.div>
@@ -432,13 +414,13 @@ export default function PlayersPage() {
               <form onSubmit={handleAddSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Assign Team</label>
+                    <label className="block text-sm font-medium text-zinc-400 mb-2">Assign Team (Optional)</label>
                     <select 
-                      required 
                       value={newPlayer.teamId} 
                       onChange={e => setNewPlayer({...newPlayer, teamId: e.target.value})} 
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
                     >
+                      <option value="" className="bg-zinc-950 text-white">None (Unassigned)</option>
                       {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white">{t.name}</option>)}
                     </select>
                   </div>
@@ -565,13 +547,13 @@ export default function PlayersPage() {
               <form onSubmit={handleEditSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Squad / Team</label>
+                    <label className="block text-sm font-medium text-zinc-400 mb-2">Squad / Team (Optional)</label>
                     <select 
-                      required 
                       value={editFormData.teamId} 
                       onChange={e => setEditFormData({...editFormData, teamId: e.target.value})} 
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
                     >
+                      <option value="" className="bg-zinc-950 text-white">None (Unassigned)</option>
                       {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white">{t.name}</option>)}
                     </select>
                   </div>

@@ -25,6 +25,7 @@ com/cpi/cpi_backend/dto/PracticeAssessmentRequest$PracticeAssessmentRequestBuild
 com/cpi/cpi_backend/entity/Team.class
 com/cpi/cpi_backend/dto/DashboardStatsResponse.class
 com/cpi/cpi_backend/dto/RegisterRequest$RegisterRequestBuilder.class
+com/cpi/cpi_backend/config/SchemaUpdateRunner.class
 com/cpi/cpi_backend/controller/PlayerController.class
 com/cpi/cpi_backend/service/AuthService.class
 com/cpi/cpi_backend/controller/AuthController.class

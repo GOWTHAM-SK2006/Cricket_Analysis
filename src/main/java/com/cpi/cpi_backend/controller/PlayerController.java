@@ -93,26 +93,31 @@ public class PlayerController {
             @RequestBody PlayerRequest request,
             @AuthenticationPrincipal Coach currentCoach
     ) {
-        Team team = teamRepository.findById(request.getTeamId())
-                .orElseThrow(() -> new RuntimeException("Team not found"));
-                
-        checkAccess(team, currentCoach);
-
         Coach creatorCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
+
+        com.cpi.cpi_backend.entity.Organization org = creatorCoach.getOrganization();
+        if (org == null) {
+            throw new RuntimeException("Unauthorized: Coach does not belong to any organization");
+        }
 
         Player player = Player.builder()
                 .name(request.getName())
                 .role(request.getRole())
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
-                .organization(team.getOrganization())
+                .organization(org)
                 .creatorCoach(creatorCoach)
                 .ppiScore(0.0)
                 .mpiScore(0.0)
                 .build();
                 
-        player.setTeam(team);
+        if (request.getTeamId() != null) {
+            Team team = teamRepository.findById(request.getTeamId())
+                    .orElseThrow(() -> new RuntimeException("Team not found"));
+            checkAccess(team, currentCoach);
+            player.setTeam(team);
+        }
                 
         return ResponseEntity.ok(playerRepository.save(player));
     }
