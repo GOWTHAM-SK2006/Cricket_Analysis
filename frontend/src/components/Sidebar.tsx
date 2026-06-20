@@ -80,57 +80,60 @@ export function Sidebar() {
       {/* Sidebar Panel */}
       <div
         className={clsx(
-          "w-64 border-r border-white/10 bg-black/95 lg:bg-black/50 backdrop-blur-xl h-screen fixed top-0 bottom-0 left-0 z-50 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0",
+          "w-[260px] max-w-[260px] border-r border-white/10 bg-black/95 lg:bg-black/50 backdrop-blur-xl h-[100dvh] fixed top-0 bottom-0 left-0 z-50 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 overflow-hidden",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="p-6 flex flex-col h-full">
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white">
-                C
+        <div className="p-4 flex flex-col h-full justify-between select-none">
+          {/* Top content */}
+          <div className="flex flex-col flex-1 min-h-0">
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white">
+                  C
+                </div>
+                <span className="text-xl font-bold tracking-tight text-white">CPI</span>
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">CPI</span>
+              {/* Close button for mobile */}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="lg:hidden p-1.5 text-zinc-400 hover:text-white transition-colors"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            {/* Close button for mobile */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="lg:hidden p-1.5 text-zinc-400 hover:text-white transition-colors"
-              aria-label="Close menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
+
+            {/* Nav Items */}
+            <nav className="space-y-1 overflow-y-auto flex-1 pr-1 scrollbar-none">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={clsx(
+                      "flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-all duration-200 text-sm",
+                      isActive
+                        ? "bg-orange-500/10 text-orange-500"
+                        : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                    )}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
 
-          {/* Nav Items */}
-          <nav className="space-y-1.5 flex-1 overflow-y-auto">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={clsx(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200",
-                    isActive
-                      ? "bg-orange-500/10 text-orange-500"
-                      : "text-zinc-400 hover:bg-white/5 hover:text-white"
-                  )}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
           {/* Footer / Logout */}
-          <div className="pt-4 border-t border-white/5 mt-auto">
+          <div className="pt-3 border-t border-white/5 mt-auto flex-shrink-0">
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition-colors cursor-pointer"
+              className="flex w-full items-center gap-3 px-3 py-2 rounded-xl font-medium text-sm text-zinc-400 hover:bg-white/5 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer"
             >
               <LogOut className="w-5 h-5" />
               Log Out

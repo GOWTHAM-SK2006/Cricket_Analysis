@@ -163,13 +163,13 @@ export default function MatchesPage() {
           </div>
         </div>
 
-        <div className="space-y-4 border-t border-white/10 pt-4">
+        <div className="grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
           {METRICS.map((metric) => (
-            <div key={metric} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="font-bold text-xs text-zinc-300">{metric}</label>
-                <span className="text-[10px] text-emerald-400 font-extrabold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                  {scores[metric]} / 10
+            <div key={metric} className="space-y-1 bg-white/5 border border-white/5 p-2 rounded-lg">
+              <div className="flex justify-between items-center text-[10px]">
+                <label className="font-bold text-zinc-300">{metric}</label>
+                <span className="text-[9px] text-emerald-400 font-extrabold bg-emerald-500/10 px-1 py-0.5 rounded border border-emerald-500/20">
+                  {scores[metric]}/10
                 </span>
               </div>
               <input
@@ -179,7 +179,7 @@ export default function MatchesPage() {
                 step="1"
                 value={scores[metric]}
                 onChange={(e) => setScores({ ...scores, [metric]: parseInt(e.target.value) })}
-                className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 py-1"
+                className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 my-1"
               />
             </div>
           ))}

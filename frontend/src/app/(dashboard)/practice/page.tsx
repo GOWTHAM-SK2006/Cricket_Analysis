@@ -971,7 +971,7 @@ export default function PracticePage() {
       {/* MODAL: INDIVIDUAL PLAYER ASSESSMENT */}
       {isAssessModalOpen && assessingPlayer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-zinc-950 border border-white/10 rounded-3xl w-full max-w-xl p-6 md:p-8 space-y-6 shadow-2xl relative my-8">
+          <div className="bg-[#0f0f0f] border border-white/10 rounded-2xl w-full max-w-md p-4 sm:p-6 space-y-4 shadow-2xl relative my-4">
             <button
               onClick={() => {
                 setIsAssessModalOpen(false);
@@ -982,20 +982,20 @@ export default function PracticePage() {
               <X className="w-5 h-5" />
             </button>
 
-            <div className="border-b border-white/5 pb-4">
-              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Assessment for</span>
-              <h3 className="text-2xl font-black text-white">{assessingPlayer.name}</h3>
-              <p className="text-zinc-400 text-xs mt-0.5">{assessingPlayer.role}</p>
+            <div className="border-b border-white/5 pb-2">
+              <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider block">Assessment for</span>
+              <h3 className="text-lg font-black text-white">{assessingPlayer.name}</h3>
+              <p className="text-zinc-400 text-[10px] mt-0.5">{assessingPlayer.role}</p>
             </div>
 
-            {/* Metric Sliders */}
-            <div className="space-y-5">
+            {/* Metric Sliders Grid */}
+            <div className="grid grid-cols-2 gap-2">
               {METRICS.map((metric) => (
-                <div key={metric} className="space-y-2">
-                  <div className="flex justify-between items-center text-sm">
-                    <label className="font-semibold text-zinc-300">{metric}</label>
-                    <span className="text-orange-400 font-bold bg-orange-500/10 px-2.5 py-0.5 rounded border border-orange-500/20 text-xs">
-                      {tempScores[metric]} / 10
+                <div key={metric} className="space-y-1 bg-white/5 border border-white/5 p-2 rounded-lg">
+                  <div className="flex justify-between items-center text-[10px]">
+                    <label className="font-bold text-zinc-350">{metric}</label>
+                    <span className="text-orange-400 font-black">
+                      {tempScores[metric]}/10
                     </span>
                   </div>
                   <input
@@ -1005,41 +1005,41 @@ export default function PracticePage() {
                     step="1"
                     value={tempScores[metric]}
                     onChange={(e) => setTempScores({ ...tempScores, [metric]: parseInt(e.target.value) })}
-                    className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-orange-500 py-1"
+                    className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-orange-500 my-1"
                   />
                 </div>
               ))}
             </div>
 
             {/* Notes */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-zinc-300 block">Coach Comments / Notes</label>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-zinc-400 block">Coach Comments / Notes</label>
               <textarea
-                rows={3}
+                rows={2}
                 value={tempNotes}
                 onChange={(e) => setTempNotes(e.target.value)}
-                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 transition-colors text-sm"
-                placeholder={`Observations on ${assessingPlayer.name}'s practice form...`}
+                className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+                placeholder={`Observations on ${assessingPlayer.name}'s form...`}
               />
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 border-t border-white/5 pt-4">
+            <div className="flex items-center justify-end gap-2.5 border-t border-white/5 pt-3">
               <button
                 onClick={() => {
                   setIsAssessModalOpen(false);
                   setAssessingPlayer(null);
                 }}
-                className="bg-white/5 hover:bg-white/10 text-white rounded-xl px-5 py-3 text-sm font-semibold transition-colors"
+                className="bg-white/5 hover:bg-white/10 text-white rounded-lg px-4 py-2 text-xs font-semibold transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveAssessmentScores}
-                className="bg-orange-600 hover:bg-orange-500 text-white rounded-xl px-6 py-3 text-sm font-bold transition-all shadow-[0_0_15px_rgba(249,115,22,0.3)] flex items-center gap-1.5"
+                className="bg-orange-600 hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-xs font-bold transition-all shadow-[0_0_12px_rgba(249,115,22,0.25)] flex items-center gap-1"
               >
-                <Check className="w-4 h-4" />
-                Save Assessment
+                <Check className="w-3.5 h-3.5" />
+                Save Score
               </button>
             </div>
           </div>

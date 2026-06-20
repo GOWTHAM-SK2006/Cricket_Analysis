@@ -107,7 +107,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       <Sidebar />
-      <div className="lg:pl-64 min-h-screen pt-16 lg:pt-0">
+      <div className="lg:pl-[260px] min-h-screen pt-16 lg:pt-0">
         <main className="min-h-screen p-3 sm:p-5 lg:p-6">
           <div className="max-w-7xl mx-auto">
             {children}
