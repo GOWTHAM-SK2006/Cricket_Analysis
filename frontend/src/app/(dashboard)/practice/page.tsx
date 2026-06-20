@@ -331,7 +331,8 @@ export default function PracticePage() {
       }, 1500);
     } catch (err: any) {
       console.error(err);
-      setMessage({ type: "error", text: "Failed to complete practice session." });
+      const errMsg = err.response?.data?.message || err.response?.data || err.message || "Failed to complete practice session.";
+      setMessage({ type: "error", text: typeof errMsg === "string" ? errMsg : JSON.stringify(errMsg) });
     } finally {
       setSaving(false);
     }
