@@ -197,24 +197,26 @@ export default function TeamsPage() {
 
   return (
     <div className="space-y-6 pb-6 px-1">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <div>
-          <h1 className="text-3xl lg:text-[36px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-            Teams Management
-          </h1>
-          <p className="text-zinc-400 text-sm lg:text-[16px] mt-1.5">
-            Create, update, and manage your squads, training level categories, and performance index trackers.
-          </p>
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="text-3xl lg:text-[36px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+              Teams Management
+            </h1>
+            <p className="text-zinc-400 text-sm lg:text-[16px] mt-1.5">
+              Create, update, and manage your squads, training level categories, and performance index trackers.
+            </p>
+          </div>
+          {hasOrganization && userRole !== "ADMIN" && (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="h-12 sm:h-11 w-full sm:w-auto px-5 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
+            >
+              <Plus className="w-4 h-4" />
+              Create Team
+            </button>
+          )}
         </div>
-        {hasOrganization && userRole !== "ADMIN" && (
-          <button 
-            onClick={() => setShowCreateModal(true)}
-            className="h-11 px-5 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
-          >
-            <Plus className="w-4 h-4" />
-            Create Team
-          </button>
-        )}
       </div>
 
       {!hasOrganization && !loading && (

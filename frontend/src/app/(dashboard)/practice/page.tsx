@@ -402,7 +402,7 @@ export default function PracticePage() {
             </div>
             <button
               onClick={handleStartAddPractice}
-              className="h-11 px-5 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 self-start sm:self-auto"
+              className="h-12 sm:h-11 w-full sm:w-auto px-5 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
             >
               <Plus className="w-4 h-4" />
               Add Practice
