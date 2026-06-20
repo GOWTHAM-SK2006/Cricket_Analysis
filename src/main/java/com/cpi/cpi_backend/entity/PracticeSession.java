@@ -27,6 +27,9 @@ public class PracticeSession {
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "coach", "organization"})
     private Team team;
 
+    @Column(name = "session_name", nullable = false)
+    private String name;
+
     @Column(name = "session_date", nullable = false)
     private LocalDate date;
 

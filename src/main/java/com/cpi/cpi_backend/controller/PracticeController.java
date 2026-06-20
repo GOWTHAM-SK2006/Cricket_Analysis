@@ -162,6 +162,11 @@ public class PracticeController {
             @RequestBody com.cpi.cpi_backend.dto.PracticeSessionRequest request,
             @AuthenticationPrincipal Coach currentCoach
     ) {
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Session name is required."
+            );
+        }
         if (request.getDate() == null) {
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.BAD_REQUEST, "Session date is required."
@@ -182,6 +187,7 @@ public class PracticeController {
 
         com.cpi.cpi_backend.entity.PracticeSession session = com.cpi.cpi_backend.entity.PracticeSession.builder()
                 .team(team)
+                .name(request.getName())
                 .date(request.getDate())
                 .playersAssessed(request.getAssessments().size())
                 .averagePpi(0.0)

@@ -8,6 +8,7 @@ import java.util.List;
 public class PracticeSessionRequest {
     private Long teamId;
     private LocalDate date;
+    private String name;
     private List<AssessmentDto> assessments;
 
     @Data

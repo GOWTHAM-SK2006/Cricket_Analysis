@@ -93,6 +93,7 @@ SESSION_RES=$(curl -s -X POST http://localhost:8080/api/practice/sessions \
   -H "Content-Type: application/json" \
   -d '{
     "teamId": '$TEAM_ID',
+    "name": "Under 19 Nets",
     "date": "2026-06-19",
     "assessments": [
       {

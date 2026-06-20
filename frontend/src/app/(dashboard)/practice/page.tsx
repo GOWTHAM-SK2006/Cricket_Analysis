@@ -48,6 +48,7 @@ interface PracticeSession {
     name: string;
     level: string;
   };
+  name: string;
   date: string;
   playersAssessed: number;
   averagePpi: number;
@@ -95,6 +96,7 @@ export default function PracticePage() {
 
   // Draft / Live State
   const [sessionDate, setSessionDate] = useState("");
+  const [sessionName, setSessionName] = useState("");
   const [assessmentsState, setAssessmentsState] = useState<Record<number, {
     technique: number;
     intensity: number;
@@ -143,6 +145,7 @@ export default function PracticePage() {
 
   const handleStartAddPractice = async () => {
     setLoading(true);
+    setSessionName("");
     try {
       const response = await api.get("/teams");
       setTeams(response.data);
@@ -233,6 +236,14 @@ export default function PracticePage() {
   };
 
   const handleStartLivePractice = () => {
+    if (!sessionName.trim()) {
+      setMessage({ type: "error", text: "Session Name is required." });
+      return;
+    }
+    if (!sessionDate) {
+      setMessage({ type: "error", text: "Session Date is required." });
+      return;
+    }
     if (players.length === 0) {
       setMessage({ type: "error", text: "No players in this team to assess." });
       return;
@@ -320,6 +331,7 @@ export default function PracticePage() {
       await api.post("/practice/sessions", {
         teamId: selectedTeam.id,
         date: sessionDate,
+        name: sessionName,
         assessments: assessmentsPayload
       });
 
@@ -417,6 +429,7 @@ export default function PracticePage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-white/10 text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+                      <th className="py-4 px-4">Session Name</th>
                       <th className="py-4 px-4">Session Date</th>
                       <th className="py-4 px-4">Team Name</th>
                       <th className="py-4 px-4">Players Assessed</th>
@@ -427,14 +440,17 @@ export default function PracticePage() {
                   <tbody className="divide-y divide-white/5">
                     {history.map((session) => (
                       <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
-                        <td className="py-4 px-4 text-white font-medium">
+                        <td className="py-4 px-4 text-white font-bold">
+                          {session.name}
+                        </td>
+                        <td className="py-4 px-4 text-zinc-300">
                           {new Date(session.date).toLocaleDateString(undefined, {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
                           })}
                         </td>
-                        <td className="py-4 px-4 text-zinc-300">
+                        <td className="py-4 px-4 text-zinc-400">
                           {session.team.name} <span className="text-xs text-zinc-500">({session.team.level})</span>
                         </td>
                         <td className="py-4 px-4 text-zinc-300">
@@ -532,6 +548,16 @@ export default function PracticePage() {
             <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl h-fit space-y-6">
               <div className="space-y-4">
                 <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Session configuration</div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-300">Session Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter session name"
+                    value={sessionName}
+                    onChange={(e) => setSessionName(e.target.value)}
+                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                  />
+                </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-zinc-300">Session Date</label>
                   <input
@@ -727,6 +753,10 @@ export default function PracticePage() {
             <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-4">
               <span className="text-xs text-zinc-500 font-semibold uppercase tracking-wider block">Session Info</span>
               <div className="space-y-2">
+                <div>
+                  <span className="text-xs text-zinc-400 block">Name</span>
+                  <span className="text-sm font-bold text-white">{selectedSessionDetails.session.name}</span>
+                </div>
                 <div>
                   <span className="text-xs text-zinc-400 block">Date</span>
                   <span className="text-sm font-bold text-white">
