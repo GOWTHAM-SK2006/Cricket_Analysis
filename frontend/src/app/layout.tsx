@@ -13,8 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CPI - Cricket Performance Intelligence",
-  description: "The premier analytics platform designed for elite cricket coaches. Track PPI, MPI, and team performance.",
+  title: "CPI - Cricket Performance Index",
+  description: "The premier analytics platform designed for elite cricket coaches. Track PPI, MPI, and team CPI performance.",
+  icons: {
+    icon: [
+      { url: "/cpi-logo.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/cpi-logo.png",
+  },
 };
 
 export default function RootLayout({

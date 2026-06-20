@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -44,8 +45,15 @@ export default function LoginPage() {
         className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white text-xl mx-auto mb-4">
-            C
+          {/* CPI Official Logo */}
+          <div className="relative w-24 h-28 mx-auto mb-5">
+            <Image
+              src="/cpi-logo.png"
+              alt="CPI - Cricket Performance Index"
+              fill
+              className="object-contain drop-shadow-lg"
+              priority
+            />
           </div>
           <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome Back</h1>
           <p className="text-zinc-400">Log in to access your analytics dashboard</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BarChart3, Activity, Shield } from "lucide-react";
 
@@ -10,9 +11,15 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed w-full z-50 top-0 border-b border-white/10 bg-black/50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white shadow-md">
-              C
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-8 h-9 flex-shrink-0">
+              <Image
+                src="/cpi-logo.png"
+                alt="CPI"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
             <span className="text-lg font-bold tracking-tight">CPI Analytics</span>
           </div>

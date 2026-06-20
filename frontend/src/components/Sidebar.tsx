@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, UserSquare2, Target, Trophy, FileBarChart, LogOut, Building, Menu, X } from "lucide-react";
 import { clsx } from "clsx";
@@ -61,11 +62,18 @@ export function Sidebar() {
           </button>
           <span className="text-lg font-bold text-white tracking-tight">{pageTitle}</span>
         </div>
+        {/* Mobile header brand logo */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white text-sm">
-            C
+          <div className="relative w-8 h-9 flex-shrink-0">
+            <Image
+              src="/cpi-logo.png"
+              alt="CPI Logo"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
-          <span className="text-sm font-semibold text-zinc-300">CPI</span>
+          <span className="text-sm font-bold text-white">CPI</span>
         </div>
       </header>
 
@@ -87,14 +95,23 @@ export function Sidebar() {
         <div className="p-4 flex flex-col h-full justify-between select-none">
           {/* Top content */}
           <div className="flex flex-col flex-1 min-h-0">
-            {/* Sidebar Header */}
+            {/* Sidebar Header — CPI Logo */}
             <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white">
-                  C
+              <Link href="/dashboard" onClick={() => setIsOpen(false)} className="flex items-center gap-2.5 group">
+                <div className="relative w-10 h-11 flex-shrink-0">
+                  <Image
+                    src="/cpi-logo.png"
+                    alt="CPI Logo"
+                    fill
+                    className="object-contain group-hover:scale-105 transition-transform duration-200"
+                    priority
+                  />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-white">CPI</span>
-              </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="text-lg font-extrabold tracking-tight text-white">CPI</span>
+                  <span className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Performance Index</span>
+                </div>
+              </Link>
               {/* Close button for mobile */}
               <button
                 onClick={() => setIsOpen(false)}
@@ -131,6 +148,13 @@ export function Sidebar() {
 
           {/* Footer / Logout */}
           <div className="pt-3 border-t border-white/5 mt-auto flex-shrink-0">
+            {/* Brand watermark */}
+            <div className="flex items-center gap-2 px-3 py-2 mb-1">
+              <div className="relative w-5 h-6 flex-shrink-0 opacity-40">
+                <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
+              </div>
+              <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Cricket Performance Index</span>
+            </div>
             <button
               onClick={handleLogout}
               className="flex w-full items-center gap-3 px-3 py-2 rounded-xl font-medium text-sm text-zinc-400 hover:bg-white/5 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer"

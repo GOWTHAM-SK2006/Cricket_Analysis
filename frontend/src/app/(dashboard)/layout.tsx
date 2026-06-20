@@ -1,6 +1,7 @@
 "use client";
 
 import { Sidebar } from "@/components/Sidebar";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
@@ -50,8 +51,11 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-5">
+        <div className="relative w-20 h-24">
+          <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain animate-pulse" priority />
+        </div>
+        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -67,11 +71,16 @@ export default function DashboardLayout({
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md bg-white/5 border border-white/10 rounded-3xl p-8 text-center backdrop-blur-xl relative z-10"
         >
-          <div className="w-16 h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-6">
+          {/* CPI Logo */}
+          <div className="relative w-20 h-24 mx-auto mb-6">
+            <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" priority />
+          </div>
+
+          <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-5">
             {status === "PENDING" ? (
-              <Clock className="w-8 h-8 text-orange-500 animate-pulse" />
+              <Clock className="w-7 h-7 text-orange-500 animate-pulse" />
             ) : (
-              <ShieldAlert className="w-8 h-8 text-red-500" />
+              <ShieldAlert className="w-7 h-7 text-red-500" />
             )}
           </div>
 
