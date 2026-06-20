@@ -112,20 +112,20 @@ export default function MatchesPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 pb-6 px-4">
+    <div className="max-w-2xl mx-auto space-y-8 pb-6 px-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Match Assessment</h1>
-          <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">Calculate Match Performance Index (MPI) for a player.</p>
+          <h1 className="text-3xl lg:text-[36px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Match Assessment</h1>
+          <p className="text-zinc-400 text-sm lg:text-[16px] mt-1.5">Calculate Match Performance Index (MPI) for a player.</p>
         </div>
-        <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-end shadow-md">
-          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Calculated MPI</p>
-          <div className="text-2xl font-black text-orange-500">{mpiScore}</div>
+        <div className="bg-white/5 border border-white/10 px-5 py-2.5 rounded-xl backdrop-blur-md w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-end shadow-md">
+          <p className="text-[11px] text-zinc-550 font-bold uppercase tracking-wider">Calculated MPI</p>
+          <div className="text-3xl font-black text-orange-500">{mpiScore}</div>
         </div>
       </div>
 
       {message && (
-        <div className={`p-4 rounded-xl border flex items-center gap-3 ${
+        <div className={`p-4.5 rounded-xl border flex items-center gap-3 ${
           message.type === "success" 
             ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
             : "bg-red-500/10 border-red-500/20 text-red-400"
@@ -135,14 +135,14 @@ export default function MatchesPage() {
         </div>
       )}
 
-      <div className="bg-white/5 border border-white/10 p-4 sm:p-5 rounded-xl space-y-4 backdrop-blur-md shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-white/5 border border-white/10 p-5 sm:p-6 rounded-xl space-y-5 backdrop-blur-md shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Select Player</label>
             <select 
               value={selectedPlayer}
               onChange={(e) => setSelectedPlayer(e.target.value)}
-              className="h-10 w-full bg-black/40 border border-white/10 rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
+              className="h-11 w-full bg-black/40 border border-white/10 rounded-xl px-4 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
             >
               <option value="">Choose a player...</option>
               {players.map((p) => (
@@ -158,17 +158,17 @@ export default function MatchesPage() {
               type="date" 
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="h-10 w-full bg-black/40 border border-white/10 rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-orange-500 [color-scheme:dark] transition-colors" 
+              className="h-11 w-full bg-black/40 border border-white/10 rounded-xl px-4 text-sm text-white focus:outline-none focus:border-orange-500 [color-scheme:dark] transition-colors" 
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
+        <div className="grid grid-cols-2 gap-2.5 border-t border-white/10 pt-5">
           {METRICS.map((metric) => (
-            <div key={metric} className="space-y-1 bg-white/5 border border-white/5 p-2 rounded-lg">
+            <div key={metric} className="space-y-1.5 bg-white/5 border border-white/5 p-2.5 rounded-lg">
               <div className="flex justify-between items-center text-[10px]">
                 <label className="font-bold text-zinc-400">{metric}</label>
-                <span className="text-[9px] text-orange-400 font-extrabold bg-orange-500/10 px-1 py-0.5 rounded border border-orange-500/20">
+                <span className="text-[10px] text-orange-400 font-extrabold bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20">
                   {scores[metric]}/10
                 </span>
               </div>
@@ -185,13 +185,13 @@ export default function MatchesPage() {
           ))}
         </div>
 
-        <div className="border-t border-white/10 pt-4 space-y-1.5">
+        <div className="border-t border-white/10 pt-5 space-y-1.5">
           <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Match Notes</label>
           <textarea 
             rows={3}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-zinc-650 focus:outline-none focus:border-orange-500 transition-colors"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-zinc-650 focus:outline-none focus:border-orange-500 transition-colors"
             placeholder="Add observations about match performance..."
           />
         </div>
@@ -199,7 +199,7 @@ export default function MatchesPage() {
         <button 
           onClick={handleSave}
           disabled={saving}
-          className="h-10 w-full rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-600/10"
+          className="h-11 w-full rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-600/10"
         >
           {saving ? (
             <>

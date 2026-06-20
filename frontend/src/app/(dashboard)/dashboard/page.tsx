@@ -69,20 +69,20 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-4 pb-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+    <div className="space-y-6 pb-6 px-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl lg:text-[36px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             Dashboard
           </h1>
-          <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">
+          <p className="text-zinc-400 text-sm lg:text-[16px] mt-1.5">
             Welcome to your team's performance hub.
           </p>
         </div>
       </div>
 
       {/* 7 Stats Cards - 2 Columns on mobile, 4 Columns on desktop */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
         <StatCard title="Total Teams" value={data.totalTeams} icon={Users} trend="Active squads" color="from-blue-500/10 to-indigo-500/10" iconColor="text-blue-400" />
         <StatCard title="Total Players" value={data.totalPlayers} icon={Award} trend="Roster size" color="from-purple-500/10 to-pink-500/10" iconColor="text-purple-400" />
         <StatCard title="Practice Sessions" value={data.totalPracticeSessions} icon={Target} trend="PPI tracked" color="from-orange-500/10 to-red-500/10" iconColor="text-orange-400" />
@@ -95,10 +95,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Mobile Segmented Chart Control */}
-      <div className="lg:hidden flex bg-white/5 border border-white/10 p-0.5 rounded-xl text-[10px] sm:text-xs font-semibold">
+      <div className="lg:hidden flex bg-white/5 border border-white/10 p-1 rounded-xl text-xs sm:text-sm font-semibold">
         <button
           onClick={() => setActiveTab("cpi")}
-          className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
+          className={`flex-1 py-2 rounded-lg text-center transition-all ${
             activeTab === "cpi" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
@@ -106,7 +106,7 @@ export default function DashboardPage() {
         </button>
         <button
           onClick={() => setActiveTab("teams")}
-          className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
+          className={`flex-1 py-2 rounded-lg text-center transition-all ${
             activeTab === "teams" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
@@ -114,7 +114,7 @@ export default function DashboardPage() {
         </button>
         <button
           onClick={() => setActiveTab("ppi")}
-          className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
+          className={`flex-1 py-2 rounded-lg text-center transition-all ${
             activeTab === "ppi" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
@@ -122,7 +122,7 @@ export default function DashboardPage() {
         </button>
         <button
           onClick={() => setActiveTab("mpi")}
-          className={`flex-1 py-1.5 rounded-lg text-center transition-all ${
+          className={`flex-1 py-2 rounded-lg text-center transition-all ${
             activeTab === "mpi" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
@@ -131,14 +131,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* CPI Trend */}
-        <div className={`bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md ${activeTab === "cpi" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-xs font-bold mb-3 flex items-center gap-1.5 text-zinc-250">
-            <TrendingUp className="w-3.5 h-3.5 text-sky-400" />
+        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "cpi" ? "block" : "hidden lg:block"}`}>
+          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
+            <TrendingUp className="w-4 h-4 text-sky-400" />
             CPI Trend
           </h3>
-          <div className="h-[150px] sm:h-[200px] flex items-center justify-center">
+          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
             {data.cpiTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.cpiTrend} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
@@ -148,53 +148,53 @@ export default function DashboardPage() {
                       <stop offset="95%" stopColor="#38bdf8" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="label" stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="label" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '10px' }}
+                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
                     itemStyle={{ color: '#fff' }}
                   />
                   <Area type="monotone" dataKey="value" name="CPI" stroke="#38bdf8" fillOpacity={1} fill="url(#colorCpi)" strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-[10px]">No assessment data.</div>
+              <div className="text-zinc-500 text-xs">No assessment data.</div>
             )}
           </div>
         </div>
 
         {/* Team Performance */}
-        <div className={`bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md ${activeTab === "teams" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-xs font-bold mb-3 flex items-center gap-1.5 text-zinc-250">
-            <Users className="w-3.5 h-3.5 text-blue-400" />
+        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "teams" ? "block" : "hidden lg:block"}`}>
+          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
+            <Users className="w-4 h-4 text-blue-400" />
             Team Performance
           </h3>
-          <div className="h-[150px] sm:h-[200px] flex items-center justify-center">
+          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
             {data.teamPerformance.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.teamPerformance} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                  <XAxis dataKey="teamName" stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="teamName" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '10px' }}
+                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
                     itemStyle={{ color: '#fff' }}
                   />
                   <Bar dataKey="cpi" name="CPI Score" fill="#3b82f6" radius={[3, 3, 0, 0]} maxBarSize={28} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-[10px]">No team performance scores.</div>
+              <div className="text-zinc-500 text-xs">No team performance scores.</div>
             )}
           </div>
         </div>
 
         {/* Practice Trend */}
-        <div className={`bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md ${activeTab === "ppi" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-xs font-bold mb-3 flex items-center gap-1.5 text-zinc-250">
-            <Target className="w-3.5 h-3.5 text-orange-400" />
+        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "ppi" ? "block" : "hidden lg:block"}`}>
+          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
+            <Target className="w-4 h-4 text-orange-400" />
             Practice Trend (PPI)
           </h3>
-          <div className="h-[150px] sm:h-[200px] flex items-center justify-center">
+          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
             {data.practiceTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.practiceTrend} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
@@ -204,28 +204,28 @@ export default function DashboardPage() {
                       <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="label" stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="label" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '10px' }}
+                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
                     itemStyle={{ color: '#fff' }}
                   />
                   <Area type="monotone" dataKey="value" name="PPI" stroke="#f97316" fillOpacity={1} fill="url(#colorPpi)" strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-[10px]">No practice sessions logged.</div>
+              <div className="text-zinc-500 text-xs">No practice sessions logged.</div>
             )}
           </div>
         </div>
 
         {/* Match Trend */}
-        <div className={`bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md ${activeTab === "mpi" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-xs font-bold mb-3 flex items-center gap-1.5 text-zinc-250">
-            <Trophy className="w-3.5 h-3.5 text-emerald-400" />
+        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "mpi" ? "block" : "hidden lg:block"}`}>
+          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
+            <Trophy className="w-4 h-4 text-emerald-400" />
             Match Trend (MPI)
           </h3>
-          <div className="h-[150px] sm:h-[200px] flex items-center justify-center">
+          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
             {data.matchTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.matchTrend} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
@@ -235,26 +235,26 @@ export default function DashboardPage() {
                       <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="label" stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={9} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="label" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '10px' }}
+                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
                     itemStyle={{ color: '#fff' }}
                   />
                   <Area type="monotone" dataKey="value" name="MPI" stroke="#10b981" fillOpacity={1} fill="url(#colorMpi)" strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-[10px]">No matches logged.</div>
+              <div className="text-zinc-500 text-xs">No matches logged.</div>
             )}
           </div>
         </div>
       </div>
 
       {/* Activity Feed */}
-      <div className="bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md">
-        <h3 className="text-sm font-bold mb-3 text-zinc-150">Activity Feed</h3>
-        <div className="space-y-2.5">
+      <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md">
+        <h3 className="text-base font-bold mb-4 text-zinc-150">Activity Feed</h3>
+        <div className="space-y-3.5">
           {data.activityFeed.length > 0 ? (
             data.activityFeed.slice(0, 5).map((activity, i) => (
               <motion.div 
@@ -262,23 +262,23 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.02 }}
                 key={i} 
-                className="flex gap-2.5 border-b border-white/5 pb-2.5 last:border-0 last:pb-0"
+                className="flex gap-3 border-b border-white/5 pb-3.5 last:border-0 last:pb-0"
               >
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   activity.type === "PLAYER_ADDED" ? "bg-purple-500/10 text-purple-400" :
                   activity.type === "TEAM_CREATED" ? "bg-blue-500/10 text-blue-400" :
                   activity.type === "PRACTICE_COMPLETED" ? "bg-orange-500/10 text-orange-400" :
                   "bg-emerald-500/10 text-emerald-400"
                 }`}>
-                  {activity.type === "PLAYER_ADDED" ? <Award className="w-3.5 h-3.5" /> :
-                   activity.type === "TEAM_CREATED" ? <Users className="w-3.5 h-3.5" /> :
-                   activity.type === "PRACTICE_COMPLETED" ? <Target className="w-3.5 h-3.5" /> :
-                   <Trophy className="w-3.5 h-3.5" />}
+                  {activity.type === "PLAYER_ADDED" ? <Award className="w-4 h-4" /> :
+                   activity.type === "TEAM_CREATED" ? <Users className="w-4 h-4" /> :
+                   activity.type === "PRACTICE_COMPLETED" ? <Target className="w-4 h-4" /> :
+                   <Trophy className="w-4 h-4" />}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] sm:text-xs font-semibold text-zinc-150 truncate">{activity.title}</p>
-                  <p className="text-[9px] sm:text-[10px] text-zinc-400 mt-0.5 truncate">{activity.description}</p>
-                  <p className="text-[8px] text-zinc-500 mt-0.5">
+                  <p className="text-xs sm:text-sm font-semibold text-zinc-150 truncate">{activity.title}</p>
+                  <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5 truncate">{activity.description}</p>
+                  <p className="text-[9px] text-zinc-550 mt-1">
                     {new Date(activity.timestamp).toLocaleDateString(undefined, { 
                       month: 'short', 
                       day: 'numeric', 
@@ -290,7 +290,7 @@ export default function DashboardPage() {
               </motion.div>
             ))
           ) : (
-            <div className="text-zinc-500 text-[10px] py-1">No recent activity.</div>
+            <div className="text-zinc-500 text-xs py-1">No recent activity.</div>
           )}
         </div>
       </div>
@@ -305,15 +305,15 @@ function StatCard({ title, value, icon: Icon, trend, color, iconColor }: any) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -1 }}
       whileTap={{ scale: 0.97 }}
-      className={`bg-gradient-to-br ${color} border border-white/10 p-2.5 sm:p-4 rounded-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[70px] sm:min-h-[96px] transition-all`}
+      className={`bg-gradient-to-br ${color} border border-white/10 p-3.5 sm:p-5 rounded-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[85px] sm:min-h-[108px] transition-all`}
     >
       <div className="flex items-center justify-between relative z-10">
-        <h3 className="text-zinc-400 font-bold text-[8px] sm:text-[10px] tracking-wider uppercase truncate max-w-[85%]">{title}</h3>
-        <Icon className={`w-3.5 h-3.5 ${iconColor} opacity-70`} />
+        <h3 className="text-zinc-400 font-bold text-[9px] sm:text-[11px] tracking-wider uppercase truncate max-w-[85%]">{title}</h3>
+        <Icon className={`w-4 h-4 ${iconColor} opacity-70`} />
       </div>
-      <div className="flex items-baseline justify-between mt-1.5 relative z-10 gap-1">
-        <span className="text-base sm:text-2xl font-black tracking-tight text-white">{value}</span>
-        <span className="text-[8px] sm:text-[10px] text-zinc-500 font-semibold truncate max-w-[55%]">{trend}</span>
+      <div className="flex items-baseline justify-between mt-2 relative z-10 gap-1">
+        <span className="text-lg sm:text-3xl font-black tracking-tight text-white">{value}</span>
+        <span className="text-[9px] sm:text-[11px] text-zinc-550 font-semibold truncate max-w-[55%]">{trend}</span>
       </div>
     </motion.div>
   );

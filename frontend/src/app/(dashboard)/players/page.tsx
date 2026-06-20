@@ -169,14 +169,14 @@ export default function PlayersPage() {
   const totalWicketkeepers = players.filter(p => p.role === "Wicketkeeper").length;
 
   return (
-    <div className="space-y-6 pb-6">
+    <div className="space-y-6 pb-6 px-1">
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl lg:text-[36px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             Player Roster
           </h1>
-          <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">
+          <p className="text-zinc-400 text-sm lg:text-[16px] mt-1.5">
             Register players, select role skills, batting/bowling specialties, and track training (PPI) and match (MPI) indexes.
           </p>
         </div>
@@ -184,7 +184,7 @@ export default function PlayersPage() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowAddModal(true)}
-          className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
+          className="h-11 px-5 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
         >
           <Plus className="w-4 h-4" />
           Add Player
@@ -192,7 +192,7 @@ export default function PlayersPage() {
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3.5 rounded-xl flex items-center gap-2 text-xs font-semibold">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-xl flex items-center gap-2 text-xs font-semibold">
           <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
           <p>{error}</p>
         </div>
@@ -200,45 +200,45 @@ export default function PlayersPage() {
 
       {/* Stats row */}
       {!loading && players.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
-            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Total Roster</p>
-            <p className="text-2xl lg:text-3xl font-black text-white mt-0.5">{totalPlayers}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[11px] uppercase font-bold tracking-wider">Total Roster</p>
+            <p className="text-3xl lg:text-4xl font-black text-white mt-1">{totalPlayers}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
-            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Batsmen</p>
-            <p className="text-2xl lg:text-3xl font-black text-orange-500 mt-0.5">{totalBatsmen}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[11px] uppercase font-bold tracking-wider">Batsmen</p>
+            <p className="text-3xl lg:text-4xl font-black text-orange-500 mt-1">{totalBatsmen}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
-            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Bowlers</p>
-            <p className="text-2xl lg:text-3xl font-black text-emerald-400 mt-0.5">{totalBowlers}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[11px] uppercase font-bold tracking-wider">Bowlers</p>
+            <p className="text-3xl lg:text-4xl font-black text-emerald-400 mt-1">{totalBowlers}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
-            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">All-rounders</p>
-            <p className="text-2xl lg:text-3xl font-black text-indigo-400 mt-0.5">{totalAllRounders}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[11px] uppercase font-bold tracking-wider">All-rounders</p>
+            <p className="text-3xl lg:text-4xl font-black text-indigo-400 mt-1">{totalAllRounders}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md col-span-2 sm:col-span-1">
-            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Wicketkeepers</p>
-            <p className="text-2xl lg:text-3xl font-black text-amber-500 mt-0.5">{totalWicketkeepers}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all duration-200 shadow-md col-span-2 sm:col-span-1">
+            <p className="text-zinc-500 text-[11px] uppercase font-bold tracking-wider">Wicketkeepers</p>
+            <p className="text-3xl lg:text-4xl font-black text-amber-500 mt-1">{totalWicketkeepers}</p>
           </div>
         </div>
       )}
 
       {/* Filters & Search section */}
-      <div className="flex flex-col lg:flex-row gap-3 bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md">
+      <div className="flex flex-col lg:flex-row gap-4 bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-zinc-500" />
           <input 
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search players by name..."
-            className="h-10 w-full bg-black/50 border border-white/10 rounded-xl pl-9 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
+            className="h-11 w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
           />
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-          <div className="flex items-center gap-2 bg-black/50 border border-white/10 px-3 rounded-xl h-10 w-full sm:min-w-[180px]">
+        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+          <div className="flex items-center gap-2.5 bg-black/50 border border-white/10 px-3 rounded-xl h-11 w-full sm:min-w-[190px]">
             <Filter className="w-4 h-4 text-zinc-500 shrink-0" />
             <select
               value={selectedTeamFilter}
@@ -252,7 +252,7 @@ export default function PlayersPage() {
             </select>
           </div>
 
-          <div className="flex items-center gap-2 bg-black/50 border border-white/10 px-3 rounded-xl h-10 w-full sm:min-w-[180px]">
+          <div className="flex items-center gap-2.5 bg-black/50 border border-white/10 px-3 rounded-xl h-11 w-full sm:min-w-[190px]">
             <UserSquare2 className="w-4 h-4 text-zinc-500 shrink-0" />
             <select
               value={selectedRoleFilter}
@@ -278,12 +278,12 @@ export default function PlayersPage() {
           </div>
         </div>
       ) : filteredPlayers.length === 0 ? (
-        <div className="bg-white/5 border border-white/10 p-12 rounded-3xl text-center backdrop-blur-sm max-w-lg mx-auto">
+        <div className="bg-white/5 border border-white/10 p-14 rounded-3xl text-center backdrop-blur-sm max-w-lg mx-auto">
           <div className="w-16 h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center mx-auto mb-6">
             <UserSquare2 className="w-8 h-8 text-orange-500" />
           </div>
-          <h3 className="text-2xl font-bold mb-2">No Players Found</h3>
-          <p className="text-zinc-400 mb-6 leading-relaxed">
+          <h3 className="text-3xl font-bold mb-2">No Players Found</h3>
+          <p className="text-zinc-400 mb-8 leading-relaxed">
             {players.length === 0 
               ? "Your roster is currently empty. Get started by adding players to your squads." 
               : "No players match the search queries and selected filters."}
@@ -291,82 +291,82 @@ export default function PlayersPage() {
           {players.length === 0 && (
             <button 
               onClick={() => setShowAddModal(true)}
-              className="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-zinc-200 transition-colors shadow-lg cursor-pointer"
+              className="bg-white text-black px-7 py-3.5 rounded-2xl font-bold hover:bg-zinc-200 transition-colors shadow-lg cursor-pointer"
             >
               Add First Player
             </button>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filteredPlayers.map(player => (
             <motion.div 
               key={player.id}
               layout
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white/5 border border-white/10 p-3 rounded-xl hover:bg-white/10 hover:border-orange-500/40 transition-all duration-200 flex flex-col relative group overflow-hidden"
+              className="bg-white/5 border border-white/10 p-4.5 rounded-xl hover:bg-white/10 hover:border-orange-500/40 transition-all duration-200 flex flex-col relative group overflow-hidden"
             >
               {/* Accent glow line */}
               <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-orange-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-              <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
-                    <UserSquare2 className="w-3.5 h-3.5" />
+              <div className="flex justify-between items-center mb-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                    <UserSquare2 className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-sm text-white group-hover:text-orange-500 transition-colors truncate max-w-[120px] xs:max-w-[150px]">
+                    <h3 className="font-bold text-base text-white group-hover:text-orange-500 transition-colors truncate max-w-[120px] xs:max-w-[150px]">
                       {player.name}
                     </h3>
-                    <p className="text-[9px] text-orange-500/90 font-semibold tracking-tight truncate">
+                    <p className="text-[10px] text-orange-500/90 font-semibold tracking-tight truncate">
                       {player.teams && player.teams.length > 0 
                         ? player.teams.map(t => t.name).join(", ") 
                         : player.team?.name || "Unassigned"}
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1.5">
                   <button 
                     onClick={() => handleEditInit(player)}
-                    className="p-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/15 text-zinc-300 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/15 text-zinc-300 transition-colors cursor-pointer"
                     title="Edit Player"
                   >
-                    <Pencil className="w-3 h-3" />
+                    <Pencil className="w-3.5 h-3.5" />
                   </button>
                   <button 
                     onClick={() => setDeletingPlayer(player)}
-                    className="p-1 rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 transition-colors cursor-pointer"
                     title="Delete Player"
                   >
-                    <Trash2 className="w-3 h-3" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
 
               {/* Specialties tags */}
-              <div className="flex flex-wrap gap-1 mb-2">
-                <span className="text-[8px] font-semibold bg-white/5 border border-white/10 px-1 py-0.5 rounded text-zinc-300 uppercase tracking-wider">
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[9px] font-semibold bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-zinc-300 uppercase tracking-wider">
                   {player.role}
                 </span>
-                <span className="text-[8px] font-semibold bg-indigo-500/10 border border-indigo-500/20 px-1 py-0.5 rounded text-indigo-300">
+                <span className="text-[9px] font-semibold bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-300">
                   {player.battingStyle}
                 </span>
                 {player.bowlingStyle && player.bowlingStyle !== "None" && (
-                  <span className="text-[8px] font-semibold bg-emerald-500/10 border border-emerald-500/20 px-1 py-0.5 rounded text-emerald-300">
+                  <span className="text-[9px] font-semibold bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300">
                     {player.bowlingStyle}
                   </span>
                 )}
               </div>
 
               {/* Score indicators */}
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5 text-center">
-                <div className="bg-white/5 border border-white/5 rounded-lg py-1 px-1.5 flex justify-between items-center text-[10px]">
-                  <span className="text-zinc-500 text-[8px] uppercase tracking-wider">PPI</span>
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-white/5 text-center">
+                <div className="bg-white/5 border border-white/5 rounded-lg py-1.5 px-2 flex justify-between items-center text-xs">
+                  <span className="text-zinc-500 text-[9px] uppercase tracking-wider">PPI</span>
                   <span className="font-extrabold text-orange-500">{player.ppiScore ? player.ppiScore.toFixed(1) : "0.0"}</span>
                 </div>
-                <div className="bg-white/5 border border-white/5 rounded-lg py-1 px-1.5 flex justify-between items-center text-[10px]">
-                  <span className="text-zinc-500 text-[8px] uppercase tracking-wider">MPI</span>
+                <div className="bg-white/5 border border-white/5 rounded-lg py-1.5 px-2 flex justify-between items-center text-xs">
+                  <span className="text-zinc-500 text-[9px] uppercase tracking-wider">MPI</span>
                   <span className="font-extrabold text-emerald-400">{player.mpiScore ? player.mpiScore.toFixed(1) : "0.0"}</span>
                 </div>
               </div>
@@ -416,7 +416,7 @@ export default function PlayersPage() {
                     <select 
                       value={newPlayer.teamId} 
                       onChange={e => setNewPlayer({...newPlayer, teamId: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option value="" className="bg-zinc-950 text-white text-xs">None (Unassigned)</option>
                       {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white text-xs">{t.name}</option>)}
@@ -429,7 +429,7 @@ export default function PlayersPage() {
                       required 
                       value={newPlayer.name} 
                       onChange={e => setNewPlayer({...newPlayer, name: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
                       placeholder="E.g. Virat Kohli"
                     />
                   </div>
@@ -441,7 +441,7 @@ export default function PlayersPage() {
                     <select 
                       value={newPlayer.role} 
                       onChange={e => setNewPlayer({...newPlayer, role: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option className="bg-zinc-950 text-white text-xs">Batsman</option>
                       <option className="bg-zinc-950 text-white text-xs">Bowler</option>
@@ -455,7 +455,7 @@ export default function PlayersPage() {
                     <select 
                       value={newPlayer.battingStyle} 
                       onChange={e => setNewPlayer({...newPlayer, battingStyle: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option className="bg-zinc-950 text-white text-xs">Right-hand bat</option>
                       <option className="bg-zinc-950 text-white text-xs">Left-hand bat</option>
@@ -467,7 +467,7 @@ export default function PlayersPage() {
                     <select 
                       value={newPlayer.bowlingStyle} 
                       onChange={e => setNewPlayer({...newPlayer, bowlingStyle: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option className="bg-zinc-950 text-white text-xs">None</option>
                       <option className="bg-zinc-950 text-white text-xs">Right-arm Fast</option>
@@ -486,14 +486,14 @@ export default function PlayersPage() {
                   <button 
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
+                    className="h-11 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
+                    className="h-11 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -549,7 +549,7 @@ export default function PlayersPage() {
                     <select 
                       value={editFormData.teamId} 
                       onChange={e => setEditFormData({...editFormData, teamId: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option value="" className="bg-zinc-950 text-white text-xs">None (Unassigned)</option>
                       {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white text-xs">{t.name}</option>)}
@@ -562,7 +562,7 @@ export default function PlayersPage() {
                       required 
                       value={editFormData.name} 
                       onChange={e => setEditFormData({...editFormData, name: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-555 focus:outline-none focus:border-orange-500 transition-colors" 
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-555 focus:outline-none focus:border-orange-500 transition-colors" 
                       placeholder="E.g. Virat Kohli"
                     />
                   </div>
@@ -574,7 +574,7 @@ export default function PlayersPage() {
                     <select 
                       value={editFormData.role} 
                       onChange={e => setEditFormData({...editFormData, role: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option className="bg-zinc-950 text-white text-xs">Batsman</option>
                       <option className="bg-zinc-950 text-white text-xs">Bowler</option>
@@ -588,7 +588,7 @@ export default function PlayersPage() {
                     <select 
                       value={editFormData.battingStyle} 
                       onChange={e => setEditFormData({...editFormData, battingStyle: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option className="bg-zinc-950 text-white text-xs">Right-hand bat</option>
                       <option className="bg-zinc-950 text-white text-xs">Left-hand bat</option>
@@ -600,7 +600,7 @@ export default function PlayersPage() {
                     <select 
                       value={editFormData.bowlingStyle} 
                       onChange={e => setEditFormData({...editFormData, bowlingStyle: e.target.value})} 
-                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                      className="h-11 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
                       <option className="bg-zinc-950 text-white text-xs">None</option>
                       <option className="bg-zinc-950 text-white text-xs">Right-arm Fast</option>
@@ -619,14 +619,14 @@ export default function PlayersPage() {
                   <button 
                     type="button"
                     onClick={() => setEditingPlayer(null)}
-                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
+                    className="h-11 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
+                    className="h-11 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -677,7 +677,7 @@ export default function PlayersPage() {
                     type="button"
                     onClick={() => setDeletingPlayer(null)}
                     disabled={submitting}
-                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
+                    className="h-11 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
@@ -685,7 +685,7 @@ export default function PlayersPage() {
                     type="button"
                     onClick={handleDeleteSubmit}
                     disabled={submitting}
-                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-red-650 hover:bg-red-500 text-white disabled:opacity-50 flex-1"
+                    className="h-11 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-red-650 hover:bg-red-500 text-white disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
