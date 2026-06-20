@@ -30,7 +30,7 @@ public class PracticeSession {
     @Column(name = "session_name", nullable = false)
     private String name;
 
-    @Column(name = "session_date", nullable = false)
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 
     private Integer playersAssessed;
