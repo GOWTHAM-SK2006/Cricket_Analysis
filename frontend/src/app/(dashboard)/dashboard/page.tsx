@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Users, Target, Activity, Trophy, TrendingUp, Calendar, Loader2, Award } from "lucide-react";
+import { Users, Target, Activity, Trophy, TrendingUp, Calendar, Loader2, Award, ArrowUpRight } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, BarChart, Bar } from "recharts";
 import { api } from "@/lib/api";
 
@@ -83,14 +84,14 @@ export default function DashboardPage() {
 
       {/* 7 Stats Cards - 2 Columns on mobile, 4 Columns on desktop */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="Total Teams" value={data.totalTeams} icon={Users} trend="Active squads" color="from-blue-500/10 to-indigo-500/10" iconColor="text-blue-400" />
-        <StatCard title="Total Players" value={data.totalPlayers} icon={Award} trend="Roster size" color="from-purple-500/10 to-pink-500/10" iconColor="text-purple-400" />
-        <StatCard title="Practice Sessions" value={data.totalPracticeSessions} icon={Target} trend="PPI tracked" color="from-orange-500/10 to-red-500/10" iconColor="text-orange-400" />
-        <StatCard title="Total Matches" value={data.totalMatches} icon={Trophy} trend="MPI tracked" color="from-emerald-500/10 to-teal-500/10" iconColor="text-emerald-400" />
-        <StatCard title="Average PPI" value={data.avgPpi.toFixed(1)} icon={Activity} trend={getTrendText(data.avgPpi, "PPI")} color="from-amber-500/10 to-orange-500/10" iconColor="text-amber-400" />
-        <StatCard title="Average MPI" value={data.avgMpi.toFixed(1)} icon={TrendingUp} trend={getTrendText(data.avgMpi, "MPI")} color="from-emerald-500/10 to-green-500/10" iconColor="text-emerald-400" />
+        <StatCard href="/teams"    title="Total Teams"        value={data.totalTeams}                   icon={Users}      trend="Active squads"              color="from-blue-500/10 to-indigo-500/10"   iconColor="text-blue-400" />
+        <StatCard href="/players"  title="Total Players"      value={data.totalPlayers}                 icon={Award}      trend="Roster size"                color="from-purple-500/10 to-pink-500/10"   iconColor="text-purple-400" />
+        <StatCard href="/practice" title="Practice Sessions"  value={data.totalPracticeSessions}        icon={Target}     trend="PPI tracked"               color="from-orange-500/10 to-red-500/10"    iconColor="text-orange-400" />
+        <StatCard href="/matches"  title="Total Matches"      value={data.totalMatches}                 icon={Trophy}     trend="MPI tracked"               color="from-emerald-500/10 to-teal-500/10" iconColor="text-emerald-400" />
+        <StatCard href="/practice" title="Average PPI"        value={data.avgPpi.toFixed(1)}            icon={Activity}   trend={getTrendText(data.avgPpi, "PPI")} color="from-amber-500/10 to-orange-500/10"  iconColor="text-amber-400" />
+        <StatCard href="/matches"  title="Average MPI"        value={data.avgMpi.toFixed(1)}            icon={TrendingUp} trend={getTrendText(data.avgMpi, "MPI")} color="from-emerald-500/10 to-green-500/10"  iconColor="text-emerald-400" />
         <div className="col-span-2 md:col-span-1">
-          <StatCard title="Average CPI" value={data.avgCpi.toFixed(1)} icon={Calendar} trend="Combined index" color="from-sky-500/10 to-blue-500/10" iconColor="text-sky-400" />
+          <StatCard href="/reports" title="Average CPI"       value={data.avgCpi.toFixed(1)}            icon={Calendar}   trend="Combined index"             color="from-sky-500/10 to-blue-500/10"      iconColor="text-sky-400" />
         </div>
       </div>
 
@@ -298,23 +299,39 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, trend, color, iconColor }: any) {
+function StatCard({ href, title, value, icon: Icon, trend, color, iconColor }: {
+  href: string;
+  title: string;
+  value: string | number;
+  icon: React.ElementType;
+  trend: string;
+  color: string;
+  iconColor: string;
+}) {
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -1 }}
-      whileTap={{ scale: 0.97 }}
-      className={`bg-gradient-to-br ${color} border border-white/10 p-3.5 sm:p-5 rounded-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[85px] sm:min-h-[108px] transition-all`}
-    >
-      <div className="flex items-center justify-between relative z-10">
-        <h3 className="text-zinc-400 font-bold text-[9px] sm:text-[11px] tracking-wider uppercase truncate max-w-[85%]">{title}</h3>
-        <Icon className={`w-4 h-4 ${iconColor} opacity-70`} />
-      </div>
-      <div className="flex items-baseline justify-between mt-2 relative z-10 gap-1">
-        <span className="text-lg sm:text-3xl font-black tracking-tight text-white">{value}</span>
-        <span className="text-[9px] sm:text-[11px] text-zinc-550 font-semibold truncate max-w-[55%]">{trend}</span>
-      </div>
-    </motion.div>
+    <Link href={href} className="block group">
+      <motion.div
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -3, scale: 1.02 }}
+        whileTap={{ scale: 0.97 }}
+        className={`bg-gradient-to-br ${color} border border-white/10 p-3.5 sm:p-5 rounded-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[85px] sm:min-h-[108px] transition-all duration-200 cursor-pointer hover:border-white/20 hover:shadow-lg`}
+      >
+        {/* Subtle shine on hover */}
+        <div className="absolute inset-0 bg-white/0 group-hover:bg-white/[0.03] transition-colors duration-200 rounded-xl" />
+
+        <div className="flex items-center justify-between relative z-10">
+          <h3 className="text-zinc-400 font-bold text-[9px] sm:text-[11px] tracking-wider uppercase truncate max-w-[80%]">{title}</h3>
+          <div className="flex items-center gap-1">
+            <Icon className={`w-4 h-4 ${iconColor} opacity-70`} />
+            <ArrowUpRight className="w-3 h-3 text-white/0 group-hover:text-white/40 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
+          </div>
+        </div>
+        <div className="flex items-baseline justify-between mt-2 relative z-10 gap-1">
+          <span className="text-lg sm:text-3xl font-black tracking-tight text-white">{value}</span>
+          <span className="text-[9px] sm:text-[11px] text-zinc-550 font-semibold truncate max-w-[55%]">{trend}</span>
+        </div>
+      </motion.div>
+    </Link>
   );
 }
