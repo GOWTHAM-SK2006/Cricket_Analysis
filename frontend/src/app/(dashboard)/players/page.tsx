@@ -169,101 +169,101 @@ export default function PlayersPage() {
   const totalWicketkeepers = players.filter(p => p.role === "Wicketkeeper").length;
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-6">
       {/* Header section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             Player Roster
           </h1>
-          <p className="text-zinc-400 mt-2 text-base">
+          <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">
             Register players, select role skills, batting/bowling specialties, and track training (PPI) and match (MPI) indexes.
           </p>
         </div>
         <motion.button 
-          whileHover={{ scale: 1.03 }}
+          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all cursor-pointer"
+          className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           Add Player
         </motion.button>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-xl flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3.5 rounded-xl flex items-center gap-2 text-xs font-semibold">
+          <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+          <p>{error}</p>
         </div>
       )}
 
       {/* Stats row */}
       {!loading && players.length > 0 && (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-            <p className="text-zinc-500 text-xs uppercase tracking-wider">Total Roster</p>
-            <p className="text-3xl font-black text-white mt-1">{totalPlayers}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Total Roster</p>
+            <p className="text-2xl lg:text-3xl font-black text-white mt-0.5">{totalPlayers}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-            <p className="text-zinc-500 text-xs uppercase tracking-wider">Batsmen</p>
-            <p className="text-3xl font-black text-orange-500 mt-1">{totalBatsmen}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Batsmen</p>
+            <p className="text-2xl lg:text-3xl font-black text-orange-500 mt-0.5">{totalBatsmen}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-            <p className="text-zinc-500 text-xs uppercase tracking-wider">Bowlers</p>
-            <p className="text-3xl font-black text-emerald-400 mt-1">{totalBowlers}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Bowlers</p>
+            <p className="text-2xl lg:text-3xl font-black text-emerald-400 mt-0.5">{totalBowlers}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-            <p className="text-zinc-500 text-xs uppercase tracking-wider">All-rounders</p>
-            <p className="text-3xl font-black text-indigo-400 mt-1">{totalAllRounders}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md">
+            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">All-rounders</p>
+            <p className="text-2xl lg:text-3xl font-black text-indigo-400 mt-0.5">{totalAllRounders}</p>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center col-span-2 lg:col-span-1">
-            <p className="text-zinc-500 text-xs uppercase tracking-wider">Wicketkeepers</p>
-            <p className="text-3xl font-black text-amber-500 mt-1">{totalWicketkeepers}</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all duration-200 shadow-md col-span-2 sm:col-span-1">
+            <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Wicketkeepers</p>
+            <p className="text-2xl lg:text-3xl font-black text-amber-500 mt-0.5">{totalWicketkeepers}</p>
           </div>
         </div>
       )}
 
       {/* Filters & Search section */}
-      <div className="flex flex-col lg:flex-row gap-4 bg-white/5 border border-white/10 p-4 rounded-3xl backdrop-blur-sm">
+      <div className="flex flex-col lg:flex-row gap-3 bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-md">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
           <input 
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search players by name..."
-            className="w-full bg-black/40 border border-white/5 rounded-2xl pl-11 pr-4 py-3 text-white placeholder-zinc-500 focus:border-orange-500/50 outline-none transition-all"
+            className="h-10 w-full bg-black/50 border border-white/10 rounded-xl pl-9 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
           />
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-          <div className="flex items-center gap-2 bg-black/20 border border-white/5 px-3 rounded-2xl w-full sm:min-w-[180px]">
-            <Filter className="w-4 h-4 text-zinc-500" />
+          <div className="flex items-center gap-2 bg-black/50 border border-white/10 px-3 rounded-xl h-10 w-full sm:min-w-[180px]">
+            <Filter className="w-4 h-4 text-zinc-500 shrink-0" />
             <select
               value={selectedTeamFilter}
               onChange={e => setSelectedTeamFilter(e.target.value)}
-              className="bg-transparent text-sm text-zinc-300 py-3 outline-none w-full cursor-pointer"
+              className="bg-transparent text-sm text-zinc-350 outline-none w-full cursor-pointer h-full"
             >
-              <option value="all" className="bg-zinc-950 text-white">All Teams</option>
+              <option value="all" className="bg-zinc-950 text-white text-xs">All Teams</option>
               {teams.map(t => (
-                <option key={t.id} value={t.id} className="bg-zinc-950 text-white">{t.name}</option>
+                <option key={t.id} value={t.id} className="bg-zinc-950 text-white text-xs">{t.name}</option>
               ))}
             </select>
           </div>
 
-          <div className="flex items-center gap-2 bg-black/20 border border-white/5 px-3 rounded-2xl w-full sm:min-w-[180px]">
-            <UserSquare2 className="w-4 h-4 text-zinc-500" />
+          <div className="flex items-center gap-2 bg-black/50 border border-white/10 px-3 rounded-xl h-10 w-full sm:min-w-[180px]">
+            <UserSquare2 className="w-4 h-4 text-zinc-500 shrink-0" />
             <select
               value={selectedRoleFilter}
               onChange={e => setSelectedRoleFilter(e.target.value)}
-              className="bg-transparent text-sm text-zinc-300 py-3 outline-none w-full cursor-pointer"
+              className="bg-transparent text-sm text-zinc-350 outline-none w-full cursor-pointer h-full"
             >
-              <option value="all" className="bg-zinc-950 text-white">All Roles</option>
-              <option value="Batsman" className="bg-zinc-950 text-white">Batsman</option>
-              <option value="Bowler" className="bg-zinc-950 text-white">Bowler</option>
-              <option value="All-rounder" className="bg-zinc-950 text-white">All-rounder</option>
-              <option value="Wicketkeeper" className="bg-zinc-950 text-white">Wicketkeeper</option>
+              <option value="all" className="bg-zinc-950 text-white text-xs">All Roles</option>
+              <option value="Batsman" className="bg-zinc-950 text-white text-xs">Batsman</option>
+              <option value="Bowler" className="bg-zinc-950 text-white text-xs">Bowler</option>
+              <option value="All-rounder" className="bg-zinc-950 text-white text-xs">All-rounder</option>
+              <option value="Wicketkeeper" className="bg-zinc-950 text-white text-xs">Wicketkeeper</option>
             </select>
           </div>
         </div>
@@ -392,111 +392,111 @@ export default function PlayersPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-white/10 w-full max-w-lg rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-white/10 w-full max-w-md rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                  <ShieldCheck className="w-6 h-6 text-orange-500" />
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+                  <ShieldCheck className="w-5 h-5 text-orange-500" />
                   Add New Player
                 </h3>
                 <button 
                   onClick={() => setShowAddModal(false)}
                   className="p-1 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleAddSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={handleAddSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Assign Team (Optional)</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Assign Team (Optional)</label>
                     <select 
                       value={newPlayer.teamId} 
                       onChange={e => setNewPlayer({...newPlayer, teamId: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option value="" className="bg-zinc-950 text-white">None (Unassigned)</option>
-                      {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white">{t.name}</option>)}
+                      <option value="" className="bg-zinc-950 text-white text-xs">None (Unassigned)</option>
+                      {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white text-xs">{t.name}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Player Name</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Player Name</label>
                     <input 
                       type="text" 
                       required 
                       value={newPlayer.name} 
                       onChange={e => setNewPlayer({...newPlayer, name: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors" 
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
                       placeholder="E.g. Virat Kohli"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Playing Role</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Playing Role</label>
                     <select 
                       value={newPlayer.role} 
                       onChange={e => setNewPlayer({...newPlayer, role: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option className="bg-zinc-950 text-white">Batsman</option>
-                      <option className="bg-zinc-950 text-white">Bowler</option>
-                      <option className="bg-zinc-950 text-white">All-rounder</option>
-                      <option className="bg-zinc-950 text-white">Wicketkeeper</option>
+                      <option className="bg-zinc-950 text-white text-xs">Batsman</option>
+                      <option className="bg-zinc-950 text-white text-xs">Bowler</option>
+                      <option className="bg-zinc-950 text-white text-xs">All-rounder</option>
+                      <option className="bg-zinc-950 text-white text-xs">Wicketkeeper</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Batting Style</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Batting Style</label>
                     <select 
                       value={newPlayer.battingStyle} 
                       onChange={e => setNewPlayer({...newPlayer, battingStyle: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option className="bg-zinc-950 text-white">Right-hand bat</option>
-                      <option className="bg-zinc-950 text-white">Left-hand bat</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-hand bat</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-hand bat</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Bowling Style</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Bowling Style</label>
                     <select 
                       value={newPlayer.bowlingStyle} 
                       onChange={e => setNewPlayer({...newPlayer, bowlingStyle: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option className="bg-zinc-950 text-white">None</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Fast</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Medium</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Offbreak</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Legbreak</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Fast</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Medium</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Orthodox</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Chinaman</option>
+                      <option className="bg-zinc-950 text-white text-xs">None</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Fast</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Medium</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Offbreak</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Legbreak</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Fast</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Medium</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Orthodox</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Chinaman</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-3 pt-2">
                   <button 
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-all cursor-pointer text-center"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Save Player"
                     )}
@@ -525,111 +525,111 @@ export default function PlayersPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-white/10 w-full max-w-lg rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-white/10 w-full max-w-md rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                  <Award className="w-6 h-6 text-orange-500" />
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+                  <Award className="w-5 h-5 text-orange-500" />
                   Edit Player Details
                 </h3>
                 <button 
                   onClick={() => setEditingPlayer(null)}
                   className="p-1 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleEditSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={handleEditSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Squad / Team (Optional)</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Squad / Team (Optional)</label>
                     <select 
                       value={editFormData.teamId} 
                       onChange={e => setEditFormData({...editFormData, teamId: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option value="" className="bg-zinc-950 text-white">None (Unassigned)</option>
-                      {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white">{t.name}</option>)}
+                      <option value="" className="bg-zinc-950 text-white text-xs">None (Unassigned)</option>
+                      {teams.map(t => <option key={t.id} value={t.id} className="bg-zinc-950 text-white text-xs">{t.name}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Player Name</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Player Name</label>
                     <input 
                       type="text" 
                       required 
                       value={editFormData.name} 
                       onChange={e => setEditFormData({...editFormData, name: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors" 
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-555 focus:outline-none focus:border-orange-500 transition-colors" 
                       placeholder="E.g. Virat Kohli"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Playing Role</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Playing Role</label>
                     <select 
                       value={editFormData.role} 
                       onChange={e => setEditFormData({...editFormData, role: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option className="bg-zinc-950 text-white">Batsman</option>
-                      <option className="bg-zinc-950 text-white">Bowler</option>
-                      <option className="bg-zinc-950 text-white">All-rounder</option>
-                      <option className="bg-zinc-950 text-white">Wicketkeeper</option>
+                      <option className="bg-zinc-950 text-white text-xs">Batsman</option>
+                      <option className="bg-zinc-950 text-white text-xs">Bowler</option>
+                      <option className="bg-zinc-950 text-white text-xs">All-rounder</option>
+                      <option className="bg-zinc-950 text-white text-xs">Wicketkeeper</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Batting Style</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Batting Style</label>
                     <select 
                       value={editFormData.battingStyle} 
                       onChange={e => setEditFormData({...editFormData, battingStyle: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option className="bg-zinc-950 text-white">Right-hand bat</option>
-                      <option className="bg-zinc-950 text-white">Left-hand bat</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-hand bat</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-hand bat</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-2">Bowling Style</label>
+                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Bowling Style</label>
                     <select 
                       value={editFormData.bowlingStyle} 
                       onChange={e => setEditFormData({...editFormData, bowlingStyle: e.target.value})} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                      className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-2.5 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                     >
-                      <option className="bg-zinc-950 text-white">None</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Fast</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Medium</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Offbreak</option>
-                      <option className="bg-zinc-950 text-white">Right-arm Legbreak</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Fast</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Medium</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Orthodox</option>
-                      <option className="bg-zinc-950 text-white">Left-arm Chinaman</option>
+                      <option className="bg-zinc-950 text-white text-xs">None</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Fast</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Medium</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Offbreak</option>
+                      <option className="bg-zinc-950 text-white text-xs">Right-arm Legbreak</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Fast</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Medium</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Orthodox</option>
+                      <option className="bg-zinc-950 text-white text-xs">Left-arm Chinaman</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-3 pt-2">
                   <button 
                     type="button"
                     onClick={() => setEditingPlayer(null)}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-all cursor-pointer text-center"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Save Changes"
                     )}
@@ -658,15 +658,15 @@ export default function PlayersPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-red-500/20 w-full max-w-md rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-red-500/20 w-full max-w-sm rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-500 mb-6">
-                  <AlertTriangle className="w-7 h-7" />
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 mb-4">
+                  <AlertTriangle className="w-6 h-6" />
                 </div>
                 
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Remove Player?</h3>
-                <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+                <h3 className="text-xl font-bold tracking-tight text-white mb-2">Remove Player?</h3>
+                <p className="text-zinc-400 text-xs mb-4 leading-normal">
                   Are you sure you want to remove <span className="text-white font-semibold">"{deletingPlayer.name}"</span>?
                   <br />
                   This player will be permanently removed from their team roster. This action cannot be undone.
@@ -677,7 +677,7 @@ export default function PlayersPage() {
                     type="button"
                     onClick={() => setDeletingPlayer(null)}
                     disabled={submitting}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
@@ -685,10 +685,10 @@ export default function PlayersPage() {
                     type="button"
                     onClick={handleDeleteSubmit}
                     disabled={submitting}
-                    className="flex-1 bg-red-600 hover:bg-red-500 text-white rounded-xl py-3 font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-red-650 hover:bg-red-500 text-white disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Remove Player"
                     )}

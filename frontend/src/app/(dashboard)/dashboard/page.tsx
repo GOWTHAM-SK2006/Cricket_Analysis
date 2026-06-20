@@ -70,10 +70,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4 pb-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Dashboard</h1>
-          <p className="text-zinc-400 text-[10px] sm:text-xs">Welcome to your team's performance hub.</p>
+          <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">
+            Welcome to your team's performance hub.
+          </p>
         </div>
       </div>
 

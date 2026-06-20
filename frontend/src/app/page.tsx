@@ -9,20 +9,20 @@ export default function Home() {
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-orange-500/30">
       {/* Navigation */}
       <nav className="fixed w-full z-50 top-0 border-b border-white/10 bg-black/50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center font-bold text-white shadow-md">
               C
             </div>
-            <span className="text-xl font-bold tracking-tight">CPI Analytics</span>
+            <span className="text-lg font-bold tracking-tight">CPI Analytics</span>
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors">
               Log in
             </Link>
             <Link 
               href="/signup" 
-              className="text-sm font-medium bg-white text-black px-5 py-2.5 rounded-full hover:bg-zinc-200 transition-colors"
+              className="h-9 px-4 rounded-xl text-xs font-bold bg-white hover:bg-zinc-200 text-black inline-flex items-center justify-center transition-all cursor-pointer shadow-md"
             >
               Get Started
             </Link>
@@ -31,16 +31,16 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-32 pb-24 px-6 relative overflow-hidden">
+      <main className="pt-28 pb-20 px-6 relative overflow-hidden">
         {/* Abstract Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10 text-center mt-20">
+        <div className="max-w-7xl mx-auto relative z-10 text-center mt-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-sm font-medium mb-8"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold mb-6"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
@@ -53,7 +53,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-6xl md:text-8xl font-bold tracking-tighter mb-8"
+            className="text-4xl md:text-7xl font-bold tracking-tighter mb-6"
           >
             Cricket Performance
             <br />
@@ -66,7 +66,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto mb-12 font-light"
+            className="text-lg md:text-xl text-zinc-450 max-w-2xl mx-auto mb-10 font-normal leading-relaxed"
           >
             Are we training properly? If not, what must we do better? 
             The premier analytics platform designed for elite cricket coaches.
@@ -80,7 +80,7 @@ export default function Home() {
           >
             <Link 
               href="/signup" 
-              className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 rounded-full font-medium transition-all hover:scale-105"
+              className="h-12 px-6 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-500 text-white inline-flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-orange-600/15 cursor-pointer"
             >
               Start Coaching Now
               <ArrowRight className="w-4 h-4" />
@@ -90,9 +90,9 @@ export default function Home() {
       </main>
 
       {/* Features Section */}
-      <section className="py-24 px-6 border-t border-white/5 relative z-10">
+      <section className="py-20 px-6 border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             <FeatureCard 
               icon={<Activity />}
               title="Practice & Match Index"
@@ -117,12 +117,12 @@ export default function Home() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="p-8 rounded-3xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group">
-      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+    <div className="p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-200 group shadow-md">
+      <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-3">{title}</h3>
-      <p className="text-zinc-400 leading-relaxed">{description}</p>
+      <h3 className="text-base font-bold mb-2 text-white">{title}</h3>
+      <p className="text-zinc-400 text-xs leading-relaxed">{description}</p>
     </div>
   );
 }

@@ -394,32 +394,32 @@ export default function PracticePage() {
 
       {/* VIEW: PRACTICE HISTORY */}
       {view === "history" && (
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Practice (PPI)</h1>
-              <p className="text-zinc-400 text-xs sm:text-sm mt-0.5">Evaluate and monitor player performance indices.</p>
+              <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">Practice (PPI)</h1>
+              <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">Evaluate and monitor player performance indices.</p>
             </div>
             <button
               onClick={handleStartAddPractice}
-              className="bg-orange-600 hover:bg-orange-500 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition-all shadow-[0_0_15px_rgba(249,115,22,0.15)] flex items-center justify-center gap-1.5 self-start sm:self-auto"
+              className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
               Add Practice
             </button>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-5 backdrop-blur-md space-y-4">
-            <h2 className="text-base font-bold text-white">Practice History</h2>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-md space-y-4">
+            <h2 className="text-sm font-bold text-white uppercase tracking-wider text-zinc-400">Practice History</h2>
             
             {history.length === 0 ? (
               <div className="py-12 text-center space-y-3">
-                <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto text-zinc-500">
-                  <Calendar className="w-6 h-6" />
+                <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto text-zinc-500">
+                  <Calendar className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-white">No Sessions Conducted</h3>
-                  <p className="text-zinc-400 text-xs mt-0.5 max-w-xs mx-auto">
+                  <h3 className="text-sm font-semibold text-white">No Sessions Conducted</h3>
+                  <p className="text-zinc-450 text-xs mt-1 max-w-xs mx-auto">
                     Evaluate squad performance by launching a live practice session.
                   </p>
                 </div>
@@ -430,42 +430,42 @@ export default function PracticePage() {
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-white/10 text-zinc-500 text-[10px] font-semibold uppercase tracking-wider">
-                        <th className="py-3 px-3">Session Name</th>
-                        <th className="py-3 px-3">Session Date</th>
-                        <th className="py-3 px-3">Team Name</th>
-                        <th className="py-3 px-3">Players Assessed</th>
-                        <th className="py-3 px-3">Average PPI</th>
-                        <th className="py-3 px-3 text-right">Action</th>
+                      <tr className="border-b border-white/10 text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
+                        <th className="py-2.5 px-3">Session Name</th>
+                        <th className="py-2.5 px-3">Session Date</th>
+                        <th className="py-2.5 px-3">Team Name</th>
+                        <th className="py-2.5 px-3">Players Assessed</th>
+                        <th className="py-2.5 px-3">Average PPI</th>
+                        <th className="py-2.5 px-3 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 text-xs">
                       {history.map((session) => (
                         <tr key={session.id} className="hover:bg-white/[0.02] transition-colors">
-                          <td className="py-3 px-3 text-white font-bold">{session.name}</td>
-                          <td className="py-3 px-3 text-zinc-300">
+                          <td className="py-2.5 px-3 text-white font-bold">{session.name}</td>
+                          <td className="py-2.5 px-3 text-zinc-300">
                             {new Date(session.date).toLocaleDateString(undefined, {
                               year: "numeric",
                               month: "short",
                               day: "numeric",
                             })}
                           </td>
-                          <td className="py-3 px-3 text-zinc-400">
+                          <td className="py-2.5 px-3 text-zinc-400">
                             {session.team.name} <span className="text-[10px] text-zinc-500">({session.team.level})</span>
                           </td>
-                          <td className="py-3 px-3 text-zinc-300">{session.playersAssessed}</td>
-                          <td className="py-3 px-3">
+                          <td className="py-2.5 px-3 text-zinc-300">{session.playersAssessed}</td>
+                          <td className="py-2.5 px-3">
                             <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px] font-bold">
                               {session.averagePpi.toFixed(1)}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-right">
+                          <td className="py-2.5 px-3 text-right">
                             <button
                               onClick={() => handleViewDetails(session.id)}
-                              className="bg-white/5 hover:bg-white/10 text-white rounded-lg px-2.5 py-1 text-xs border border-white/10 transition-colors inline-flex items-center gap-1"
+                              className="h-8 px-3 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all inline-flex items-center gap-1 cursor-pointer"
                             >
                               Details
-                              <ChevronRight className="w-3.5 h-3.5" />
+                              <ChevronRight className="w-3 h-3" />
                             </button>
                           </td>
                         </tr>
@@ -475,7 +475,7 @@ export default function PracticePage() {
                 </div>
 
                 {/* Mobile View */}
-                <div className="block md:hidden space-y-2.5">
+                <div className="block md:hidden space-y-2">
                   {history.map((session) => (
                     <div 
                       key={session.id}
@@ -484,7 +484,7 @@ export default function PracticePage() {
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-bold text-white text-xs">{session.name}</h4>
-                          <p className="text-[9px] text-zinc-500 mt-0.5">
+                          <p className="text-[9px] text-zinc-550 mt-0.5">
                             {new Date(session.date).toLocaleDateString(undefined, {
                               month: "short",
                               day: "numeric",
@@ -492,7 +492,7 @@ export default function PracticePage() {
                             })}
                           </p>
                         </div>
-                        <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                        <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded text-[9px] font-bold">
                           {session.averagePpi.toFixed(1)} PPI
                         </span>
                       </div>
@@ -503,9 +503,9 @@ export default function PracticePage() {
                         </div>
                         <button
                           onClick={() => handleViewDetails(session.id)}
-                          className="bg-white/5 hover:bg-white/10 text-white rounded px-2 py-0.5 text-[10px] border border-white/10 transition-colors inline-flex items-center gap-0.5"
+                          className="h-7 px-2 rounded-lg text-[10px] font-semibold bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all inline-flex items-center gap-0.5 cursor-pointer"
                         >
-                          View Details
+                          Details
                           <ChevronRight className="w-3 h-3" />
                         </button>
                       </div>
@@ -521,42 +521,42 @@ export default function PracticePage() {
       {/* VIEW: SELECT TEAM */}
       {view === "select_team" && (
         <div className="space-y-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setView("history")}
-              className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-zinc-400 hover:text-white transition-colors"
+              className="p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Select Team</h1>
-              <p className="text-zinc-400 text-sm">Choose which team you are conducting the practice session for.</p>
+              <h1 className="text-xl font-bold text-white tracking-tight">Select Team</h1>
+              <p className="text-zinc-400 text-xs mt-0.5">Choose which team you are conducting the practice session for.</p>
             </div>
           </div>
 
           {teams.length === 0 ? (
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-16 text-center space-y-4">
-              <div className="w-16 h-16 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mx-auto text-zinc-500">
-                <Users className="w-8 h-8" />
+            <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center space-y-3">
+              <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto text-zinc-500">
+                <Users className="w-5 h-5" />
               </div>
-              <p className="text-zinc-400 max-w-sm mx-auto">
+              <p className="text-zinc-400 text-xs max-w-sm mx-auto">
                 No teams found. Please create or manage your teams before launching practice.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {teams.map((team) => (
                 <div
                   key={team.id}
                   onClick={() => handleSelectTeam(team)}
-                  className="bg-white/5 border border-white/10 hover:border-orange-500/40 p-6 rounded-3xl cursor-pointer hover:bg-white/[0.08] transition-all group relative overflow-hidden"
+                  className="bg-white/5 border border-white/10 hover:border-orange-500/40 p-4 rounded-xl cursor-pointer hover:bg-white/[0.08] transition-all group relative overflow-hidden shadow-md"
                 >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform" />
-                  <h3 className="text-lg font-bold text-white mb-1">{team.name}</h3>
-                  <p className="text-zinc-400 text-sm mb-4">{team.level}</p>
-                  <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                    <span className="text-xs text-zinc-500">CPI Score</span>
-                    <span className="text-orange-500 font-bold">{team.teamCpiScore ? team.teamCpiScore.toFixed(1) : "N/A"}</span>
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform" />
+                  <h3 className="text-base font-bold text-white mb-0.5">{team.name}</h3>
+                  <p className="text-zinc-405 text-xs mb-3">{team.level}</p>
+                  <div className="flex items-center justify-between border-t border-white/10 pt-2.5">
+                    <span className="text-[10px] text-zinc-550 uppercase tracking-wider font-semibold">CPI Score</span>
+                    <span className="text-orange-500 font-extrabold text-sm">{team.teamCpiScore ? team.teamCpiScore.toFixed(1) : "N/A"}</span>
                   </div>
                 </div>
               ))}
@@ -568,105 +568,105 @@ export default function PracticePage() {
       {/* VIEW: SESSION DRAFT / SETUP */}
       {view === "session_draft" && selectedTeam && (
         <div className="space-y-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setView("select_team")}
-              className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-zinc-400 hover:text-white transition-colors"
+              className="p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Setup Practice Session</h1>
-              <p className="text-zinc-400 text-sm">Review players and configure the date.</p>
+              <h1 className="text-xl font-bold text-white tracking-tight">Setup Practice Session</h1>
+              <p className="text-zinc-400 text-xs mt-0.5">Review players and configure the date.</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Config Card */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl h-fit space-y-6">
-              <div className="space-y-4">
-                <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Session configuration</div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-zinc-300">Session Name</label>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-md h-fit space-y-4 shadow-md">
+              <div className="space-y-3">
+                <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Session configuration</div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Session Name</label>
                   <input
                     type="text"
                     placeholder="Enter session name"
                     value={sessionName}
                     onChange={(e) => setSessionName(e.target.value)}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-zinc-300">Session Date</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">Session Date</label>
                   <input
                     type="date"
                     value={sessionDate}
                     onChange={(e) => setSessionDate(e.target.value)}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 [color-scheme:dark] transition-colors"
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 [color-scheme:dark] transition-colors"
                   />
                 </div>
-                <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
-                  <span className="text-xs text-zinc-500 block mb-1">Target Team</span>
-                  <span className="font-bold text-white text-lg block">{selectedTeam.name}</span>
+                <div className="p-3 bg-white/5 border border-white/10 rounded-xl">
+                  <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider block mb-0.5">Target Team</span>
+                  <span className="font-bold text-white text-base block">{selectedTeam.name}</span>
                   <span className="text-xs text-zinc-400">{selectedTeam.level}</span>
                 </div>
               </div>
 
               <button
                 onClick={handleStartLivePractice}
-                className="w-full bg-orange-600 hover:bg-orange-500 text-white rounded-xl py-4 font-semibold transition-all shadow-[0_0_20px_rgba(249,115,22,0.3)] flex items-center justify-center gap-2 text-base"
+                className="h-10 w-full rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
               >
-                <Play className="w-5 h-5 fill-current" />
+                <Play className="w-4 h-4 fill-current" />
                 Start Live Practice
               </button>
             </div>
 
             {/* Right Roster Card */}
-            <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-xl space-y-6">
-              <div className="flex items-center justify-between">
+            <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-md space-y-4 shadow-md">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3">
                 <div>
-                  <h3 className="text-lg font-bold text-white">Team Roster</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">Team Roster</h3>
                   <p className="text-zinc-400 text-xs mt-0.5">Manage player pool before starting the session.</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={handleOpenAddPlayer}
-                    className="bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs px-3.5 py-2 rounded-xl transition-all font-medium flex items-center gap-1.5"
+                    className="h-8 px-3 rounded-lg text-xs font-semibold transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white"
                   >
-                    <Plus className="w-4 h-4" />
-                    Add Existing Player
+                    <Plus className="w-3.5 h-3.5" />
+                    Add Player
                   </button>
-                  <span className="text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-zinc-400 font-semibold">
+                  <span className="text-[10px] bg-white/5 border border-white/10 px-2 py-1 rounded-full text-zinc-400 font-bold uppercase tracking-wider shrink-0">
                     {players.length} Players
                   </span>
                 </div>
               </div>
 
               {players.length === 0 ? (
-                <div className="py-16 text-center">
-                  <p className="text-zinc-500 text-sm">
-                    This team doesn't have any players assigned. Click "Add Existing Player" to assign players to this team.
+                <div className="py-12 text-center">
+                  <p className="text-zinc-500 text-xs">
+                    This team doesn't have any players assigned. Click "Add Player" to assign players.
                   </p>
                 </div>
               ) : (
                 <div className="divide-y divide-white/5">
                   {players.map((player) => (
-                    <div key={player.id} className="py-4 flex items-center justify-between group">
+                    <div key={player.id} className="py-2.5 flex items-center justify-between group">
                       <div>
-                        <div className="font-semibold text-white">{player.name}</div>
-                        <div className="text-xs text-zinc-500">{player.role}</div>
+                        <div className="font-semibold text-sm text-white">{player.name}</div>
+                        <div className="text-[10px] text-zinc-500">{player.role}</div>
                       </div>
-                      <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <span className="text-[10px] text-zinc-500 block uppercase">PPI Score</span>
-                          <span className="font-bold text-orange-400">{player.ppiScore ? player.ppiScore.toFixed(1) : "N/A"}</span>
+                          <span className="text-[8px] text-zinc-550 block uppercase font-bold tracking-wider">PPI Score</span>
+                          <span className="font-extrabold text-orange-400 text-xs">{player.ppiScore ? player.ppiScore.toFixed(1) : "N/A"}</span>
                         </div>
                         <button
                           onClick={() => handleRemovePlayerFromTeam(player.id)}
-                          className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                          className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all cursor-pointer"
                           title="Remove Player from Team"
                         >
-                          <Trash2 className="w-4.5 h-4.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -682,9 +682,9 @@ export default function PracticePage() {
       {view === "live_practice" && selectedTeam && (
         <div className="space-y-6">
           {/* Top Progress & Complete Button bar */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center justify-between text-sm">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-md flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-md">
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-zinc-400">
                   Live Session: <strong className="text-white">{selectedTeam.name}</strong>
                 </span>
@@ -692,7 +692,7 @@ export default function PracticePage() {
                   {countScoredPlayers()} of {players.length} players completed
                 </span>
               </div>
-              <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
+              <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                 <div 
                   className="bg-orange-500 h-full transition-all duration-300"
                   style={{ width: `${(countScoredPlayers() / players.length) * 100}%` }}
@@ -703,27 +703,27 @@ export default function PracticePage() {
             <button
               onClick={handleCompleteSession}
               disabled={saving || !isAllPlayersScored()}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-6 py-4 font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="h-10 px-4 rounded-xl text-sm font-bold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/10 shrink-0"
             >
               {saving ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Check className="w-5 h-5" />
-                  Complete Practice Session
+                  <Check className="w-4 h-4" />
+                  Complete Practice
                 </>
               )}
             </button>
           </div>
 
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-white px-2">Assess Players</h2>
-            <p className="text-zinc-400 text-xs px-2 -mt-2">Click on any player card to score and write assessments.</p>
+          <div className="space-y-3">
+            <h2 className="text-base font-bold text-white uppercase tracking-wider text-zinc-400 px-1">Assess Players</h2>
+            <p className="text-zinc-500 text-[10px] uppercase tracking-wider font-semibold px-1 -mt-1.5">Click on any player card to score and write assessments.</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {players.map((player) => {
                 const livePpi = getPlayerPpiInLiveSession(player.id);
                 const isCompleted = assessmentsState[player.id]?.isScored;
@@ -732,7 +732,7 @@ export default function PracticePage() {
                   <div
                     key={player.id}
                     onClick={() => handleOpenAssessPlayer(player)}
-                    className={`border p-6 rounded-3xl cursor-pointer transition-all hover:bg-white/[0.04] flex flex-col justify-between h-40 ${
+                    className={`border p-4 rounded-xl cursor-pointer transition-all hover:bg-white/[0.04] flex flex-col justify-between h-32 shadow-md ${
                       isCompleted 
                         ? "bg-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/50" 
                         : "bg-white/5 border-white/10 hover:border-orange-500/30"
@@ -740,27 +740,27 @@ export default function PracticePage() {
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-white text-lg truncate pr-2">{player.name}</h4>
+                        <h4 className="font-bold text-white text-sm truncate pr-2">{player.name}</h4>
                         {isCompleted ? (
-                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
-                            <Check className="w-3 h-3" />
-                            Completed
+                          <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md border border-emerald-500/20 flex items-center gap-0.5">
+                            <Check className="w-2.5 h-2.5" />
+                            Done
                           </span>
                         ) : (
-                          <span className="text-[10px] font-bold text-zinc-500 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                          <span className="text-[9px] font-bold text-zinc-550 bg-white/5 px-1.5 py-0.5 rounded-md border border-white/10">
                             Pending
                           </span>
                         )}
                       </div>
-                      <p className="text-zinc-400 text-xs mt-1">{player.role}</p>
+                      <p className="text-zinc-400 text-[10px] mt-0.5">{player.role}</p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-white/5 pt-4">
-                      <span className="text-xs text-zinc-500">Live PPI</span>
+                    <div className="flex items-center justify-between border-t border-white/5 pt-2.5">
+                      <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Live PPI</span>
                       {isCompleted ? (
-                        <span className="text-emerald-400 font-extrabold text-lg">{livePpi}</span>
+                        <span className="text-emerald-400 font-extrabold text-base">{livePpi}</span>
                       ) : (
-                        <span className="text-zinc-500 text-xs italic">Not assessed</span>
+                        <span className="text-zinc-550 text-[10px] italic">Not assessed</span>
                       )}
                     </div>
                   </div>
@@ -774,101 +774,101 @@ export default function PracticePage() {
       {/* VIEW: SESSION DETAILS */}
       {view === "session_details" && selectedSessionDetails && (
         <div className="space-y-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setView("history")}
-              className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-zinc-400 hover:text-white transition-colors"
+              className="p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Practice Session Details</h1>
-              <p className="text-zinc-400 text-sm">Detailed overview of player assessments recorded on this date.</p>
+              <h1 className="text-xl font-bold text-white tracking-tight">Practice Session Details</h1>
+              <p className="text-zinc-400 text-xs mt-0.5">Detailed overview of player assessments recorded on this date.</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-4">
-              <span className="text-xs text-zinc-500 font-semibold uppercase tracking-wider block">Session Info</span>
-              <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 shadow-md">
+              <span className="text-[10px] text-zinc-550 font-bold uppercase tracking-wider block">Session Info</span>
+              <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <span className="text-xs text-zinc-400 block">Name</span>
-                  <span className="text-sm font-bold text-white">{selectedSessionDetails.session.name}</span>
+                  <span className="text-[10px] text-zinc-500 block uppercase">Name</span>
+                  <span className="font-bold text-white">{selectedSessionDetails.session.name}</span>
                 </div>
                 <div>
-                  <span className="text-xs text-zinc-400 block">Date</span>
-                  <span className="text-sm font-bold text-white">
+                  <span className="text-[10px] text-zinc-500 block uppercase">Date</span>
+                  <span className="font-bold text-white">
                     {new Date(selectedSessionDetails.session.date).toLocaleDateString(undefined, {
                       year: "numeric",
-                      month: "long",
+                      month: "short",
                       day: "numeric",
                     })}
                   </span>
                 </div>
                 <div>
-                  <span className="text-xs text-zinc-400 block">Team</span>
-                  <span className="text-sm font-bold text-white">{selectedSessionDetails.session.team.name}</span>
+                  <span className="text-[10px] text-zinc-500 block uppercase">Team</span>
+                  <span className="font-bold text-white">{selectedSessionDetails.session.team.name}</span>
                 </div>
                 <div>
-                  <span className="text-xs text-zinc-400 block">Level</span>
-                  <span className="text-sm font-semibold text-zinc-300">{selectedSessionDetails.session.team.level}</span>
+                  <span className="text-[10px] text-zinc-500 block uppercase">Level</span>
+                  <span className="font-semibold text-zinc-300">{selectedSessionDetails.session.team.level}</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-4">
-              <span className="text-xs text-zinc-500 font-semibold uppercase tracking-wider block">Stats</span>
-              <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 shadow-md">
+              <span className="text-[10px] text-zinc-550 font-bold uppercase tracking-wider block">Stats Overview</span>
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <span className="text-xs text-zinc-400 block">Assessed</span>
-                  <span className="text-2xl font-black text-white">{selectedSessionDetails.session.playersAssessed} Players</span>
+                  <span className="text-[10px] text-zinc-500 block uppercase">Assessed</span>
+                  <span className="text-lg font-black text-white">{selectedSessionDetails.session.playersAssessed} Players</span>
                 </div>
                 <div>
-                  <span className="text-xs text-zinc-400 block">Average PPI</span>
-                  <span className="text-2xl font-black text-orange-500">{selectedSessionDetails.session.averagePpi.toFixed(1)}</span>
+                  <span className="text-[10px] text-zinc-500 block uppercase">Average PPI</span>
+                  <span className="text-lg font-black text-orange-500">{selectedSessionDetails.session.averagePpi.toFixed(1)}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Details Table */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-4 md:p-8 backdrop-blur-xl">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-md shadow-md">
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-white/10 text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                    <th className="py-4 px-4">Player</th>
-                    <th className="py-4 px-2 text-center">TEC</th>
-                    <th className="py-4 px-2 text-center">INT</th>
-                    <th className="py-4 px-2 text-center">EXE</th>
-                    <th className="py-4 px-2 text-center">ADA</th>
-                    <th className="py-4 px-2 text-center">DIS</th>
-                    <th className="py-4 px-2 text-center">FOC</th>
-                    <th className="py-4 px-4 text-center">PPI</th>
-                    <th className="py-4 px-4">Notes</th>
+                  <tr className="border-b border-white/10 text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
+                    <th className="py-2.5 px-3">Player</th>
+                    <th className="py-2.5 px-2 text-center">TEC</th>
+                    <th className="py-2.5 px-2 text-center">INT</th>
+                    <th className="py-2.5 px-2 text-center">EXE</th>
+                    <th className="py-2.5 px-2 text-center">ADA</th>
+                    <th className="py-2.5 px-2 text-center">DIS</th>
+                    <th className="py-2.5 px-2 text-center">FOC</th>
+                    <th className="py-2.5 px-3 text-center">PPI</th>
+                    <th className="py-2.5 px-3">Notes</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 text-sm">
+                <tbody className="divide-y divide-white/5 text-xs">
                   {selectedSessionDetails.assessments.map((ass) => (
-                    <tr key={ass.id}>
-                      <td className="py-4 px-4 font-bold text-white">
+                    <tr key={ass.id} className="hover:bg-white/[0.01]">
+                      <td className="py-2.5 px-3 font-bold text-white">
                         {ass.player.name}
-                        <span className="text-xs font-normal text-zinc-500 block">{ass.player.role}</span>
+                        <span className="text-[10px] font-normal text-zinc-550 block">{ass.player.role}</span>
                       </td>
-                      <td className="py-4 px-2 text-center text-zinc-300">{ass.technique}</td>
-                      <td className="py-4 px-2 text-center text-zinc-300">{ass.intensity}</td>
-                      <td className="py-4 px-2 text-center text-zinc-300">{ass.execution}</td>
-                      <td className="py-4 px-2 text-center text-zinc-300">{ass.adaptability}</td>
-                      <td className="py-4 px-2 text-center text-zinc-300">{ass.discipline}</td>
-                      <td className="py-4 px-2 text-center text-zinc-300">{ass.focus}</td>
-                      <td className="py-4 px-4 text-center">
-                        <span className="text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/20 text-xs">
+                      <td className="py-2.5 px-2 text-center text-zinc-300">{ass.technique}</td>
+                      <td className="py-2.5 px-2 text-center text-zinc-300">{ass.intensity}</td>
+                      <td className="py-2.5 px-2 text-center text-zinc-300">{ass.execution}</td>
+                      <td className="py-2.5 px-2 text-center text-zinc-300">{ass.adaptability}</td>
+                      <td className="py-2.5 px-2 text-center text-zinc-300">{ass.discipline}</td>
+                      <td className="py-2.5 px-2 text-center text-zinc-300">{ass.focus}</td>
+                      <td className="py-2.5 px-3 text-center">
+                        <span className="text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/20 text-[10px]">
                           {ass.ppiScore.toFixed(1)}
                         </span>
                       </td>
-                      <td className="py-4 px-4 text-zinc-400 max-w-xs truncate" title={ass.notes}>
-                        {ass.notes || <span className="text-zinc-600">-</span>}
+                      <td className="py-2.5 px-3 text-zinc-400 max-w-xs truncate" title={ass.notes}>
+                        {ass.notes || <span className="text-zinc-650">-</span>}
                       </td>
                     </tr>
                   ))}
@@ -877,47 +877,47 @@ export default function PracticePage() {
             </div>
 
             {/* Mobile Card List View */}
-            <div className="block md:hidden space-y-4">
+            <div className="block md:hidden space-y-3">
               {selectedSessionDetails.assessments.map((ass) => (
-                <div key={ass.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
+                <div key={ass.id} className="bg-white/5 border border-white/10 rounded-xl p-3 space-y-2">
                   <div className="flex justify-between items-start border-b border-white/5 pb-2">
                     <div>
-                      <div className="font-bold text-white text-base">{ass.player.name}</div>
-                      <div className="text-xs text-zinc-500">{ass.player.role}</div>
+                      <div className="font-bold text-white text-sm">{ass.player.name}</div>
+                      <div className="text-[10px] text-zinc-500">{ass.player.role}</div>
                     </div>
-                    <span className="text-orange-400 font-bold bg-orange-500/10 px-2.5 py-1 rounded border border-orange-500/20 text-xs">
+                    <span className="text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/20 text-[10px]">
                       PPI: {ass.ppiScore.toFixed(1)}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="bg-white/5 p-1.5 rounded border border-white/5">
-                      <span className="text-[9px] text-zinc-500 block uppercase font-medium">TEC</span>
-                      <span className="font-semibold text-zinc-300">{ass.technique}</span>
+                  <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
+                    <div className="bg-white/5 p-1 rounded border border-white/5">
+                      <span className="text-[8px] text-zinc-500 block uppercase font-medium">TEC</span>
+                      <span className="font-semibold text-zinc-300 text-[10px]">{ass.technique}</span>
                     </div>
-                    <div className="bg-white/5 p-1.5 rounded border border-white/5">
-                      <span className="text-[9px] text-zinc-500 block uppercase font-medium">INT</span>
-                      <span className="font-semibold text-zinc-300">{ass.intensity}</span>
+                    <div className="bg-white/5 p-1 rounded border border-white/5">
+                      <span className="text-[8px] text-zinc-500 block uppercase font-medium">INT</span>
+                      <span className="font-semibold text-zinc-300 text-[10px]">{ass.intensity}</span>
                     </div>
-                    <div className="bg-white/5 p-1.5 rounded border border-white/5">
-                      <span className="text-[9px] text-zinc-500 block uppercase font-medium">EXE</span>
-                      <span className="font-semibold text-zinc-300">{ass.execution}</span>
+                    <div className="bg-white/5 p-1 rounded border border-white/5">
+                      <span className="text-[8px] text-zinc-500 block uppercase font-medium">EXE</span>
+                      <span className="font-semibold text-zinc-300 text-[10px]">{ass.execution}</span>
                     </div>
-                    <div className="bg-white/5 p-1.5 rounded border border-white/5">
-                      <span className="text-[9px] text-zinc-500 block uppercase font-medium">ADA</span>
-                      <span className="font-semibold text-zinc-300">{ass.adaptability}</span>
+                    <div className="bg-white/5 p-1 rounded border border-white/5">
+                      <span className="text-[8px] text-zinc-550 block uppercase font-medium">ADA</span>
+                      <span className="font-semibold text-zinc-300 text-[10px]">{ass.adaptability}</span>
                     </div>
-                    <div className="bg-white/5 p-1.5 rounded border border-white/5">
-                      <span className="text-[9px] text-zinc-500 block uppercase font-medium">DIS</span>
-                      <span className="font-semibold text-zinc-300">{ass.discipline}</span>
+                    <div className="bg-white/5 p-1 rounded border border-white/5">
+                      <span className="text-[8px] text-zinc-550 block uppercase font-medium">DIS</span>
+                      <span className="font-semibold text-zinc-300 text-[10px]">{ass.discipline}</span>
                     </div>
-                    <div className="bg-white/5 p-1.5 rounded border border-white/5">
-                      <span className="text-[9px] text-zinc-500 block uppercase font-medium">FOC</span>
-                      <span className="font-semibold text-zinc-300">{ass.focus}</span>
+                    <div className="bg-white/5 p-1 rounded border border-white/5">
+                      <span className="text-[8px] text-zinc-550 block uppercase font-medium">FOC</span>
+                      <span className="font-semibold text-zinc-300 text-[10px]">{ass.focus}</span>
                     </div>
                   </div>
                   {ass.notes && (
-                    <div className="text-xs text-zinc-400 pt-2 border-t border-white/5">
-                      <span className="text-zinc-500 font-semibold block mb-0.5">Notes:</span>
+                    <div className="text-[10px] text-zinc-400 pt-1.5 border-t border-white/5">
+                      <span className="text-zinc-550 font-bold uppercase tracking-wider block mb-0.5">Notes</span>
                       {ass.notes}
                     </div>
                   )}
@@ -931,34 +931,34 @@ export default function PracticePage() {
       {/* MODAL: ADD EXISTING PLAYER */}
       {isAddPlayerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-zinc-950 border border-white/10 rounded-3xl w-full max-w-lg p-6 space-y-6 shadow-2xl relative">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl w-full max-w-md p-5 space-y-4 shadow-2xl relative">
             <button
               onClick={() => setIsAddPlayerOpen(false)}
-              className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-4 p-1.5 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
             <div>
-              <h3 className="text-xl font-bold text-white">Add Existing Player</h3>
-              <p className="text-xs text-zinc-400 mt-1">Select a player from your organization roster to add to this team.</p>
+              <h3 className="text-lg font-bold text-white tracking-tight">Add Existing Player</h3>
+              <p className="text-xs text-zinc-400 mt-0.5">Select a player from your organization roster to add to this team.</p>
             </div>
 
-            <div className="max-h-[300px] overflow-y-auto divide-y divide-white/5 pr-2">
+            <div className="max-h-[260px] overflow-y-auto divide-y divide-white/5 pr-1">
               {getFilteredPoolPlayers().length === 0 ? (
-                <p className="text-zinc-500 text-sm text-center py-8">No other available players to add.</p>
+                <p className="text-zinc-550 text-xs text-center py-6">No other available players to add.</p>
               ) : (
                 getFilteredPoolPlayers().map(player => (
-                  <div key={player.id} className="py-3 flex items-center justify-between">
+                  <div key={player.id} className="py-2 flex items-center justify-between">
                     <div>
-                      <div className="font-semibold text-white text-sm">{player.name}</div>
+                      <div className="font-semibold text-white text-xs">{player.name}</div>
                       <div className="text-[10px] text-zinc-500">{player.role}</div>
                     </div>
                     <button
                       onClick={() => handleAddPlayerToTeam(player.id)}
-                      className="bg-orange-600 hover:bg-orange-500 text-white rounded-lg p-1.5 text-xs font-semibold transition-all"
+                      className="h-8 w-8 rounded-lg text-xs font-semibold bg-orange-600 hover:bg-orange-500 text-white transition-all flex items-center justify-center cursor-pointer"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ))
@@ -971,20 +971,20 @@ export default function PracticePage() {
       {/* MODAL: INDIVIDUAL PLAYER ASSESSMENT */}
       {isAssessModalOpen && assessingPlayer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-[#0f0f0f] border border-white/10 rounded-2xl w-full max-w-md p-4 sm:p-6 space-y-4 shadow-2xl relative my-4">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-xl w-full max-w-sm p-5 space-y-4 shadow-2xl relative my-4">
             <button
               onClick={() => {
                 setIsAssessModalOpen(false);
                 setAssessingPlayer(null);
               }}
-              className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-4 p-1.5 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
             <div className="border-b border-white/5 pb-2">
               <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider block">Assessment for</span>
-              <h3 className="text-lg font-black text-white">{assessingPlayer.name}</h3>
+              <h3 className="text-base font-black text-white">{assessingPlayer.name}</h3>
               <p className="text-zinc-400 text-[10px] mt-0.5">{assessingPlayer.role}</p>
             </div>
 
@@ -993,7 +993,7 @@ export default function PracticePage() {
               {METRICS.map((metric) => (
                 <div key={metric} className="space-y-1 bg-white/5 border border-white/5 p-2 rounded-lg">
                   <div className="flex justify-between items-center text-[10px]">
-                    <label className="font-bold text-zinc-350">{metric}</label>
+                    <label className="font-bold text-zinc-400">{metric}</label>
                     <span className="text-orange-400 font-black">
                       {tempScores[metric]}/10
                     </span>
@@ -1005,38 +1005,38 @@ export default function PracticePage() {
                     step="1"
                     value={tempScores[metric]}
                     onChange={(e) => setTempScores({ ...tempScores, [metric]: parseInt(e.target.value) })}
-                    className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-orange-500 my-1"
+                    className="w-full h-1 bg-zinc-805 rounded-lg appearance-none cursor-pointer accent-orange-500 my-1"
                   />
                 </div>
               ))}
             </div>
 
             {/* Notes */}
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-zinc-400 block">Coach Comments / Notes</label>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Coach Comments</label>
               <textarea
                 rows={2}
                 value={tempNotes}
                 onChange={(e) => setTempNotes(e.target.value)}
-                className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 transition-colors text-xs"
+                className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder:text-zinc-650 focus:outline-none focus:border-orange-500 transition-colors text-xs"
                 placeholder={`Observations on ${assessingPlayer.name}'s form...`}
               />
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-2.5 border-t border-white/5 pt-3">
+            <div className="flex items-center justify-end gap-2 border-t border-white/5 pt-3">
               <button
                 onClick={() => {
                   setIsAssessModalOpen(false);
                   setAssessingPlayer(null);
                 }}
-                className="bg-white/5 hover:bg-white/10 text-white rounded-lg px-4 py-2 text-xs font-semibold transition-colors"
+                className="h-8 px-3 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveAssessmentScores}
-                className="bg-orange-600 hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-xs font-bold transition-all shadow-[0_0_12px_rgba(249,115,22,0.25)] flex items-center gap-1"
+                className="h-8 px-3 rounded-lg text-xs font-bold transition-all bg-orange-650 hover:bg-orange-500 text-white flex items-center justify-center gap-1 cursor-pointer"
               >
                 <Check className="w-3.5 h-3.5" />
                 Save Score

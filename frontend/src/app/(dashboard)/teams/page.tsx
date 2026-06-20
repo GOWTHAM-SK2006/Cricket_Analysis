@@ -196,80 +196,79 @@ export default function TeamsPage() {
   const hasOrganization = organization && organization.id;
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Header section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="space-y-6 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl lg:text-[32px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
             Teams Management
           </h1>
-          <p className="text-zinc-400 mt-2 text-base">
+          <p className="text-zinc-400 text-xs lg:text-[15px] mt-1">
             Create, update, and manage your squads, training level categories, and performance index trackers.
           </p>
         </div>
         {hasOrganization && userRole !== "ADMIN" && (
           <button 
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition-all bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 cursor-pointer hover:scale-[1.03] active:scale-[0.98]"
+            className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             Create Team
           </button>
         )}
       </div>
 
       {!hasOrganization && !loading && (
-        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-200 px-4 py-3.5 rounded-xl flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
-          <p className="text-sm font-medium">Please create or join an organization before creating teams.</p>
+        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-200 p-3.5 rounded-xl flex items-center gap-2 text-xs font-semibold">
+          <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <p>Please create or join an organization before creating teams.</p>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-xl flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3.5 rounded-xl flex items-center gap-2 text-xs font-semibold">
+          <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+          <p>{error}</p>
         </div>
       )}
 
       {/* Stats row */}
       {!loading && teams.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden hover:bg-white/10 transition-all duration-200 shadow-lg">
             <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl" />
-            <p className="text-zinc-400 text-sm font-medium uppercase tracking-wider">Total Teams</p>
+            <p className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Total Teams</p>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-black text-white">{totalTeams}</span>
-              <span className="text-zinc-500 text-sm">Squads active</span>
+              <span className="text-2xl lg:text-3xl font-bold text-white">{totalTeams}</span>
+              <span className="text-zinc-500 text-xs">Squads active</span>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-zinc-400 text-xs">
-              <Shield className="w-4 h-4 text-orange-500" />
+            <div className="mt-3 flex items-center gap-1.5 text-zinc-500 text-[10px]">
+              <Shield className="w-3.5 h-3.5 text-orange-500" />
               <span>Full authorization control active</span>
             </div>
           </div>
           
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden hover:bg-white/10 transition-all duration-200 shadow-lg">
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl" />
-            <p className="text-zinc-400 text-sm font-medium uppercase tracking-wider">Average CPI Score</p>
+            <p className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Average CPI Score</p>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-black text-orange-500">{avgCpiScore.toFixed(1)}</span>
-              <span className="text-zinc-500 text-sm">CPI rating</span>
+              <span className="text-2xl lg:text-3xl font-bold text-orange-500">{avgCpiScore.toFixed(1)}</span>
+              <span className="text-zinc-500 text-xs">CPI rating</span>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-zinc-400 text-xs">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
+            <div className="mt-3 flex items-center gap-1.5 text-zinc-500 text-[10px]">
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
               <span>Calculated across all squads</span>
             </div>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden hover:bg-white/10 transition-all duration-200 shadow-lg">
             <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl" />
-            <p className="text-zinc-400 text-sm font-medium uppercase tracking-wider">Total Players</p>
+            <p className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Total Players</p>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-black text-white">{totalPlayers}</span>
-              <span className="text-zinc-500 text-sm">Players listed</span>
+              <span className="text-2xl lg:text-3xl font-bold text-white">{totalPlayers}</span>
+              <span className="text-zinc-500 text-xs">Players listed</span>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-zinc-400 text-xs">
-              <Users className="w-4 h-4 text-indigo-400" />
+            <div className="mt-3 flex items-center gap-1.5 text-zinc-500 text-[10px]">
+              <Users className="w-3.5 h-3.5 text-indigo-400" />
               <span>Roster synced dynamically</span>
             </div>
           </div>
@@ -445,40 +444,40 @@ export default function TeamsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-white/10 w-full max-w-md rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-white/10 w-full max-w-sm rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold tracking-tight text-white">Create New Team</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold tracking-tight text-white">Create New Team</h3>
                 <button 
                   onClick={() => setShowCreateModal(false)}
                   className="p-1 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleCreate} className="space-y-6">
+              <form onSubmit={handleCreate} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Team Name</label>
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Team Name</label>
                   <input 
                     type="text" 
                     required
                     value={newTeam.name}
                     onChange={e => setNewTeam({...newTeam, name: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-orange-500 outline-none transition-colors" 
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
                     placeholder="E.g. Under 19s A Team"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Level / Age Group</label>
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Level / Age Group</label>
                   <input 
                     type="text" 
                     required
                     value={newTeam.level}
                     onChange={e => setNewTeam({...newTeam, level: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-orange-500 outline-none transition-colors" 
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
                     placeholder="E.g. U19, Senior First XI"
                   />
                 </div>
@@ -487,17 +486,17 @@ export default function TeamsPage() {
                   <button 
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-all cursor-pointer text-center"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Save Team"
                     )}
@@ -526,40 +525,40 @@ export default function TeamsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-white/10 w-full max-w-md rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-white/10 w-full max-w-sm rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold tracking-tight text-white">Edit Team Settings</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold tracking-tight text-white">Edit Team Settings</h3>
                 <button 
                   onClick={() => setEditingTeam(null)}
                   className="p-1 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleEditSubmit} className="space-y-6">
+              <form onSubmit={handleEditSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Team Name</label>
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Team Name</label>
                   <input 
                     type="text" 
                     required
                     value={editFormData.name}
                     onChange={e => setEditFormData({...editFormData, name: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-orange-500 outline-none transition-colors" 
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
                     placeholder="E.g. Under 19s A Team"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Level / Age Group</label>
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Level / Age Group</label>
                   <input 
                     type="text" 
                     required
                     value={editFormData.level}
                     onChange={e => setEditFormData({...editFormData, level: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-orange-500 outline-none transition-colors" 
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors" 
                     placeholder="E.g. U19, Senior First XI"
                   />
                 </div>
@@ -568,17 +567,17 @@ export default function TeamsPage() {
                   <button 
                     type="button"
                     onClick={() => setEditingTeam(null)}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-all cursor-pointer text-center"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Save Changes"
                     )}
@@ -607,18 +606,18 @@ export default function TeamsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-red-500/20 w-full max-w-md rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-red-500/20 w-full max-w-sm rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-500 mb-6">
-                  <AlertTriangle className="w-7 h-7" />
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 mb-4">
+                  <AlertTriangle className="w-6 h-6" />
                 </div>
                 
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Delete Team?</h3>
-                <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+                <h3 className="text-xl font-bold tracking-tight text-white mb-2">Delete Team?</h3>
+                <p className="text-zinc-400 text-xs mb-4 leading-normal">
                   Are you sure you want to delete <span className="text-white font-semibold">"{deletingTeam.name}"</span>?
                   <br />
-                  <span className="text-orange-400 font-medium">This will dissociate all {getPlayerCount(deletingTeam.id)} players from this squad. The players will remain in the organization pool.</span> This action cannot be undone.
+                  <span className="text-orange-400 font-medium mt-1 block">This will dissociate all {getPlayerCount(deletingTeam.id)} players from this squad. The players will remain in the organization pool.</span> This action cannot be undone.
                 </p>
 
                 <div className="flex gap-3 w-full">
@@ -626,7 +625,7 @@ export default function TeamsPage() {
                     type="button"
                     onClick={() => setDeletingTeam(null)}
                     disabled={submitting}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
@@ -634,10 +633,10 @@ export default function TeamsPage() {
                     type="button"
                     onClick={handleDeleteSubmit}
                     disabled={submitting}
-                    className="flex-1 bg-red-600 hover:bg-red-500 text-white rounded-xl py-3 font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-red-650 hover:bg-red-500 text-white disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Delete Team"
                     )}
@@ -670,14 +669,14 @@ export default function TeamsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#0f0f0f] border border-white/10 w-full max-w-md rounded-3xl p-8 relative overflow-hidden z-10 shadow-2xl"
+              className="bg-[#0a0a0a] border border-white/10 w-full max-w-sm rounded-xl p-5 relative overflow-hidden z-10 shadow-2xl"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                  <UserPlus className="w-6 h-6 text-orange-500" />
-                  Add Existing Player
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+                  <UserPlus className="w-5 h-5 text-orange-500" />
+                  Add Player
                 </h3>
                 <button 
                   onClick={() => {
@@ -687,31 +686,31 @@ export default function TeamsPage() {
                   }}
                   className="p-1 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleAddExistingPlayer} className="space-y-6">
+              <form onSubmit={handleAddExistingPlayer} className="space-y-4">
                 <div>
-                  <p className="text-sm text-zinc-400 mb-4">
+                  <p className="text-xs text-zinc-400 mb-3 leading-normal">
                     Assign a player from the organization pool to <span className="text-white font-semibold">{activeTeamForAdd.name}</span>.
                   </p>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Select Player</label>
+                  <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1.5">Select Player</label>
                   <select 
                     required 
                     value={selectedPlayerId} 
                     onChange={e => setSelectedPlayerId(e.target.value)} 
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 outline-none transition-colors cursor-pointer"
+                    className="h-10 w-full bg-black/50 border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
                   >
-                    <option value="" className="bg-zinc-950 text-zinc-500">-- Choose a Player --</option>
+                    <option value="" className="bg-zinc-950 text-zinc-550">-- Choose a Player --</option>
                     {getAvailablePlayersForTeam(activeTeamForAdd.id).map(p => (
-                      <option key={p.id} value={p.id} className="bg-zinc-950 text-white">
+                      <option key={p.id} value={p.id} className="bg-zinc-950 text-white text-xs">
                         {p.name} ({p.role})
                       </option>
                     ))}
                   </select>
                   {getAvailablePlayersForTeam(activeTeamForAdd.id).length === 0 && (
-                    <p className="text-xs text-amber-500 mt-2">All players in the organization are already assigned to this team.</p>
+                    <p className="text-[10px] text-amber-500 mt-1.5">All players in the organization are already assigned to this team.</p>
                   )}
                 </div>
 
@@ -723,17 +722,17 @@ export default function TeamsPage() {
                       setActiveTeamForAdd(null);
                       setSelectedPlayerId("");
                     }}
-                    className="flex-1 bg-white/5 border border-white/10 text-white rounded-xl py-3 font-semibold hover:bg-white/10 transition-all cursor-pointer text-center"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-white/5 hover:bg-white/10 border border-white/10 text-white disabled:opacity-50 flex-1"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
                     disabled={submitting || !selectedPlayerId}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="h-10 px-4 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/10 disabled:opacity-50 flex-1"
                   >
                     {submitting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       "Add to Squad"
                     )}
