@@ -34,6 +34,13 @@ public class SchemaUpdateRunner implements CommandLineRunner {
                 } catch (Exception e) {
                     System.out.println("PostgreSQL team_id drop failed: " + e.getMessage());
                 }
+
+                try {
+                    jdbcTemplate.execute("ALTER TABLE practice_assessments DROP COLUMN IF EXISTS date CASCADE");
+                    System.out.println("PostgreSQL: Dropped duplicate date column from practice_assessments.");
+                } catch (Exception e) {
+                    System.out.println("PostgreSQL practice_assessments.date drop failed: " + e.getMessage());
+                }
             } else {
                 // H2/Other DBs
                 try {
@@ -48,6 +55,13 @@ public class SchemaUpdateRunner implements CommandLineRunner {
                     System.out.println("H2: Dropped team_id column.");
                 } catch (Exception e) {
                     System.out.println("H2 team_id drop failed: " + e.getMessage());
+                }
+
+                try {
+                    jdbcTemplate.execute("ALTER TABLE practice_assessments DROP COLUMN IF EXISTS date");
+                    System.out.println("H2: Dropped duplicate date column from practice_assessments.");
+                } catch (Exception e) {
+                    System.out.println("H2 practice_assessments.date drop failed: " + e.getMessage());
                 }
             }
         } catch (Exception e) {
