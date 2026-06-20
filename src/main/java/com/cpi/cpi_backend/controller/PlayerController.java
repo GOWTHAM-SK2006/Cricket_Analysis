@@ -117,6 +117,9 @@ public class PlayerController {
                     .orElseThrow(() -> new RuntimeException("Team not found"));
             checkAccess(team, currentCoach);
             player.setTeam(team);
+            if (team.getCoach() != null) {
+                player.setCreatorCoach(team.getCoach());
+            }
         }
                 
         return ResponseEntity.ok(playerRepository.save(player));
@@ -141,6 +144,9 @@ public class PlayerController {
                         .orElseThrow(() -> new RuntimeException("New team not found"));
                 checkAccess(newTeam, currentCoach);
                 player.setTeam(newTeam);
+                if (newTeam.getCoach() != null) {
+                    player.setCreatorCoach(newTeam.getCoach());
+                }
             }
         }
 

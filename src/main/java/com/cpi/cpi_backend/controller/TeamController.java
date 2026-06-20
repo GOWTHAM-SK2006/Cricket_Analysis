@@ -159,6 +159,9 @@ public class TeamController {
         }
 
         player.getTeams().add(team);
+        if (team.getCoach() != null) {
+            player.setCreatorCoach(team.getCoach());
+        }
         playerRepository.save(player);
 
         // Recalculate Team average CPI score
