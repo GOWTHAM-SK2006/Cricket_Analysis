@@ -37,9 +37,15 @@ public class PracticeController {
         Player player = playerRepository.findById(request.getPlayerId())
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
-        // Verify authorization
+        if (currentCoach == null || currentCoach.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Coach information is missing from authentication."
+            );
+        }
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.BAD_REQUEST, "Coach not found."
+                ));
         boolean authorized = false;
         if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
             authorized = player.getOrganization() != null && managedCoach.getOrganization() != null &&
@@ -57,6 +63,7 @@ public class PracticeController {
 
         PracticeAssessment assessment = PracticeAssessment.builder()
                 .player(player)
+                .coach(managedCoach)
                 .date(request.getDate())
                 .technique(request.getTechnique())
                 .intensity(request.getIntensity())
@@ -176,8 +183,15 @@ public class PracticeController {
         Team team = teamRepository.findById(request.getTeamId())
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
+        if (currentCoach == null || currentCoach.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Coach information is missing from authentication."
+            );
+        }
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.BAD_REQUEST, "Coach not found."
+                ));
 
         if (managedCoach.getRole() != com.cpi.cpi_backend.entity.Role.ADMIN) {
             if (!team.getCoach().getId().equals(managedCoach.getId())) {
@@ -209,6 +223,7 @@ public class PracticeController {
             PracticeAssessment assessment = PracticeAssessment.builder()
                     .player(player)
                     .session(session)
+                    .coach(managedCoach)
                     .date(request.getDate())
                     .technique(assDto.getTechnique())
                     .intensity(assDto.getIntensity())

@@ -32,6 +32,10 @@ public class PracticeAssessment {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private PracticeSession session;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "coach_id", nullable = false)
+    private Coach coach;
+
     @Column(name = "session_date", nullable = false)
     private LocalDate date;
 
