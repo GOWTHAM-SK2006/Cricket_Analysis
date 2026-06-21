@@ -102,7 +102,7 @@ export default function DashboardPage() {
     : null;
 
   return (
-    <div className="space-y-6 pb-12 px-1 relative">
+    <div className="space-y-5 pb-12 px-1 relative">
       
       {/* Top Search / Header Row */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4.5">
@@ -110,7 +110,7 @@ export default function DashboardPage() {
           <input
             type="text"
             placeholder="Search players, teams..."
-            className="h-11 w-full bg-[#0d0d0d]/80 border border-white/10 rounded-2xl pl-11 pr-4 text-xs text-white placeholder:text-zinc-550 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
+            className="h-11 w-full bg-[#0d0d0d]/80 border border-white/10 rounded-2xl pl-11 pr-4 text-xs text-white placeholder:text-zinc-555 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
           />
           <Search className="w-4 h-4 text-zinc-500 absolute left-4 top-3.5" />
         </div>
@@ -140,9 +140,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Hero Header & Insights Card Panel */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pt-2">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pt-1">
         {/* Left side: Welcome text */}
-        <div className="space-y-3 flex-1">
+        <div className="space-y-2 flex-1">
           <div className="flex items-center">
             <h1 className="text-3xl lg:text-[40px] font-black tracking-tight text-white flex items-center gap-1.5">
               Dashboard
@@ -153,19 +153,19 @@ export default function DashboardPage() {
             </svg>
           </div>
           
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <p className="text-zinc-100 text-base font-extrabold">Welcome back, {coachName}! 👋</p>
             <p className="text-zinc-450 text-xs sm:text-sm font-semibold leading-relaxed">
-              Here's what's happening with your teams today. Track metrics, manage practice sessions, and audit match assessments.
+              Here's what's happening today. Track metrics, manage practice, and audit matches.
             </p>
           </div>
         </div>
 
         {/* Right side: Insights Card Panel matching surrounding styling */}
-        <div className="w-full lg:max-w-md bg-gradient-to-br from-white/[0.03] to-[#0c0c0c]/40 border border-white/10 rounded-2xl p-4.5 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[110px] hover:border-orange-500/10 transition-all duration-300">
+        <div className="w-full lg:max-w-md bg-gradient-to-br from-white/[0.03] to-[#0c0c0c]/40 border border-white/10 rounded-2xl p-4 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[100px] hover:border-orange-500/10 transition-all duration-300">
           <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
           
-          <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-2.5 mb-2.5">
+          <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-2 mb-2">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
                 <Star className="w-3 h-3 text-orange-500 fill-current" />
@@ -206,8 +206,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stat Cards - Row of 4 with bottom glowing line charts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 z-10 relative">
+      {/* Stat Cards - 2 Columns on Mobile, 4 Columns on Desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 z-10 relative">
         {/* TOTAL TEAMS */}
         <StatCard
           href="/teams"
@@ -313,55 +313,55 @@ export default function DashboardPage() {
         </StatCard>
       </div>
 
-      {/* Intermediate metrics row: Averages & Glowing Circular Progress Rings */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 z-10 relative">
+      {/* Intermediate metrics row - 2 Columns on Mobile, 4 Columns on Desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 z-10 relative">
         
         {/* AVERAGE PPI */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-orange-500/20 transition-all duration-300">
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Average PPI</span>
-            <span className="text-2xl font-black text-white">{data.avgPpi.toFixed(1)}</span>
-            <span className="text-[10px] text-zinc-455 block font-semibold">{data.avgPpi > 0 ? `${data.avgPpi.toFixed(1)} avg` : "No data"}</span>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-5 flex items-center justify-between backdrop-blur-md hover:border-orange-500/20 transition-all duration-300">
+          <div className="space-y-0.5 sm:space-y-1 min-w-0">
+            <span className="text-[9px] sm:text-[10px] text-zinc-555 uppercase font-black tracking-wider block truncate">Average PPI</span>
+            <span className="text-xl sm:text-2xl font-black text-white">{data.avgPpi.toFixed(1)}</span>
+            <span className="text-[8px] sm:text-[10px] text-zinc-455 block font-semibold truncate">{data.avgPpi > 0 ? `${data.avgPpi.toFixed(1)} avg` : "No data"}</span>
           </div>
           <ProgressRing value={data.avgPpi} colorClass="stroke-orange-500" trailColorClass="stroke-white/5">
-            <Activity className="w-[18px] h-[18px] text-orange-500" />
+            <Activity className="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px] text-orange-500" />
           </ProgressRing>
         </div>
 
         {/* AVERAGE MPI */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300">
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Average MPI</span>
-            <span className="text-2xl font-black text-white">{data.avgMpi.toFixed(1)}</span>
-            <span className="text-[10px] text-zinc-455 block font-semibold">{data.avgMpi > 0 ? `${data.avgMpi.toFixed(1)} avg` : "No data"}</span>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-5 flex items-center justify-between backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300">
+          <div className="space-y-0.5 sm:space-y-1 min-w-0">
+            <span className="text-[9px] sm:text-[10px] text-zinc-555 uppercase font-black tracking-wider block truncate">Average MPI</span>
+            <span className="text-xl sm:text-2xl font-black text-white">{data.avgMpi.toFixed(1)}</span>
+            <span className="text-[8px] sm:text-[10px] text-zinc-455 block font-semibold truncate">{data.avgMpi > 0 ? `${data.avgMpi.toFixed(1)} avg` : "No data"}</span>
           </div>
           <ProgressRing value={data.avgMpi} colorClass="stroke-emerald-500" trailColorClass="stroke-white/5">
-            <TrendingUp className="w-[18px] h-[18px] text-emerald-500" />
+            <TrendingUp className="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px] text-emerald-500" />
           </ProgressRing>
         </div>
 
         {/* AVERAGE CPI */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-blue-500/20 transition-all duration-300">
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Average CPI</span>
-            <span className="text-2xl font-black text-white">{data.avgCpi.toFixed(1)}</span>
-            <span className="text-[10px] text-zinc-455 block font-semibold">Combined index</span>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-5 flex items-center justify-between backdrop-blur-md hover:border-blue-500/20 transition-all duration-300">
+          <div className="space-y-0.5 sm:space-y-1 min-w-0">
+            <span className="text-[9px] sm:text-[10px] text-zinc-555 uppercase font-black tracking-wider block truncate">Average CPI</span>
+            <span className="text-xl sm:text-2xl font-black text-white">{data.avgCpi.toFixed(1)}</span>
+            <span className="text-[8px] sm:text-[10px] text-zinc-455 block font-semibold truncate">Combined index</span>
           </div>
           <ProgressRing value={data.avgCpi} colorClass="stroke-blue-500" trailColorClass="stroke-white/5">
-            <Calendar className="w-[18px] h-[18px] text-blue-500" />
+            <Calendar className="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px] text-blue-500" />
           </ProgressRing>
         </div>
 
         {/* PERFORMANCE STATUS */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-amber-500/20 transition-all duration-300">
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Performance Status</span>
-            <span className="text-xl font-black text-white">On Track</span>
-            <span className="text-[10px] text-zinc-455 block font-semibold">Keep pushing hard!</span>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-5 flex items-center justify-between backdrop-blur-md hover:border-amber-500/20 transition-all duration-300">
+          <div className="space-y-0.5 sm:space-y-1 min-w-0">
+            <span className="text-[9px] sm:text-[10px] text-zinc-555 uppercase font-black tracking-wider block truncate">Performance Status</span>
+            <span className="text-lg sm:text-xl font-black text-white truncate block">On Track</span>
+            <span className="text-[8px] sm:text-[10px] text-zinc-455 block font-semibold truncate">Keep pushing!</span>
           </div>
           <ProgressRing value={8.5} max={10} colorClass="stroke-amber-500" trailColorClass="stroke-white/5">
-            <div className="w-8 h-8 bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20">
-              <Star className="w-4 h-4 text-amber-500 fill-current" />
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20">
+              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 fill-current" />
             </div>
           </ProgressRing>
         </div>
@@ -374,7 +374,7 @@ export default function DashboardPage() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`flex-1 py-2 rounded-lg text-center transition-all uppercase tracking-wider text-[10px] ${
-              activeTab === tab ? "bg-orange-650 text-white shadow font-black" : "text-zinc-400 hover:text-zinc-200"
+              activeTab === tab ? "bg-orange-655 text-white shadow font-black" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             {tab}
@@ -570,7 +570,7 @@ export default function DashboardPage() {
                 
                 <div className="space-y-1.5 max-w-xs mx-auto">
                   <h4 className="text-zinc-350 text-xs font-bold uppercase tracking-wider">No matches logged yet</h4>
-                  <p className="text-zinc-550 text-[11px] font-semibold leading-relaxed">
+                  <p className="text-zinc-555 text-[11px] font-semibold leading-relaxed">
                     Create a match to start tracking MPI scores and updates.
                   </p>
                 </div>
@@ -637,31 +637,31 @@ export default function DashboardPage() {
 }
 
 // Progress Ring Helper Component with Glowing Blurred Underlays
-function ProgressRing({ value, max = 10, colorClass, trailColorClass, size = 52, strokeWidth = 5.5, children }: {
+function ProgressRing({ value, max = 10, colorClass, trailColorClass, children }: {
   value: number;
   max?: number;
   colorClass: string;
   trailColorClass: string;
-  size?: number;
-  strokeWidth?: number;
   children?: React.ReactNode;
 }) {
+  const size = 52;
+  const strokeWidth = 5.5;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const percentage = max > 0 ? (value / max) * 100 : 0;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90 overflow-visible">
+    <div className="relative flex items-center justify-center shrink-0 w-11 h-11 sm:w-13 sm:h-13">
+      <svg viewBox="0 0 52 52" className="-rotate-90 overflow-visible w-full h-full">
         {/* Background track */}
         <circle
           className={trailColorClass}
           strokeWidth={strokeWidth}
           fill="transparent"
           r={radius}
-          cx={size / 2}
-          cy={size / 2}
+          cx={26}
+          cy={26}
         />
         {/* Glowing blurry drop-shadow underlay circle */}
         <circle
@@ -673,8 +673,8 @@ function ProgressRing({ value, max = 10, colorClass, trailColorClass, size = 52,
           strokeLinecap="round"
           fill="transparent"
           r={radius}
-          cx={size / 2}
-          cy={size / 2}
+          cx={26}
+          cy={26}
         />
         {/* Main sharp progress circle */}
         <circle
@@ -685,8 +685,8 @@ function ProgressRing({ value, max = 10, colorClass, trailColorClass, size = 52,
           strokeLinecap="round"
           fill="transparent"
           r={radius}
-          cx={size / 2}
-          cy={size / 2}
+          cx={26}
+          cy={26}
         />
       </svg>
       {children && <div className="absolute inset-0 flex items-center justify-center">{children}</div>}
@@ -713,20 +713,20 @@ function StatCard({ href, title, value, trend, icon: Icon, iconColor, gradient, 
         whileHover={{ y: -3, scale: 1.015 }}
         whileTap={{ scale: 0.985 }}
         className={clsx(
-          "bg-gradient-to-br border border-white/10 rounded-2xl p-5 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[115px] transition-all duration-300 cursor-pointer shadow-md",
+          "bg-gradient-to-br border border-white/10 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[90px] sm:min-h-[115px] transition-all duration-300 cursor-pointer shadow-md",
           gradient
         )}
       >
         <div className="flex items-center justify-between relative z-10">
-          <span className="text-[10px] text-zinc-455 uppercase font-black tracking-wider block">{title}</span>
-          <div className={clsx("w-7 h-7 rounded-lg flex items-center justify-center border shrink-0", iconColor)}>
-            <Icon className="w-4 h-4" />
+          <span className="text-[9px] sm:text-[10px] text-zinc-455 uppercase font-black tracking-wider block truncate">{title}</span>
+          <div className={clsx("w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center border shrink-0", iconColor)}>
+            <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
           </div>
         </div>
 
-        <div className="mt-3 relative z-10 flex items-baseline justify-between">
-          <span className="text-3xl font-black text-white tracking-tight">{value}</span>
-          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{trend}</span>
+        <div className="mt-2.5 sm:mt-3 relative z-10 flex items-baseline justify-between">
+          <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">{value}</span>
+          <span className="text-[8px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider truncate ml-1">{trend}</span>
         </div>
 
         {/* Dynamic Glowing line path */}
