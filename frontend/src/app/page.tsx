@@ -7,9 +7,9 @@ import { ArrowRight, BarChart3, Activity, Shield } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-orange-500/30">
+    <div className="min-h-screen bg-black text-white selection:bg-orange-500/30">
       {/* Navigation */}
-      <nav className="fixed w-full z-50 top-0 border-b border-white/10 bg-black/50 backdrop-blur-md">
+      <nav className="fixed w-full z-50 top-0 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="relative w-8 h-9 flex-shrink-0">
@@ -21,7 +21,7 @@ export default function Home() {
                 priority
               />
             </div>
-            <span className="text-lg font-bold tracking-tight">CPI Analytics</span>
+            <span className="text-lg font-bold tracking-tight text-white">CPI Analytics</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors">
@@ -29,7 +29,7 @@ export default function Home() {
             </Link>
             <Link 
               href="/signup" 
-              className="h-9 px-4 rounded-xl text-xs font-bold bg-white hover:bg-zinc-200 text-black inline-flex items-center justify-center transition-all cursor-pointer shadow-md"
+              className="h-9 px-4 rounded-xl text-xs font-bold bg-white hover:opacity-90 text-black inline-flex items-center justify-center transition-all cursor-pointer shadow-md"
             >
               Get Started
             </Link>
@@ -60,11 +60,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-7xl font-bold tracking-tighter mb-6"
+            className="text-4xl md:text-7xl font-bold tracking-tighter mb-6 text-white"
           >
             Cricket Performance
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-650">
               Intelligence
             </span>
           </motion.h1>
@@ -73,7 +73,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg md:text-xl text-zinc-450 max-w-2xl mx-auto mb-10 font-normal leading-relaxed"
+            className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 font-normal leading-relaxed"
           >
             Are we training properly? If not, what must we do better? 
             The premier analytics platform designed for elite cricket coaches.
@@ -87,17 +87,17 @@ export default function Home() {
           >
             <Link 
               href="/signup" 
-              className="h-12 px-6 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-500 text-white inline-flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-orange-600/15 cursor-pointer"
+              className="h-12 px-6 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-500 text-zinc-50 inline-flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-orange-600/15 cursor-pointer"
             >
               Start Coaching Now
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-zinc-50" />
             </Link>
           </motion.div>
         </div>
       </main>
 
       {/* Features Section */}
-      <section className="py-20 px-6 border-t border-white/5 relative z-10">
+      <section className="py-20 px-6 border-t border-zinc-900 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-6">
             <FeatureCard 
@@ -124,7 +124,7 @@ export default function Home() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-200 group shadow-md">
+    <div className="p-6 rounded-xl border border-zinc-800 bg-zinc-950 hover:bg-zinc-900 transition-all duration-200 group shadow-md">
       <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
         {icon}
       </div>
