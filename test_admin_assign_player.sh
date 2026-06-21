@@ -70,11 +70,6 @@ COACH_B_PROFILE=$(curl -s -X GET http://localhost:8080/api/profile \
 COACH_B_ID=$(echo $COACH_B_PROFILE | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
 echo "Coach B ID: $COACH_B_ID"
 
-# Approve Coach B so they are active (Admin action)
-echo -e "\n=== Approve Coach B ==="
-curl -s -X POST "http://localhost:8080/api/organization/coaches/$COACH_B_ID/approve" \
-  -H "Authorization: Bearer $ADMIN_TOKEN"
-
 # Step 3: Admin creates player "Kohli" (no team)
 echo -e "\n=== 3. Admin creates player Kohli ==="
 PLAYER_RES=$(curl -s -X POST http://localhost:8080/api/players \
