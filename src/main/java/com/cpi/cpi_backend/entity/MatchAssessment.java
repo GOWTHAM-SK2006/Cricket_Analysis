@@ -22,19 +22,25 @@ public class MatchAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "organization", "creatorCoach", "teams", "team"})
     private Player player;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private MatchSession session;
 
     @Column(nullable = false)
     private LocalDate date;
 
-    private Integer shotSelection;
-    private Integer temperament;
-    private Integer runningBetweenWickets;
-    private Integer bowlingAccuracy;
-    private Integer fieldingEffort;
+    private Integer technicalExecution;
+    private Integer decisionMaking;
     private Integer gameAwareness;
+    private Integer pressureHandling;
+    private Integer teamContribution;
+    private Integer matchImpact;
 
     private Double mpiScore;
 

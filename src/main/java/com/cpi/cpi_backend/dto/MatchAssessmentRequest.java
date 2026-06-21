@@ -14,11 +14,11 @@ import java.time.LocalDate;
 public class MatchAssessmentRequest {
     private Long playerId;
     private LocalDate date;
-    private Integer shotSelection;
-    private Integer temperament;
-    private Integer runningBetweenWickets;
-    private Integer bowlingAccuracy;
-    private Integer fieldingEffort;
+    private Integer technicalExecution;
+    private Integer decisionMaking;
     private Integer gameAwareness;
+    private Integer pressureHandling;
+    private Integer teamContribution;
+    private Integer matchImpact;
     private String notes;
 }
