@@ -115,7 +115,10 @@ public class PracticeController {
             authorized = player.getOrganization() != null && managedCoach.getOrganization() != null &&
                     player.getOrganization().getId().equals(managedCoach.getOrganization().getId());
         } else {
-            authorized = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
+            authorized = (player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId())) ||
+                    (player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName()) &&
+                     player.getOrganization() != null && managedCoach.getOrganization() != null &&
+                     player.getOrganization().getId().equals(managedCoach.getOrganization().getId()));
         }
         if (!authorized) {
             throw new RuntimeException("Unauthorized");

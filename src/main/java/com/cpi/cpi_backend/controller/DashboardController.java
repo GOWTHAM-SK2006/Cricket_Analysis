@@ -40,7 +40,7 @@ public class DashboardController {
         List<PracticeAssessment> practiceAssessments;
         List<MatchAssessment> matchAssessments;
 
-        if (managedCoach.getRole() == Role.ADMIN) {
+        if (managedCoach.getRole() == Role.ADMIN || managedCoach.getOrganization() != null) {
             Long orgId = managedCoach.getOrganization() != null ? managedCoach.getOrganization().getId() : null;
             if (orgId != null) {
                 teams = teamRepository.findByOrganizationId(orgId);
@@ -100,39 +100,70 @@ public class DashboardController {
         // 4. Trend Chart Data (Format: Jun 19)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM dd");
 
-        List<DashboardStatsResponse.TrendDto> practiceTrend = practiceAssessments.stream()
-                .sorted(Comparator.comparing(PracticeAssessment::getDate))
-                .map(pa -> DashboardStatsResponse.TrendDto.builder()
-                        .label(pa.getDate().format(df))
-                        .value(pa.getPpiScore())
-                        .build())
-                .collect(Collectors.toList());
-
-        List<DashboardStatsResponse.TrendDto> matchTrend = matchAssessments.stream()
-                .sorted(Comparator.comparing(MatchAssessment::getDate))
-                .map(ma -> DashboardStatsResponse.TrendDto.builder()
-                        .label(ma.getDate().format(df))
-                        .value(ma.getMpiScore())
-                        .build())
-                .collect(Collectors.toList());
-
-        // Combine trends for CPI Trend
-        List<DashboardStatsResponse.TrendDto> cpiTrend = new ArrayList<>();
-        int trendSize = Math.max(practiceTrend.size(), matchTrend.size());
-        for (int i = 0; i < trendSize; i++) {
-            String label = "";
-            double val = 0.0;
-            if (i < practiceTrend.size() && i < matchTrend.size()) {
-                label = practiceTrend.get(i).getLabel();
-                val = (practiceTrend.get(i).getValue() + matchTrend.get(i).getValue()) / 2.0;
-            } else if (i < practiceTrend.size()) {
-                label = practiceTrend.get(i).getLabel();
-                val = practiceTrend.get(i).getValue();
-            } else {
-                label = matchTrend.get(i).getLabel();
-                val = matchTrend.get(i).getValue();
+        // Find all unique dates from practice and match assessments, sorted chronologically
+        List<java.time.LocalDate> uniqueDates = new java.util.ArrayList<>();
+        for (PracticeAssessment pa : practiceAssessments) {
+            if (pa.getDate() != null && !uniqueDates.contains(pa.getDate())) {
+                uniqueDates.add(pa.getDate());
             }
-            cpiTrend.add(new DashboardStatsResponse.TrendDto(label, val));
+        }
+        for (MatchAssessment ma : matchAssessments) {
+            if (ma.getDate() != null && !uniqueDates.contains(ma.getDate())) {
+                uniqueDates.add(ma.getDate());
+            }
+        }
+        uniqueDates.sort(Comparator.naturalOrder());
+
+        List<DashboardStatsResponse.TrendDto> practiceTrend = new ArrayList<>();
+        List<DashboardStatsResponse.TrendDto> matchTrend = new ArrayList<>();
+        List<DashboardStatsResponse.TrendDto> cpiTrend = new ArrayList<>();
+
+        Double lastPpi = null;
+        Double lastMpi = null;
+
+        for (java.time.LocalDate date : uniqueDates) {
+            String label = date.format(df);
+
+            // Calculate average PPI on this date
+            List<PracticeAssessment> pasOnDate = practiceAssessments.stream()
+                    .filter(pa -> date.equals(pa.getDate()))
+                    .collect(Collectors.toList());
+            if (!pasOnDate.isEmpty()) {
+                double avgP = pasOnDate.stream().mapToDouble(PracticeAssessment::getPpiScore).average().orElse(0.0);
+                lastPpi = avgP;
+            }
+
+            // Calculate average MPI on this date
+            List<MatchAssessment> masOnDate = matchAssessments.stream()
+                    .filter(ma -> date.equals(ma.getDate()))
+                    .collect(Collectors.toList());
+            if (!masOnDate.isEmpty()) {
+                double avgM = masOnDate.stream().mapToDouble(MatchAssessment::getMpiScore).average().orElse(0.0);
+                lastMpi = avgM;
+            }
+
+            // Add PPI Trend
+            practiceTrend.add(new DashboardStatsResponse.TrendDto(label, lastPpi != null ? lastPpi : 0.0));
+            // Add MPI Trend
+            matchTrend.add(new DashboardStatsResponse.TrendDto(label, lastMpi != null ? lastMpi : 0.0));
+
+            // Calculate CPI Trend
+            double cpiVal = 0.0;
+            if (lastPpi != null && lastMpi != null) {
+                cpiVal = (lastPpi + lastMpi) / 2.0;
+            } else if (lastPpi != null) {
+                cpiVal = lastPpi;
+            } else if (lastMpi != null) {
+                cpiVal = lastMpi;
+            }
+            cpiTrend.add(new DashboardStatsResponse.TrendDto(label, cpiVal));
+        }
+
+        // Limit trends to last 10 points
+        if (practiceTrend.size() > 10) {
+            practiceTrend = practiceTrend.subList(practiceTrend.size() - 10, practiceTrend.size());
+            matchTrend = matchTrend.subList(matchTrend.size() - 10, matchTrend.size());
+            cpiTrend = cpiTrend.subList(cpiTrend.size() - 10, cpiTrend.size());
         }
 
         // 5. Activity Feed

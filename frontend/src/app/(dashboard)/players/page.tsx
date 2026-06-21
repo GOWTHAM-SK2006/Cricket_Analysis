@@ -7,6 +7,7 @@ import {
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck, 
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2 
 } from "lucide-react";
+import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 
 interface Player {
   id: number;
@@ -198,6 +199,62 @@ export default function PlayersPage() {
     } catch (err) {
       console.error("Failed to load assessments history", err);
     }
+  };
+
+  const getPlayerTrendData = () => {
+    // Unique dates from both histories
+    const uniqueDates = Array.from(
+      new Set([
+        ...practiceHistory.map((h) => h.date),
+        ...matchHistory.map((h) => h.date)
+      ])
+    ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    let lastPpi = 0;
+    let lastMpi = 0;
+
+    const trendPoints = uniqueDates.map((dateStr) => {
+      // Find practice sessions on this date
+      const pracOnDate = practiceHistory.filter((h) => h.date === dateStr);
+      if (pracOnDate.length > 0) {
+        lastPpi = pracOnDate.reduce((sum, h) => sum + h.ppiScore, 0) / pracOnDate.length;
+      }
+
+      // Find match sessions on this date
+      const matchOnDate = matchHistory.filter((h) => h.date === dateStr);
+      if (matchOnDate.length > 0) {
+        lastMpi = matchOnDate.reduce((sum, h) => sum + h.mpiScore, 0) / matchOnDate.length;
+      }
+
+      // Calculate CPI
+      let cpi = 0;
+      if (lastPpi > 0 && lastMpi > 0) {
+        cpi = (lastPpi + lastMpi) / 2;
+      } else if (lastPpi > 0) {
+        cpi = lastPpi;
+      } else if (lastMpi > 0) {
+        cpi = lastMpi;
+      }
+
+      // Format date for label (e.g. "Jun 19" from "2026-06-19")
+      let label = dateStr;
+      try {
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) {
+          label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        }
+      } catch (e) {}
+
+      return {
+        label,
+        ppi: lastPpi,
+        mpi: lastMpi,
+        cpi
+      };
+    });
+
+    // Limit to last 10 points
+    return trendPoints.slice(-10);
   };
 
   const handleSelectPlayer = (player: Player) => {
@@ -711,6 +768,9 @@ export default function PlayersPage() {
               </span>
             </div>
           </div>
+
+          {/* Individual Player Performance Trend */}
+          <PerformanceTrendChart data={getPlayerTrendData()} />
 
           {/* Navigation Action Buttons */}
           <div className="space-y-4 pt-4">

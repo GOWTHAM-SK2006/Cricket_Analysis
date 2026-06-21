@@ -51,7 +51,12 @@ public class PlayerController {
                 throw new RuntimeException("Unauthorized");
             }
         } else {
-            if (player.getCreatorCoach() == null || !player.getCreatorCoach().getId().equals(managedCoach.getId())) {
+            boolean isCreator = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
+            boolean isSelf = player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName()) &&
+                    player.getOrganization() != null && managedCoach.getOrganization() != null &&
+                    player.getOrganization().getId().equals(managedCoach.getOrganization().getId());
+            
+            if (!isCreator && !isSelf) {
                 throw new RuntimeException("Unauthorized");
             }
         }
@@ -66,11 +71,7 @@ public class PlayerController {
             return ResponseEntity.ok(List.of());
         }
 
-        if (managedCoach.getRole() == Role.ADMIN) {
-            return ResponseEntity.ok(playerRepository.findByOrganizationId(managedCoach.getOrganization().getId()));
-        } else {
-            return ResponseEntity.ok(playerRepository.findByCreatorCoachId(managedCoach.getId()));
-        }
+        return ResponseEntity.ok(playerRepository.findByOrganizationId(managedCoach.getOrganization().getId()));
     }
 
     @GetMapping("/team/{teamId}")
