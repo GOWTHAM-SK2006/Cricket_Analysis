@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { 
   Users, 
@@ -97,6 +96,11 @@ export default function DashboardPage() {
     activityFeed: []
   };
 
+  // Find peak squad
+  const peakSquad = data.teamPerformance && data.teamPerformance.length > 0 
+    ? [...data.teamPerformance].sort((a, b) => b.cpi - a.cpi)[0]
+    : null;
+
   return (
     <div className="space-y-6 pb-12 px-1 relative">
       
@@ -135,9 +139,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Hero Header & Batsman Illustration */}
-      <div className="relative flex flex-col md:flex-row md:items-start justify-between min-h-[140px] pt-2">
-        <div className="max-w-xl z-10 space-y-2">
+      {/* Hero Header & Insights Card Panel */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pt-2">
+        {/* Left side: Welcome text */}
+        <div className="space-y-3 flex-1">
           <div className="flex items-center">
             <h1 className="text-3xl lg:text-[40px] font-black tracking-tight text-white flex items-center gap-1.5">
               Dashboard
@@ -150,30 +155,54 @@ export default function DashboardPage() {
           
           <div className="space-y-1">
             <p className="text-zinc-100 text-base font-extrabold">Welcome back, {coachName}! 👋</p>
-            <p className="text-zinc-400 text-xs sm:text-sm font-medium">Here's what's happening with your teams today.</p>
+            <p className="text-zinc-450 text-xs sm:text-sm font-semibold leading-relaxed">
+              Here's what's happening with your teams today. Track metrics, manage practice sessions, and audit match assessments.
+            </p>
           </div>
         </div>
 
-        {/* Right side live season selector & Batsman background */}
-        <div className="z-10 mt-4 md:mt-2 flex items-center gap-3">
-          <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Live Season</span>
+        {/* Right side: Insights Card Panel matching surrounding styling */}
+        <div className="w-full lg:max-w-md bg-gradient-to-br from-white/[0.03] to-[#0c0c0c]/40 border border-white/10 rounded-2xl p-4.5 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[110px] hover:border-orange-500/10 transition-all duration-300">
+          <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
+          
+          <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-2.5 mb-2.5">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                <Star className="w-3 h-3 text-orange-500 fill-current" />
+              </div>
+              <span className="text-[10px] text-white uppercase font-black tracking-wider">Performance Insights</span>
+            </div>
+            
+            {/* Season Selector */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full shrink-0">
+                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[8px] text-emerald-400 font-bold uppercase tracking-wider">Live</span>
+              </div>
+              <select className="h-6 bg-black/60 border border-white/10 rounded-lg px-2 text-[9px] font-bold text-zinc-300 focus:outline-none focus:border-orange-500 cursor-pointer">
+                <option>2024 Season</option>
+              </select>
+            </div>
           </div>
-          <select className="h-9 bg-black/60 border border-white/10 rounded-xl px-3 text-xs text-zinc-300 focus:outline-none focus:border-orange-500 cursor-pointer">
-            <option>2024 Season</option>
-          </select>
-        </div>
 
-        {/* Dynamic absolute batsman illustration - Positioned precisely to match mockup without clashing */}
-        <div className="absolute -right-16 -top-24 w-[340px] h-[340px] pointer-events-none opacity-70 mix-blend-screen hidden sm:block z-0 select-none">
-          <Image 
-            src="/batsman-hero.png" 
-            alt="Cricket Batsman Illustration" 
-            fill 
-            className="object-contain mix-blend-screen" 
-            priority
-          />
+          {/* Insights Items */}
+          <div className="grid grid-cols-2 gap-3.5">
+            <div className="space-y-0.5">
+              <span className="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Peak Squad</span>
+              <p className="text-xs font-extrabold text-zinc-100 truncate">
+                {peakSquad 
+                  ? `${peakSquad.teamName} (${peakSquad.cpi.toFixed(1)} CPI)`
+                  : "N/A"}
+              </p>
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Session Audit</span>
+              <p className="text-xs font-extrabold text-emerald-400 truncate flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                All Teams On Track
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -290,9 +319,9 @@ export default function DashboardPage() {
         {/* AVERAGE PPI */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-orange-500/20 transition-all duration-300">
           <div className="space-y-1">
-            <span className="text-[10px] text-zinc-550 uppercase font-black tracking-wider block">Average PPI</span>
+            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Average PPI</span>
             <span className="text-2xl font-black text-white">{data.avgPpi.toFixed(1)}</span>
-            <span className="text-[10px] text-zinc-450 block font-semibold">{data.avgPpi > 0 ? `${data.avgPpi.toFixed(1)} avg` : "No data"}</span>
+            <span className="text-[10px] text-zinc-455 block font-semibold">{data.avgPpi > 0 ? `${data.avgPpi.toFixed(1)} avg` : "No data"}</span>
           </div>
           <ProgressRing value={data.avgPpi} colorClass="stroke-orange-500" trailColorClass="stroke-white/5">
             <Activity className="w-[18px] h-[18px] text-orange-500" />
@@ -302,9 +331,9 @@ export default function DashboardPage() {
         {/* AVERAGE MPI */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300">
           <div className="space-y-1">
-            <span className="text-[10px] text-zinc-550 uppercase font-black tracking-wider block">Average MPI</span>
+            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Average MPI</span>
             <span className="text-2xl font-black text-white">{data.avgMpi.toFixed(1)}</span>
-            <span className="text-[10px] text-zinc-450 block font-semibold">{data.avgMpi > 0 ? `${data.avgMpi.toFixed(1)} avg` : "No data"}</span>
+            <span className="text-[10px] text-zinc-455 block font-semibold">{data.avgMpi > 0 ? `${data.avgMpi.toFixed(1)} avg` : "No data"}</span>
           </div>
           <ProgressRing value={data.avgMpi} colorClass="stroke-emerald-500" trailColorClass="stroke-white/5">
             <TrendingUp className="w-[18px] h-[18px] text-emerald-500" />
@@ -314,9 +343,9 @@ export default function DashboardPage() {
         {/* AVERAGE CPI */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-blue-500/20 transition-all duration-300">
           <div className="space-y-1">
-            <span className="text-[10px] text-zinc-550 uppercase font-black tracking-wider block">Average CPI</span>
+            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Average CPI</span>
             <span className="text-2xl font-black text-white">{data.avgCpi.toFixed(1)}</span>
-            <span className="text-[10px] text-zinc-450 block font-semibold">Combined index</span>
+            <span className="text-[10px] text-zinc-455 block font-semibold">Combined index</span>
           </div>
           <ProgressRing value={data.avgCpi} colorClass="stroke-blue-500" trailColorClass="stroke-white/5">
             <Calendar className="w-[18px] h-[18px] text-blue-500" />
@@ -326,9 +355,9 @@ export default function DashboardPage() {
         {/* PERFORMANCE STATUS */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-amber-500/20 transition-all duration-300">
           <div className="space-y-1">
-            <span className="text-[10px] text-zinc-550 uppercase font-black tracking-wider block">Performance Status</span>
+            <span className="text-[10px] text-zinc-555 uppercase font-black tracking-wider block">Performance Status</span>
             <span className="text-xl font-black text-white">On Track</span>
-            <span className="text-[10px] text-zinc-450 block font-semibold">Keep pushing hard!</span>
+            <span className="text-[10px] text-zinc-455 block font-semibold">Keep pushing hard!</span>
           </div>
           <ProgressRing value={8.5} max={10} colorClass="stroke-amber-500" trailColorClass="stroke-white/5">
             <div className="w-8 h-8 bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20">
@@ -541,13 +570,13 @@ export default function DashboardPage() {
                 
                 <div className="space-y-1.5 max-w-xs mx-auto">
                   <h4 className="text-zinc-350 text-xs font-bold uppercase tracking-wider">No matches logged yet</h4>
-                  <p className="text-zinc-500 text-[11px] font-semibold leading-relaxed">
+                  <p className="text-zinc-550 text-[11px] font-semibold leading-relaxed">
                     Create a match to start tracking MPI scores and updates.
                   </p>
                 </div>
 
                 <Link href="/matches">
-                  <span className="h-9 px-4.5 rounded-xl text-[11px] font-bold transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer bg-emerald-600/10 border border-emerald-500/30 hover:bg-emerald-500/25 text-emerald-400 shadow-md">
+                  <span className="h-9 px-4.5 rounded-xl text-[11px] font-bold transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer bg-emerald-600/10 border border-emerald-500/30 hover:bg-emerald-550/25 text-emerald-400 shadow-md">
                     <Plus className="w-3.5 h-3.5" />
                     Create Match
                   </span>
@@ -587,7 +616,7 @@ export default function DashboardPage() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs sm:text-[13px] font-bold text-zinc-100 truncate">{activity.title}</p>
                   <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5 truncate">{activity.description}</p>
-                  <p className="text-[9px] text-zinc-550 mt-1 font-semibold">
+                  <p className="text-[9px] text-zinc-555 mt-1 font-semibold">
                     {new Date(activity.timestamp).toLocaleDateString(undefined, { 
                       month: 'short', 
                       day: 'numeric', 
@@ -599,7 +628,7 @@ export default function DashboardPage() {
               </motion.div>
             ))
           ) : (
-            <div className="text-zinc-500 text-xs py-1">No recent activity.</div>
+            <div className="text-zinc-555 text-xs py-1">No recent activity.</div>
           )}
         </div>
       </div>
@@ -689,7 +718,7 @@ function StatCard({ href, title, value, trend, icon: Icon, iconColor, gradient, 
         )}
       >
         <div className="flex items-center justify-between relative z-10">
-          <span className="text-[10px] text-zinc-450 uppercase font-black tracking-wider block">{title}</span>
+          <span className="text-[10px] text-zinc-455 uppercase font-black tracking-wider block">{title}</span>
           <div className={clsx("w-7 h-7 rounded-lg flex items-center justify-center border shrink-0", iconColor)}>
             <Icon className="w-4 h-4" />
           </div>
