@@ -44,6 +44,38 @@ export default function DashboardPage() {
   const [coachName, setCoachName] = useState("Coach");
   const [profileInitials, setProfileInitials] = useState("CO");
 
+  // Search functionality states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [allPlayers, setAllPlayers] = useState<any[]>([]);
+  const [allTeams, setAllTeams] = useState<any[]>([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+
+  const handleSearchFocus = async () => {
+    setShowSearchDropdown(true);
+    if (allPlayers.length === 0 && allTeams.length === 0) {
+      try {
+        const [playersRes, teamsRes] = await Promise.all([
+          api.get("/players").catch(() => ({ data: [] })),
+          api.get("/teams").catch(() => ({ data: [] }))
+        ]);
+        setAllPlayers(playersRes.data || []);
+        setAllTeams(teamsRes.data || []);
+      } catch (err) {
+        console.error("Failed to load search data:", err);
+      }
+    }
+  };
+
+  const filteredPlayers = searchQuery.trim() === "" ? [] : allPlayers.filter(p => 
+    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.role?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredTeams = searchQuery.trim() === "" ? [] : allTeams.filter(t => 
+    t.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    t.level?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -109,10 +141,82 @@ export default function DashboardPage() {
         <div className="relative max-w-md w-full">
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={handleSearchFocus}
+            onBlur={() => setTimeout(() => setShowSearchDropdown(false), 250)}
             placeholder="Search players, teams..."
             className="h-11 w-full bg-[#0d0d0d]/80 border border-white/10 rounded-2xl pl-11 pr-4 text-xs text-white placeholder:text-zinc-555 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
           />
           <Search className="w-4 h-4 text-zinc-500 absolute left-4 top-3.5" />
+
+          {/* Search Dropdown Overlay */}
+          {showSearchDropdown && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-[#0c0c0c]/95 border border-white/10 rounded-2xl shadow-2xl z-50 max-h-[320px] overflow-y-auto p-4 space-y-4 backdrop-blur-md custom-scrollbar">
+              {searchQuery.trim() === "" ? (
+                <div className="text-zinc-500 text-xs font-semibold text-center py-4">
+                  Type to search players or teams...
+                </div>
+              ) : filteredPlayers.length === 0 && filteredTeams.length === 0 ? (
+                <div className="text-zinc-500 text-xs font-semibold text-center py-4">
+                  No matching players or teams found.
+                </div>
+              ) : (
+                <>
+                  {/* Players Section */}
+                  {filteredPlayers.length > 0 && (
+                    <div className="space-y-2">
+                      <div className="text-[9px] font-black tracking-widest text-zinc-500 uppercase px-1">Players</div>
+                      <div className="space-y-1.5">
+                        {filteredPlayers.map((player) => {
+                          const playerCpi = ((player.ppiScore || 0) + (player.mpiScore || 0)) / 2;
+                          return (
+                            <Link
+                              key={`search-player-${player.id}`}
+                              href={`/players?search=${encodeURIComponent(player.name)}`}
+                              className="flex items-center justify-between p-2 hover:bg-white/5 rounded-xl transition-all"
+                            >
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-white truncate">{player.name}</p>
+                                <p className="text-[9px] text-zinc-500 truncate">{player.role}</p>
+                              </div>
+                              <span className="text-[10px] font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg border border-orange-500/20">
+                                CPI {playerCpi > 0 ? playerCpi.toFixed(1) : "N/A"}
+                              </span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Teams Section */}
+                  {filteredTeams.length > 0 && (
+                    <div className="space-y-2 pt-2 border-t border-white/5">
+                      <div className="text-[9px] font-black tracking-widest text-zinc-500 uppercase px-1">Teams / Squads</div>
+                      <div className="space-y-1.5">
+                        {filteredTeams.map((team) => (
+                          <Link
+                            key={`search-team-${team.id}`}
+                            href={`/teams?search=${encodeURIComponent(team.name)}`}
+                            className="flex items-center justify-between p-2 hover:bg-white/5 rounded-xl transition-all"
+                          >
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold text-white truncate">{team.name}</p>
+                              <p className="text-[9px] text-zinc-500 truncate">{team.level}</p>
+                            </div>
+                            <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/20">
+                              CPI {team.teamCpiScore > 0 ? team.teamCpiScore.toFixed(1) : "N/A"}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-3.5 self-end md:self-auto">

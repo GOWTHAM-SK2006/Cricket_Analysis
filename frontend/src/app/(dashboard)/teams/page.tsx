@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { Users, Plus, Loader2, Pencil, Trash2, X, AlertTriangle, Shield, TrendingUp, ChevronDown, ChevronUp, PlusCircle, UserMinus, UserPlus } from "lucide-react";
+import { Users, Plus, Loader2, Pencil, Trash2, X, AlertTriangle, Shield, TrendingUp, ChevronDown, ChevronUp, PlusCircle, UserMinus, UserPlus, Search } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { clsx } from "clsx";
 
@@ -30,6 +30,9 @@ export default function TeamsPage() {
   const [organization, setOrganization] = useState<any>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   
+  // Search query state
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Modals state
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
@@ -69,6 +72,13 @@ export default function TeamsPage() {
 
   useEffect(() => {
     fetchData();
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const searchParam = params.get("search");
+      if (searchParam) {
+        setSearchQuery(searchParam);
+      }
+    }
   }, []);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -312,8 +322,36 @@ export default function TeamsPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {teams.map(team => {
+        <div className="space-y-5">
+          {/* Search bar */}
+          <div className="flex flex-col lg:flex-row gap-4 bg-gradient-to-br from-white/[0.03] to-[#0c0c0c]/40 border border-white/10 p-4.5 rounded-2xl backdrop-blur-md shadow-md">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-zinc-500" />
+              <input 
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search teams by name or level..."
+                className="h-11 w-full bg-black/50 border border-white/10 rounded-xl pl-10 pr-4 text-xs sm:text-sm text-white placeholder-zinc-505 focus:outline-none focus:border-orange-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          {teams.filter(team => 
+            team.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            team.level.toLowerCase().includes(searchQuery.toLowerCase())
+          ).length === 0 ? (
+            <div className="text-center py-12 text-zinc-500 border border-dashed border-white/5 rounded-2xl font-black uppercase text-xs">
+              No squads match your search
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {teams
+                .filter(team => 
+                  team.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                  team.level.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map(team => {
             const squadCount = getPlayerCount(team.id);
             return (
               <motion.div 
@@ -431,6 +469,8 @@ export default function TeamsPage() {
               </motion.div>
             );
           })}
+            </div>
+          )}
         </div>
       )}
 
