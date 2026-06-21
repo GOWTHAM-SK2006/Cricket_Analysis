@@ -2,10 +2,26 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Users, Target, Activity, Trophy, TrendingUp, Calendar, Loader2, Award, ArrowUpRight } from "lucide-react";
+import { 
+  Users, 
+  Target, 
+  Activity, 
+  Trophy, 
+  TrendingUp, 
+  Calendar, 
+  Loader2, 
+  Award, 
+  Search, 
+  Bell, 
+  ChevronDown,
+  Star,
+  Plus
+} from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, BarChart, Bar } from "recharts";
 import { api } from "@/lib/api";
+import { clsx } from "clsx";
 
 interface Stats {
   totalTeams: number;
@@ -26,26 +42,42 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("cpi");
+  const [coachName, setCoachName] = useState("Coach");
+  const [profileInitials, setProfileInitials] = useState("CO");
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get("/dashboard/stats");
-        setStats(response.data);
+        const [statsRes, profileRes] = await Promise.all([
+          api.get("/dashboard/stats"),
+          api.get("/profile").catch(() => null)
+        ]);
+
+        setStats(statsRes.data);
+        if (profileRes && profileRes.data) {
+          setCoachName(profileRes.data.name);
+          const initials = profileRes.data.name
+            .split(" ")
+            .map((n: string) => n[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
+          setProfileInitials(initials || "CO");
+        }
       } catch (err) {
         console.error("Error fetching dashboard stats:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
-        <p className="text-zinc-400 text-xs">Loading your performance metrics...</p>
+        <p className="text-zinc-400 text-xs">Loading performance hub...</p>
       </div>
     );
   }
@@ -65,196 +97,455 @@ export default function DashboardPage() {
     activityFeed: []
   };
 
-  const getTrendText = (val: number, label: string) => {
-    return val > 0 ? `${val.toFixed(1)} avg` : "No data";
-  };
-
   return (
-    <div className="space-y-6 pb-6 px-1">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-6">
-        <div>
-          <h1 className="text-3xl lg:text-[36px] font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-zinc-400 text-sm lg:text-[16px] mt-1.5">
-            Welcome to your team's performance hub.
-          </p>
+    <div className="space-y-6 pb-12 px-1 relative">
+      
+      {/* Top Search / Header Row */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4.5">
+        <div className="relative max-w-md w-full">
+          <input
+            type="text"
+            placeholder="Search players, teams..."
+            className="h-11 w-full bg-[#0d0d0d]/80 border border-white/10 rounded-2xl pl-11 pr-4 text-xs text-white placeholder:text-zinc-550 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
+          />
+          <Search className="w-4 h-4 text-zinc-500 absolute left-4 top-3.5" />
+        </div>
+
+        <div className="flex items-center gap-3.5 self-end md:self-auto">
+          {/* Notification bell */}
+          <button className="relative p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 text-zinc-400 hover:text-white transition-all cursor-pointer">
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-orange-600 text-[8px] font-black text-white rounded-full flex items-center justify-center border-2 border-[#0a0a0a]">
+              3
+            </span>
+          </button>
+
+          {/* Profile Dropdown */}
+          <div className="flex items-center gap-2.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-2xl">
+            <div className="w-7 h-7 rounded-full bg-orange-500/10 flex items-center justify-center border border-white/10 shrink-0">
+              <span className="text-[10px] font-black text-orange-500">{profileInitials}</span>
+            </div>
+            <div className="flex flex-col leading-none text-left">
+              <span className="text-[11px] font-extrabold text-white truncate max-w-[100px]">
+                {coachName}
+              </span>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+          </div>
         </div>
       </div>
 
-      {/* 7 Stats Cards - 2 Columns on mobile, 4 Columns on desktop */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard href="/teams"    title="Total Teams"        value={data.totalTeams}                   icon={Users}      trend="Active squads"              color="from-blue-500/10 to-indigo-500/10"   iconColor="text-blue-400" />
-        <StatCard href="/players"  title="Total Players"      value={data.totalPlayers}                 icon={Award}      trend="Roster size"                color="from-purple-500/10 to-pink-500/10"   iconColor="text-purple-400" />
-        <StatCard href="/practice" title="Practice Sessions"  value={data.totalPracticeSessions}        icon={Target}     trend="PPI tracked"               color="from-orange-500/10 to-red-500/10"    iconColor="text-orange-400" />
-        <StatCard href="/matches"  title="Total Matches"      value={data.totalMatches}                 icon={Trophy}     trend="MPI tracked"               color="from-emerald-500/10 to-teal-500/10" iconColor="text-emerald-400" />
-        <StatCard href="/practice" title="Average PPI"        value={data.avgPpi.toFixed(1)}            icon={Activity}   trend={getTrendText(data.avgPpi, "PPI")} color="from-amber-500/10 to-orange-500/10"  iconColor="text-amber-400" />
-        <StatCard href="/matches"  title="Average MPI"        value={data.avgMpi.toFixed(1)}            icon={TrendingUp} trend={getTrendText(data.avgMpi, "MPI")} color="from-emerald-500/10 to-green-500/10"  iconColor="text-emerald-400" />
-        <div className="col-span-2 md:col-span-1">
-          <StatCard href="/reports" title="Average CPI"       value={data.avgCpi.toFixed(1)}            icon={Calendar}   trend="Combined index"             color="from-sky-500/10 to-blue-500/10"      iconColor="text-sky-400" />
+      {/* Hero Header & Batsman Illustration */}
+      <div className="relative flex flex-col md:flex-row md:items-start justify-between min-h-[140px] pt-2">
+        <div className="max-w-xl z-10 space-y-2">
+          <div className="flex items-center">
+            <h1 className="text-3xl lg:text-[40px] font-black tracking-tight text-white flex items-center gap-1.5">
+              Dashboard
+            </h1>
+            {/* Heartbeat Wave */}
+            <svg className="w-20 h-9 text-orange-500/60 filter drop-shadow-[0_0_8px_rgba(249,115,22,0.4)] ml-1" viewBox="0 0 100 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 15H30L35 5L40 25L45 10L50 20L55 15H100" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          <div className="space-y-1">
+            <p className="text-zinc-100 text-base font-extrabold">Welcome back, {coachName}! 👋</p>
+            <p className="text-zinc-400 text-xs sm:text-sm font-medium">Here's what's happening with your teams today.</p>
+          </div>
+        </div>
+
+        {/* Right side live season selector & Batsman background */}
+        <div className="z-10 mt-4 md:mt-2 flex items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Live Season</span>
+          </div>
+          <select className="h-9 bg-black/60 border border-white/10 rounded-xl px-3 text-xs text-zinc-300 focus:outline-none focus:border-orange-500 cursor-pointer">
+            <option>2024 Season</option>
+          </select>
+        </div>
+
+        {/* Dynamic absolute batsman illustration */}
+        <div className="absolute -right-4 -top-8 w-[380px] h-[380px] pointer-events-none opacity-20 md:opacity-60 lg:opacity-[0.85] mix-blend-screen hidden sm:block z-0 select-none">
+          <Image 
+            src="/batsman-hero.png" 
+            alt="Cricket Batsman Illustration" 
+            fill 
+            className="object-contain" 
+            priority
+          />
+        </div>
+      </div>
+
+      {/* Stat Cards - Row of 4 with bottom glowing line charts */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 z-10 relative">
+        {/* TOTAL TEAMS */}
+        <StatCard
+          href="/teams"
+          title="Total Teams"
+          value={data.totalTeams}
+          trend="Active squads"
+          icon={Users}
+          iconColor="text-indigo-400 bg-indigo-500/10 border-indigo-500/20"
+          gradient="from-indigo-500/5 to-purple-500/5 hover:border-indigo-500/20"
+        >
+          {/* Custom Purple Line Chart SVG */}
+          <svg className="absolute bottom-0 left-0 right-0 h-10 w-full" viewBox="0 0 200 40" fill="none" preserveAspectRatio="none">
+            <path d="M0 40 Q25 20, 50 30 T100 10 T150 25 T200 15 V40 H0" fill="url(#purpleGlow)" />
+            <path d="M0 35 Q25 15, 50 25 T100 5 T150 20 T200 10" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" />
+            <defs>
+              <linearGradient id="purpleGlow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </StatCard>
+
+        {/* TOTAL PLAYERS */}
+        <StatCard
+          href="/players"
+          title="Total Players"
+          value={data.totalPlayers}
+          trend="Roster size"
+          icon={Award}
+          iconColor="text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20"
+          gradient="from-fuchsia-500/5 to-pink-500/5 hover:border-fuchsia-500/20"
+        >
+          {/* Custom Pink Line Chart SVG */}
+          <svg className="absolute bottom-0 left-0 right-0 h-10 w-full" viewBox="0 0 200 40" fill="none" preserveAspectRatio="none">
+            <path d="M0 40 Q25 15, 50 25 T100 8 T150 30 T200 10 V40 H0" fill="url(#pinkGlow)" />
+            <path d="M0 35 Q25 10, 50 20 T100 3 T150 25 T200 5" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" />
+            <defs>
+              <linearGradient id="pinkGlow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ec4899" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#ec4899" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </StatCard>
+
+        {/* PRACTICE SESSIONS */}
+        <StatCard
+          href="/practice"
+          title="Practice Sessions"
+          value={data.totalPracticeSessions}
+          trend="PPI tracked"
+          icon={Target}
+          iconColor="text-orange-400 bg-orange-500/10 border-orange-500/20"
+          gradient="from-orange-500/5 to-red-500/5 hover:border-orange-500/20"
+        >
+          {/* Custom Orange Line Chart SVG */}
+          <svg className="absolute bottom-0 left-0 right-0 h-10 w-full" viewBox="0 0 200 40" fill="none" preserveAspectRatio="none">
+            <path d="M0 40 Q25 30, 50 20 T100 15 T150 8 T200 18 V40 H0" fill="url(#orangeGlow)" />
+            <path d="M0 35 Q25 25, 50 15 T100 10 T150 3 T200 13" stroke="#f97316" strokeWidth="2" strokeLinecap="round" />
+            <defs>
+              <linearGradient id="orangeGlow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#f97316" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </StatCard>
+
+        {/* TOTAL MATCHES */}
+        <StatCard
+          href="/matches"
+          title="Total Matches"
+          value={data.totalMatches}
+          trend="MPI tracked"
+          icon={Trophy}
+          iconColor="text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+          gradient="from-emerald-500/5 to-teal-500/5 hover:border-emerald-500/20"
+        >
+          {/* Custom Green Line Chart SVG */}
+          <svg className="absolute bottom-0 left-0 right-0 h-10 w-full" viewBox="0 0 200 40" fill="none" preserveAspectRatio="none">
+            <path d="M0 40 Q25 25, 50 35 T100 15 T150 22 T200 8 V40 H0" fill="url(#greenGlow)" />
+            <path d="M0 35 Q25 20, 50 30 T100 10 T150 17 T200 3" stroke="#10b981" strokeWidth="2" strokeLinecap="round" />
+            <defs>
+              <linearGradient id="greenGlow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </StatCard>
+      </div>
+
+      {/* Intermediate metrics row: Averages & Circular Progress rings */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 z-10 relative">
+        
+        {/* AVERAGE PPI */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-orange-500/20 transition-all duration-300">
+          <div className="space-y-1">
+            <span className="text-[10px] text-zinc-500 uppercase font-black tracking-wider block">Average PPI</span>
+            <span className="text-2xl font-black text-white">{data.avgPpi.toFixed(1)}</span>
+            <span className="text-[10px] text-zinc-450 block font-semibold">{data.avgPpi > 0 ? `${data.avgPpi.toFixed(1)} avg` : "No data"}</span>
+          </div>
+          <ProgressRing value={data.avgPpi} colorClass="stroke-orange-500" trailColorClass="stroke-white/5">
+            <Activity className="w-4 h-4 text-orange-500" />
+          </ProgressRing>
+        </div>
+
+        {/* AVERAGE MPI */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300">
+          <div className="space-y-1">
+            <span className="text-[10px] text-zinc-500 uppercase font-black tracking-wider block">Average MPI</span>
+            <span className="text-2xl font-black text-white">{data.avgMpi.toFixed(1)}</span>
+            <span className="text-[10px] text-zinc-450 block font-semibold">{data.avgMpi > 0 ? `${data.avgMpi.toFixed(1)} avg` : "No data"}</span>
+          </div>
+          <ProgressRing value={data.avgMpi} colorClass="stroke-emerald-500" trailColorClass="stroke-white/5">
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
+          </ProgressRing>
+        </div>
+
+        {/* AVERAGE CPI */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-blue-500/20 transition-all duration-300">
+          <div className="space-y-1">
+            <span className="text-[10px] text-zinc-500 uppercase font-black tracking-wider block">Average CPI</span>
+            <span className="text-2xl font-black text-white">{data.avgCpi.toFixed(1)}</span>
+            <span className="text-[10px] text-zinc-450 block font-semibold">Combined index</span>
+          </div>
+          <ProgressRing value={data.avgCpi} colorClass="stroke-blue-500" trailColorClass="stroke-white/5">
+            <Calendar className="w-4 h-4 text-blue-500" />
+          </ProgressRing>
+        </div>
+
+        {/* PERFORMANCE STATUS */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between backdrop-blur-md hover:border-amber-500/20 transition-all duration-300">
+          <div className="space-y-1">
+            <span className="text-[10px] text-zinc-500 uppercase font-black tracking-wider block">Performance Status</span>
+            <span className="text-xl font-black text-white">On Track</span>
+            <span className="text-[10px] text-zinc-450 block font-semibold">Keep pushing hard!</span>
+          </div>
+          <ProgressRing value={8.5} max={10} colorClass="stroke-amber-500" trailColorClass="stroke-white/5">
+            <div className="w-7 h-7 bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20">
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />
+            </div>
+          </ProgressRing>
         </div>
       </div>
 
       {/* Mobile Segmented Chart Control */}
-      <div className="lg:hidden flex bg-white/5 border border-white/10 p-1 rounded-xl text-xs sm:text-sm font-semibold">
-        <button
-          onClick={() => setActiveTab("cpi")}
-          className={`flex-1 py-2 rounded-lg text-center transition-all ${
-            activeTab === "cpi" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
-          }`}
-        >
-          CPI
-        </button>
-        <button
-          onClick={() => setActiveTab("teams")}
-          className={`flex-1 py-2 rounded-lg text-center transition-all ${
-            activeTab === "teams" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
-          }`}
-        >
-          Teams
-        </button>
-        <button
-          onClick={() => setActiveTab("ppi")}
-          className={`flex-1 py-2 rounded-lg text-center transition-all ${
-            activeTab === "ppi" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
-          }`}
-        >
-          PPI
-        </button>
-        <button
-          onClick={() => setActiveTab("mpi")}
-          className={`flex-1 py-2 rounded-lg text-center transition-all ${
-            activeTab === "mpi" ? "bg-orange-500 text-white shadow font-bold" : "text-zinc-400 hover:text-zinc-200"
-          }`}
-        >
-          MPI
-        </button>
+      <div className="lg:hidden flex bg-white/5 border border-white/10 p-1 rounded-xl text-xs font-bold">
+        {["cpi", "teams", "ppi", "mpi"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`flex-1 py-2 rounded-lg text-center transition-all uppercase tracking-wider text-[10px] ${
+              activeTab === tab ? "bg-orange-600 text-white shadow font-black" : "text-zinc-400 hover:text-zinc-200"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* CPI Trend */}
-        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "cpi" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
-            <TrendingUp className="w-4 h-4 text-sky-400" />
-            CPI Trend
+      {/* Charts Row 1: CPI Trend & Team Performance */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 z-10 relative">
+        {/* CPI Trend Area Chart */}
+        <div className={clsx("bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md shadow-md", activeTab === "cpi" ? "block" : "hidden lg:block")}>
+          <h3 className="text-xs font-black mb-5 flex items-center justify-between text-zinc-200 uppercase tracking-wider border-b border-white/5 pb-3">
+            <span className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-blue-500" />
+              CPI Trend
+            </span>
+            <select className="bg-white/5 border border-white/10 rounded-xl px-2 py-1 text-[10px] text-zinc-400 focus:outline-none">
+              <option>Last 7 Days</option>
+            </select>
           </h3>
-          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
+          <div className="h-[210px] sm:h-[260px] flex items-center justify-center">
             {data.cpiTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data.cpiTrend} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                <AreaChart data={data.cpiTrend} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorCpi" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#38bdf8" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="label" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="label" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} domain={[0, 12]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#0d0d0d', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px', color: '#fff' }}
+                    itemStyle={{ color: '#60a5fa', fontWeight: 'bold' }}
+                    labelStyle={{ color: '#71717a' }}
                   />
-                  <Area type="monotone" dataKey="value" name="CPI" stroke="#38bdf8" fillOpacity={1} fill="url(#colorCpi)" strokeWidth={1.5} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    name="CPI" 
+                    stroke="#3b82f6" 
+                    fillOpacity={1} 
+                    fill="url(#colorCpi)" 
+                    strokeWidth={2.5}
+                    dot={{ fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5, r: 4 }}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-xs">No assessment data.</div>
+              <div className="text-zinc-550 text-xs">No CPI trend scores recorded.</div>
             )}
           </div>
         </div>
 
-        {/* Team Performance */}
-        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "teams" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
-            <Users className="w-4 h-4 text-blue-400" />
-            Team Performance
+        {/* Team Performance Bar Chart */}
+        <div className={clsx("bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md shadow-md", activeTab === "teams" ? "block" : "hidden lg:block")}>
+          <h3 className="text-xs font-black mb-5 flex items-center justify-between text-zinc-200 uppercase tracking-wider border-b border-white/5 pb-3">
+            <span className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-purple-400" />
+              Team Performance
+            </span>
+            <select className="bg-white/5 border border-white/10 rounded-xl px-2 py-1 text-[10px] text-zinc-400 focus:outline-none">
+              <option>All Teams</option>
+            </select>
           </h3>
-          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
+          <div className="h-[210px] sm:h-[260px] flex items-center justify-center">
             {data.teamPerformance.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.teamPerformance} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                  <XAxis dataKey="teamName" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
+                <BarChart data={data.teamPerformance} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#3b82f6" />
+                      <stop offset="100%" stopColor="#a855f7" />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="teamName" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} domain={[0, 12]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#0d0d0d', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px', color: '#fff' }}
+                    itemStyle={{ color: '#c084fc', fontWeight: 'bold' }}
+                    labelStyle={{ color: '#71717a' }}
                   />
-                  <Bar dataKey="cpi" name="CPI Score" fill="#3b82f6" radius={[3, 3, 0, 0]} maxBarSize={28} />
+                  <Bar dataKey="cpi" name="CPI Score" fill="url(#barGrad)" radius={[6, 6, 0, 0]} maxBarSize={32} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-xs">No team performance scores.</div>
+              <div className="text-zinc-550 text-xs">No team performance data available.</div>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Practice Trend */}
-        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "ppi" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
-            <Target className="w-4 h-4 text-orange-400" />
-            Practice Trend (PPI)
+      {/* Charts Row 2: Practice Trend (PPI) & Match Trend (MPI) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 z-10 relative">
+        {/* Practice Trend Area Chart */}
+        <div className={clsx("bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md shadow-md", activeTab === "ppi" ? "block" : "hidden lg:block")}>
+          <h3 className="text-xs font-black mb-5 flex items-center justify-between text-zinc-200 uppercase tracking-wider border-b border-white/5 pb-3">
+            <span className="flex items-center gap-2">
+              <Target className="w-4 h-4 text-orange-500" />
+              Practice Trend (PPI)
+            </span>
+            <select className="bg-white/5 border border-white/10 rounded-xl px-2 py-1 text-[10px] text-zinc-400 focus:outline-none">
+              <option>Last 7 Days</option>
+            </select>
           </h3>
-          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
+          <div className="h-[210px] sm:h-[260px] flex items-center justify-center">
             {data.practiceTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data.practiceTrend} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                <AreaChart data={data.practiceTrend} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorPpi" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="#f97316" stopOpacity="0.25"/>
                       <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="label" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="label" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} domain={[0, 12]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#0d0d0d', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px', color: '#fff' }}
+                    itemStyle={{ color: '#fb923c', fontWeight: 'bold' }}
+                    labelStyle={{ color: '#71717a' }}
                   />
-                  <Area type="monotone" dataKey="value" name="PPI" stroke="#f97316" fillOpacity={1} fill="url(#colorPpi)" strokeWidth={1.5} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    name="PPI" 
+                    stroke="#f97316" 
+                    fillOpacity={1} 
+                    fill="url(#colorPpi)" 
+                    strokeWidth={2.5}
+                    dot={{ fill: '#f97316', stroke: '#fff', strokeWidth: 1.5, r: 4 }}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-xs">No practice sessions logged.</div>
+              <div className="text-zinc-550 text-xs">No practice sessions logged.</div>
             )}
           </div>
         </div>
 
-        {/* Match Trend */}
-        <div className={`bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md ${activeTab === "mpi" ? "block" : "hidden lg:block"}`}>
-          <h3 className="text-sm font-bold mb-4 flex items-center gap-2 text-zinc-250">
-            <Trophy className="w-4 h-4 text-emerald-400" />
-            Match Trend (MPI)
+        {/* Match Trend Area Chart / Empty State */}
+        <div className={clsx("bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md shadow-md", activeTab === "mpi" ? "block" : "hidden lg:block")}>
+          <h3 className="text-xs font-black mb-5 flex items-center justify-between text-zinc-200 uppercase tracking-wider border-b border-white/5 pb-3">
+            <span className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-emerald-400" />
+              Match Trend (MPI)
+            </span>
+            <select className="bg-white/5 border border-white/10 rounded-xl px-2 py-1 text-[10px] text-zinc-400 focus:outline-none">
+              <option>Last 7 Days</option>
+            </select>
           </h3>
-          <div className="h-[180px] sm:h-[230px] flex items-center justify-center">
-            {data.matchTrend.length > 0 ? (
+          <div className="h-[210px] sm:h-[260px] flex items-center justify-center">
+            {data.totalMatches > 0 && data.matchTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data.matchTrend} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                <AreaChart data={data.matchTrend} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorMpi" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="#10b981" stopOpacity="0.25"/>
                       <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="label" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
+                  <XAxis dataKey="label" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} domain={[0, 12]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#0d0d0d', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '11px', color: '#fff' }}
+                    itemStyle={{ color: '#34d399', fontWeight: 'bold' }}
+                    labelStyle={{ color: '#71717a' }}
                   />
-                  <Area type="monotone" dataKey="value" name="MPI" stroke="#10b981" fillOpacity={1} fill="url(#colorMpi)" strokeWidth={1.5} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    name="MPI" 
+                    stroke="#10b981" 
+                    fillOpacity={1} 
+                    fill="url(#colorMpi)" 
+                    strokeWidth={2.5}
+                    dot={{ fill: '#10b981', stroke: '#fff', strokeWidth: 1.5, r: 4 }}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-zinc-500 text-xs">No matches logged.</div>
+              // Premium Empty State placeholder matches the mockup
+              <div className="text-center space-y-4 flex flex-col items-center justify-center pt-2">
+                <div className="w-14 h-14 rounded-full border-2 border-dashed border-emerald-500/20 flex items-center justify-center p-1.5 animate-pulse">
+                  <div className="w-full h-full rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                    <Trophy className="w-5 h-5 text-emerald-400" />
+                  </div>
+                </div>
+                
+                <div className="space-y-1.5 max-w-xs mx-auto">
+                  <h4 className="text-zinc-350 text-xs font-bold uppercase tracking-wider">No matches logged yet</h4>
+                  <p className="text-zinc-500 text-[11px] font-semibold leading-relaxed">
+                    Create a match to start tracking MPI scores and updates.
+                  </p>
+                </div>
+
+                <Link href="/matches">
+                  <span className="h-9 px-4.5 rounded-xl text-[11px] font-bold transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer bg-emerald-600/10 border border-emerald-500/30 hover:bg-emerald-500/25 text-emerald-400 shadow-md">
+                    <Plus className="w-3.5 h-3.5" />
+                    Create Match
+                  </span>
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </div>
 
       {/* Activity Feed */}
-      <div className="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md">
-        <h3 className="text-base font-bold mb-4 text-zinc-150">Activity Feed</h3>
+      <div className="bg-white/5 border border-white/10 p-5 rounded-2xl backdrop-blur-md z-10 relative">
+        <h3 className="text-xs font-black mb-5 text-zinc-200 uppercase tracking-wider border-b border-white/5 pb-3">Activity Feed</h3>
         <div className="space-y-3.5">
           {data.activityFeed.length > 0 ? (
             data.activityFeed.slice(0, 5).map((activity, i) => (
@@ -263,23 +554,25 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.02 }}
                 key={i} 
-                className="flex gap-3 border-b border-white/5 pb-3.5 last:border-0 last:pb-0"
+                className="flex gap-3.5 border-b border-white/5 pb-3.5 last:border-0 last:pb-0"
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                  activity.type === "PLAYER_ADDED" ? "bg-purple-500/10 text-purple-400" :
-                  activity.type === "TEAM_CREATED" ? "bg-blue-500/10 text-blue-400" :
-                  activity.type === "PRACTICE_COMPLETED" ? "bg-orange-500/10 text-orange-400" :
-                  "bg-emerald-500/10 text-emerald-400"
-                }`}>
-                  {activity.type === "PLAYER_ADDED" ? <Award className="w-4 h-4" /> :
-                   activity.type === "TEAM_CREATED" ? <Users className="w-4 h-4" /> :
-                   activity.type === "PRACTICE_COMPLETED" ? <Target className="w-4 h-4" /> :
-                   <Trophy className="w-4 h-4" />}
+                <div className={clsx(
+                  "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border",
+                  activity.type === "PLAYER_ADDED" ? "bg-purple-500/10 text-purple-400 border-purple-500/20" :
+                  activity.type === "TEAM_CREATED" ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" :
+                  activity.type === "PRACTICE_COMPLETED" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                  "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                )}>
+                  {activity.type === "PLAYER_ADDED" ? <Award className="w-4.5 h-4.5" /> :
+                   activity.type === "TEAM_CREATED" ? <Users className="w-4.5 h-4.5" /> :
+                   activity.type === "PRACTICE_COMPLETED" ? <Target className="w-4.5 h-4.5" /> :
+                   <Trophy className="w-4.5 h-4.5" />}
                 </div>
+                
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-semibold text-zinc-150 truncate">{activity.title}</p>
+                  <p className="text-xs sm:text-[13px] font-bold text-zinc-100 truncate">{activity.title}</p>
                   <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5 truncate">{activity.description}</p>
-                  <p className="text-[9px] text-zinc-550 mt-1">
+                  <p className="text-[9px] text-zinc-550 mt-1 font-semibold">
                     {new Date(activity.timestamp).toLocaleDateString(undefined, { 
                       month: 'short', 
                       day: 'numeric', 
@@ -299,38 +592,86 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ href, title, value, icon: Icon, trend, color, iconColor }: {
+// Progress Ring Helper Component
+function ProgressRing({ value, max = 10, colorClass, trailColorClass, size = 48, strokeWidth = 4.5, children }: {
+  value: number;
+  max?: number;
+  colorClass: string;
+  trailColorClass: string;
+  size?: number;
+  strokeWidth?: number;
+  children?: React.ReactNode;
+}) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const percentage = max > 0 ? (value / max) * 100 : 0;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          className={trailColorClass}
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+        <circle
+          className={clsx("transition-all duration-700 ease-out", colorClass)}
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+      </svg>
+      {children && <div className="absolute inset-0 flex items-center justify-center">{children}</div>}
+    </div>
+  );
+}
+
+// Custom Stat Card
+function StatCard({ href, title, value, trend, icon: Icon, iconColor, gradient, children }: {
   href: string;
   title: string;
   value: string | number;
-  icon: React.ElementType;
   trend: string;
-  color: string;
+  icon: React.ElementType;
   iconColor: string;
+  gradient: string;
+  children?: React.ReactNode;
 }) {
   return (
     <Link href={href} className="block group">
       <motion.div
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -3, scale: 1.02 }}
-        whileTap={{ scale: 0.97 }}
-        className={`bg-gradient-to-br ${color} border border-white/10 p-3.5 sm:p-5 rounded-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[85px] sm:min-h-[108px] transition-all duration-200 cursor-pointer hover:border-white/20 hover:shadow-lg`}
+        whileHover={{ y: -3, scale: 1.015 }}
+        whileTap={{ scale: 0.985 }}
+        className={clsx(
+          "bg-gradient-to-br border border-white/10 rounded-2xl p-5 backdrop-blur-md relative overflow-hidden flex flex-col justify-between min-h-[115px] transition-all duration-300 cursor-pointer shadow-md",
+          gradient
+        )}
       >
-        {/* Subtle shine on hover */}
-        <div className="absolute inset-0 bg-white/0 group-hover:bg-white/[0.03] transition-colors duration-200 rounded-xl" />
-
         <div className="flex items-center justify-between relative z-10">
-          <h3 className="text-zinc-400 font-bold text-[9px] sm:text-[11px] tracking-wider uppercase truncate max-w-[80%]">{title}</h3>
-          <div className="flex items-center gap-1">
-            <Icon className={`w-4 h-4 ${iconColor} opacity-70`} />
-            <ArrowUpRight className="w-3 h-3 text-white/0 group-hover:text-white/40 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
+          <span className="text-[10px] text-zinc-450 uppercase font-black tracking-wider block">{title}</span>
+          <div className={clsx("w-7 h-7 rounded-lg flex items-center justify-center border shrink-0", iconColor)}>
+            <Icon className="w-4 h-4" />
           </div>
         </div>
-        <div className="flex items-baseline justify-between mt-2 relative z-10 gap-1">
-          <span className="text-lg sm:text-3xl font-black tracking-tight text-white">{value}</span>
-          <span className="text-[9px] sm:text-[11px] text-zinc-550 font-semibold truncate max-w-[55%]">{trend}</span>
+
+        <div className="mt-3 relative z-10 flex items-baseline justify-between">
+          <span className="text-3xl font-black text-white tracking-tight">{value}</span>
+          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{trend}</span>
         </div>
+
+        {/* Dynamic Glowing line path */}
+        {children}
       </motion.div>
     </Link>
   );
