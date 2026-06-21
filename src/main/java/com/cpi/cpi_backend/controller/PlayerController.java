@@ -71,7 +71,20 @@ public class PlayerController {
             return ResponseEntity.ok(List.of());
         }
 
-        return ResponseEntity.ok(playerRepository.findByOrganizationId(managedCoach.getOrganization().getId()));
+        List<Player> allPlayers = playerRepository.findByOrganizationId(managedCoach.getOrganization().getId());
+        if (managedCoach.getRole() == Role.ADMIN) {
+            return ResponseEntity.ok(allPlayers);
+        }
+
+        List<Player> filtered = allPlayers.stream()
+                .filter(p -> {
+                    boolean isCreator = p.getCreatorCoach() != null && p.getCreatorCoach().getId().equals(managedCoach.getId());
+                    boolean isSelf = p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName());
+                    return isCreator || isSelf;
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+        return ResponseEntity.ok(filtered);
     }
 
     @GetMapping("/team/{teamId}")

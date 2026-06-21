@@ -134,7 +134,7 @@ export default function DashboardLayout({
 
   const tabs = [
     { name: "HOME", path: "/dashboard", icon: Home },
-    { name: "PLAYERS", path: "/players", icon: Users },
+    ...(role !== "player" ? [{ name: "PLAYERS", path: "/players", icon: Users }] : []),
     { name: "HISTORY", path: "/history", icon: Clock },
     { name: "PROFILE", path: "/profile", icon: User },
   ];

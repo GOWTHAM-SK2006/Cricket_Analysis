@@ -162,28 +162,52 @@ export default function PlayersPage() {
     }
   }, [searchParams]);
 
-  // Handle self-assessment navigation from dashboard
+  // Handle auto-select and self-assessment navigation for players
   useEffect(() => {
-    if (players.length > 0 && searchParams.get("selfAssess") === "true") {
-      api.get("/profile").then((profileRes) => {
-        const matchingPlayer = players.find(
-          (p) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
-        ) || players[0];
-        
-        if (matchingPlayer) {
-          setSelectedPlayer(matchingPlayer);
+    if (players.length > 0) {
+      if (role === "player") {
+        api.get("/profile").then((profileRes) => {
+          const matchingPlayer = players.find(
+            (p) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
+          ) || players[0];
+          
+          if (matchingPlayer) {
+            setSelectedPlayer(matchingPlayer);
+            setView("profile");
+            loadHistory(matchingPlayer.id);
+            if (searchParams.get("selfAssess") === "true") {
+              setShowSelfOverlay(true);
+            }
+          }
+        }).catch(() => {
+          setSelectedPlayer(players[0]);
+          setView("profile");
+          loadHistory(players[0].id);
+          if (searchParams.get("selfAssess") === "true") {
+            setShowSelfOverlay(true);
+          }
+        });
+      } else if (searchParams.get("selfAssess") === "true") {
+        api.get("/profile").then((profileRes) => {
+          const matchingPlayer = players.find(
+            (p) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
+          ) || players[0];
+          
+          if (matchingPlayer) {
+            setSelectedPlayer(matchingPlayer);
+            setView("profile");
+            setShowSelfOverlay(true);
+            loadHistory(matchingPlayer.id);
+          }
+        }).catch(() => {
+          setSelectedPlayer(players[0]);
           setView("profile");
           setShowSelfOverlay(true);
-          loadHistory(matchingPlayer.id);
-        }
-      }).catch(() => {
-        setSelectedPlayer(players[0]);
-        setView("profile");
-        setShowSelfOverlay(true);
-        loadHistory(players[0].id);
-      });
+          loadHistory(players[0].id);
+        });
+      }
     }
-  }, [players, searchParams]);
+  }, [players, role, searchParams]);
 
   const loadHistory = async (playerId: number) => {
     try {
@@ -700,15 +724,17 @@ export default function PlayersPage() {
         <div className="space-y-6 text-center">
           
           {/* Back Header */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => { setView("list"); router.replace("/players"); }}
-              className="h-11 px-4 bg-zinc-950 border-2 border-zinc-900 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-white"
-            >
-              <ArrowLeft className="w-4 h-4 stroke-[3]" />
-              BACK TO LIST
-            </button>
-          </div>
+          {role !== "player" && (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => { setView("list"); router.replace("/players"); }}
+                className="h-11 px-4 bg-zinc-950 border-2 border-zinc-900 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-white cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4 stroke-[3]" />
+                BACK TO LIST
+              </button>
+            </div>
+          )}
 
           {/* Photo and Name */}
           <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-6 space-y-4">
