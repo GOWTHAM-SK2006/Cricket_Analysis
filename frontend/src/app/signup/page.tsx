@@ -70,7 +70,12 @@ export default function SignupPage() {
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || "Registration failed.");
+      const msg = err.response?.data?.message || err.message || "";
+      if (msg.toLowerCase().includes("duplicate key") || msg.toLowerCase().includes("already exists")) {
+        setError("This email address is already registered.");
+      } else {
+        setError(msg || "Registration failed.");
+      }
     } finally {
       setLoading(false);
     }
