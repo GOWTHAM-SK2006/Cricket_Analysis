@@ -24,13 +24,8 @@ public class PracticeAssessment {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id", nullable = false)
-    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "organization", "creatorCoach", "teams", "team"})
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "creatorCoach"})
     private Player player;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id")
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private PracticeSession session;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id", nullable = false)

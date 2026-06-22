@@ -19,53 +19,47 @@ public class SchemaUpdateRunner implements CommandLineRunner {
             String dbProduct = conn.getMetaData().getDatabaseProductName();
             System.out.println("Schema update check: database product is " + dbProduct);
             
-            if (dbProduct.toLowerCase().contains("postgresql")) {
-                // Drop team_id constraints and column on PostgreSQL
-                try {
-                    jdbcTemplate.execute("ALTER TABLE players ALTER COLUMN team_id DROP NOT NULL");
-                    System.out.println("PostgreSQL: Altered team_id to drop NOT NULL constraint.");
-                } catch (Exception e) {
-                    System.out.println("PostgreSQL team_id alter failed/ignored: " + e.getMessage());
-                }
-                
-                try {
-                    jdbcTemplate.execute("ALTER TABLE players DROP COLUMN IF EXISTS team_id CASCADE");
-                    System.out.println("PostgreSQL: Dropped team_id column with CASCADE.");
-                } catch (Exception e) {
-                    System.out.println("PostgreSQL team_id drop failed: " + e.getMessage());
-                }
+            boolean isPg = dbProduct.toLowerCase().contains("postgresql");
+            String cascade = isPg ? " CASCADE" : "";
 
-                try {
-                    jdbcTemplate.execute("ALTER TABLE practice_assessments DROP COLUMN IF EXISTS date CASCADE");
-                    System.out.println("PostgreSQL: Dropped duplicate date column from practice_assessments.");
-                } catch (Exception e) {
-                    System.out.println("PostgreSQL practice_assessments.date drop failed: " + e.getMessage());
-                }
-            } else {
-                // H2/Other DBs
-                try {
-                    jdbcTemplate.execute("ALTER TABLE players ALTER COLUMN team_id SET NULL");
-                    System.out.println("H2: Altered team_id to SET NULL.");
-                } catch (Exception e) {
-                    System.out.println("H2 team_id alter failed/ignored: " + e.getMessage());
-                }
-                
-                try {
-                    jdbcTemplate.execute("ALTER TABLE players DROP COLUMN IF EXISTS team_id");
-                    System.out.println("H2: Dropped team_id column.");
-                } catch (Exception e) {
-                    System.out.println("H2 team_id drop failed: " + e.getMessage());
-                }
+            // 1. Drop unused tables (reverse order of foreign keys)
+            String[] tables = {
+                "player_teams",
+                "practice_sessions",
+                "match_sessions",
+                "teams",
+                "organizations"
+            };
 
+            for (String table : tables) {
                 try {
-                    jdbcTemplate.execute("ALTER TABLE practice_assessments DROP COLUMN IF EXISTS date");
-                    System.out.println("H2: Dropped duplicate date column from practice_assessments.");
+                    jdbcTemplate.execute("DROP TABLE IF EXISTS " + table + cascade);
+                    System.out.println("Dropped table: " + table);
                 } catch (Exception e) {
-                    System.out.println("H2 practice_assessments.date drop failed: " + e.getMessage());
+                    System.out.println("Drop table " + table + " failed/ignored: " + e.getMessage());
                 }
             }
+
+            // 2. Drop unused columns from remaining tables
+            dropColumn("players", "team_id", cascade);
+            dropColumn("players", "organization_id", cascade);
+            dropColumn("coaches", "organization_id", cascade);
+            dropColumn("coaches", "approval_status", cascade);
+            dropColumn("practice_assessments", "session_id", cascade);
+            dropColumn("practice_assessments", "date", cascade);
+            dropColumn("match_assessments", "session_id", cascade);
+
         } catch (Exception e) {
             System.err.println("Critical error performing schema update: " + e.getMessage());
+        }
+    }
+
+    private void dropColumn(String table, String column, String cascade) {
+        try {
+            jdbcTemplate.execute("ALTER TABLE " + table + " DROP COLUMN IF EXISTS " + column + cascade);
+            System.out.println("Dropped column " + column + " from table " + table);
+        } catch (Exception e) {
+            System.out.println("Drop column " + column + " from table " + table + " failed/ignored: " + e.getMessage());
         }
     }
 }

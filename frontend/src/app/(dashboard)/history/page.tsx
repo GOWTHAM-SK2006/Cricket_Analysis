@@ -128,7 +128,7 @@ export default function HistoryPage() {
       {/* Select Player (only for Coach role) */}
       {role !== "player" && (
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black tracking-widest text-zinc-500 uppercase block pl-1">SELECT SQUAD PLAYER</label>
+          <label className="text-[10px] font-black tracking-widest text-zinc-500 uppercase block pl-1">SELECT PLAYER</label>
           <select
             value={selectedPlayerId || ""}
             onChange={(e) => handlePlayerChange(Number(e.target.value))}

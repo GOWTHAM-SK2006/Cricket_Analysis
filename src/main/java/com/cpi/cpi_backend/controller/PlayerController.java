@@ -3,10 +3,8 @@ package com.cpi.cpi_backend.controller;
 import com.cpi.cpi_backend.dto.PlayerRequest;
 import com.cpi.cpi_backend.entity.Coach;
 import com.cpi.cpi_backend.entity.Player;
-import com.cpi.cpi_backend.entity.Team;
 import com.cpi.cpi_backend.entity.Role;
 import com.cpi.cpi_backend.repository.PlayerRepository;
-import com.cpi.cpi_backend.repository.TeamRepository;
 import com.cpi.cpi_backend.repository.CoachRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,39 +21,17 @@ import java.util.List;
 public class PlayerController {
 
     private final PlayerRepository playerRepository;
-    private final TeamRepository teamRepository;
     private final CoachRepository coachRepository;
-
-    private void checkAccess(Team team, Coach currentCoach) {
-        Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
-
-        if (managedCoach.getRole() == Role.ADMIN) {
-            if (team.getOrganization() == null || managedCoach.getOrganization() == null ||
-                !team.getOrganization().getId().equals(managedCoach.getOrganization().getId())) {
-                throw new RuntimeException("Unauthorized: Team belongs to a different organization");
-            }
-        } else {
-            if (!team.getCoach().getId().equals(managedCoach.getId())) {
-                throw new RuntimeException("Unauthorized: You do not manage this team");
-            }
-        }
-    }
 
     private void checkAccess(Player player, Coach currentCoach) {
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
         if (managedCoach.getRole() == Role.ADMIN) {
-            if (player.getOrganization() == null || managedCoach.getOrganization() == null ||
-                !player.getOrganization().getId().equals(managedCoach.getOrganization().getId())) {
-                throw new RuntimeException("Unauthorized");
-            }
+            return;
         } else {
             boolean isCreator = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
-            boolean isSelf = player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName()) &&
-                    player.getOrganization() != null && managedCoach.getOrganization() != null &&
-                    player.getOrganization().getId().equals(managedCoach.getOrganization().getId());
+            boolean isSelf = player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName());
             
             if (!isCreator && !isSelf) {
                 throw new RuntimeException("Unauthorized");
@@ -67,38 +44,22 @@ public class PlayerController {
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
-        if (managedCoach.getOrganization() == null) {
-            return ResponseEntity.ok(List.of());
-        }
-
-        List<Player> allPlayers = playerRepository.findByOrganizationId(managedCoach.getOrganization().getId());
         if (managedCoach.getRole() == Role.ADMIN) {
-            return ResponseEntity.ok(allPlayers);
+            return ResponseEntity.ok(playerRepository.findAll());
         }
 
-        List<Player> filtered = allPlayers.stream()
-                .filter(p -> {
-                    boolean isCreator = p.getCreatorCoach() != null && p.getCreatorCoach().getId().equals(managedCoach.getId());
-                    boolean isSelf = p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName());
-                    return isCreator || isSelf;
-                })
-                .collect(java.util.stream.Collectors.toList());
-
-        return ResponseEntity.ok(filtered);
-    }
-
-    @GetMapping("/team/{teamId}")
-    @Transactional(readOnly = true)
-    public ResponseEntity<List<Player>> getTeamPlayers(
-            @PathVariable Long teamId,
-            @AuthenticationPrincipal Coach currentCoach
-    ) {
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("Team not found"));
+        List<Player> allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
         
-        checkAccess(team, currentCoach);
-        
-        return ResponseEntity.ok(playerRepository.findByTeamId(teamId));
+        // Also check if there's a player record with their name
+        boolean hasSelf = allPlayers.stream().anyMatch(p -> p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()));
+        if (!hasSelf) {
+            playerRepository.findAll().stream()
+                    .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()))
+                    .findFirst()
+                    .ifPresent(allPlayers::add);
+        }
+
+        return ResponseEntity.ok(allPlayers);
     }
 
     @PostMapping
@@ -110,31 +71,15 @@ public class PlayerController {
         Coach creatorCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
-        com.cpi.cpi_backend.entity.Organization org = creatorCoach.getOrganization();
-        if (org == null) {
-            throw new RuntimeException("Unauthorized: Coach does not belong to any organization");
-        }
-
         Player player = Player.builder()
                 .name(request.getName())
                 .role(request.getRole())
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
-                .organization(org)
                 .creatorCoach(creatorCoach)
                 .ppiScore(0.0)
                 .mpiScore(0.0)
                 .build();
-                
-        if (request.getTeamId() != null) {
-            Team team = teamRepository.findById(request.getTeamId())
-                    .orElseThrow(() -> new RuntimeException("Team not found"));
-            checkAccess(team, currentCoach);
-            player.setTeam(team);
-            if (team.getCoach() != null) {
-                player.setCreatorCoach(team.getCoach());
-            }
-        }
                 
         return ResponseEntity.ok(playerRepository.save(player));
     }
@@ -150,19 +95,6 @@ public class PlayerController {
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
         checkAccess(player, currentCoach);
-
-        if (request.getTeamId() != null) {
-            boolean hasTeam = player.getTeams().stream().anyMatch(t -> t.getId().equals(request.getTeamId()));
-            if (!hasTeam) {
-                Team newTeam = teamRepository.findById(request.getTeamId())
-                        .orElseThrow(() -> new RuntimeException("New team not found"));
-                checkAccess(newTeam, currentCoach);
-                player.setTeam(newTeam);
-                if (newTeam.getCoach() != null) {
-                    player.setCreatorCoach(newTeam.getCoach());
-                }
-            }
-        }
 
         player.setName(request.getName());
         player.setRole(request.getRole());

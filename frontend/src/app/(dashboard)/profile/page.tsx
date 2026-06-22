@@ -2,18 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, LogOut, User, Shield, Key } from "lucide-react";
+import { Loader2, LogOut, User, Sun, Moon, HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<string | null>(null);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
     setRole(storedRole);
+
+    const storedTheme = (localStorage.getItem("theme") as "light" | "dark") || "light";
+    setTheme(storedTheme);
 
     api.get("/profile")
       .then((res) => {
@@ -25,6 +30,16 @@ export default function ProfilePage() {
         setLoading(false);
       });
   }, []);
+
+  const toggleTheme = (targetTheme: "light" | "dark") => {
+    setTheme(targetTheme);
+    localStorage.setItem("theme", targetTheme);
+    if (targetTheme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -55,7 +70,7 @@ export default function ProfilePage() {
           
           {/* Avatar and Primary Details */}
           <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-6 space-y-4">
-            <div className="w-20 h-20 rounded-2xl bg-zinc-905 border border-zinc-800 flex items-center justify-center mx-auto text-orange-500">
+            <div className="w-20 h-20 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-orange-500">
               <User className="w-10 h-10 stroke-[2.5]" />
             </div>
             <div className="space-y-1">
@@ -68,32 +83,53 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Details Table */}
+          {/* Details & Settings Card */}
           <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-4 text-left">
             <div className="flex justify-between items-center py-2.5 border-b border-zinc-900">
               <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">EMAIL ADDRESS</span>
               <span className="text-sm font-bold text-white uppercase tracking-tight">{profile.email}</span>
             </div>
-            <div className="flex justify-between items-center py-2.5 border-b border-zinc-900">
-              <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">ACADEMY NAME</span>
-              <span className="text-sm font-bold text-white uppercase tracking-tight">
-                {profile.organization?.name || "PERSONAL WORKSPACE"}
-              </span>
-            </div>
-            {role !== "player" && profile.organization?.joinCode && (
-              <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4.5 space-y-2 mt-2">
-                <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <Key className="w-4 h-4" />
-                  ACADEMY JOIN CODE FOR PLAYERS
-                </span>
-                <p className="text-3xl font-black text-white tracking-widest text-center py-1">
-                  {profile.organization.joinCode}
-                </p>
-                <p className="text-[10.5px] font-bold text-zinc-400 leading-normal text-center">
-                  Share this code with your players. They must enter this code during signup to join your roster automatically.
-                </p>
+
+            {/* Theme Selection */}
+            <div className="space-y-2 py-2.5 border-b border-zinc-900">
+              <span className="text-xs font-black text-zinc-500 uppercase tracking-widest block">THEME SELECTION</span>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <button
+                  onClick={() => toggleTheme("light")}
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
+                    theme === "light"
+                      ? "bg-white text-black border-white shadow-md"
+                      : "bg-zinc-950 text-zinc-400 border-zinc-900 hover:text-white"
+                  }`}
+                >
+                  <Sun className="w-4 h-4" />
+                  LIGHT MODE
+                </button>
+                <button
+                  onClick={() => toggleTheme("dark")}
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
+                    theme === "dark"
+                      ? "bg-white text-black border-white shadow-md"
+                      : "bg-zinc-950 text-zinc-400 border-zinc-900 hover:text-white"
+                  }`}
+                >
+                  <Moon className="w-4 h-4" />
+                  DARK MODE
+                </button>
               </div>
-            )}
+            </div>
+
+            {/* Help Link */}
+            <Link
+              href="/help"
+              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase"
+            >
+              <span className="flex items-center gap-2">
+                <HelpCircle className="w-5 h-5" />
+                HELP & INFORMATION
+              </span>
+              <span className="text-xs font-black text-zinc-500">READ GUIDE &rarr;</span>
+            </Link>
           </div>
 
           {/* Logout Action */}

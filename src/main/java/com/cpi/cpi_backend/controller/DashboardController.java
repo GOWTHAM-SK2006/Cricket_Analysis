@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DashboardController {
 
-    private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
@@ -35,33 +34,29 @@ public class DashboardController {
         Coach managedCoach = coachRepository.findById(coachId)
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
-        List<Team> teams;
         List<Player> players;
         List<PracticeAssessment> practiceAssessments;
         List<MatchAssessment> matchAssessments;
 
-        if (managedCoach.getRole() == Role.ADMIN || managedCoach.getOrganization() != null) {
-            Long orgId = managedCoach.getOrganization() != null ? managedCoach.getOrganization().getId() : null;
-            if (orgId != null) {
-                teams = teamRepository.findByOrganizationId(orgId);
-                players = playerRepository.findByOrganizationId(orgId);
-                practiceAssessments = practiceAssessmentRepository.findByOrganizationId(orgId);
-                matchAssessments = matchAssessmentRepository.findByOrganizationId(orgId);
-            } else {
-                teams = List.of();
-                players = List.of();
-                practiceAssessments = List.of();
-                matchAssessments = List.of();
-            }
+        if (managedCoach.getRole() == Role.ADMIN) {
+            players = playerRepository.findAll();
+            practiceAssessments = practiceAssessmentRepository.findAll();
+            matchAssessments = matchAssessmentRepository.findAll();
         } else {
-            teams = teamRepository.findByCoachId(coachId);
-            players = playerRepository.findByCreatorCoachId(coachId);
+            players = new ArrayList<>(playerRepository.findByCreatorCoachId(coachId));
+            // Also check if there's a player record with their name (for self-assessments)
+            boolean hasSelf = players.stream().anyMatch(p -> p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()));
+            if (!hasSelf) {
+                playerRepository.findAll().stream()
+                        .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()))
+                        .findFirst()
+                        .ifPresent(players::add);
+            }
             practiceAssessments = practiceAssessmentRepository.findByCoachId(coachId);
             matchAssessments = matchAssessmentRepository.findByCoachId(coachId);
         }
 
-        // 2. Compute Card Stats
-        long totalTeams = teams.size();
+        // Compute Card Stats
         long totalPlayers = players.size();
         long totalPracticeSessions = practiceAssessments.size();
         long totalMatches = matchAssessments.size();
@@ -89,15 +84,7 @@ public class DashboardController {
                 .average()
                 .orElse(0.0);
 
-        // 3. Team Performance Chart Data
-        List<DashboardStatsResponse.TeamPerformanceDto> teamPerformance = teams.stream()
-                .map(t -> DashboardStatsResponse.TeamPerformanceDto.builder()
-                        .teamName(t.getName())
-                        .cpi(t.getTeamCpiScore() != null ? t.getTeamCpiScore() : 0.0)
-                        .build())
-                .collect(Collectors.toList());
-
-        // 4. Trend Chart Data (Format: Jun 19)
+        // Trend Chart Data (Format: Jun 19)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM dd");
 
         // Find all unique dates from practice and match assessments, sorted chronologically
@@ -166,24 +153,14 @@ public class DashboardController {
             cpiTrend = cpiTrend.subList(cpiTrend.size() - 10, cpiTrend.size());
         }
 
-        // 5. Activity Feed
+        // Activity Feed
         List<DashboardStatsResponse.ActivityDto> activities = new ArrayList<>();
 
-        for (Team team : teams) {
-            activities.add(DashboardStatsResponse.ActivityDto.builder()
-                    .type("TEAM_CREATED")
-                    .title("Team Created")
-                    .description("Team '" + team.getName() + "' was successfully created.")
-                    .timestamp(team.getCreatedAt())
-                    .build());
-        }
-
         for (Player player : players) {
-            String teamName = player.getTeam() != null ? player.getTeam().getName() : "Unassigned";
             activities.add(DashboardStatsResponse.ActivityDto.builder()
                     .type("PLAYER_ADDED")
                     .title("Player Added")
-                    .description("Player '" + player.getName() + "' was added to team '" + teamName + "'.")
+                    .description("Player '" + player.getName() + "' was added.")
                     .timestamp(player.getCreatedAt())
                     .build());
         }
@@ -213,14 +190,14 @@ public class DashboardController {
                 .collect(Collectors.toList());
 
         DashboardStatsResponse response = DashboardStatsResponse.builder()
-                .totalTeams(totalTeams)
+                .totalTeams(0L)
                 .totalPlayers(totalPlayers)
                 .totalPracticeSessions(totalPracticeSessions)
                 .totalMatches(totalMatches)
                 .avgPpi(avgPpi)
                 .avgMpi(avgMpi)
                 .avgCpi(avgCpi)
-                .teamPerformance(teamPerformance)
+                .teamPerformance(List.of())
                 .cpiTrend(cpiTrend)
                 .practiceTrend(practiceTrend)
                 .matchTrend(matchTrend)

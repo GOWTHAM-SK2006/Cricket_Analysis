@@ -36,13 +36,6 @@ public class Coach implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "approval_status")
-    private String approvalStatus; // APPROVED, PENDING, REJECTED
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "organization_id")
-    private Organization organization;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
