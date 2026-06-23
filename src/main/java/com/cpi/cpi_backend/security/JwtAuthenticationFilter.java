@@ -1,5 +1,7 @@
 package com.cpi.cpi_backend.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,30 +35,65 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
+        String requestURI = request.getRequestURI();
+
+        // Bypass JWT parsing for public endpoints completely
+        if (requestURI.equals("/api/auth/signup") || requestURI.equals("/api/auth/login") ||
+            requestURI.equals("/signup") || requestURI.equals("/login") ||
+            requestURI.startsWith("/_next/") || requestURI.startsWith("/static/") ||
+            requestURI.equals("/favicon.ico") || requestURI.equals("/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
+        try {
+            userEmail = jwtService.extractUsername(jwt);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException ex) {
+            SecurityContextHolder.clearContext();
+            
+            // If it is a protected backend API request, return 401 Unauthorized
+            if (requestURI.startsWith("/api/")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\":\"JWT token has expired\",\"status\":401}");
+                response.getWriter().flush();
+            } else {
+                // If it is a public page (or frontend route), let the request continue as unauthenticated
+                filterChain.doFilter(request, response);
+            }
+        } catch (JwtException | IllegalArgumentException ex) {
+            SecurityContextHolder.clearContext();
+            
+            if (requestURI.startsWith("/api/")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\":\"Invalid JWT token\",\"status\":401}");
+                response.getWriter().flush();
+            } else {
+                filterChain.doFilter(request, response);
             }
         }
-        filterChain.doFilter(request, response);
     }
 }
