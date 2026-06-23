@@ -10,9 +10,9 @@ import {
   ClipboardCheck,
   Target,
   Activity,
-  Lightbulb,
   Zap,
-  ChevronRight
+  ChevronRight,
+  UserCheck
 } from "lucide-react";
 
 interface Player {
@@ -43,10 +43,7 @@ export default function DashboardPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
   const [selectedPlayerData, setSelectedPlayerData] = useState<Player | null>(null);
-  
-  // Selected Player Assessment History
-  const [playerPracticeHistory, setPlayerPracticeHistory] = useState<any[]>([]);
-  const [playerMatchHistory, setPlayerMatchHistory] = useState<any[]>([]);
+  const [lastAssessmentDate, setLastAssessmentDate] = useState<string>("No assessments logged");
   const [loadingHistory, setLoadingHistory] = useState(false);
 
   useEffect(() => {
@@ -81,12 +78,11 @@ export default function DashboardPage() {
     loadDashboardData();
   }, []);
 
-  // Fetch player details and history when selection changes
+  // Fetch player details and history to find last assessment date
   useEffect(() => {
     if (!selectedPlayerId) {
       setSelectedPlayerData(null);
-      setPlayerPracticeHistory([]);
-      setPlayerMatchHistory([]);
+      setLastAssessmentDate("No assessments logged");
       return;
     }
 
@@ -100,8 +96,25 @@ export default function DashboardPage() {
           api.get(`/practice/player/${selectedPlayerId}`).catch(() => ({ data: [] })),
           api.get(`/matches/player/${selectedPlayerId}`).catch(() => ({ data: [] }))
         ]);
-        setPlayerPracticeHistory(pracRes.data || []);
-        setPlayerMatchHistory(matchRes.data || []);
+        
+        const pracLogs = pracRes.data || [];
+        const matchLogs = matchRes.data || [];
+
+        let lastDate = "No assessments logged";
+        const dates = [
+          ...pracLogs.map((p: any) => p.createdAt || p.date),
+          ...matchLogs.map((m: any) => m.createdAt || m.date)
+        ].filter(Boolean);
+
+        if (dates.length > 0) {
+          const sortedDates = dates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+          lastDate = new Date(sortedDates[0]).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+          });
+        }
+        setLastAssessmentDate(lastDate);
       } catch (err) {
         console.error("Failed to load player history logs", err);
       } finally {
@@ -131,7 +144,7 @@ export default function DashboardPage() {
   const practicesToday = stats?.practicesToday || 0;
   const matchesToday = stats?.matchesToday || 0;
 
-  // Selected Player details & insights
+  // Selected Player details
   const currentPpi = selectedPlayerData?.ppiScore && selectedPlayerData.ppiScore > 0 ? selectedPlayerData.ppiScore.toFixed(1) : "N/A";
   const currentMpi = selectedPlayerData?.mpiScore && selectedPlayerData.mpiScore > 0 ? selectedPlayerData.mpiScore.toFixed(1) : "N/A";
 
@@ -144,42 +157,6 @@ export default function DashboardPage() {
     currentCpi = selectedPlayerData.mpiScore.toFixed(1);
   }
 
-  // Last Assessment Date Calculation
-  let lastAssessmentDate = "No assessments logged";
-  const dates = [
-    ...playerPracticeHistory.map(p => p.createdAt || p.date),
-    ...playerMatchHistory.map(m => m.createdAt || m.date)
-  ].filter(Boolean);
-  if (dates.length > 0) {
-    const sortedDates = dates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-    lastAssessmentDate = new Date(sortedDates[0]).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    });
-  }
-
-  // Chronological last 5 assessments (Practice & Matches)
-  const sortedPracticeHistory = [...playerPracticeHistory]
-    .sort((a, b) => new Date(a.createdAt || a.date).getTime() - new Date(b.createdAt || b.date).getTime())
-    .slice(-5);
-
-  const sortedMatchHistory = [...playerMatchHistory]
-    .sort((a, b) => new Date(a.createdAt || a.date).getTime() - new Date(b.createdAt || b.date).getTime())
-    .slice(-5);
-
-  const getHistoryTrend = (historyList: any[], scoreKey: string) => {
-    if (historyList.length < 2) return { text: "Stable", symbol: "→", color: "text-zinc-400 bg-zinc-900 border-zinc-800" };
-    const last = historyList[historyList.length - 1][scoreKey];
-    const prev = historyList[historyList.length - 2][scoreKey];
-    if (last > prev) return { text: "Improving", symbol: "↑", color: "text-emerald-400 bg-emerald-950/40 border-emerald-500/30" };
-    if (last < prev) return { text: "Declining", symbol: "↓", color: "text-red-400 bg-red-950/40 border-red-500/30" };
-    return { text: "Stable", symbol: "→", color: "text-zinc-400 bg-zinc-900 border-zinc-800" };
-  };
-
-  const practiceTrend = getHistoryTrend(sortedPracticeHistory, "ppiScore");
-  const matchTrend = getHistoryTrend(sortedMatchHistory, "mpiScore");
-
   const formatScoreValue = (val: number) => {
     if (val <= 10) {
       return Math.round(val * 10);
@@ -187,113 +164,12 @@ export default function DashboardPage() {
     return Math.round(val);
   };
 
-  // Coaching Insights (Strongest Area, Needs Improvement, Recommended Focus)
-  let strongestArea = "N/A";
-  let weakestArea = "N/A";
-  let recommendedFocusList: string[] = ["Complete both Practice and Match assessments to receive focus areas."];
-
-  if (playerPracticeHistory.length > 0 || playerMatchHistory.length > 0) {
-    const metricSums: Record<string, { sum: number; count: number }> = {};
-
-    const addMetric = (key: string, val: number | undefined | null) => {
-      if (val === undefined || val === null || val <= 0) return;
-      if (!metricSums[key]) {
-        metricSums[key] = { sum: 0, count: 0 };
-      }
-      metricSums[key].sum += val;
-      metricSums[key].count += 1;
-    };
-
-    // Practice assessment metrics
-    playerPracticeHistory.forEach(p => {
-      addMetric("Technique", p.technique);
-      addMetric("Training Intensity", p.intensity);
-      addMetric("Skill Execution", p.execution);
-      addMetric("Adaptability", p.adaptability);
-      addMetric("Practice Discipline", p.discipline);
-      addMetric("Focus & Attention", p.focus);
-    });
-
-    // Match assessment metrics
-    playerMatchHistory.forEach(m => {
-      addMetric("Technical Execution", m.technicalExecution);
-      addMetric("Decision Making", m.decisionMaking);
-      addMetric("Game Awareness", m.gameAwareness);
-      addMetric("Pressure Handling", m.pressureHandling);
-      addMetric("Team Contribution", m.teamContribution);
-      addMetric("Match Impact", m.matchImpact);
-    });
-
-    const averages = Object.entries(metricSums).map(([name, data]) => ({
-      name,
-      avg: data.sum / data.count
-    }));
-
-    if (averages.length > 0) {
-      averages.sort((a, b) => b.avg - a.avg);
-      strongestArea = averages[0].name;
-
-      const sortedAsc = [...averages].sort((a, b) => a.avg - b.avg);
-      weakestArea = sortedAsc[0].name;
-
-      if (weakestArea === "Technique" || weakestArea === "Technical Execution") {
-        recommendedFocusList = [
-          "Stance stability and bat-flow alignment drills",
-          "Defensive contact-point throwdowns",
-          "Shadow batting practice under coaching observation"
-        ];
-      } else if (weakestArea === "Training Intensity" || weakestArea === "Practice Discipline") {
-        recommendedFocusList = [
-          "High-intensity net sessions with timed targets",
-          "Strict intent mapping logs for every practice block",
-          "Interval agility and stamina training routines"
-        ];
-      } else if (weakestArea === "Skill Execution" || weakestArea === "Match Impact") {
-        recommendedFocusList = [
-          "Target hitting drills targeting gaps in the field",
-          "Consistent length line-and-length bowling targets",
-          "Game simulation nets requiring set run scoring zones"
-        ];
-      } else if (weakestArea === "Adaptability" || weakestArea === "Game Awareness") {
-        recommendedFocusList = [
-          "Scenario batting (high run-rate chase vs wicket preservation)",
-          "Variation response drills (spin, pace, bouncer nets)",
-          "Tactical captaincy and field placement planning games"
-        ];
-      } else if (weakestArea === "Focus & Attention" || weakestArea === "Decision Making") {
-        recommendedFocusList = [
-          "Colored ball recognition nets for shot selection",
-          "Pre-delivery breath control and trigger-movement routines",
-          "Selective hitting constraints (e.g. only off-side playing)"
-        ];
-      } else if (weakestArea === "Pressure Handling") {
-        recommendedFocusList = [
-          "Batting nets with severe wicket run penalty consequences",
-          "Target chasing under loud mock field noise",
-          "Death-overs scenario batting and bowling simulations"
-        ];
-      } else if (weakestArea === "Team Contribution") {
-        recommendedFocusList = [
-          "Active strike rotation and push-for-singles drills",
-          "Sacrifice batting and boundary protection scenarios",
-          "Pair communication calls during quick running"
-        ];
-      } else {
-        recommendedFocusList = [
-          "Maintain balanced training routines",
-          "Review session logs for minor skill variations",
-          "Work on overall fitness and mental clarity"
-        ];
-      }
-    }
-  }
-
   return (
     <div className="space-y-8 pb-16 select-none max-w-lg mx-auto text-left">
       {/* Welcome Header */}
       <div className="space-y-1 py-2 border-b border-zinc-900 flex justify-between items-center">
         <div>
-          <h1 className="text-zinc-555 text-zinc-500 font-black tracking-widest text-[10px] uppercase">
+          <h1 className="text-zinc-500 font-black tracking-widest text-[10px] uppercase">
             COACHING HUB
           </h1>
           <p className="text-2xl font-black text-white uppercase tracking-tight leading-none">
@@ -320,7 +196,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="bg-zinc-950 border border-zinc-900 p-4 rounded-2xl flex flex-col justify-between min-h-[90px]">
-            <span className="text-[10px] font-black text-zinc-555 text-zinc-500 uppercase tracking-wider">Assessed Today</span>
+            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">Assessed Today</span>
             <div className="flex items-baseline justify-between mt-1">
               <span className="text-3xl font-black text-orange-500">{playersAssessedToday}</span>
               <ClipboardCheck className="w-5 h-5 text-orange-600/50" />
@@ -410,7 +286,7 @@ export default function DashboardPage() {
             <select
               value={selectedPlayerId || ""}
               onChange={(e) => setSelectedPlayerId(Number(e.target.value))}
-              className="w-full h-14 bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-2xl px-4 text-sm font-black text-white focus:outline-none focus:border-orange-500 cursor-pointer appearance-none uppercase"
+              className="w-full h-14 bg-zinc-950 border border-zinc-900 rounded-2xl px-4 text-sm font-black text-white focus:outline-none focus:border-orange-500 cursor-pointer appearance-none uppercase"
             >
               <option value="" disabled>Select Player ▼</option>
               {players.map((p) => (
@@ -440,14 +316,16 @@ export default function DashboardPage() {
               </div>
               <div className="text-right">
                 <span className="text-[8px] font-black text-zinc-550 tracking-widest block uppercase">LAST ASSESSMENT</span>
-                <span className="text-xs font-bold text-zinc-300">{lastAssessmentDate}</span>
+                <span className="text-xs font-bold text-zinc-300">
+                  {loadingHistory ? "..." : lastAssessmentDate}
+                </span>
               </div>
             </div>
 
             {/* Main Score Snapshots */}
             <div className="grid grid-cols-3 gap-3 text-center">
               <div className="bg-zinc-900/60 p-3 rounded-2xl border border-zinc-900">
-                <p className="text-[8px] font-black text-zinc-505 text-zinc-500 uppercase tracking-wider mb-1">
+                <p className="text-[8px] font-black text-zinc-500 uppercase tracking-wider mb-1">
                   Current PPI
                 </p>
                 <p className="text-xl font-black text-white font-mono">
@@ -455,7 +333,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="bg-zinc-900/60 p-3 rounded-2xl border border-zinc-900">
-                <p className="text-[8px] font-black text-zinc-505 text-zinc-500 uppercase tracking-wider mb-1">
+                <p className="text-[8px] font-black text-zinc-500 uppercase tracking-wider mb-1">
                   Current MPI
                 </p>
                 <p className="text-xl font-black text-white font-mono">
@@ -472,94 +350,14 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {loadingHistory ? (
-              <div className="flex items-center justify-center py-10 gap-2 text-zinc-550">
-                <Loader2 className="w-5 h-5 animate-spin text-orange-550" />
-                <span className="text-[9px] font-black uppercase tracking-widest">Loading history logs...</span>
-              </div>
-            ) : (
-              <>
-                {/* Last 5 Practices & Matches */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Practices */}
-                  <div className="space-y-2 bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">LAST 5 PRACTICES</span>
-                      {sortedPracticeHistory.length >= 2 && (
-                        <span className={`text-[8px] font-black px-2 py-0.5 rounded-full border flex items-center gap-0.5 uppercase tracking-wide ${practiceTrend.color}`}>
-                          {practiceTrend.text} {practiceTrend.symbol}
-                        </span>
-                      )}
-                    </div>
-                    <div className="space-y-1.5 text-left">
-                      {sortedPracticeHistory.map((p, idx) => (
-                        <div key={p.id || idx} className="flex justify-between items-center text-[11px] font-bold py-1 border-b border-zinc-900/30 last:border-0">
-                          <span className="text-zinc-500">Practice {idx + 1}</span>
-                          <span className="text-white font-mono">{formatScoreValue(p.ppiScore)}</span>
-                        </div>
-                      ))}
-                      {sortedPracticeHistory.length === 0 && (
-                        <p className="text-[9px] text-zinc-650 font-bold uppercase text-center py-3">No practice logs</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Matches */}
-                  <div className="space-y-2 bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">LAST 5 MATCHES</span>
-                      {sortedMatchHistory.length >= 2 && (
-                        <span className={`text-[8px] font-black px-2 py-0.5 rounded-full border flex items-center gap-0.5 uppercase tracking-wide ${matchTrend.color}`}>
-                          {matchTrend.text} {matchTrend.symbol}
-                        </span>
-                      )}
-                    </div>
-                    <div className="space-y-1.5 text-left">
-                      {sortedMatchHistory.map((m, idx) => (
-                        <div key={m.id || idx} className="flex justify-between items-center text-[11px] font-bold py-1 border-b border-zinc-900/30 last:border-0">
-                          <span className="text-zinc-555 text-zinc-500">Match {idx + 1}</span>
-                          <span className="text-white font-mono">{formatScoreValue(m.mpiScore)}</span>
-                        </div>
-                      ))}
-                      {sortedMatchHistory.length === 0 && (
-                        <p className="text-[9px] text-zinc-650 font-bold uppercase text-center py-3">No match logs</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Coaching Insights Card */}
-                <div className="border border-orange-500/20 bg-orange-950/5 rounded-2xl p-5 space-y-4 text-left">
-                  <div className="flex items-center gap-2 border-b border-orange-500/15 pb-2.5">
-                    <Lightbulb className="w-4 h-4 text-orange-400" />
-                    <h4 className="text-[10px] font-black tracking-widest text-orange-400 uppercase">COACHING INSIGHTS</h4>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-0.5">
-                      <span className="text-[9px] font-black text-zinc-500 tracking-wider block">STRONGEST AREA</span>
-                      <span className="text-sm font-bold text-white uppercase">{strongestArea}</span>
-                    </div>
-                    <div className="space-y-0.5">
-                      <span className="text-[9px] font-black text-orange-400/80 uppercase tracking-wider block">NEEDS IMPROVEMENT</span>
-                      <span className="text-sm font-bold text-orange-400 uppercase">{weakestArea}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 pt-3 border-t border-zinc-900/60">
-                    <span className="text-[9px] font-black text-zinc-500 tracking-wider block">RECOMMENDED FOCUS</span>
-                    <ul className="space-y-1.5 text-[11px]">
-                      {recommendedFocusList.map((rec, i) => (
-                        <li key={i} className="text-zinc-300 flex items-start gap-2 leading-relaxed">
-                          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0" />
-                          {rec}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </>
-            )}
+            {/* View Full Player Profile Button */}
+            <button
+              onClick={() => router.push(`/players?id=${selectedPlayerData.id}`)}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 transition-all active:scale-[0.99] border border-orange-400 shadow-md cursor-pointer uppercase"
+            >
+              <UserCheck className="w-5 h-5 stroke-[2.5]" />
+              View Full Player Profile
+            </button>
           </div>
         ) : (
           <div className="text-center py-12 text-zinc-600 font-bold uppercase text-xs border border-dashed border-zinc-900 rounded-3xl">

@@ -165,6 +165,37 @@ export default function PlayersPage() {
   // Handle auto-select and self-assessment navigation for players
   useEffect(() => {
     if (players.length > 0) {
+      const idParam = searchParams.get("id");
+      if (idParam) {
+        const found = players.find((p) => p.id === Number(idParam));
+        if (found) {
+          setSelectedPlayer(found);
+          setView("profile");
+          loadHistory(found.id);
+          
+          const action = searchParams.get("action");
+          if (action === "practice") {
+            setShowPracticeOverlay(true);
+          } else if (action === "match") {
+            setShowMatchOverlay(true);
+          }
+          return;
+        }
+      }
+
+      const actionParam = searchParams.get("action");
+      if (actionParam && !idParam) {
+        setSelectedPlayer(players[0]);
+        setView("profile");
+        loadHistory(players[0].id);
+        if (actionParam === "practice") {
+          setShowPracticeOverlay(true);
+        } else if (actionParam === "match") {
+          setShowMatchOverlay(true);
+        }
+        return;
+      }
+
       if (role === "player") {
         api.get("/profile").then((profileRes) => {
           const matchingPlayer = players.find(
@@ -727,167 +758,447 @@ export default function PlayersPage() {
       )}
 
       {/* ------------------ VIEW: PLAYER PROFILE ------------------ */}
-      {view === "profile" && selectedPlayer && (
-        <div className="space-y-6 text-center">
-          
-          {/* Back Header */}
-          {role !== "player" && (
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => { setView("list"); router.replace("/players"); }}
-                className="h-11 px-4 bg-zinc-950 border-2 border-zinc-900 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-white cursor-pointer"
-              >
-                <ArrowLeft className="w-4 h-4 stroke-[3]" />
-                BACK TO LIST
-              </button>
-            </div>
-          )}
+      {view === "profile" && selectedPlayer && (() => {
+        // Compute insights
+        let strongestArea = "N/A";
+        let weakestArea = "N/A";
+        let recommendedFocusList: string[] = ["Complete both Practice and Match assessments to receive focus areas."];
 
-          {/* Photo and Name */}
-          <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-6 space-y-4">
-            
-            <div 
-              onClick={() => profilePhotoInputRef.current?.click()}
-              className="w-28 h-28 rounded-3xl bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center mx-auto overflow-hidden relative cursor-pointer group hover:border-orange-500"
-            >
-              {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
-                <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-4xl font-black text-orange-500">{getInitials(selectedPlayer.name)}</span>
-              )}
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                <Camera className="w-6 h-6 text-white" />
+        if (practiceHistory.length > 0 || matchHistory.length > 0) {
+          const metricSums: Record<string, { sum: number; count: number }> = {};
+
+          const addMetric = (key: string, val: number | undefined | null) => {
+            if (val === undefined || val === null || val <= 0) return;
+            if (!metricSums[key]) {
+              metricSums[key] = { sum: 0, count: 0 };
+            }
+            metricSums[key].sum += val;
+            metricSums[key].count += 1;
+          };
+
+          practiceHistory.forEach(p => {
+            addMetric("Technique", p.technique);
+            addMetric("Training Intensity", p.intensity);
+            addMetric("Skill Execution", p.execution);
+            addMetric("Adaptability", p.adaptability);
+            addMetric("Practice Discipline", p.discipline);
+            addMetric("Focus & Attention", p.focus);
+          });
+
+          matchHistory.forEach(m => {
+            addMetric("Technical Execution", m.technicalExecution);
+            addMetric("Decision Making", m.decisionMaking);
+            addMetric("Game Awareness", m.gameAwareness);
+            addMetric("Pressure Handling", m.pressureHandling);
+            addMetric("Team Contribution", m.teamContribution);
+            addMetric("Match Impact", m.matchImpact);
+          });
+
+          const averages = Object.entries(metricSums).map(([name, data]) => ({
+            name,
+            avg: data.sum / data.count
+          }));
+
+          if (averages.length > 0) {
+            averages.sort((a, b) => b.avg - a.avg);
+            strongestArea = averages[0].name;
+
+            const sortedAsc = [...averages].sort((a, b) => a.avg - b.avg);
+            weakestArea = sortedAsc[0].name;
+
+            if (weakestArea === "Technique" || weakestArea === "Technical Execution") {
+              recommendedFocusList = [
+                "Stance stability and bat-flow alignment drills",
+                "Defensive contact-point throwdowns",
+                "Shadow batting practice under coaching observation"
+              ];
+            } else if (weakestArea === "Training Intensity" || weakestArea === "Practice Discipline") {
+              recommendedFocusList = [
+                "High-intensity net sessions with timed targets",
+                "Strict intent mapping logs for every practice block",
+                "Interval agility and stamina training routines"
+              ];
+            } else if (weakestArea === "Skill Execution" || weakestArea === "Match Impact") {
+              recommendedFocusList = [
+                "Target hitting drills targeting gaps in the field",
+                "Consistent length line-and-length bowling targets",
+                "Game simulation nets requiring set run scoring zones"
+              ];
+            } else if (weakestArea === "Adaptability" || weakestArea === "Game Awareness") {
+              recommendedFocusList = [
+                "Scenario batting (high run-rate chase vs wicket preservation)",
+                "Variation response drills (spin, pace, bouncer nets)",
+                "Tactical captaincy and field placement planning games"
+              ];
+            } else if (weakestArea === "Focus & Attention" || weakestArea === "Decision Making") {
+              recommendedFocusList = [
+                "Colored ball recognition nets for shot selection",
+                "Pre-delivery breath control and trigger-movement routines",
+                "Selective hitting constraints (e.g. only off-side playing)"
+              ];
+            } else if (weakestArea === "Pressure Handling") {
+              recommendedFocusList = [
+                "Batting nets with severe wicket run penalty consequences",
+                "Target chasing under loud mock field noise",
+                "Death-overs scenario batting and bowling simulations"
+              ];
+            } else if (weakestArea === "Team Contribution") {
+              recommendedFocusList = [
+                "Active strike rotation and push-for-singles drills",
+                "Sacrifice batting and boundary protection scenarios",
+                "Pair communication calls during quick running"
+              ];
+            } else {
+              recommendedFocusList = [
+                "Maintain balanced training routines",
+                "Review session logs for minor skill variations",
+                "Work on overall fitness and mental clarity"
+              ];
+            }
+          }
+        }
+
+        // Get self-assessment averages
+        const getSelfAverages = () => {
+          if (!selfHistory || selfHistory.length === 0) return null;
+          const totals = { sleep: 0, nutrition: 0, preparation: 0, health: 0, mental: 0 };
+          selfHistory.forEach(h => {
+            totals.sleep += h.sleep || 0;
+            totals.nutrition += h.nutrition || 0;
+            totals.preparation += h.preparation || 0;
+            totals.health += h.health || 0;
+            totals.mental += h.mental || 0;
+          });
+          const count = selfHistory.length;
+          return {
+            sleep: (totals.sleep / count).toFixed(1),
+            nutrition: (totals.nutrition / count).toFixed(1),
+            preparation: (totals.preparation / count).toFixed(1),
+            health: (totals.health / count).toFixed(1),
+            mental: (totals.mental / count).toFixed(1),
+          };
+        };
+        const selfAverages = getSelfAverages();
+
+        // Calculate latest assessment dates
+        let lastAssessmentDate = "No assessments logged";
+        const dates = [
+          ...practiceHistory.map(p => p.createdAt || p.date),
+          ...matchHistory.map(m => m.createdAt || m.date)
+        ].filter(Boolean);
+        if (dates.length > 0) {
+          const sortedDates = dates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+          lastAssessmentDate = new Date(sortedDates[0]).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+          });
+        }
+
+        return (
+          <div className="space-y-6 text-center pb-12">
+            {/* Back Header */}
+            {role !== "player" && (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => { setView("list"); router.replace("/players"); }}
+                  className="h-11 px-4 bg-zinc-955 bg-zinc-950 border-2 border-zinc-900 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-white cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4 stroke-[3]" />
+                  BACK TO LIST
+                </button>
               </div>
-            </div>
-            
-            <input 
-              type="file" 
-              ref={profilePhotoInputRef} 
-              onChange={(e) => handlePhotoSelect(e, true)} 
-              accept="image/*" 
-              className="hidden" 
-            />
-
-            <div className="space-y-1">
-              <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
-              <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{selectedPlayer.role}</p>
-            </div>
-          </div>
-
-          {/* Index Cards */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4">
-              <span className="text-[8px] font-black text-zinc-500 tracking-widest block uppercase mb-1">PRACTICE PPI</span>
-              <span className="text-2xl font-black text-white tracking-tight">
-                {selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? selectedPlayer.ppiScore.toFixed(1) : "N/A"}
-              </span>
-            </div>
-            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4">
-              <span className="text-[8px] font-black text-zinc-500 tracking-widest block uppercase mb-1">MATCH MPI</span>
-              <span className="text-2xl font-black text-white tracking-tight">
-                {selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0 ? selectedPlayer.mpiScore.toFixed(1) : "N/A"}
-              </span>
-            </div>
-            <div className="bg-orange-500 border border-orange-400 rounded-2xl p-4 text-black">
-              <span className="text-[8px] font-black text-black/60 tracking-widest block uppercase mb-1">TOTAL CPI</span>
-              <span className="text-2xl font-black text-black tracking-tight">
-                {selectedPlayer.ppiScore && selectedPlayer.mpiScore && selectedPlayer.ppiScore > 0 && selectedPlayer.mpiScore > 0
-                  ? ((selectedPlayer.ppiScore + selectedPlayer.mpiScore) / 2).toFixed(1)
-                  : selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0
-                    ? selectedPlayer.ppiScore.toFixed(1)
-                    : selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0
-                      ? selectedPlayer.mpiScore.toFixed(1)
-                      : "N/A"}
-              </span>
-            </div>
-          </div>
-
-          {/* Individual Player Performance Trend */}
-          <PerformanceTrendChart data={getPlayerTrendData()} />
-
-          {/* Navigation Action Buttons */}
-          <div className="space-y-4 pt-4">
-            
-            {role !== "player" ? (
-              <>
-                <button
-                  onClick={() => {
-                    setPracticeForm({
-                      technique: 7,
-                      intensity: 7,
-                      execution: 7,
-                      adaptability: 7,
-                      discipline: 7,
-                      focus: 7,
-                      notes: ""
-                    });
-                    setError("");
-                    setShowPracticeOverlay(true);
-                  }}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-5 text-xl font-extrabold flex items-center justify-center gap-3 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer"
-                >
-                  <Clipboard className="w-6 h-6 stroke-[3]" />
-                  PRACTICE ASSESSMENT
-                </button>
-
-                <button
-                  onClick={() => {
-                    setMatchForm({
-                      technicalExecution: 7,
-                      decisionMaking: 7,
-                      gameAwareness: 7,
-                      pressureHandling: 7,
-                      teamContribution: 7,
-                      matchImpact: 7,
-                      notes: ""
-                    });
-                    setError("");
-                    setShowMatchOverlay(true);
-                  }}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-5 text-xl font-extrabold flex items-center justify-center gap-3 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer"
-                >
-                  <ShieldCheck className="w-6 h-6 stroke-[3]" />
-                  MATCH ASSESSMENT
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => {
-                  setSelfForm({
-                    sleep: 7,
-                    nutrition: 7,
-                    preparation: 7,
-                    health: 7,
-                    mental: 7
-                  });
-                  setShowSelfOverlay(true);
-                }}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-5 text-xl font-extrabold flex items-center justify-center gap-3 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer"
-              >
-                <Clipboard className="w-6 h-6 stroke-[3]" />
-                SELF ASSESSMENT
-              </button>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => setShowHistoryOverlay(true)}
-                className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl py-5 text-lg font-black flex items-center justify-center gap-2.5 transition-all border-2 border-zinc-800 cursor-pointer"
+            {/* Photo and Name */}
+            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-6 space-y-4">
+              <div 
+                onClick={() => profilePhotoInputRef.current?.click()}
+                className="w-28 h-28 rounded-3xl bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center mx-auto overflow-hidden relative cursor-pointer group hover:border-orange-500"
               >
-                <ListCollapse className="w-5 h-5" />
-                HISTORY
-              </button>
-              <button
-                onClick={() => setShowRecsOverlay(true)}
-                className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl py-5 text-lg font-black flex items-center justify-center gap-2.5 transition-all border-2 border-zinc-800 cursor-pointer"
-              >
-                <Sparkles className="w-5 h-5 text-orange-500" />
-                ADVICE
-              </button>
+                {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
+                  <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-4xl font-black text-orange-500">{getInitials(selectedPlayer.name)}</span>
+                )}
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <Camera className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              
+              <input 
+                type="file" 
+                ref={profilePhotoInputRef} 
+                onChange={(e) => handlePhotoSelect(e, true)} 
+                accept="image/*" 
+                className="hidden" 
+              />
+
+              <div className="space-y-1">
+                <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
+                <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{selectedPlayer.role}</p>
+                <div className="text-[10px] text-zinc-400 font-semibold uppercase mt-1">
+                  Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
+                </div>
+                <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">
+                  Last Assessed: {lastAssessmentDate}
+                </div>
+              </div>
             </div>
+
+            {/* Index Cards */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4">
+                <span className="text-[8px] font-black text-zinc-500 tracking-widest block uppercase mb-1">PRACTICE PPI</span>
+                <span className="text-2xl font-black text-white tracking-tight">
+                  {selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? selectedPlayer.ppiScore.toFixed(1) : "N/A"}
+                </span>
+              </div>
+              <div className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4">
+                <span className="text-[8px] font-black text-zinc-500 tracking-widest block uppercase mb-1">MATCH MPI</span>
+                <span className="text-2xl font-black text-white tracking-tight">
+                  {selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0 ? selectedPlayer.mpiScore.toFixed(1) : "N/A"}
+                </span>
+              </div>
+              <div className="bg-orange-500 border border-orange-400 rounded-2xl p-4 text-black">
+                <span className="text-[8px] font-black text-black/60 tracking-widest block uppercase mb-1">TOTAL CPI</span>
+                <span className="text-2xl font-black text-black tracking-tight">
+                  {selectedPlayer.ppiScore && selectedPlayer.mpiScore && selectedPlayer.ppiScore > 0 && selectedPlayer.mpiScore > 0
+                    ? ((selectedPlayer.ppiScore + selectedPlayer.mpiScore) / 2).toFixed(1)
+                    : selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0
+                      ? selectedPlayer.ppiScore.toFixed(1)
+                      : selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0
+                        ? selectedPlayer.mpiScore.toFixed(1)
+                        : "N/A"}
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons for Assessment logging */}
+            <div className="space-y-3">
+              {role !== "player" ? (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => {
+                      setPracticeForm({
+                        technique: 7,
+                        intensity: 7,
+                        execution: 7,
+                        adaptability: 7,
+                        discipline: 7,
+                        focus: 7,
+                        notes: ""
+                      });
+                      setError("");
+                      setShowPracticeOverlay(true);
+                    }}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
+                  >
+                    <Clipboard className="w-4 h-4 stroke-[3]" />
+                    Practice Grade
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMatchForm({
+                        technicalExecution: 7,
+                        decisionMaking: 7,
+                        gameAwareness: 7,
+                        pressureHandling: 7,
+                        teamContribution: 7,
+                        matchImpact: 7,
+                        notes: ""
+                      });
+                      setError("");
+                      setShowMatchOverlay(true);
+                    }}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
+                  >
+                    <ShieldCheck className="w-4 h-4 stroke-[3]" />
+                    Match Grade
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setSelfForm({
+                      sleep: 7,
+                      nutrition: 7,
+                      preparation: 7,
+                      health: 7,
+                      mental: 7
+                    });
+                    setShowSelfOverlay(true);
+                  }}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 text-sm font-black flex items-center justify-center gap-3 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
+                >
+                  <Clipboard className="w-5 h-5 stroke-[3]" />
+                  Log Self Assessment
+                </button>
+              )}
+            </div>
+
+            {/* Individual Player Performance Trend */}
+            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+              <h4 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase text-left">
+                PROGRESS TRENDS
+              </h4>
+              <PerformanceTrendChart data={getPlayerTrendData()} />
+            </div>
+
+            {/* COACHING INSIGHTS & RECOMMENDATIONS */}
+            <div className="border border-orange-500/20 bg-orange-950/5 rounded-3xl p-5 space-y-4 text-left">
+              <div className="flex items-center gap-2 border-b border-orange-550/20 pb-2">
+                <Sparkles className="w-4 h-4 text-orange-400" />
+                <h4 className="text-[10px] font-black tracking-widest text-orange-400 uppercase">COACHING INSIGHTS & RECOMMENDATIONS</h4>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-[9px] font-black text-zinc-550 uppercase block">STRENGTHS (STRONGEST AREA)</span>
+                  <span className="text-xs font-bold text-white uppercase">{strongestArea}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] font-black text-orange-400/80 uppercase block">WEAKNESSES / IMPROVEMENT</span>
+                  <span className="text-xs font-bold text-orange-400 uppercase">{weakestArea}</span>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pt-2 border-t border-zinc-900/60">
+                <span className="text-[9px] font-black text-zinc-550 uppercase block">RECOMMENDED FOCUS</span>
+                <ul className="space-y-1 text-xs">
+                  {recommendedFocusList.map((rec, i) => (
+                    <li key={i} className="text-zinc-300 flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0" />
+                      {rec}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* HEALTH, NUTRITION, SLEEP, MENTAL READINESS METRICS (PLAYER VERSION) */}
+            {selfAverages ? (
+              <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 p-5 rounded-3xl space-y-4 text-left">
+                <h4 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-2 border-b border-zinc-900 pb-2">
+                  <Heart className="w-3.5 h-3.5 text-rose-500" />
+                  HEALTH & READINESS (PLAYER LOGS)
+                </h4>
+                <div className="grid grid-cols-2 gap-3 text-left">
+                  <div className="bg-zinc-900/50 p-3 rounded-2xl border border-zinc-900/60">
+                    <span className="text-[9px] font-black text-zinc-500 uppercase block">Sleep Metrics</span>
+                    <span className="text-sm font-bold text-white">{selfAverages.sleep}/10</span>
+                  </div>
+                  <div className="bg-zinc-900/50 p-3 rounded-2xl border border-zinc-900/60">
+                    <span className="text-[9px] font-black text-zinc-500 uppercase block">Nutrition Metrics</span>
+                    <span className="text-sm font-bold text-white">{selfAverages.nutrition}/10</span>
+                  </div>
+                  <div className="bg-zinc-900/50 p-3 rounded-2xl border border-zinc-900/60">
+                    <span className="text-[9px] font-black text-zinc-500 uppercase block">Warmup & Preparation</span>
+                    <span className="text-sm font-bold text-white">{selfAverages.preparation}/10</span>
+                  </div>
+                  <div className="bg-zinc-900/50 p-3 rounded-2xl border border-zinc-900/60">
+                    <span className="text-[9px] font-black text-zinc-500 uppercase block">Health & Body Metrics</span>
+                    <span className="text-sm font-bold text-white">{selfAverages.health}/10</span>
+                  </div>
+                </div>
+                <div className="bg-zinc-900/50 p-3 rounded-2xl border border-zinc-900/60">
+                  <span className="text-[9px] font-black text-orange-400 uppercase block">Mental Readiness Metrics</span>
+                  <span className="text-sm font-bold text-orange-400">{selfAverages.mental}/10</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-zinc-950 border border-dashed border-zinc-900 p-5 rounded-3xl text-center py-6">
+                <p className="text-[10px] text-zinc-650 font-bold uppercase">No health, nutrition or mental readiness metrics logged</p>
+              </div>
+            )}
+
+            {/* LAST 5 PRACTICE ASSESSMENTS */}
+            <div className="space-y-3 text-left">
+              <h4 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+                LAST 5 PRACTICE ASSESSMENTS
+              </h4>
+              {practiceHistory.length === 0 ? (
+                <p className="text-xs text-zinc-650 font-bold pl-2 uppercase">No practice assessments</p>
+              ) : (
+                <div className="space-y-3">
+                  {practiceHistory.slice(0, 5).map((p, idx) => (
+                    <div key={p.id || idx} className="bg-zinc-950 p-4 border border-zinc-900 rounded-2xl space-y-2">
+                      <div className="flex justify-between items-center border-b border-zinc-900/60 pb-2">
+                        <span className="text-[10px] font-black text-zinc-500 uppercase">
+                          Practice Grade ({new Date(p.date || p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})
+                        </span>
+                        <span className="text-sm font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">PPI {p.ppiScore.toFixed(1)}</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+                        <div><span className="text-zinc-500 block uppercase font-black">Technique</span><span className="text-white font-bold">{p.technique}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Intensity</span><span className="text-white font-bold">{p.intensity}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Execution</span><span className="text-white font-bold">{p.execution}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Adapt</span><span className="text-white font-bold">{p.adaptability}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Discip</span><span className="text-white font-bold">{p.discipline}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Focus</span><span className="text-white font-bold">{p.focus}/10</span></div>
+                      </div>
+                      {p.notes && (
+                        <p className="text-[10px] text-zinc-400 italic bg-zinc-900/40 p-2 rounded-lg">"{p.notes}"</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* LAST 5 MATCH ASSESSMENTS */}
+            <div className="space-y-3 text-left border-t border-zinc-900 pt-6">
+              <h4 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+                LAST 5 MATCH ASSESSMENTS
+              </h4>
+              {matchHistory.length === 0 ? (
+                <p className="text-xs text-zinc-650 font-bold pl-2 uppercase">No match assessments</p>
+              ) : (
+                <div className="space-y-3">
+                  {matchHistory.slice(0, 5).map((m, idx) => (
+                    <div key={m.id || idx} className="bg-zinc-950 p-4 border border-zinc-900 rounded-2xl space-y-2">
+                      <div className="flex justify-between items-center border-b border-zinc-900/60 pb-2">
+                        <span className="text-[10px] font-black text-zinc-500 uppercase">
+                          Match Grade ({new Date(m.date || m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})
+                        </span>
+                        <span className="text-sm font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">MPI {m.mpiScore.toFixed(1)}</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+                        <div><span className="text-zinc-500 block uppercase font-black">Technical</span><span className="text-white font-bold">{m.technicalExecution}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Decision</span><span className="text-white font-bold">{m.decisionMaking}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Awareness</span><span className="text-white font-bold">{m.gameAwareness}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Pressure</span><span className="text-white font-bold">{m.pressureHandling}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Contrib</span><span className="text-white font-bold">{m.teamContribution}/10</span></div>
+                        <div><span className="text-zinc-500 block uppercase font-black">Impact</span><span className="text-white font-bold">{m.matchImpact}/10</span></div>
+                      </div>
+                      {m.notes && (
+                        <p className="text-[10px] text-zinc-400 italic bg-zinc-900/40 p-2 rounded-lg">"{m.notes}"</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* FULL ASSESSMENT HISTORY TIMELINES */}
+            <div className="space-y-4 pt-6 border-t border-zinc-900 text-left">
+              <div className="flex justify-between items-center">
+                <h4 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+                  FULL ASSESSMENT HISTORY
+                </h4>
+                <button
+                  onClick={() => setShowHistoryOverlay(true)}
+                  className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-[10px] font-black transition-all border border-zinc-800 cursor-pointer uppercase tracking-wider"
+                >
+                  View Chronological Timeline
+                </button>
+              </div>
+            </div>
+
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ------------------ OVERLAY: PRACTICE ASSESSMENT ------------------ */}
       {showPracticeOverlay && selectedPlayer && (
