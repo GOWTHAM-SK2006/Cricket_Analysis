@@ -11,7 +11,8 @@ import {
   Zap,
   ChevronRight,
   AlertTriangle,
-  Award
+  Award,
+  Clipboard
 } from "lucide-react";
 
 interface Player {
@@ -49,6 +50,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [coachName, setCoachName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<string | null>(null);
   
   // Dashboard stats
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -99,6 +101,9 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
+    const storedRole = localStorage.getItem("userRole");
+    setRole(storedRole);
+
     const loadDashboardData = async () => {
       try {
         const [profileRes, statsRes, playersRes] = await Promise.all([
@@ -219,43 +224,61 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 3. QUICK ACTIONS */}
-      <div className="space-y-3">
-        <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
-          QUICK ACTIONS
-        </h3>
+      {/* 3. QUICK ACTIONS / SELF ASSESSMENT */}
+      {role === "player" ? (
         <div className="space-y-3">
+          <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+            SELF ASSESSMENT
+          </h3>
           <button
-            onClick={() => router.push("/players?action=practice")}
+            onClick={() => router.push("/players?selfAssess=true")}
             className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 px-5 text-base font-black flex items-center justify-between transition-all active:scale-[0.99] border border-orange-400 shadow-lg cursor-pointer uppercase tracking-tight"
           >
             <span className="flex items-center gap-3">
-              <Target className="w-5.5 h-5.5 stroke-[3]" />
-              Start Practice Assessment
+              <Clipboard className="w-5.5 h-5.5 stroke-[3]" />
+              Start Self Assessment
             </span>
             <ChevronRight className="w-5.5 h-5.5 stroke-[3]" />
           </button>
-
-          <button
-            onClick={() => router.push("/players?action=match")}
-            className="w-full bg-zinc-900 hover:bg-zinc-850 text-white rounded-2xl py-4.5 px-5 text-base font-black flex items-center justify-between transition-all active:scale-[0.99] border border-zinc-850 shadow-md cursor-pointer uppercase tracking-tight"
-          >
-            <span className="flex items-center gap-3">
-              <Activity className="w-5.5 h-5.5 stroke-[2]" />
-              Start Match Assessment
-            </span>
-            <ChevronRight className="w-5.5 h-5.5 stroke-[2]" />
-          </button>
-
-          <button
-            onClick={() => router.push("/players?add=true")}
-            className="w-full bg-zinc-950 border border-zinc-900 hover:border-zinc-850 text-white rounded-2xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer uppercase"
-          >
-            <Plus className="w-4.5 h-4.5 stroke-[3] text-orange-500" />
-            Add Player
-          </button>
         </div>
-      </div>
+      ) : (
+        <div className="space-y-3">
+          <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+            QUICK ACTIONS
+          </h3>
+          <div className="space-y-3">
+            <button
+              onClick={() => router.push("/players?action=practice")}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 px-5 text-base font-black flex items-center justify-between transition-all active:scale-[0.99] border border-orange-400 shadow-lg cursor-pointer uppercase tracking-tight"
+            >
+              <span className="flex items-center gap-3">
+                <Target className="w-5.5 h-5.5 stroke-[3]" />
+                Start Practice Assessment
+              </span>
+              <ChevronRight className="w-5.5 h-5.5 stroke-[3]" />
+            </button>
+
+            <button
+              onClick={() => router.push("/players?action=match")}
+              className="w-full bg-zinc-900 hover:bg-zinc-850 text-white rounded-2xl py-4.5 px-5 text-base font-black flex items-center justify-between transition-all active:scale-[0.99] border border-zinc-850 shadow-md cursor-pointer uppercase tracking-tight"
+            >
+              <span className="flex items-center gap-3">
+                <Activity className="w-5.5 h-5.5 stroke-[2]" />
+                Start Match Assessment
+              </span>
+              <ChevronRight className="w-5.5 h-5.5 stroke-[2]" />
+            </button>
+
+            <button
+              onClick={() => router.push("/players?add=true")}
+              className="w-full bg-zinc-950 border border-zinc-900 hover:border-zinc-850 text-white rounded-2xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer uppercase"
+            >
+              <Plus className="w-4.5 h-4.5 stroke-[3] text-orange-500" />
+              Add Player
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 4. PLAYERS NEEDING ATTENTION */}
       <div className="space-y-3 text-left">
