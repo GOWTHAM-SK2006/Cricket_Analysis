@@ -25,23 +25,33 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+
+        // Always validate email is provided
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email address is required");
+        }
+
+        // Always check for duplicate email FIRST before doing anything else
+        if (repository.findByEmail(request.getEmail().trim().toLowerCase()).isPresent()) {
+            throw new RuntimeException("An account with this email address already exists");
+        }
+
         if (!request.isCreateOrganization()) {
+            // ── PLAYER REGISTRATION ──
             if (request.getInvitationCode() == null || request.getInvitationCode().trim().isEmpty()) {
                 throw new RuntimeException("Invitation code is required for player registration");
             }
-            
-            var player = playerRepository.findByInvitationCode(request.getInvitationCode())
+
+            var player = playerRepository.findByInvitationCode(request.getInvitationCode().trim())
                     .orElseThrow(() -> new RuntimeException("Invalid invitation code"));
-            
+
             if (Boolean.TRUE.equals(player.getInvitationCodeActivated())) {
                 throw new RuntimeException("Invitation code has already been activated");
             }
 
-            request.setName(player.getName());
-
             var user = Coach.builder()
-                    .name(request.getName())
-                    .email(request.getEmail())
+                    .name(player.getName())
+                    .email(request.getEmail().trim().toLowerCase())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.USER)
                     .build();
@@ -54,10 +64,16 @@ public class AuthService {
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
+
         } else {
+            // ── COACH REGISTRATION ──
+            if (request.getName() == null || request.getName().trim().isEmpty()) {
+                throw new RuntimeException("Name is required for coach registration");
+            }
+
             var user = Coach.builder()
-                    .name(request.getName())
-                    .email(request.getEmail())
+                    .name(request.getName().trim())
+                    .email(request.getEmail().trim().toLowerCase())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.ADMIN)
                     .build();
@@ -73,11 +89,11 @@ public class AuthService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getEmail().trim().toLowerCase(),
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
+        var user = repository.findByEmail(request.getEmail().trim().toLowerCase())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

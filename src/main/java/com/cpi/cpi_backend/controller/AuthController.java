@@ -19,10 +19,16 @@ public class AuthController {
     private final AuthService service;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<?> register(
             @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok(service.register(request));
+        try {
+            return ResponseEntity.ok(service.register(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(409)
+                    .body(java.util.Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/login")

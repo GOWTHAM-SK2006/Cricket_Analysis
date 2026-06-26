@@ -48,7 +48,7 @@ export default function SignupPage() {
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+    const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -63,17 +63,22 @@ export default function SignupPage() {
       }
     }
 
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       let payload = {};
       if (accountType === "coach") {
         payload = {
-          name: formData.name,
-          email: formData.email,
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
           createOrganization: true,
-          organizationName: `${formData.name}'s Academy`,
+          organizationName: `${formData.name.trim()}'s Academy`,
           organizationType: "Academy",
           sport: "Cricket",
           country: "India",
@@ -81,7 +86,7 @@ export default function SignupPage() {
         };
       } else {
         payload = {
-          email: formData.email,
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
           invitationCode: invitationCode.trim(),
           createOrganization: false
@@ -90,16 +95,32 @@ export default function SignupPage() {
 
       const response = await api.post("/auth/signup", payload);
       if (response.data.token) {
+        // Clear any previous session before storing the new one
+        localStorage.clear();
+        sessionStorage.clear();
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userRole", accountType);
         router.push("/dashboard");
       }
     } catch (err: any) {
-      const msg = err.response?.data?.message || err.message || "";
-      if (msg.toLowerCase().includes("duplicate key") || msg.toLowerCase().includes("already exists")) {
-        setError("This email address is already registered.");
+      // Extract the most useful error message from the backend response
+      const backendMsg =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        (typeof err.response?.data === "string" ? err.response.data : "") ||
+        err.message ||
+        "";
+
+      if (
+        backendMsg.toLowerCase().includes("already exists") ||
+        backendMsg.toLowerCase().includes("duplicate key") ||
+        backendMsg.toLowerCase().includes("duplicate entry")
+      ) {
+        setError("This email address is already registered. Please log in instead.");
+      } else if (backendMsg) {
+        setError(backendMsg);
       } else {
-        setError(msg || "Registration failed.");
+        setError("Registration failed. Please try again.");
       }
     } finally {
       setLoading(false);
