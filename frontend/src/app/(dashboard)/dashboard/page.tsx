@@ -235,7 +235,7 @@ export default function DashboardPage() {
       
       {/* 1. WELCOME SECTION */}
       <div className="text-left">
-        <h2 className="text-[10px] font-black tracking-widest text-zinc-550 uppercase">
+        <h2 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
           WELCOME BACK COACH
         </h2>
         <h1 className="text-3xl font-black text-white uppercase tracking-tight mt-1 leading-none">
@@ -245,28 +245,28 @@ export default function DashboardPage() {
 
       {/* 2. TODAY'S SNAPSHOT */}
       <div className="space-y-3">
-        <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+        <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
           TODAY'S SNAPSHOT
         </h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 text-left space-y-1">
-            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-wider block">Total Players</span>
+            <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block">Total Players</span>
             <span className="text-3xl font-black text-white block leading-none">{stats?.totalPlayers || 0}</span>
           </div>
           <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 text-left space-y-1">
-            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-wider block">Average CPI</span>
+            <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block">Average CPI</span>
             <span className="text-3xl font-black text-orange-500 block leading-none">
               {stats?.avgCpi ? formatScoreValue(stats.avgCpi) : "N/A"}
             </span>
           </div>
           <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 text-left space-y-1">
-            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-wider block">Average PPI</span>
+            <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block">Average PPI</span>
             <span className="text-3xl font-black text-white block leading-none">
               {stats?.avgPpi ? formatScoreValue(stats.avgPpi) : "N/A"}
             </span>
           </div>
           <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 text-left space-y-1">
-            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-wider block">Average MPI</span>
+            <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block">Average MPI</span>
             <span className="text-3xl font-black text-white block leading-none">
               {stats?.avgMpi ? formatScoreValue(stats.avgMpi) : "N/A"}
             </span>
@@ -281,7 +281,7 @@ export default function DashboardPage() {
           
           {/* SELF ASSESSMENT */}
           <div className="space-y-3">
-            <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
               SELF ASSESSMENT
             </h3>
             <button
@@ -298,7 +298,7 @@ export default function DashboardPage() {
 
           {/* LATEST COACH FEEDBACK */}
           <div className="space-y-3">
-            <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
               <MessageSquare className="w-3.5 h-3.5 text-orange-500" />
               LATEST COACH FEEDBACK
             </h3>
@@ -311,7 +311,7 @@ export default function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-zinc-500 font-bold italic text-center py-2">
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-semibold italic text-center py-2">
                   No feedback recorded yet.
                 </p>
               )}
@@ -320,7 +320,7 @@ export default function DashboardPage() {
 
           {/* LAST ASSESSMENT */}
           <div className="space-y-3">
-            <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
               <Activity className="w-3.5 h-3.5 text-orange-500" />
               LAST ASSESSMENT
             </h3>
@@ -328,7 +328,7 @@ export default function DashboardPage() {
               
               {/* Left Side: Last 5 MPI */}
               <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4">
-                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-wider block text-center border-b border-zinc-900 pb-2 mb-2">
+                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block text-center border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
                   LAST 5 MPI
                 </span>
                 <div className="space-y-3">
@@ -353,7 +353,7 @@ export default function DashboardPage() {
 
               {/* Right Side: Last 5 PPI */}
               <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4">
-                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-wider block text-center border-b border-zinc-900 pb-2 mb-2">
+                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block text-center border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
                   LAST 5 PPI
                 </span>
                 <div className="space-y-3">
@@ -382,7 +382,7 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">
+          <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
             QUICK ACTIONS
           </h3>
           <div className="space-y-3">
@@ -424,7 +424,7 @@ export default function DashboardPage() {
         <div className="space-y-8">
           {/* 4. PLAYERS NEEDING ATTENTION */}
           <div className="space-y-3 text-left">
-            <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
               <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
               PLAYERS NEEDING ATTENTION
             </h3>
@@ -440,7 +440,7 @@ export default function DashboardPage() {
                     >
                       <div className="space-y-0.5">
                         <span className="text-base font-black text-white uppercase block">{p.name}</span>
-                        <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wide block">
+                        <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide block">
                           Last Assessed: {lastDate}
                         </span>
                       </div>
@@ -451,7 +451,7 @@ export default function DashboardPage() {
                   );
                 })
               ) : (
-                <div className="p-5 text-center text-xs text-zinc-650 font-bold uppercase">
+                <div className="p-5 text-center text-[13px] text-zinc-500 font-semibold uppercase tracking-wide">
                   No players currently needing attention.
                 </div>
               )}
@@ -460,7 +460,7 @@ export default function DashboardPage() {
 
           {/* 5. TOP PERFORMERS */}
           <div className="space-y-3 text-left">
-            <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
               <Award className="w-3.5 h-3.5 text-orange-500" />
               TOP PERFORMERS
             </h3>
@@ -476,7 +476,7 @@ export default function DashboardPage() {
                     >
                       <div className="space-y-0.5">
                         <span className="text-base font-black text-white uppercase block">{p.name}</span>
-                        <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wide block">
+                        <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide block">
                           Last Assessed: {lastDate}
                         </span>
                       </div>
@@ -487,7 +487,7 @@ export default function DashboardPage() {
                   );
                 })
               ) : (
-                <div className="p-5 text-center text-xs text-zinc-650 font-bold uppercase">
+                <div className="p-5 text-center text-[13px] text-zinc-500 font-semibold uppercase tracking-wide">
                   No assessments logged yet.
                 </div>
               )}
@@ -496,7 +496,7 @@ export default function DashboardPage() {
 
           {/* 6. RECENT ACTIVITY */}
           <div className="space-y-3 text-left">
-            <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
               <Activity className="w-3.5 h-3.5 text-orange-500" />
               RECENT ACTIVITY
             </h3>
@@ -510,17 +510,17 @@ export default function DashboardPage() {
                   >
                     <div className="space-y-0.5 text-left">
                       <span className="text-base font-black text-white uppercase block">{a.playerName}</span>
-                      <span className="text-[9px] font-bold text-zinc-550 uppercase tracking-wide block mt-0.5">
+                      <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide block mt-0.5">
                         {a.assessmentType === "PRACTICE" ? "Practice Assessment" : "Match Assessment"}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold text-zinc-400 bg-zinc-900 border border-zinc-850 px-2.5 py-1 rounded-lg uppercase tracking-wide">
+                    <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-2.5 py-1 rounded-lg uppercase tracking-wide">
                       {formatActivityDate(a.date)}
                     </span>
                   </div>
                 ))
               ) : (
-                <div className="p-5 text-center text-xs text-zinc-650 font-bold uppercase">
+                <div className="p-5 text-center text-[13px] text-zinc-500 font-semibold uppercase tracking-wide">
                   No recent assessment activity logged.
                 </div>
               )}
