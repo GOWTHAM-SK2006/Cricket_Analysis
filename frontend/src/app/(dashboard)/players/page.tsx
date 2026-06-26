@@ -705,7 +705,7 @@ export default function PlayersPage() {
       {showSuccessOverlay && (
         <div className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center space-y-4 animate-fade-in">
           <CheckCircle2 className="w-20 h-20 text-orange-500 stroke-[2] animate-bounce" />
-          <h2 className="text-3xl font-black text-white uppercase tracking-tight">{successMessage}</h2>
+          <h2 className="text-3xl font-bold text-white uppercase tracking-tight">{successMessage}</h2>
         </div>
       )}
 
@@ -756,7 +756,7 @@ export default function PlayersPage() {
                 {quickFilter !== "all" && (
                   <span 
                     onClick={() => setQuickFilter("all")}
-                    className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
+                    className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-sm font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
                   >
                     Filter: {quickFilter.replace(/_/g, " ")}
                     <X className="w-3 h-3 stroke-[3]" />
@@ -765,7 +765,7 @@ export default function PlayersPage() {
                 {roleFilter !== "all" && (
                   <span 
                     onClick={() => setRoleFilter("all")}
-                    className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
+                    className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-sm font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
                   >
                     Role: {roleFilter.replace(/_/g, " ")}
                     <X className="w-3 h-3 stroke-[3]" />
@@ -774,7 +774,7 @@ export default function PlayersPage() {
                 {sortBy !== "highest_cpi" && (
                   <span 
                     onClick={() => setSortBy("highest_cpi")}
-                    className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-[10px] font-black uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
+                    className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-sm font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
                   >
                     Sort: {sortBy.replace(/_/g, " ")}
                     <X className="w-3 h-3 stroke-[3]" />
@@ -786,7 +786,7 @@ export default function PlayersPage() {
                     setQuickFilter("all");
                     setRoleFilter("all");
                   }}
-                  className="text-[9px] font-black text-zinc-500 hover:text-white uppercase tracking-wider pl-1 cursor-pointer"
+                  className="text-xs font-bold text-zinc-500 hover:text-white uppercase tracking-wider pl-1 cursor-pointer"
                 >
                   Clear All
                 </button>
@@ -798,7 +798,7 @@ export default function PlayersPage() {
           {showAddForm && (
             <div className="border-2 border-orange-500 bg-zinc-950 rounded-3xl p-6 space-y-5">
               <div className="flex justify-between items-center pb-2 border-b border-zinc-900">
-                <h3 className="text-xl font-black text-white uppercase tracking-wider">ADD NEW PLAYER</h3>
+                <h3 className="text-xl font-bold text-white uppercase tracking-wider">ADD NEW PLAYER</h3>
                 <button 
                   onClick={() => { setShowAddForm(false); router.replace("/players"); }}
                   className="p-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400"
@@ -817,7 +817,7 @@ export default function PlayersPage() {
                 
                 {/* Photo Picker */}
                 <div className="flex flex-col items-center space-y-2">
-                  <span className="text-[10px] font-black tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
+                  <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     className="w-24 h-24 rounded-3xl bg-zinc-900 border-2 border-zinc-850 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
@@ -827,7 +827,7 @@ export default function PlayersPage() {
                     ) : (
                       <>
                         <Camera className="w-8 h-8 text-zinc-500 group-hover:text-orange-500 mb-1" />
-                        <span className="text-[10px] font-black text-zinc-500 uppercase">CHOOSE</span>
+                        <span className="text-sm font-bold text-zinc-500 uppercase">CHOOSE</span>
                       </>
                     )}
                   </div>
@@ -841,7 +841,7 @@ export default function PlayersPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black tracking-widest text-zinc-400">PLAYER NAME</label>
+                  <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYER NAME</label>
                   <input
                     type="text"
                     required
@@ -854,7 +854,7 @@ export default function PlayersPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black tracking-widest text-zinc-400">AGE</label>
+                    <label className="text-sm font-bold tracking-widest text-zinc-400">AGE</label>
                     <input
                       type="number"
                       required
@@ -865,7 +865,7 @@ export default function PlayersPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black tracking-widest text-zinc-400">PLAYING ROLE</label>
+                    <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYING ROLE</label>
                     <select
                       value={newPlayer.role}
                       onChange={(e) => setNewPlayer({ ...newPlayer, role: e.target.value })}
@@ -882,7 +882,7 @@ export default function PlayersPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4 text-lg font-black transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4 text-lg font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "SAVE PLAYER"}
                 </button>
@@ -926,20 +926,20 @@ export default function PlayersPage() {
                         {cachedPhoto ? (
                           <img src={cachedPhoto} alt={player.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-xl font-black text-orange-500">{getInitials(player.name)}</span>
+                          <span className="text-xl font-bold text-orange-500">{getInitials(player.name)}</span>
                         )}
                       </div>
                       
                       <div className="min-w-0 text-left space-y-0.5">
-                        <h4 className="text-xl font-black text-white truncate uppercase tracking-tight leading-none">{player.name}</h4>
-                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest truncate">{player.role}</p>
-                        <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-tight">Last: {assessDate}</p>
+                        <h4 className="text-xl font-bold text-white truncate uppercase tracking-tight leading-none">{player.name}</h4>
+                        <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest truncate">{player.role}</p>
+                        <p className="text-sm font-semibold text-zinc-400 uppercase tracking-tight">Last: {assessDate}</p>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-[9px] font-black text-zinc-500 tracking-widest uppercase">CPI INDEX</div>
-                      <div className="text-2xl font-black text-orange-500 tracking-tight">{cpi}</div>
+                      <div className="text-xs font-bold text-zinc-500 tracking-widest uppercase">CPI INDEX</div>
+                      <div className="text-2xl font-bold text-orange-500 tracking-tight">{cpi}</div>
                     </div>
                   </div>
                 );
@@ -1138,7 +1138,7 @@ export default function PlayersPage() {
                 {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
                   <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-4xl font-black text-orange-500">{getInitials(selectedPlayer.name)}</span>
+                  <span className="text-4xl font-bold text-orange-500">{getInitials(selectedPlayer.name)}</span>
                 )}
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                   <Camera className="w-6 h-6 text-white" />
@@ -1154,19 +1154,19 @@ export default function PlayersPage() {
               />
 
               <div className="space-y-2">
-                <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
+                <h2 className="text-3xl font-bold text-white uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
                 <p className="text-xs font-bold text-zinc-550 uppercase tracking-widest">{selectedPlayer.role}</p>
-                <div className="text-[10px] text-zinc-400 font-semibold uppercase mt-1">
+                <div className="text-sm text-zinc-400 font-semibold uppercase mt-1">
                   Age: {((selectedPlayer.id % 5) + 19)} • Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
                 </div>
-                <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">
+                <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
                   Last Assessed: {lastAssessmentDate}
                 </div>
                 {selectedPlayer.invitationCode && (
                   <div className="mt-3 bg-zinc-900 border border-zinc-850 rounded-2xl p-3 inline-block min-w-[200px]">
-                    <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest block text-center">PLAYER INVITATION CODE</span>
+                    <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest block text-center">PLAYER INVITATION CODE</span>
                     <div className="flex items-center justify-center gap-2 mt-1.5">
-                      <span className="text-sm font-mono font-black text-orange-500 uppercase tracking-wider">
+                      <span className="text-sm font-mono font-bold text-orange-500 uppercase tracking-wider">
                         {selectedPlayer.invitationCode}
                       </span>
                       <button
@@ -1211,7 +1211,7 @@ export default function PlayersPage() {
                       setError("");
                       setShowPracticeOverlay(true);
                     }}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
                   >
                     <Clipboard className="w-4 h-4 stroke-[3]" />
                     Practice Grade
@@ -1231,7 +1231,7 @@ export default function PlayersPage() {
                       setError("");
                       setShowMatchOverlay(true);
                     }}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4 text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
                   >
                     <ShieldCheck className="w-4 h-4 stroke-[3]" />
                     Match Grade
@@ -1250,7 +1250,7 @@ export default function PlayersPage() {
                     });
                     setShowSelfOverlay(true);
                   }}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 text-sm font-black flex items-center justify-center gap-3 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 text-sm font-bold flex items-center justify-center gap-3 transition-all active:scale-[0.98] border border-orange-400 shadow-md cursor-pointer uppercase"
                 >
                   <Clipboard className="w-5 h-5 stroke-[3]" />
                   Log Self Assessment
@@ -1261,34 +1261,34 @@ export default function PlayersPage() {
             {/* SECTION 2 – CURRENT STATUS (WHERE AM I?) */}
             <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
-                <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest">QUESTION 1</span>
-                <h3 className="text-sm font-black tracking-wider text-white uppercase flex items-center gap-2">
+                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 1</span>
+                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500" />
                   CURRENT STATUS (WHERE AM I?)
                 </h3>
               </div>
               <div className="grid grid-cols-3 gap-3 text-center pt-1">
                 <div className="bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
-                  <p className="text-[9px] font-black text-orange-400 uppercase tracking-wider mb-1">
+                  <p className="text-xs font-bold text-orange-400 uppercase tracking-wider mb-1">
                     Current CPI
                   </p>
-                  <p className="text-3xl font-black text-orange-400 font-mono leading-none">
+                  <p className="text-3xl font-bold text-orange-400 font-mono leading-none">
                     {formatScoreValue(currentCpi)}
                   </p>
                 </div>
                 <div className="bg-zinc-900/40 p-4 rounded-2xl border border-zinc-900">
-                  <p className="text-[9px] font-black text-zinc-550 uppercase tracking-wider mb-1">
+                  <p className="text-xs font-bold text-zinc-550 uppercase tracking-wider mb-1">
                     Current PPI
                   </p>
-                  <p className="text-3xl font-black text-white font-mono leading-none">
+                  <p className="text-3xl font-bold text-white font-mono leading-none">
                     {formatScoreValue(currentPpi)}
                   </p>
                 </div>
                 <div className="bg-zinc-900/40 p-4 rounded-2xl border border-zinc-900">
-                  <p className="text-[9px] font-black text-zinc-550 uppercase tracking-wider mb-1">
+                  <p className="text-xs font-bold text-zinc-550 uppercase tracking-wider mb-1">
                     Current MPI
                   </p>
-                  <p className="text-3xl font-black text-white font-mono leading-none">
+                  <p className="text-3xl font-bold text-white font-mono leading-none">
                     {formatScoreValue(currentMpi)}
                   </p>
                 </div>
@@ -1298,8 +1298,8 @@ export default function PlayersPage() {
             {/* SECTION 3 – PROGRESS (WHERE WAS I?) */}
             <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
-                <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest">QUESTION 2</span>
-                <h3 className="text-sm font-black tracking-wider text-white uppercase flex items-center gap-2">
+                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 2</span>
+                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-orange-500" />
                   PROGRESS (WHERE WAS I?)
                 </h3>
@@ -1308,7 +1308,7 @@ export default function PlayersPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                 {/* Last 5 Practice */}
                 <div className="space-y-2">
-                  <span className="text-[10px] font-black text-zinc-550 uppercase tracking-widest block border-b border-zinc-900 pb-1">
+                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-zinc-900 pb-1">
                     Last 5 Practice Assessments
                   </span>
                   {last5Prac.length === 0 ? (
@@ -1319,7 +1319,7 @@ export default function PlayersPage() {
                         const prevScore = idx > 0 ? last5Prac[idx - 1].ppiScore : null;
                         const currentScore = p.ppiScore;
                         return (
-                          <div key={p.id || idx} className="flex justify-between items-center text-xs font-black bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
+                          <div key={p.id || idx} className="flex justify-between items-center text-xs font-bold bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
                             <span className="text-zinc-400">Practice {idx + 1}</span>
                             <div className="flex items-center gap-1.5">
                               <span className="text-orange-500 font-mono text-sm">{formatScoreValue(currentScore)}</span>
@@ -1329,7 +1329,7 @@ export default function PlayersPage() {
                                 ) : currentScore < prevScore ? (
                                   <span className="text-red-500 font-extrabold text-xs">↓</span>
                                 ) : (
-                                  <span className="text-zinc-650 font-black text-xs">•</span>
+                                  <span className="text-zinc-650 font-bold text-xs">•</span>
                                 )
                               )}
                             </div>
@@ -1342,7 +1342,7 @@ export default function PlayersPage() {
 
                 {/* Last 5 Match */}
                 <div className="space-y-2">
-                  <span className="text-[10px] font-black text-zinc-550 uppercase tracking-widest block border-b border-zinc-900 pb-1">
+                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-zinc-900 pb-1">
                     Last 5 Match Assessments
                   </span>
                   {last5Match.length === 0 ? (
@@ -1353,7 +1353,7 @@ export default function PlayersPage() {
                         const prevScore = idx > 0 ? last5Match[idx - 1].mpiScore : null;
                         const currentScore = m.mpiScore;
                         return (
-                          <div key={m.id || idx} className="flex justify-between items-center text-xs font-black bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
+                          <div key={m.id || idx} className="flex justify-between items-center text-xs font-bold bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
                             <span className="text-zinc-400">Match {idx + 1}</span>
                             <div className="flex items-center gap-1.5">
                               <span className="text-orange-500 font-mono text-sm">{formatScoreValue(currentScore)}</span>
@@ -1363,7 +1363,7 @@ export default function PlayersPage() {
                                 ) : currentScore < prevScore ? (
                                   <span className="text-red-500 font-extrabold text-xs">↓</span>
                                 ) : (
-                                  <span className="text-zinc-650 font-black text-xs">•</span>
+                                  <span className="text-zinc-650 font-bold text-xs">•</span>
                                 )
                               )}
                             </div>
@@ -1379,8 +1379,8 @@ export default function PlayersPage() {
             {/* SECTION 4 – TARGETS (WHERE DO I WANT TO BE?) */}
             <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
-                <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest">QUESTION 3</span>
-                <h3 className="text-sm font-black tracking-wider text-white uppercase flex items-center gap-2">
+                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 3</span>
+                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <Target className="w-4 h-4 text-orange-500" />
                   WHERE DO I WANT TO BE? (TARGET GOALS)
                 </h3>
@@ -1390,8 +1390,8 @@ export default function PlayersPage() {
                 {/* Target CPI Editing Card */}
                 <div className="bg-zinc-900/30 p-4.5 rounded-2xl border border-zinc-900 flex justify-between items-center">
                   <div>
-                    <span className="text-[10px] font-black text-zinc-550 uppercase tracking-widest block">TARGET CPI</span>
-                    <span className="text-[9px] font-bold text-zinc-400 uppercase block mt-0.5">
+                    <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block">TARGET CPI</span>
+                    <span className="text-xs font-bold text-zinc-400 uppercase block mt-0.5">
                       {gapVal > 0 ? `${gapVal} points to target cpi` : "Target achieved!"}
                     </span>
                   </div>
@@ -1408,7 +1408,7 @@ export default function PlayersPage() {
                       </select>
                       <button
                         onClick={handleSaveTargetCpi}
-                        className="px-3 py-1.5 bg-orange-50 hover:bg-orange-600 text-black rounded-lg text-xs font-black uppercase cursor-pointer transition-all"
+                        className="px-3 py-1.5 bg-orange-50 hover:bg-orange-600 text-black rounded-lg text-xs font-bold uppercase cursor-pointer transition-all"
                       >
                         SAVE
                       </button>
@@ -1418,7 +1418,7 @@ export default function PlayersPage() {
                       onClick={() => { setTempTargetCpi(targetCpi.toString()); setIsEditingTarget(true); }}
                       className="cursor-pointer group flex items-center gap-1.5 bg-zinc-900 px-3.5 py-2 rounded-xl border border-zinc-800 hover:border-orange-500 transition-all"
                     >
-                      <span className="text-xl font-black text-orange-500 font-mono">{targetCpi}</span>
+                      <span className="text-xl font-bold text-orange-500 font-mono">{targetCpi}</span>
                       <Edit2 className="w-3.5 h-3.5 text-zinc-500 group-hover:text-orange-500 transition-colors" />
                     </div>
                   )}
@@ -1426,7 +1426,7 @@ export default function PlayersPage() {
 
                 {/* Progress Bar toward Target */}
                 <div className="space-y-1.5">
-                  <div className="flex justify-between items-center text-[10px] font-black text-zinc-500 uppercase tracking-wider px-1">
+                  <div className="flex justify-between items-center text-sm font-bold text-zinc-500 uppercase tracking-wider px-1">
                     <span>Progress to Target</span>
                     <span className="font-mono text-orange-500">{targetPercent}%</span>
                   </div>
@@ -1440,7 +1440,7 @@ export default function PlayersPage() {
 
                 {/* Development Goal Card */}
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block pl-1">MY DEVELOPMENT GOAL / MILESTONE</span>
+                  <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest block pl-1">MY DEVELOPMENT GOAL / MILESTONE</span>
                   {isEditingGoal ? (
                     <div className="space-y-2 text-left">
                       <textarea
@@ -1452,13 +1452,13 @@ export default function PlayersPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={handleSaveTargetGoal}
-                          className="px-3.5 py-1.5 bg-orange-500 hover:bg-orange-655 text-black rounded-lg text-xs font-black uppercase cursor-pointer"
+                          className="px-3.5 py-1.5 bg-orange-500 hover:bg-orange-655 text-black rounded-lg text-xs font-bold uppercase cursor-pointer"
                         >
                           SAVE
                         </button>
                         <button
                           onClick={() => setIsEditingGoal(false)}
-                          className="px-3.5 py-1.5 bg-zinc-900 border border-zinc-855 hover:bg-zinc-800 text-zinc-400 rounded-lg text-xs font-black uppercase cursor-pointer"
+                          className="px-3.5 py-1.5 bg-zinc-900 border border-zinc-855 hover:bg-zinc-800 text-zinc-400 rounded-lg text-xs font-bold uppercase cursor-pointer"
                         >
                           CANCEL
                         </button>
@@ -1467,7 +1467,7 @@ export default function PlayersPage() {
                   ) : (
                     <div 
                       onClick={() => { setTempTargetGoal(targetGoal); setIsEditingGoal(true); }}
-                      className="cursor-pointer group bg-zinc-900/30 p-4 rounded-2xl border border-zinc-900 hover:border-zinc-800 transition-all flex items-center justify-between text-sm font-black text-zinc-300"
+                      className="cursor-pointer group bg-zinc-900/30 p-4 rounded-2xl border border-zinc-900 hover:border-zinc-800 transition-all flex items-center justify-between text-sm font-bold text-zinc-300"
                     >
                       <span className="text-white text-left uppercase tracking-tight leading-relaxed">{targetGoal}</span>
                       <Edit2 className="w-4 h-4 text-zinc-500 group-hover:text-orange-500 transition-colors shrink-0 ml-3" />
@@ -1480,8 +1480,8 @@ export default function PlayersPage() {
             {/* SECTION 5 – IMPROVEMENT AREAS */}
             <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
-                <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest">QUESTION 4</span>
-                <h3 className="text-sm font-black tracking-wider text-white uppercase flex items-center gap-2">
+                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 4</span>
+                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
                   WHAT DO I NEED TO WORK ON? (IMPROVEMENT AREAS)
                 </h3>
@@ -1489,16 +1489,16 @@ export default function PlayersPage() {
               
               <div className="space-y-3 pt-1">
                 <div className="flex justify-between items-center bg-zinc-900/30 p-3 rounded-xl border border-zinc-900">
-                  <span className="text-[10px] font-black text-zinc-500 uppercase">Strongest Area</span>
-                  <span className="text-xs font-black text-green-500 uppercase">{strongestArea}</span>
+                  <span className="text-sm font-bold text-zinc-500 uppercase">Strongest Area</span>
+                  <span className="text-xs font-bold text-green-500 uppercase">{strongestArea}</span>
                 </div>
                 <div className="flex justify-between items-center bg-zinc-900/30 p-3 rounded-xl border border-zinc-900">
-                  <span className="text-[10px] font-black text-zinc-500 uppercase">Needs Improvement</span>
-                  <span className="text-xs font-black text-orange-500 uppercase">{needsImprovement}</span>
+                  <span className="text-sm font-bold text-zinc-500 uppercase">Needs Improvement</span>
+                  <span className="text-xs font-bold text-orange-500 uppercase">{needsImprovement}</span>
                 </div>
                 <div className="flex justify-between items-center bg-zinc-900/30 p-3 rounded-xl border border-zinc-900">
-                  <span className="text-[10px] font-black text-zinc-500 uppercase">Weakest Area</span>
-                  <span className="text-xs font-black text-red-550 text-red-500 uppercase">{weakestArea}</span>
+                  <span className="text-sm font-bold text-zinc-500 uppercase">Weakest Area</span>
+                  <span className="text-xs font-bold text-red-550 text-red-500 uppercase">{weakestArea}</span>
                 </div>
               </div>
             </div>
@@ -1511,8 +1511,8 @@ export default function PlayersPage() {
               </h3>
               <div className="space-y-2.5 pt-1">
                 {focusAreas.map((focus, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-900/50 p-3 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[13px] font-black text-zinc-900 dark:text-white">
-                    <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-black text-xs shrink-0">
+                  <div key={idx} className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-900/50 p-3 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[13px] font-bold text-zinc-900 dark:text-white">
+                    <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold text-xs shrink-0">
                       {idx + 1}
                     </span>
                     {focus}
@@ -1523,7 +1523,7 @@ export default function PlayersPage() {
 
             {/* SECTION 6 – PLAYER DEVELOPMENT */}
             <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <h3 className="text-xs font-black tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
+              <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-rose-500" />
                 PLAYER DEVELOPMENT
               </h3>
@@ -1535,8 +1535,8 @@ export default function PlayersPage() {
                   return (
                     <div key={m.name} className="bg-zinc-900/30 p-3.5 rounded-2xl border border-zinc-900 space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black text-zinc-550 uppercase tracking-wider">{m.name}</span>
-                        <span className={`text-xs font-black font-mono ${colorClass}`}>{m.val}/10</span>
+                        <span className="text-sm font-bold text-zinc-550 uppercase tracking-wider">{m.name}</span>
+                        <span className={`text-xs font-bold font-mono ${colorClass}`}>{m.val}/10</span>
                       </div>
                       <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
                         <div 
@@ -1552,7 +1552,7 @@ export default function PlayersPage() {
 
             {/* SECTION 7 – ASSESSMENT HISTORY */}
             <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <h3 className="text-xs font-black tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
+              <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
                 <Brain className="w-4 h-4 text-orange-500" />
                 ASSESSMENT HISTORY
               </h3>
@@ -1560,7 +1560,7 @@ export default function PlayersPage() {
               <div className="space-y-4 pt-1">
                 {/* Practice History scroll area */}
                 <div>
-                  <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block mb-2 border-b border-zinc-900 pb-1">
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-zinc-900 pb-1">
                     Practice History
                   </span>
                   {practiceHistory.length === 0 ? (
@@ -1571,9 +1571,9 @@ export default function PlayersPage() {
                         <div key={p.id || idx} className="bg-zinc-900/30 p-2.5 rounded-xl border border-zinc-900/80 flex justify-between items-center text-xs">
                           <div>
                             <span className="font-bold text-white block">Practice Assessment</span>
-                            <span className="text-[9px] text-zinc-550">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
+                            <span className="text-xs text-zinc-550">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <span className="font-black text-orange-500 font-mono text-sm">PPI {formatScoreValue(p.ppiScore)}</span>
+                          <span className="font-bold text-orange-500 font-mono text-sm">PPI {formatScoreValue(p.ppiScore)}</span>
                         </div>
                       ))}
                     </div>
@@ -1582,7 +1582,7 @@ export default function PlayersPage() {
 
                 {/* Match History scroll area */}
                 <div>
-                  <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block mb-2 border-b border-zinc-900 pb-1">
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-zinc-900 pb-1">
                     Match History
                   </span>
                   {matchHistory.length === 0 ? (
@@ -1593,9 +1593,9 @@ export default function PlayersPage() {
                         <div key={m.id || idx} className="bg-zinc-900/30 p-2.5 rounded-xl border border-zinc-900/80 flex justify-between items-center text-xs">
                           <div>
                             <span className="font-bold text-white block">Match Assessment</span>
-                            <span className="text-[9px] text-zinc-550">{new Date(m.date || m.createdAt).toLocaleDateString()}</span>
+                            <span className="text-xs text-zinc-550">{new Date(m.date || m.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <span className="font-black text-orange-500 font-mono text-sm">MPI {formatScoreValue(m.mpiScore)}</span>
+                          <span className="font-bold text-orange-500 font-mono text-sm">MPI {formatScoreValue(m.mpiScore)}</span>
                         </div>
                       ))}
                     </div>
@@ -1613,7 +1613,7 @@ export default function PlayersPage() {
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
             <div className="space-y-1">
-              <h3 className="text-xl font-black uppercase tracking-wider text-white">PRACTICE GRADES</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">PRACTICE GRADES</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowPracticeOverlay(false)} className="text-zinc-500 hover:text-white p-1">
@@ -1639,10 +1639,10 @@ export default function PlayersPage() {
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <label className="text-sm font-black tracking-widest text-white uppercase">{metric.label}</label>
-                    <p className="text-[10px] text-zinc-500 font-semibold">{metric.desc}</p>
+                    <label className="text-sm font-bold tracking-widest text-white uppercase">{metric.label}</label>
+                    <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
-                  <span className="text-xl font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(practiceForm as any)[metric.key]}/10</span>
+                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(practiceForm as any)[metric.key]}/10</span>
                 </div>
                 <input
                   type="range"
@@ -1656,7 +1656,7 @@ export default function PlayersPage() {
             ))}
 
             <div className="space-y-2">
-              <label className="text-xs font-black tracking-widest text-zinc-400">NOTES</label>
+              <label className="text-xs font-bold tracking-widest text-zinc-400">NOTES</label>
               <textarea
                 value={practiceForm.notes}
                 onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
@@ -1668,7 +1668,7 @@ export default function PlayersPage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-black transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
             >
               {saving ? <Loader2 className="w-6 h-6 animate-spin text-black" /> : "SAVE ASSESSMENT"}
             </button>
@@ -1681,7 +1681,7 @@ export default function PlayersPage() {
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
             <div className="space-y-1">
-              <h3 className="text-xl font-black uppercase tracking-wider text-white">MATCH GRADES</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">MATCH GRADES</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowMatchOverlay(false)} className="text-zinc-500 hover:text-white p-1">
@@ -1707,10 +1707,10 @@ export default function PlayersPage() {
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <label className="text-sm font-black tracking-widest text-white uppercase">{metric.label}</label>
-                    <p className="text-[10px] text-zinc-500 font-semibold">{metric.desc}</p>
+                    <label className="text-sm font-bold tracking-widest text-white uppercase">{metric.label}</label>
+                    <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
-                  <span className="text-xl font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(matchForm as any)[metric.key]}/10</span>
+                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(matchForm as any)[metric.key]}/10</span>
                 </div>
                 <input
                   type="range"
@@ -1724,7 +1724,7 @@ export default function PlayersPage() {
             ))}
 
             <div className="space-y-2">
-              <label className="text-xs font-black tracking-widest text-zinc-400">NOTES</label>
+              <label className="text-xs font-bold tracking-widest text-zinc-400">NOTES</label>
               <textarea
                 value={matchForm.notes}
                 onChange={(e) => setMatchForm({ ...matchForm, notes: e.target.value })}
@@ -1736,7 +1736,7 @@ export default function PlayersPage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-black transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
             >
               {saving ? <Loader2 className="w-6 h-6 animate-spin text-black" /> : "SAVE ASSESSMENT"}
             </button>
@@ -1749,7 +1749,7 @@ export default function PlayersPage() {
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
             <div className="space-y-1">
-              <h3 className="text-xl font-black uppercase tracking-wider text-white">MY SELF GRADES</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">MY SELF GRADES</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowSelfOverlay(false)} className="text-zinc-500 hover:text-white p-1">
@@ -1769,10 +1769,10 @@ export default function PlayersPage() {
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <label className="text-sm font-black tracking-widest text-white uppercase">{metric.label}</label>
-                    <p className="text-[10px] text-zinc-500 font-semibold">{metric.desc}</p>
+                    <label className="text-sm font-bold tracking-widest text-white uppercase">{metric.label}</label>
+                    <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
-                  <span className="text-xl font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(selfForm as any)[metric.key]}/10</span>
+                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(selfForm as any)[metric.key]}/10</span>
                 </div>
                 <input
                   type="range"
@@ -1787,7 +1787,7 @@ export default function PlayersPage() {
 
             <button
               type="submit"
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-black transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
             >
               SAVE SELF ASSESSMENT
             </button>
@@ -1800,7 +1800,7 @@ export default function PlayersPage() {
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-12">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
             <div className="space-y-1">
-              <h3 className="text-xl font-black uppercase tracking-wider text-white">PLAYER LOGS</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">PLAYER LOGS</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowHistoryOverlay(false)} className="text-zinc-500 hover:text-white p-1">
@@ -1810,7 +1810,7 @@ export default function PlayersPage() {
 
           {/* CPI Trend */}
           <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
-            <h4 className="text-xs font-black tracking-widest text-orange-500 uppercase">CPI RECENT TREND</h4>
+            <h4 className="text-xs font-bold tracking-widest text-orange-500 uppercase">CPI RECENT TREND</h4>
             {[...practiceHistory, ...matchHistory].length === 0 ? (
               <p className="text-xs text-zinc-500 font-bold uppercase">No records logged yet.</p>
             ) : (
@@ -1823,8 +1823,8 @@ export default function PlayersPage() {
                   .slice(-6)
                   .map((s, idx) => (
                     <div key={idx} className="flex-1 min-w-[70px] flex flex-col items-center bg-zinc-900 border border-zinc-850 rounded-xl py-3">
-                      <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">{s.type}</span>
-                      <span className="text-base font-black text-white mt-1">{(s.score || 0).toFixed(1)}</span>
+                      <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest">{s.type}</span>
+                      <span className="text-base font-bold text-white mt-1">{(s.score || 0).toFixed(1)}</span>
                       <span className="text-[7px] font-semibold text-zinc-400 mt-0.5">{s.date.split("-").slice(1).join("/")}</span>
                     </div>
                   ))}
@@ -1834,7 +1834,7 @@ export default function PlayersPage() {
 
           {/* Practice History timeline */}
           <div className="space-y-4">
-            <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase">PRACTICE ASSESSMENTS</h4>
+            <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">PRACTICE ASSESSMENTS</h4>
             {practiceHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No practice logs</p>
             ) : (
@@ -1847,7 +1847,7 @@ export default function PlayersPage() {
                         {h.notes ? `"${h.notes}"` : "Practice Session"}
                       </div>
                     </div>
-                    <span className="text-lg font-black text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
+                    <span className="text-lg font-bold text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
                       PPI {h.ppiScore ? h.ppiScore.toFixed(1) : "N/A"}
                     </span>
                   </div>
@@ -1858,7 +1858,7 @@ export default function PlayersPage() {
 
           {/* Match History timeline */}
           <div className="space-y-4 pt-4 border-t border-zinc-900">
-            <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase">MATCH ASSESSMENTS</h4>
+            <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">MATCH ASSESSMENTS</h4>
             {matchHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No match logs</p>
             ) : (
@@ -1871,7 +1871,7 @@ export default function PlayersPage() {
                         {h.notes ? `"${h.notes}"` : "Match Session"}
                       </div>
                     </div>
-                    <span className="text-lg font-black text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
+                    <span className="text-lg font-bold text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
                       MPI {h.mpiScore ? h.mpiScore.toFixed(1) : "N/A"}
                     </span>
                   </div>
@@ -1882,7 +1882,7 @@ export default function PlayersPage() {
 
           {/* Self History timeline */}
           <div className="space-y-4 pt-4 border-t border-zinc-900">
-            <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase">SELF ASSESSMENTS</h4>
+            <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">SELF ASSESSMENTS</h4>
             {selfHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No self-assess logs</p>
             ) : (
@@ -1897,7 +1897,7 @@ export default function PlayersPage() {
                           Sleep: {h.sleep} • Nutrition: {h.nutrition} • Preparation: {h.preparation}
                         </div>
                       </div>
-                      <span className="text-base font-black text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
+                      <span className="text-base font-bold text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
                         {avg.toFixed(1)}/10
                       </span>
                     </div>
@@ -1914,7 +1914,7 @@ export default function PlayersPage() {
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-12">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
             <div className="space-y-1">
-              <h3 className="text-xl font-black uppercase tracking-wider text-white">COACH ADVICE</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-white">COACH ADVICE</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowRecsOverlay(false)} className="text-zinc-500 hover:text-white p-1">
@@ -1925,7 +1925,7 @@ export default function PlayersPage() {
           <div className="space-y-4">
             {getRecommendations().map((rec, i) => (
               <div key={i} className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-2">
-                <span className="text-[10px] font-black tracking-widest text-orange-500 uppercase block">
+                <span className="text-sm font-bold tracking-widest text-orange-500 uppercase block">
                   {rec.type}
                 </span>
                 <p className="text-base font-bold text-white leading-relaxed">
@@ -1944,8 +1944,8 @@ export default function PlayersPage() {
             
             <div className="flex justify-between items-center pb-2 border-b border-zinc-900">
               <div className="space-y-0.5">
-                <h3 className="text-xl font-black text-white uppercase tracking-tight text-left">FILTER & SORT SQUAD</h3>
-                <p className="text-[10px] text-zinc-500 font-bold uppercase text-left">{sortedPlayers.length} players matched</p>
+                <h3 className="text-xl font-bold text-white uppercase tracking-tight text-left">FILTER & SORT SQUAD</h3>
+                <p className="text-sm text-zinc-500 font-bold uppercase text-left">{sortedPlayers.length} players matched</p>
               </div>
               <button 
                 onClick={() => setShowFilterOverlay(false)} 
@@ -1957,7 +1957,7 @@ export default function PlayersPage() {
 
             {/* SORT BY */}
             <div className="space-y-2 text-left">
-              <label className="text-[9px] font-black tracking-widest text-zinc-500 uppercase">SORT BY</label>
+              <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase">SORT BY</label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { label: "Highest CPI", val: "highest_cpi" },
@@ -1970,7 +1970,7 @@ export default function PlayersPage() {
                     key={opt.val}
                     type="button"
                     onClick={() => setSortBy(opt.val as any)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase transition-all cursor-pointer border ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
                       sortBy === opt.val
                         ? "bg-white text-black border-white"
                         : "bg-zinc-900 text-zinc-400 border-zinc-850 hover:border-zinc-700"
@@ -1984,7 +1984,7 @@ export default function PlayersPage() {
 
             {/* QUICK FILTERS */}
             <div className="space-y-2 text-left">
-              <label className="text-[9px] font-black tracking-widest text-zinc-500 uppercase">QUICK FILTERS</label>
+              <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase">QUICK FILTERS</label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { label: "All Players", val: "all" },
@@ -1997,7 +1997,7 @@ export default function PlayersPage() {
                     key={opt.val}
                     type="button"
                     onClick={() => setQuickFilter(opt.val as any)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase transition-all cursor-pointer border ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
                       quickFilter === opt.val
                         ? "bg-orange-500 text-black border-orange-450"
                         : "bg-zinc-900 text-zinc-400 border-zinc-850 hover:border-zinc-700"
@@ -2011,7 +2011,7 @@ export default function PlayersPage() {
 
             {/* ROLE FILTERS */}
             <div className="space-y-2 text-left">
-              <label className="text-[9px] font-black tracking-widest text-zinc-500 uppercase">ROLE FILTERS</label>
+              <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase">ROLE FILTERS</label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { label: "All Roles", val: "all" },
@@ -2024,7 +2024,7 @@ export default function PlayersPage() {
                     key={opt.val}
                     type="button"
                     onClick={() => setRoleFilter(opt.val as any)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase transition-all cursor-pointer border ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
                       roleFilter === opt.val
                         ? "bg-orange-500 text-black border-orange-450"
                         : "bg-zinc-900 text-zinc-400 border-zinc-850 hover:border-zinc-700"
@@ -2039,7 +2039,7 @@ export default function PlayersPage() {
             <button
               type="button"
               onClick={() => setShowFilterOverlay(false)}
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4 text-base font-black transition-all cursor-pointer flex items-center justify-center border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4 text-base font-bold transition-all cursor-pointer flex items-center justify-center border-2 border-white shadow-xl active:scale-98"
             >
               APPLY & VIEW SQUAD
             </button>
