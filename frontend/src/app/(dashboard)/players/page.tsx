@@ -755,7 +755,7 @@ export default function PlayersPage() {
           {/* Top Row: Search & Filter & Add */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="relative flex-1">
+              <div id="tour-search" className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-500" />
                 <input
                   type="text"
@@ -767,6 +767,7 @@ export default function PlayersPage() {
               </div>
 
               <button
+                id="tour-filter"
                 onClick={() => setShowFilterOverlay(true)}
                 className={`h-14 w-14 rounded-2xl flex items-center justify-center border shrink-0 cursor-pointer transition-all active:scale-95 ${
                   sortBy !== "highest_cpi" || quickFilter !== "all" || roleFilter !== "all"
@@ -780,6 +781,7 @@ export default function PlayersPage() {
 
               {role !== "player" && (
                 <button
+                  id="tour-add-player-btn"
                   onClick={() => setShowAddForm(true)}
                   className="h-14 w-14 bg-orange-500 hover:bg-orange-600 text-black rounded-2xl flex items-center justify-center border border-orange-400 shrink-0 cursor-pointer shadow-lg active:scale-95 transition-all"
                   title="Add Player"
@@ -940,7 +942,7 @@ export default function PlayersPage() {
               No players found
             </div>
           ) : (
-            <div className="space-y-4">
+            <div id="tour-player-list" className="space-y-4">
               {sortedPlayers.map((player) => {
                 const cpi = player.ppiScore && player.mpiScore && player.ppiScore > 0 && player.mpiScore > 0
                   ? ((player.ppiScore + player.mpiScore) / 2).toFixed(1)

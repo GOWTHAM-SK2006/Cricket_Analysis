@@ -22,14 +22,27 @@ export default function DashboardLayout({
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [userName, setUserName] = useState("");
   const [showTour, setShowTour] = useState(false);
+  const [tourPage, setTourPage] = useState<"dashboard" | "players">("dashboard");
 
   useEffect(() => {
-    const completed = localStorage.getItem("cpi_onboarding_completed");
-    if (completed !== "true" && pathname === "/dashboard" && role) {
-      setShowTour(true);
-    } else {
-      setShowTour(false);
+    if (!role) return;
+    if (pathname === "/dashboard") {
+      const done = localStorage.getItem("cpi_onboarding_completed");
+      if (done !== "true") {
+        setTourPage("dashboard");
+        setShowTour(true);
+        return;
+      }
     }
+    if (pathname === "/players") {
+      const done = localStorage.getItem("cpi_players_tour_completed");
+      if (done !== "true") {
+        setTourPage("players");
+        setShowTour(true);
+        return;
+      }
+    }
+    setShowTour(false);
   }, [pathname, role]);
 
   useEffect(() => {
@@ -198,7 +211,7 @@ export default function DashboardLayout({
         })}
       </nav>
       {showTour && role && (
-        <OnboardingTour role={role} onFinish={() => setShowTour(false)} />
+        <OnboardingTour role={role} page={tourPage} onFinish={() => setShowTour(false)} />
       )}
     </div>
   );
