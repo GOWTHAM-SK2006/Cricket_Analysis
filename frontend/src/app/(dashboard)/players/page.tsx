@@ -1367,9 +1367,13 @@ export default function PlayersPage() {
                         const currentScore = p.ppiScore;
                         return (
                           <div key={p.id || idx} className="flex justify-between items-center text-xs font-bold bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
-                            <span className="text-zinc-400">Practice {idx + 1}</span>
+                            <span className="text-zinc-400 uppercase">
+                              {new Date(p.date || p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            </span>
                             <div className="flex items-center gap-1.5">
-                              <span className="text-orange-500 font-mono text-sm">{formatScoreValue(currentScore)}</span>
+                              <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850">
+                                {formatScoreValue(currentScore)}
+                              </span>
                               {prevScore !== null && currentScore !== null && (
                                 currentScore > prevScore ? (
                                   <span className="text-green-500 font-extrabold text-xs">↑</span>
@@ -1401,9 +1405,13 @@ export default function PlayersPage() {
                         const currentScore = m.mpiScore;
                         return (
                           <div key={m.id || idx} className="flex justify-between items-center text-xs font-bold bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
-                            <span className="text-zinc-400">Match {idx + 1}</span>
+                            <span className="text-zinc-400 uppercase">
+                              {new Date(m.date || m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            </span>
                             <div className="flex items-center gap-1.5">
-                              <span className="text-orange-500 font-mono text-sm">{formatScoreValue(currentScore)}</span>
+                              <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850">
+                                {formatScoreValue(currentScore)}
+                              </span>
                               {prevScore !== null && currentScore !== null && (
                                 currentScore > prevScore ? (
                                   <span className="text-green-500 font-extrabold text-xs">↑</span>
