@@ -34,7 +34,19 @@ export default function PlayersPage() {
   const [lastAssessmentDates, setLastAssessmentDates] = useState<Record<number, string>>({});
 
   // View state: 'list' | 'profile'
-  const [view, setView] = useState<"list" | "profile">(searchParams.get("id") ? "profile" : "list");
+  const [view, setView] = useState<"list" | "profile">(() => {
+    if (typeof window !== "undefined") {
+      const storedRole = localStorage.getItem("userRole");
+      if (storedRole === "player") {
+        return "profile";
+      }
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("id")) {
+        return "profile";
+      }
+    }
+    return "list";
+  });
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   // Modals / Overlays
@@ -207,6 +219,14 @@ export default function PlayersPage() {
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
     setRole(storedRole);
+    
+    const idParam = searchParams.get("id");
+    if (storedRole === "player" || idParam) {
+      setView("profile");
+    } else {
+      setView("list");
+    }
+    
     fetchData();
 
     // URL direct navigation check
