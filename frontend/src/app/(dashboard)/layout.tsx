@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { api } from "@/lib/api";
-import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon } from "lucide-react";
+import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -19,6 +19,7 @@ export default function DashboardLayout({
   const [orgName, setOrgName] = useState("");
   const [role, setRole] = useState<string | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as "light" | "dark";
@@ -60,6 +61,7 @@ export default function DashboardLayout({
       .then((res) => {
         setStatus(res.data.approvalStatus || "APPROVED");
         setOrgName(res.data.organization?.name || "the Academy");
+        setUserName(res.data.name || "");
         
         const backendRole = res.data.role;
         const mappedRole = backendRole === "USER" ? "player" : "coach";
@@ -136,34 +138,26 @@ export default function DashboardLayout({
     { name: "HOME", path: "/dashboard", icon: Home },
     { name: "PLAYERS", path: "/players", icon: Users },
     { name: "HISTORY", path: "/history", icon: Clock },
-    { name: "PROFILE", path: "/profile", icon: User },
+    { name: "HELP", path: "/help", icon: HelpCircle },
   ];
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-orange-500/30 pb-24">
       {/* Top Simple Header */}
       <header className="h-16 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6">
-        <div className="flex items-center gap-3">
-          <div className="relative w-8 h-9">
+        {/* Left Side: Circular Profile Avatar */}
+        <Link href="/profile" className="flex items-center justify-center cursor-pointer">
+          <div className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-orange-500 font-black text-sm uppercase">
+            {userName ? userName.charAt(0).toUpperCase() : <User className="w-4 h-4 stroke-[2.5]" />}
+          </div>
+        </Link>
+
+        {/* Right Side: CPI logo and text */}
+        <div className="flex items-center gap-2.5">
+          <div className="relative w-7 h-8">
             <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
           </div>
-          <span className="text-lg font-black tracking-tight text-white">CPI</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={toggleTheme}
-            className="text-zinc-400 hover:text-orange-500 transition-colors p-2 rounded-lg cursor-pointer"
-            title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
-          >
-            {theme === "light" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-          <button
-            onClick={handleLogout}
-            className="text-zinc-400 hover:text-red-500 transition-colors p-2 rounded-lg cursor-pointer"
-            title="Log Out"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
+          <span className="text-base font-black tracking-tight text-white uppercase">CPI</span>
         </div>
       </header>
 
