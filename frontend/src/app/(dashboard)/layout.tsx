@@ -147,8 +147,8 @@ export default function DashboardLayout({
       <header className="h-16 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6">
         {/* Left Side: Circular Profile Avatar */}
         <Link href="/profile" className="flex items-center justify-center cursor-pointer">
-          <div className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-orange-500 font-black text-sm uppercase">
-            {userName ? userName.charAt(0).toUpperCase() : <User className="w-4 h-4 stroke-[2.5]" />}
+          <div className="w-11 h-11 rounded-full bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center text-orange-500 font-black text-base uppercase hover:border-orange-500 transition-colors">
+            {userName ? userName.charAt(0).toUpperCase() : <User className="w-5 h-5 stroke-[2.5]" />}
           </div>
         </Link>
 

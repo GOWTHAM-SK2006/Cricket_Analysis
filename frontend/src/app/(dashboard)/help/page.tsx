@@ -15,7 +15,7 @@ export default function HelpPage() {
 
       {/* Intro Card */}
       <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
-        <p className="text-sm font-bold text-zinc-350 leading-relaxed">
+        <p className="text-sm font-bold text-zinc-400 leading-relaxed">
           Welcome to the Cricket Performance Index (CPI) platform. This guide explains how our index works and how to interpret scores.
         </p>
       </div>
@@ -34,7 +34,7 @@ export default function HelpPage() {
         <p className="text-xs font-bold text-zinc-400 leading-normal">
           PPI measures a player's capability and mindset in practice nets and coaching sessions. It is rated out of 10 across 6 core parameters:
         </p>
-        <ul className="text-xs font-bold text-zinc-300 space-y-2 pl-4 list-disc">
+        <ul className="text-xs font-bold text-zinc-400 space-y-2 pl-4 list-disc">
           <li><span className="text-white">Technique:</span> Mechanics, posture, and shot selection.</li>
           <li><span className="text-white">Intensity:</span> Energy levels and focus throughout drills.</li>
           <li><span className="text-white">Execution:</span> Ability to hit targets and execute instructions.</li>
@@ -58,7 +58,7 @@ export default function HelpPage() {
         <p className="text-xs font-bold text-zinc-400 leading-normal">
           MPI measures a player's real-game impact during matches and simulated match play. It is rated out of 10 across 6 core parameters:
         </p>
-        <ul className="text-xs font-bold text-zinc-300 space-y-2 pl-4 list-disc">
+        <ul className="text-xs font-bold text-zinc-400 space-y-2 pl-4 list-disc">
           <li><span className="text-white">Technical Execution:</span> Playing key moments using sound technique.</li>
           <li><span className="text-white">Decision Making:</span> Risk management and situational choices.</li>
           <li><span className="text-white">Game Awareness:</span> Understanding run rate, field settings, and match state.</li>
@@ -94,15 +94,15 @@ export default function HelpPage() {
         <div className="space-y-3 pt-1">
           <div className="flex justify-between items-center text-xs font-bold py-1 border-b border-zinc-900">
             <span className="text-red-500">Below 5.0</span>
-            <span className="text-zinc-300">Needs Immediate Guidance / Development</span>
+            <span className="text-zinc-400">Needs Immediate Guidance / Development</span>
           </div>
           <div className="flex justify-between items-center text-xs font-bold py-1 border-b border-zinc-900">
             <span className="text-amber-500">5.0 - 7.5</span>
-            <span className="text-zinc-300">Consistent Performance / Standard Level</span>
+            <span className="text-zinc-400">Consistent Performance / Standard Level</span>
           </div>
           <div className="flex justify-between items-center text-xs font-bold py-1 border-b border-zinc-900">
             <span className="text-emerald-500">7.5 - 10.0</span>
-            <span className="text-zinc-300">Outstanding Capability / Elite Potential</span>
+            <span className="text-zinc-400">Outstanding Capability / Elite Potential</span>
           </div>
         </div>
       </div>
