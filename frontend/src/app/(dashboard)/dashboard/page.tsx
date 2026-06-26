@@ -247,7 +247,7 @@ export default function DashboardPage() {
       </div>
 
       {/* 2. TODAY'S SNAPSHOT */}
-      <div className="space-y-3">
+      <div id="tour-snapshot" className="space-y-3">
         <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
           TODAY'S SNAPSHOT
         </h3>
@@ -283,7 +283,7 @@ export default function DashboardPage() {
         <div className="space-y-8">
           
           {/* SELF ASSESSMENT */}
-          <div className="space-y-3">
+          <div id="tour-self-assessment" className="space-y-3">
             <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
               SELF ASSESSMENT
             </h3>
@@ -300,7 +300,7 @@ export default function DashboardPage() {
           </div>
 
           {/* LATEST COACH FEEDBACK */}
-          <div className="space-y-3">
+          <div id="tour-coach-feedback" className="space-y-3">
             <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
               <MessageSquare className="w-3.5 h-3.5 text-orange-500" />
               LATEST COACH FEEDBACK
@@ -330,7 +330,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 gap-4">
               
               {/* Left Side: Last 5 MPI */}
-              <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4">
+              <div id="tour-last-mpi" className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4">
                 <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block text-center border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
                   LAST 5 MPI
                 </span>
@@ -355,7 +355,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Right Side: Last 5 PPI */}
-              <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4">
+              <div id="tour-last-ppi" className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4">
                 <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block text-center border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
                   LAST 5 PPI
                 </span>
@@ -384,7 +384,7 @@ export default function DashboardPage() {
           
         </div>
       ) : (
-        <div className="space-y-3">
+        <div id="tour-quick-actions" className="space-y-3">
           <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase">
             QUICK ACTIONS
           </h3>
@@ -412,6 +412,7 @@ export default function DashboardPage() {
             </button>
 
             <button
+              id="tour-add-player"
               onClick={() => router.push("/players?add=true")}
               className="w-full bg-zinc-950 border border-zinc-900 hover:border-zinc-850 text-white rounded-2xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 transition-all active:scale-[0.99] cursor-pointer uppercase"
             >

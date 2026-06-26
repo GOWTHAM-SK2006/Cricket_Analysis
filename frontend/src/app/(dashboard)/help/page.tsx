@@ -107,6 +107,17 @@ export default function HelpPage() {
         </div>
       </div>
 
+      {/* Restart Tour */}
+      <button
+        onClick={() => {
+          localStorage.setItem("cpi_onboarding_completed", "false");
+          window.location.href = "/dashboard";
+        }}
+        className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 text-base font-black flex items-center justify-center gap-2 transition-all border border-orange-450 cursor-pointer uppercase"
+      >
+        Restart Tour
+      </button>
+
       {/* Back to Profile */}
       <Link
         href="/profile"

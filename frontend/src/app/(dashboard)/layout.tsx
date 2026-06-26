@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import OnboardingTour from "./OnboardingTour";
 
 export default function DashboardLayout({
   children,
@@ -20,6 +21,16 @@ export default function DashboardLayout({
   const [role, setRole] = useState<string | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [userName, setUserName] = useState("");
+  const [showTour, setShowTour] = useState(false);
+
+  useEffect(() => {
+    const completed = localStorage.getItem("cpi_onboarding_completed");
+    if (completed !== "true" && pathname === "/dashboard" && role) {
+      setShowTour(true);
+    } else {
+      setShowTour(false);
+    }
+  }, [pathname, role]);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as "light" | "dark";
@@ -174,6 +185,7 @@ export default function DashboardLayout({
           return (
             <Link
               key={tab.path}
+              id={`nav-${tab.name.toLowerCase()}`}
               href={tab.path}
               className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-all ${
                 isActive ? "text-orange-500 font-black scale-105" : "text-zinc-500 font-bold"
@@ -185,6 +197,9 @@ export default function DashboardLayout({
           );
         })}
       </nav>
+      {showTour && role && (
+        <OnboardingTour role={role} onFinish={() => setShowTour(false)} />
+      )}
     </div>
   );
 }
