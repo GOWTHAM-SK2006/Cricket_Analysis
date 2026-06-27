@@ -1669,9 +1669,46 @@ export default function PlayersPage() {
       {showPracticeOverlay && selectedPlayer && (
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
-            <div className="space-y-1">
+            <div className="space-y-2">
               <h3 className="text-xl font-bold uppercase tracking-wider text-white">PRACTICE GRADES</h3>
-              <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Player:</span>
+                <div className="relative inline-block">
+                  <select
+                    value={selectedPlayer.id}
+                    onChange={(e) => {
+                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                      if (nextPlayer) {
+                        setSelectedPlayer(nextPlayer);
+                        loadHistory(nextPlayer.id);
+                        setPracticeForm({
+                          technique: 7,
+                          intensity: 7,
+                          execution: 7,
+                          adaptability: 7,
+                          discipline: 7,
+                          focus: 7,
+                          notes: ""
+                        });
+                        setError("");
+                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
+                      }
+                    }}
+                    className="appearance-none bg-zinc-950 border border-zinc-800 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
+                  >
+                    {players.map((p) => (
+                      <option key={p.id} value={p.id} className="bg-black text-white font-bold font-mono">
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-orange-500">
+                    <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
             <button onClick={() => setShowPracticeOverlay(false)} className="text-zinc-500 hover:text-white p-1">
               <X className="w-7 h-7" />
@@ -1737,9 +1774,46 @@ export default function PlayersPage() {
       {showMatchOverlay && selectedPlayer && (
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
-            <div className="space-y-1">
+            <div className="space-y-2">
               <h3 className="text-xl font-bold uppercase tracking-wider text-white">MATCH GRADES</h3>
-              <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Player:</span>
+                <div className="relative inline-block">
+                  <select
+                    value={selectedPlayer.id}
+                    onChange={(e) => {
+                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                      if (nextPlayer) {
+                        setSelectedPlayer(nextPlayer);
+                        loadHistory(nextPlayer.id);
+                        setMatchForm({
+                          technicalExecution: 7,
+                          decisionMaking: 7,
+                          gameAwareness: 7,
+                          pressureHandling: 7,
+                          teamContribution: 7,
+                          matchImpact: 7,
+                          notes: ""
+                        });
+                        setError("");
+                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
+                      }
+                    }}
+                    className="appearance-none bg-zinc-950 border border-zinc-800 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
+                  >
+                    {players.map((p) => (
+                      <option key={p.id} value={p.id} className="bg-black text-white font-bold font-mono">
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-orange-500">
+                    <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
             <button onClick={() => setShowMatchOverlay(false)} className="text-zinc-500 hover:text-white p-1">
               <X className="w-7 h-7" />
