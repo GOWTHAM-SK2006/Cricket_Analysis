@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, LogOut, User, Sun, Moon, HelpCircle } from "lucide-react";
+import { Loader2, LogOut, User, Sun, Moon, HelpCircle, FileText } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -129,6 +129,18 @@ export default function ProfilePage() {
                 HELP & INFORMATION
               </span>
               <span className="text-xs font-black text-zinc-500">READ GUIDE &rarr;</span>
+            </Link>
+
+            {/* Terms Link */}
+            <Link
+              href="/terms"
+              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase border-t border-zinc-900"
+            >
+              <span className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                TERMS & CONDITIONS
+              </span>
+              <span className="text-xs font-black text-zinc-500">VIEW TERMS &rarr;</span>
             </Link>
           </div>
 
