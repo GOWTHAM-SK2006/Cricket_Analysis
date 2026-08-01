@@ -61,7 +61,7 @@ export default function PlayersPage() {
   
   // Filter States
   const [showFilterOverlay, setShowFilterOverlay] = useState(false);
-  const [sortBy, setSortBy] = useState<"highest_cpi" | "lowest_cpi" | "highest_ppi" | "highest_mpi" | "recently_assessed">("highest_cpi");
+  const [sortBy, setSortBy] = useState<"highest_cpi" | "lowest_cpi" | "highest_ppi" | "lowest_ppi" | "highest_mpi" | "lowest_mpi" | "recently_assessed">("highest_cpi");
   const [quickFilter, setQuickFilter] = useState<"all" | "top_performers" | "needs_attention" | "assessed_today" | "not_assessed_recently">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "batsman" | "bowler" | "all_rounder" | "wicket_keeper">("all");
   const [copiedCode, setCopiedCode] = useState(false);
@@ -726,10 +726,20 @@ export default function PlayersPage() {
       if (bScores.ppi === 0) return -1;
       return bScores.ppi - aScores.ppi;
     }
+    if (sortBy === "lowest_ppi") {
+      if (aScores.ppi === 0) return 1;
+      if (bScores.ppi === 0) return -1;
+      return aScores.ppi - bScores.ppi;
+    }
     if (sortBy === "highest_mpi") {
       if (aScores.mpi === 0) return 1;
       if (bScores.mpi === 0) return -1;
       return bScores.mpi - aScores.mpi;
+    }
+    if (sortBy === "lowest_mpi") {
+      if (aScores.mpi === 0) return 1;
+      if (bScores.mpi === 0) return -1;
+      return aScores.mpi - bScores.mpi;
     }
     if (sortBy === "recently_assessed") {
       return getAssessDaysAgo(a.id) - getAssessDaysAgo(b.id);
@@ -944,13 +954,20 @@ export default function PlayersPage() {
           ) : (
             <div id="tour-player-list" className="space-y-4">
               {sortedPlayers.map((player) => {
-                const cpi = player.ppiScore && player.mpiScore && player.ppiScore > 0 && player.mpiScore > 0
-                  ? ((player.ppiScore + player.mpiScore) / 2).toFixed(1)
-                  : player.ppiScore && player.ppiScore > 0
-                    ? player.ppiScore.toFixed(1)
-                    : player.mpiScore && player.mpiScore > 0
-                      ? player.mpiScore.toFixed(1)
-                      : "N/A";
+                const scores = getPlayerScores(player);
+                let scoreLabel = "CPI INDEX";
+                let scoreDisplay = "N/A";
+
+                if (sortBy === "highest_mpi" || sortBy === "lowest_mpi") {
+                  scoreLabel = "MPI INDEX";
+                  scoreDisplay = player.mpiScore && player.mpiScore > 0 ? player.mpiScore.toFixed(1) : "N/A";
+                } else if (sortBy === "highest_ppi" || sortBy === "lowest_ppi") {
+                  scoreLabel = "PPI INDEX";
+                  scoreDisplay = player.ppiScore && player.ppiScore > 0 ? player.ppiScore.toFixed(1) : "N/A";
+                } else {
+                  scoreLabel = "CPI INDEX";
+                  scoreDisplay = scores.cpi > 0 ? scores.cpi.toFixed(1) : "N/A";
+                }
                 
                 const cachedPhoto = typeof window !== 'undefined' ? localStorage.getItem(`player_photo_${player.id}`) : null;
                 const assessDate = lastAssessmentDates[player.id] || "Loading...";
@@ -979,8 +996,8 @@ export default function PlayersPage() {
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-xs font-bold text-zinc-500 tracking-widest uppercase">CPI INDEX</div>
-                      <div className="text-2xl font-bold text-orange-500 tracking-tight">{cpi}</div>
+                      <div className="text-xs font-bold text-zinc-500 tracking-widest uppercase">{scoreLabel}</div>
+                      <div className="text-2xl font-bold text-orange-500 tracking-tight">{scoreDisplay}</div>
                     </div>
                   </div>
                 );
@@ -2094,7 +2111,9 @@ export default function PlayersPage() {
                   { label: "Highest CPI", val: "highest_cpi" },
                   { label: "Lowest CPI", val: "lowest_cpi" },
                   { label: "Highest PPI", val: "highest_ppi" },
+                  { label: "Lowest PPI", val: "lowest_ppi" },
                   { label: "Highest MPI", val: "highest_mpi" },
+                  { label: "Lowest MPI", val: "lowest_mpi" },
                   { label: "Recently Assessed", val: "recently_assessed" }
                 ].map((opt) => (
                   <button
