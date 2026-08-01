@@ -1439,7 +1439,7 @@ export default function PlayersPage() {
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 3</span>
                 <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <Target className="w-4 h-4 text-orange-500" />
-                  WHERE DO I WANT TO BE? (TARGET GOALS)
+                  WHERE DO I WANT TO BE?
                 </h3>
               </div>
               
@@ -1497,7 +1497,7 @@ export default function PlayersPage() {
 
                 {/* Development Goal Card */}
                 <div className="space-y-1.5">
-                  <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest block pl-1">MY DEVELOPMENT GOAL / MILESTONE</span>
+                  <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest block pl-1">PLAYER DEVELOPMENT GOAL</span>
                   {isEditingGoal ? (
                     <div className="space-y-2 text-left">
                       <textarea
