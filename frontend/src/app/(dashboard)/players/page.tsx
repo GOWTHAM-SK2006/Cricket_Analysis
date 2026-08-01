@@ -22,6 +22,14 @@ interface Player {
   invitationCodeActivated?: boolean;
 }
 
+const formatScoreValue = (val: number | null | undefined) => {
+  if (val === null || val === undefined || val === 0) return "N/A";
+  if (val <= 10) {
+    return Math.round(val * 10).toString();
+  }
+  return Math.round(val).toString();
+};
+
 export default function PlayersPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
