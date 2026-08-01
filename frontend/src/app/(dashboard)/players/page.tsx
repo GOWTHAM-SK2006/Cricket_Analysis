@@ -960,13 +960,13 @@ export default function PlayersPage() {
 
                 if (sortBy === "highest_mpi" || sortBy === "lowest_mpi") {
                   scoreLabel = "MPI INDEX";
-                  scoreDisplay = player.mpiScore && player.mpiScore > 0 ? player.mpiScore.toFixed(1) : "N/A";
+                  scoreDisplay = formatScoreValue(player.mpiScore);
                 } else if (sortBy === "highest_ppi" || sortBy === "lowest_ppi") {
                   scoreLabel = "PPI INDEX";
-                  scoreDisplay = player.ppiScore && player.ppiScore > 0 ? player.ppiScore.toFixed(1) : "N/A";
+                  scoreDisplay = formatScoreValue(player.ppiScore);
                 } else {
                   scoreLabel = "CPI INDEX";
-                  scoreDisplay = scores.cpi > 0 ? scores.cpi.toFixed(1) : "N/A";
+                  scoreDisplay = formatScoreValue(scores.cpi);
                 }
                 
                 const cachedPhoto = typeof window !== 'undefined' ? localStorage.getItem(`player_photo_${player.id}`) : null;
@@ -1141,9 +1141,11 @@ export default function PlayersPage() {
         }
 
         const formatScoreValue = (val: number | null | undefined) => {
-          if (val === null || val === undefined || isNaN(val) || val <= 0) return "N/A";
-          const num = val > 10 ? val / 10 : val;
-          return num.toFixed(1);
+          if (val === null || val === undefined) return "N/A";
+          if (val <= 10) {
+            return Math.round(val * 10).toString();
+          }
+          return Math.round(val).toString();
         };
 
         const currentPpi = selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? selectedPlayer.ppiScore : null;
@@ -1165,10 +1167,9 @@ export default function PlayersPage() {
           .sort((a, b) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
           .slice(-5);
 
-        const cpiVal = currentCpi ? (currentCpi > 10 ? currentCpi / 10 : currentCpi) : 0;
-        const targetCpiVal = targetCpi > 10 ? targetCpi / 10 : targetCpi;
-        const gapVal = Number((targetCpiVal - cpiVal).toFixed(1));
-        const targetPercent = targetCpiVal > 0 ? Math.min(100, Math.max(0, Math.round((cpiVal / targetCpiVal) * 100))) : 0;
+        const cpiVal = currentCpi ? parseInt(formatScoreValue(currentCpi), 10) : 0;
+        const gapVal = targetCpi - cpiVal;
+        const targetPercent = Math.min(100, Math.max(0, Math.round((cpiVal / targetCpi) * 100)));
 
         const devMetrics = [
           { name: "Sleep Quality", val: selfAverages ? selfAverages.sleep : "7.0" },
@@ -1475,8 +1476,8 @@ export default function PlayersPage() {
                         onChange={(e) => setTempTargetCpi(e.target.value)}
                         className="bg-black border-2 border-zinc-800 rounded-xl px-2 py-1.5 font-mono font-bold text-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
-                        {[7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0].map((v) => (
-                          <option key={v} value={v}>{v.toFixed(1)}</option>
+                        {[70, 75, 80, 85, 90, 95, 100].map((v) => (
+                          <option key={v} value={v}>{v}</option>
                         ))}
                       </select>
                       <button
@@ -1491,7 +1492,7 @@ export default function PlayersPage() {
                       onClick={() => { setTempTargetCpi(targetCpi.toString()); setIsEditingTarget(true); }}
                       className="cursor-pointer group flex items-center gap-1.5 bg-zinc-900 px-3.5 py-2 rounded-xl border border-zinc-800 hover:border-orange-500 transition-all"
                     >
-                      <span className="text-xl font-bold text-orange-500 font-mono">{formatScoreValue(targetCpi)}</span>
+                      <span className="text-xl font-bold text-orange-500 font-mono">{targetCpi}</span>
                       <Edit2 className="w-3.5 h-3.5 text-zinc-500 group-hover:text-orange-500 transition-colors" />
                     </div>
                   )}
@@ -1971,7 +1972,7 @@ export default function PlayersPage() {
                   .map((s, idx) => (
                     <div key={idx} className="flex-1 min-w-[70px] flex flex-col items-center bg-zinc-900 border border-zinc-850 rounded-xl py-3">
                       <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest">{s.type}</span>
-                      <span className="text-base font-bold text-white mt-1">{(s.score || 0).toFixed(1)}</span>
+                      <span className="text-base font-bold text-white mt-1">{formatScoreValue(s.score)}</span>
                       <span className="text-[7px] font-semibold text-zinc-400 mt-0.5">{s.date.split("-").slice(1).join("/")}</span>
                     </div>
                   ))}
@@ -1995,7 +1996,7 @@ export default function PlayersPage() {
                       </div>
                     </div>
                     <span className="text-lg font-bold text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
-                      PPI {h.ppiScore ? h.ppiScore.toFixed(1) : "N/A"}
+                      PPI {formatScoreValue(h.ppiScore)}
                     </span>
                   </div>
                 ))}
@@ -2019,7 +2020,7 @@ export default function PlayersPage() {
                       </div>
                     </div>
                     <span className="text-lg font-bold text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
-                      MPI {h.mpiScore ? h.mpiScore.toFixed(1) : "N/A"}
+                      MPI {formatScoreValue(h.mpiScore)}
                     </span>
                   </div>
                 ))}
