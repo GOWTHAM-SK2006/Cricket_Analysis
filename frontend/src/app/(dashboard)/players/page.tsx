@@ -1141,11 +1141,9 @@ export default function PlayersPage() {
         }
 
         const formatScoreValue = (val: number | null | undefined) => {
-          if (val === null || val === undefined) return "N/A";
-          if (val <= 10) {
-            return Math.round(val * 10).toString();
-          }
-          return Math.round(val).toString();
+          if (val === null || val === undefined || isNaN(val) || val <= 0) return "N/A";
+          const num = val > 10 ? val / 10 : val;
+          return num.toFixed(1);
         };
 
         const currentPpi = selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? selectedPlayer.ppiScore : null;
@@ -1167,9 +1165,10 @@ export default function PlayersPage() {
           .sort((a, b) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
           .slice(-5);
 
-        const cpiVal = currentCpi ? parseInt(formatScoreValue(currentCpi), 10) : 0;
-        const gapVal = targetCpi - cpiVal;
-        const targetPercent = Math.min(100, Math.max(0, Math.round((cpiVal / targetCpi) * 100)));
+        const cpiVal = currentCpi ? (currentCpi > 10 ? currentCpi / 10 : currentCpi) : 0;
+        const targetCpiVal = targetCpi > 10 ? targetCpi / 10 : targetCpi;
+        const gapVal = Number((targetCpiVal - cpiVal).toFixed(1));
+        const targetPercent = targetCpiVal > 0 ? Math.min(100, Math.max(0, Math.round((cpiVal / targetCpiVal) * 100))) : 0;
 
         const devMetrics = [
           { name: "Sleep Quality", val: selfAverages ? selfAverages.sleep : "7.0" },
@@ -1476,8 +1475,8 @@ export default function PlayersPage() {
                         onChange={(e) => setTempTargetCpi(e.target.value)}
                         className="bg-black border-2 border-zinc-800 rounded-xl px-2 py-1.5 font-mono font-bold text-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
-                        {[70, 75, 80, 85, 90, 95, 100].map((v) => (
-                          <option key={v} value={v}>{v}</option>
+                        {[7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0].map((v) => (
+                          <option key={v} value={v}>{v.toFixed(1)}</option>
                         ))}
                       </select>
                       <button
@@ -1492,7 +1491,7 @@ export default function PlayersPage() {
                       onClick={() => { setTempTargetCpi(targetCpi.toString()); setIsEditingTarget(true); }}
                       className="cursor-pointer group flex items-center gap-1.5 bg-zinc-900 px-3.5 py-2 rounded-xl border border-zinc-800 hover:border-orange-500 transition-all"
                     >
-                      <span className="text-xl font-bold text-orange-500 font-mono">{targetCpi}</span>
+                      <span className="text-xl font-bold text-orange-500 font-mono">{formatScoreValue(targetCpi)}</span>
                       <Edit2 className="w-3.5 h-3.5 text-zinc-500 group-hover:text-orange-500 transition-colors" />
                     </div>
                   )}

@@ -231,11 +231,10 @@ export default function DashboardPage() {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const formatScoreValue = (val: number) => {
-    if (val <= 10) {
-      return Math.round(val * 10);
-    }
-    return Math.round(val);
+  const formatScoreValue = (val: number | null | undefined) => {
+    if (val === null || val === undefined || isNaN(val) || val <= 0) return "N/A";
+    const num = val > 10 ? val / 10 : val;
+    return num.toFixed(1);
   };
 
   if (loading) {

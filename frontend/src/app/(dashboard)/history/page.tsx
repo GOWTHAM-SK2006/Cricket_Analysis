@@ -159,12 +159,15 @@ export default function HistoryPage() {
                   <span>LATEST ({lastSessions[lastSessions.length - 1].date})</span>
                 </div>
                 <div className="flex items-center justify-between gap-2 pt-2">
-                  {lastSessions.map((s, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center bg-zinc-900 border border-zinc-805 rounded-xl py-3 px-1">
-                      <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">{s.type === "Practice" ? "Prac" : "Match"}</span>
-                      <span className="text-lg font-black text-white mt-1">{(s.score || 0).toFixed(1)}</span>
-                    </div>
-                  ))}
+                  {lastSessions.map((s, idx) => {
+                    const val = s.score && s.score > 10 ? s.score / 10 : (s.score || 0);
+                    return (
+                      <div key={idx} className="flex-1 flex flex-col items-center bg-zinc-900 border border-zinc-805 rounded-xl py-3 px-1">
+                        <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">{s.type === "Practice" ? "Prac" : "Match"}</span>
+                        <span className="text-lg font-black text-white mt-1">{val.toFixed(1)}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -187,24 +190,27 @@ export default function HistoryPage() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {practiceHistory.map((item, idx) => (
-                      <div key={idx} className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-                            <Clipboard className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold text-zinc-500">{item.date}</div>
-                            <div className="text-sm font-bold text-white truncate max-w-[180px] uppercase">
-                              {item.notes || "PRACTICE DRILLS"}
+                    {practiceHistory.map((item, idx) => {
+                      const ppiVal = item.ppiScore && item.ppiScore > 10 ? item.ppiScore / 10 : (item.ppiScore || 0);
+                      return (
+                        <div key={idx} className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+                              <Clipboard className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-zinc-500">{item.date}</div>
+                              <div className="text-sm font-bold text-white truncate max-w-[180px] uppercase">
+                                {item.notes || "PRACTICE DRILLS"}
+                              </div>
                             </div>
                           </div>
+                          <span className="text-base font-black text-orange-500 bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-xl">
+                            PPI {ppiVal.toFixed(1)}
+                          </span>
                         </div>
-                        <span className="text-base font-black text-orange-500 bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-xl">
-                          PPI {item.ppiScore.toFixed(1)}
-                        </span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -218,24 +224,27 @@ export default function HistoryPage() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {matchHistory.map((item, idx) => (
-                      <div key={idx} className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-                            <ShieldCheck className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold text-zinc-500">{item.date}</div>
-                            <div className="text-sm font-bold text-white truncate max-w-[180px] uppercase">
-                              {item.notes || "MATCH SESSION"}
+                    {matchHistory.map((item, idx) => {
+                      const mpiVal = item.mpiScore && item.mpiScore > 10 ? item.mpiScore / 10 : (item.mpiScore || 0);
+                      return (
+                        <div key={idx} className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+                              <ShieldCheck className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-zinc-500">{item.date}</div>
+                              <div className="text-sm font-bold text-white truncate max-w-[180px] uppercase">
+                                {item.notes || "MATCH SESSION"}
+                              </div>
                             </div>
                           </div>
+                          <span className="text-base font-black text-orange-500 bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-xl">
+                            MPI {mpiVal.toFixed(1)}
+                          </span>
                         </div>
-                        <span className="text-base font-black text-orange-500 bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-xl">
-                          MPI {item.mpiScore.toFixed(1)}
-                        </span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
