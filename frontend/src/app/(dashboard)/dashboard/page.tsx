@@ -399,66 +399,7 @@ export default function DashboardPage() {
             </div>
           </motion.div>
 
-          {/* LAST ASSESSMENT */}
-          <motion.div variants={itemVariants} className="space-y-3">
-            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2 pl-1">
-              <Activity className="w-3.5 h-3.5 text-orange-500" />
-              LAST ASSESSMENT
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              
-              {/* Left Side: Last 5 MPI */}
-              <div id="tour-last-mpi" className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4 shadow-lg">
-                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider block text-center border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
-                  LAST 5 MPI
-                </span>
-                <div className="space-y-3">
-                  {lastFiveMpi.length > 0 ? (
-                    lastFiveMpi.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center">
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase">
-                          {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                        </span>
-                        <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850">
-                          {formatScoreValue(item.score)}
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-[10px] font-bold text-zinc-600 text-center uppercase py-2">
-                      No MPI Data
-                    </div>
-                  )}
-                </div>
-              </div>
 
-              {/* Right Side: Last 5 PPI */}
-              <div id="tour-last-ppi" className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4 shadow-lg">
-                <span className="text-[11px] font-bold text-zinc-655 dark:text-zinc-405 uppercase tracking-wider block text-center border-b border-zinc-900 pb-2 mb-2">
-                  LAST 5 PPI
-                </span>
-                <div className="space-y-3">
-                  {lastFivePpi.length > 0 ? (
-                    lastFivePpi.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center">
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase">
-                          {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                        </span>
-                        <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850">
-                          {formatScoreValue(item.score)}
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-[10px] font-bold text-zinc-600 text-center uppercase py-2">
-                      No PPI Data
-                    </div>
-                  )}
-                </div>
-              </div>
-
-            </div>
-          </motion.div>
           
         </motion.div>
       ) : (
@@ -611,87 +552,7 @@ export default function DashboardPage() {
             </div>
           </motion.div>
 
-          {/* 6. LAST ASSESSMENT */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="space-y-3 text-left"
-          >
-            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2 pl-1">
-              <Activity className="w-4 h-4 text-orange-500" />
-              LAST ASSESSMENT
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              
-              {/* Left Side: Last 5 MPI */}
-              <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4 shadow-lg">
-                <span className="text-[11px] font-bold text-zinc-650 dark:text-zinc-405 uppercase tracking-wider block text-center border-b border-zinc-900 pb-2 mb-2">
-                  LAST 5 MPI
-                </span>
-                <div className="space-y-3">
-                  {coachMpi.length > 0 ? (
-                    coachMpi.map((item, idx) => (
-                      <motion.div 
-                        key={idx}
-                        whileHover={{ x: 2, backgroundColor: "rgba(259, 259, 259, 0.03)" }}
-                        onClick={() => navigateToPlayer(item.playerName)}
-                        className="flex justify-between items-center p-1.5 -m-1.5 rounded-xl cursor-pointer transition-all duration-200"
-                      >
-                        <div className="text-left min-w-0 pr-2">
-                          <span className="text-sm font-black text-white uppercase block truncate">{item.playerName}</span>
-                          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block mt-0.5">
-                            {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                          </span>
-                        </div>
-                        <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850 shrink-0">
-                          {formatScoreValue(item.score)}
-                        </span>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <div className="text-[10px] font-bold text-zinc-600 text-center uppercase py-2">
-                      No MPI Data
-                    </div>
-                  )}
-                </div>
-              </div>
 
-              {/* Right Side: Last 5 PPI */}
-              <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4 shadow-lg">
-                <span className="text-[11px] font-bold text-zinc-655 dark:text-zinc-405 uppercase tracking-wider block text-center border-b border-zinc-900 pb-2 mb-2">
-                  LAST 5 PPI
-                </span>
-                <div className="space-y-3">
-                  {coachPpi.length > 0 ? (
-                    coachPpi.map((item, idx) => (
-                      <motion.div 
-                        key={idx}
-                        whileHover={{ x: 2, backgroundColor: "rgba(259, 259, 259, 0.03)" }}
-                        onClick={() => navigateToPlayer(item.playerName)}
-                        className="flex justify-between items-center p-1.5 -m-1.5 rounded-xl cursor-pointer transition-all duration-200"
-                      >
-                        <div className="text-left min-w-0 pr-2">
-                          <span className="text-sm font-black text-white uppercase block truncate">{item.playerName}</span>
-                          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider block mt-0.5">
-                            {new Date(item.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                          </span>
-                        </div>
-                        <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850 shrink-0">
-                          {formatScoreValue(item.score)}
-                        </span>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <div className="text-[10px] font-bold text-zinc-600 text-center uppercase py-2">
-                      No PPI Data
-                    </div>
-                  )}
-                </div>
-              </div>
-
-            </div>
-          </motion.div>
         </div>
       )}
 
