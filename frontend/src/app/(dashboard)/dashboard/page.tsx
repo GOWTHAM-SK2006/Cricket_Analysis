@@ -607,7 +607,7 @@ export default function DashboardPage() {
       )}
 
       {/* Floating AI Chatbot Button & Modal */}
-      <div className="fixed bottom-20 right-6 z-50">
+      <div className="fixed bottom-28 right-6 z-50">
         <motion.button
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
