@@ -1,6 +1,6 @@
 from datetime import datetime
 from app.schemas.recommendation import RecommendationRequest, RecommendationResponse
-from app.services.openrouter_service import openrouter_service
+from app.services.gemini_service import gemini_service
 from app.utils.helpers import load_prompt_file, format_player_context
 from app.utils.logger import logger
 
@@ -37,8 +37,8 @@ class RecommendationService:
             {"role": "user", "content": formatted_context}
         ]
 
-        logger.info(f"Generating AI recommendation for Player ID {request.playerId}")
-        raw_json = await openrouter_service.generate_structured_json(messages=messages)
+        logger.info(f"Generating Gemini AI recommendation for Player ID {request.playerId}")
+        raw_json = await gemini_service.generate_structured_json(messages=messages)
 
         return RecommendationResponse(
             success=True,

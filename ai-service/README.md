@@ -13,9 +13,9 @@ Spring Boot (Main Backend & Database)
        ↓
 FastAPI AI Service (Microservice)
        ↓
-OpenRouter API (OpenAI SDK)
+Google Gemini API REST Client
        ↓
-GPT Model
+Gemini 2.5 Flash
 ```
 
 - **Spring Boot** handles business logic, authentication, PostgreSQL database storage, and assessments.
@@ -28,7 +28,7 @@ GPT Model
 - **Python 3.12**
 - **FastAPI** & **Uvicorn**
 - **Pydantic v2** & **Pydantic-Settings**
-- **OpenAI SDK** (configured for OpenRouter)
+- **Google Gemini API** (`gemini-2.5-flash`)
 - **HTTPX** (Async HTTP Requests)
 - **Docker**
 
@@ -39,9 +39,8 @@ GPT Model
 Create a `.env` file in `ai-service/`:
 
 ```env
-OPENROUTER_API_KEY=YOUR_OPENROUTER_API_KEY
-OPENROUTER_MODEL=openai/gpt-4o-mini
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+GEMINI_MODEL=gemini-2.5-flash
 APP_ENV=development
 LOG_LEVEL=INFO
 HOST=0.0.0.0

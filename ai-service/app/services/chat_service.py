@@ -1,7 +1,7 @@
 from typing import Dict, List
 from app.schemas.chat_request import ChatRequest
 from app.schemas.chat_response import ChatResponse
-from app.services.openrouter_service import openrouter_service
+from app.services.gemini_service import gemini_service
 from app.utils.helpers import load_prompt_file, format_player_context
 from app.utils.logger import logger
 
@@ -44,8 +44,8 @@ class ChatService:
             system_msg = messages[0]
             messages = [system_msg] + messages[-10:]
 
-        logger.info(f"Processing chat session {session_id} for role {request.userRole}")
-        reply_text = await openrouter_service.generate_chat_completion(messages=messages)
+        logger.info(f"Processing chat session {session_id} for role {request.userRole} via Gemini API")
+        reply_text = await gemini_service.generate_chat_completion(messages=messages)
 
         # Update in-memory session history
         self.sessions[session_id].append({"role": "user", "content": request.message})

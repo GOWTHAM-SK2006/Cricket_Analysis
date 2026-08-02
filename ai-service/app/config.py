@@ -4,9 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     APP_NAME: str = "CPI AI Service"
     API_V1_STR: str = "/api/v1"
-    OPENROUTER_API_KEY: str
-    OPENROUTER_MODEL: str = "openai/gpt-4.1-mini"
-    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
     APP_ENV: str = "development"
     LOG_LEVEL: str = "INFO"
     HOST: str = "0.0.0.0"
