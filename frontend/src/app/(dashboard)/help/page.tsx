@@ -31,21 +31,35 @@ export default function HelpPage() {
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Practice Assessment Index</p>
           </div>
         </div>
-        <p className="text-xs font-bold text-zinc-400 leading-normal">
-          PPI measures a player's capability and mindset in practice nets and coaching sessions. It is rated out of 10 across 10 core parameters:
+        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+          The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across 8 key areas: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.
         </p>
-        <ul className="text-xs font-bold text-zinc-400 space-y-2 pl-4 list-disc">
-          <li><span className="text-white">Technical Execution:</span> Technique, mechanics, and physical execution.</li>
-          <li><span className="text-white">Decision Making:</span> Tactical choices and shot selection in training.</li>
-          <li><span className="text-white">Game Awareness:</span> Understanding practice scenarios and match simulations.</li>
-          <li><span className="text-white">Adaptability:</span> Adjusting to variations, different pitch types, and drills.</li>
-          <li><span className="text-white">Discipline:</span> Adherence to training structure and shot discipline.</li>
-          <li><span className="text-white">Preparation:</span> Warmup routine, session readiness, and focus.</li>
-          <li><span className="text-white">Teamwork:</span> Peer support, communication, and fielding intensity.</li>
-          <li><span className="text-white">Coachability:</span> Receptiveness to feedback and implementing fixes.</li>
-          <li><span className="text-white">Work Ethic:</span> Training effort, volume, and relentless work rate.</li>
-          <li><span className="text-white">Emotional Control:</span> Managing frustration, maintaining composure, and attitude.</li>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Its purpose is not simply to give a player a score. It is to help the coach identify what is working well, where development may be required and what action should follow. By tracking these areas consistently, the coach can move beyond general impressions and build a clearer picture of the player’s strengths, weaknesses and progress over time. It also creates better coaching conversations by giving both coach and player something specific to review, discuss and improve.
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          The Practice Performance Index is therefore both a measurement tool and a problem-solving tool. It helps the coach answer three important questions:
+        </p>
+        <ul className="text-xs font-bold text-zinc-300 space-y-1 pl-4 list-disc">
+          <li>What is the player doing well?</li>
+          <li>What is limiting their development?</li>
+          <li>What should we work on next?</li>
         </ul>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Used properly, it gives practice greater purpose, helps young players take more ownership of their development and allows the coach to make more informed decisions about how best to coach and mentor each individual.
+        </p>
+        <div className="pt-2 border-t border-zinc-900 space-y-2">
+          <ul className="text-xs font-medium text-zinc-400 space-y-2 pl-2">
+            <li><span className="text-white font-bold">Technique:</span> The quality and repeatability of the basic technique and skills a player uses to perform their role effectively.</li>
+            <li><span className="text-white font-bold">Intensity:</span> The energy, purpose and competitive effort a player brings to every part of his and the team practice.</li>
+            <li><span className="text-white font-bold">Execution:</span> The player’s ability to turn the practiced skill or technique required, into an effective and repeatable action under pressure or instruction.</li>
+            <li><span className="text-white font-bold">Adaptability:</span> The player’s ability to adjust their approach, technique and decision-making when conditions, challenges or situations change during practice or are not to their liking.</li>
+            <li><span className="text-white font-bold">Discipline:</span> The player’s ability to follow instructions, maintain standards, stay committed to the task and make responsible choices throughout practice.</li>
+            <li><span className="text-white font-bold">Concentration:</span> The player’s ability to stay mentally focused, remain engaged in the practice and give full attention to each skill, repetition and instruction.</li>
+            <li><span className="text-white font-bold">Coachability:</span> The player’s willingness and ability to listen, understand feedback, apply coaching advice and instruction and ask questions to improve their performance.</li>
+            <li><span className="text-white font-bold">Preparation:</span> How well a player arrives physically, mentally and practically ready to perform their role and make the most of the practice session.</li>
+          </ul>
+        </div>
       </div>
 
       {/* MPI Details */}
