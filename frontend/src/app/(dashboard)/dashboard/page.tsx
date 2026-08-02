@@ -95,31 +95,31 @@ export default function DashboardPage() {
     setIsSending(true);
 
     try {
-      // Call Spring Boot backend or FastAPI AI service
+      // Send chat message through Spring Boot -> FastAPI AI Microservice -> OpenRouter API pipeline
       const res = await api.post("/ai/chat", {
-        sessionId: "dash_session_" + Date.now(),
+        sessionId: "dash_session_user",
         userRole: role === "player" ? "PLAYER" : "COACH",
         message: userText
-      }).catch(() => null);
+      });
 
       if (res && res.data && res.data.reply) {
         setChatMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
       } else {
-        // High quality fallback AI coach response
         setChatMessages((prev) => [
           ...prev,
           {
             sender: "bot",
-            text: `Regarding "${userText}": Focus on high-repetition target drills, maintaining front-foot balance, and setting scenario-based pressure constraints during net practice!`
+            text: "AI Coach service is currently offline. Please ensure the FastAPI AI microservice is running."
           }
         ]);
       }
-    } catch (err) {
+    } catch (err: any) {
+      const errMsg = err?.response?.data?.reply || err?.response?.data?.detail || "Error connecting to AI Coach microservice. Please check server logs.";
       setChatMessages((prev) => [
         ...prev,
         {
           sender: "bot",
-          text: "I'm currently processing player analytics. Focus on technique, decision making, and consistent practice routines!"
+          text: errMsg
         }
       ]);
     } finally {

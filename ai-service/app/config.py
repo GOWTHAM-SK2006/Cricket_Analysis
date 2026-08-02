@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "CPI AI Service"
     API_V1_STR: str = "/api/v1"
     OPENROUTER_API_KEY: str
-    OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
+    OPENROUTER_MODEL: str = "openai/gpt-4.1-mini"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
     APP_ENV: str = "development"
     LOG_LEVEL: str = "INFO"
