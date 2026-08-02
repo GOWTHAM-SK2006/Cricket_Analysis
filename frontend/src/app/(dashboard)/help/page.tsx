@@ -73,21 +73,41 @@ export default function HelpPage() {
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Play Assessment Index</p>
           </div>
         </div>
-        <p className="text-xs font-bold text-zinc-400 leading-normal">
-          MPI measures a player's real-game performance during matches. It is rated out of 10 across 10 core parameters:
+        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+          The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.
         </p>
-        <ul className="text-xs font-bold text-zinc-400 space-y-2 pl-4 list-disc">
-          <li><span className="text-white">Technical Execution:</span> Delivering sound technique under match pressure.</li>
-          <li><span className="text-white">Decision Making:</span> Risk-reward judgment and match situation choices.</li>
-          <li><span className="text-white">Game Awareness:</span> Match scenario understanding, required rates, and field strategy.</li>
-          <li><span className="text-white">Adaptability:</span> Countering opponent tactics, pitch changes, and bowling variations.</li>
-          <li><span className="text-white">Discipline:</span> Sticking to match plans, team roles, and disciplined execution.</li>
-          <li><span className="text-white">Preparation:</span> Pre-match strategy, mental readiness, and focus.</li>
-          <li><span className="text-white">Teamwork:</span> On-field communication, backing up, and team morale.</li>
-          <li><span className="text-white">Coachability:</span> Executing tactical instructions and mid-match advice.</li>
-          <li><span className="text-white">Work Ethic:</span> Running between wickets, chasing, and high match intensity.</li>
-          <li><span className="text-white">Emotional Control:</span> Composure during crunch moments and handling setbacks.</li>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Its purpose is not simply to give a player a score or judge them by runs, wickets, catches or the result of the match. It’s to help the coach understand what worked, what broke down under pressure and what needs to be developed next.
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          By tracking these areas consistently, the coach can move beyond statistics and build a clearer picture of how the player applies their skills in real competition. It also creates better post-match conversations by giving both coach and player something specific to review, discuss and improve.
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          The Match Performance Index is therefore both a measurement tool and a problem-solving tool.
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          It helps the coach answer three important questions:
+        </p>
+        <ul className="text-xs font-bold text-zinc-300 space-y-1 pl-4 list-disc">
+          <li>What did the player do well?</li>
+          <li>What limited their performance?</li>
+          <li>What should we work on next?</li>
         </ul>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Used properly, it turns every match into a learning opportunity, helps young players understand their own performance more clearly and allows the coach to connect what happens in competition directly back to future practice and development.
+        </p>
+        <div className="pt-2 border-t border-zinc-900 space-y-2">
+          <ul className="text-xs font-medium text-zinc-400 space-y-2 pl-2">
+            <li><span className="text-white font-bold">Technical Execution:</span> How confidently and effectively the player applied their core skills and technique in the match, under the pressure, conditions and demands of competition.</li>
+            <li><span className="text-white font-bold">Decision Making:</span> This measures how well the player read the situation, understood what was required, and chose the right option at the right time.</li>
+            <li><span className="text-white font-bold">Game Awareness:</span> How well the player understood what was happening in the match and adjusted their role, game plan and decisions accordingly.</li>
+            <li><span className="text-white font-bold">Resilience:</span> How well the player responds to mistakes, setbacks and pressure during the match, and how quickly they can reset, stay involved and perform effectively again.</li>
+            <li><span className="text-white font-bold">Emotional Control:</span> How well the player managed pressure, intimidation, frustration, excitement and disappointment during the match while staying composed, focused and able to perform their role effectively.</li>
+            <li><span className="text-white font-bold">Teamwork:</span> How effectively the player supported teammates, fulfilled their role and contributed to the team’s overall performance throughout the match.</li>
+            <li><span className="text-white font-bold">Match Impact:</span> Measures how effectively the player’s overall performance, presence and actions influenced the course of the match and helped the team’s chances of success.</li>
+            <li><span className="text-white font-bold">Preparation:</span> How well the player arrived physically, mentally and practically ready to perform their role to meet the demands of the match.</li>
+          </ul>
+        </div>
       </div>
 
       {/* CPI Details */}
