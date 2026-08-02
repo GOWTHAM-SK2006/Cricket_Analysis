@@ -1244,34 +1244,6 @@ export default function PlayersPage() {
                 <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
                   Last Assessed: {lastAssessmentDate}
                 </div>
-                {selectedPlayer.invitationCode && (
-                  <div className="mt-3 bg-zinc-900 border border-zinc-850 rounded-2xl p-3 inline-block min-w-[200px]">
-                    <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest block text-center">PLAYER INVITATION CODE</span>
-                    <div className="flex items-center justify-center gap-2 mt-1.5">
-                      <span className="text-sm font-mono font-bold text-orange-500 uppercase tracking-wider">
-                        {selectedPlayer.invitationCode}
-                      </span>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(selectedPlayer.invitationCode || "");
-                          setCopiedCode(true);
-                          setTimeout(() => setCopiedCode(false), 2000);
-                        }}
-                        className="p-1 hover:bg-zinc-850 rounded transition-colors text-zinc-455 hover:text-white cursor-pointer"
-                        title="Copy Code"
-                      >
-                        {copiedCode ? (
-                          <Check className="w-3.5 h-3.5 text-green-500 stroke-[3]" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5 stroke-[2.5]" />
-                        )}
-                      </button>
-                    </div>
-                    <span className="text-[7px] font-bold text-zinc-400 uppercase block text-center mt-1">
-                      {selectedPlayer.invitationCodeActivated ? "Activated" : "Pending activation"}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
 
