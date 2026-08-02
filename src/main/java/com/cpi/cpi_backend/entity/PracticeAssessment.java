@@ -35,11 +35,14 @@ public class PracticeAssessment {
     private LocalDate date;
 
     private Integer technicalExecution;
+    private Integer skillsLevel;
+    private Integer intensity;
+    private Integer concentration;
     private Integer decisionMaking;
+    private Integer preparation;
     private Integer gameAwareness;
     private Integer adaptability;
     private Integer discipline;
-    private Integer preparation;
     private Integer teamwork;
     private Integer coachability;
     private Integer workEthic;

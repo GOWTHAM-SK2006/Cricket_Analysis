@@ -213,11 +213,25 @@ export default function DashboardPage() {
             );
 
             // Calculate scores for PPI (practice) and MPI (match)
-            const calculatePpiScore = (session: any) => 
-              (session.technique + session.intensity + session.execution + session.adaptability + session.discipline + session.focus) / 6;
+            const calculatePpiScore = (session: any) => {
+              if (typeof session.ppiScore === "number" && session.ppiScore > 0) return session.ppiScore;
+              const vals = [
+                session.technicalExecution, session.skillsLevel, session.intensity,
+                session.concentration, session.decisionMaking, session.preparation,
+                session.technique, session.execution, session.adaptability, session.discipline, session.focus
+              ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
+              return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+            };
 
-            const calculateMpiScore = (session: any) => 
-              (session.technicalExecution + session.decisionMaking + session.gameAwareness + session.pressureHandling + session.teamContribution + session.matchImpact) / 6;
+            const calculateMpiScore = (session: any) => {
+              if (typeof session.mpiScore === "number" && session.mpiScore > 0) return session.mpiScore;
+              const vals = [
+                session.technicalExecution, session.skillsLevel, session.intensity,
+                session.concentration, session.decisionMaking, session.preparation,
+                session.gameAwareness, session.pressureHandling, session.teamContribution, session.matchImpact
+              ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
+              return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+            };
 
             setLastFivePpi(pHistory.slice(0, 5).map((s: any) => ({ date: s.date, score: calculatePpiScore(s) })));
             setLastFiveMpi(mHistory.slice(0, 5).map((s: any) => ({ date: s.date, score: calculateMpiScore(s) })));

@@ -60,11 +60,31 @@ public class MatchController {
             );
         }
 
-        // Calculate MPI across 10 parameters
-        double mpi = (request.getTechnicalExecution() + request.getDecisionMaking() + request.getGameAwareness() +
-                request.getAdaptability() + request.getDiscipline() + request.getPreparation() +
-                request.getTeamwork() + request.getCoachability() + request.getWorkEthic() +
-                request.getEmotionalControl()) / 10.0;
+        // Calculate MPI across all non-null parameters
+        java.util.List<Integer> metrics = java.util.Arrays.asList(
+                request.getTechnicalExecution(),
+                request.getSkillsLevel(),
+                request.getIntensity(),
+                request.getConcentration(),
+                request.getDecisionMaking(),
+                request.getPreparation(),
+                request.getGameAwareness(),
+                request.getAdaptability(),
+                request.getDiscipline(),
+                request.getTeamwork(),
+                request.getCoachability(),
+                request.getWorkEthic(),
+                request.getEmotionalControl()
+        );
+        double sum = 0;
+        int count = 0;
+        for (Integer val : metrics) {
+            if (val != null) {
+                sum += val;
+                count++;
+            }
+        }
+        double mpi = count > 0 ? (sum / count) : 0.0;
 
         java.time.LocalDate assessmentDate = request.getDate() != null ? request.getDate() : java.time.LocalDate.now();
 
@@ -73,11 +93,14 @@ public class MatchController {
                 .coach(managedCoach)
                 .date(assessmentDate)
                 .technicalExecution(request.getTechnicalExecution())
+                .skillsLevel(request.getSkillsLevel())
+                .intensity(request.getIntensity())
+                .concentration(request.getConcentration())
                 .decisionMaking(request.getDecisionMaking())
+                .preparation(request.getPreparation())
                 .gameAwareness(request.getGameAwareness())
                 .adaptability(request.getAdaptability())
                 .discipline(request.getDiscipline())
-                .preparation(request.getPreparation())
                 .teamwork(request.getTeamwork())
                 .coachability(request.getCoachability())
                 .workEthic(request.getWorkEthic())

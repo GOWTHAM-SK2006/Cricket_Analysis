@@ -87,30 +87,22 @@ export default function PlayersPage() {
   // Practice sliders (scores 1-10)
   const [practiceForm, setPracticeForm] = useState({
     technicalExecution: 7,
+    skillsLevel: 7,
+    intensity: 7,
+    concentration: 7,
     decisionMaking: 7,
-    gameAwareness: 7,
-    adaptability: 7,
-    discipline: 7,
     preparation: 7,
-    teamwork: 7,
-    coachability: 7,
-    workEthic: 7,
-    emotionalControl: 7,
     notes: ""
   });
 
   // Match sliders (scores 1-10)
   const [matchForm, setMatchForm] = useState({
     technicalExecution: 7,
+    skillsLevel: 7,
+    intensity: 7,
+    concentration: 7,
     decisionMaking: 7,
-    gameAwareness: 7,
-    adaptability: 7,
-    discipline: 7,
     preparation: 7,
-    teamwork: 7,
-    coachability: 7,
-    workEthic: 7,
-    emotionalControl: 7,
     notes: ""
   });
 
@@ -1051,21 +1043,21 @@ export default function PlayersPage() {
           };
 
           practiceHistory.forEach(p => {
-            addMetric("Technique", p.technique);
-            addMetric("Training Intensity", p.intensity);
-            addMetric("Skill Execution", p.execution);
-            addMetric("Adaptability", p.adaptability);
-            addMetric("Practice Discipline", p.discipline);
-            addMetric("Focus & Attention", p.focus);
+            addMetric("Technical Execution", p.technicalExecution);
+            addMetric("Skills Level", p.skillsLevel || p.technique);
+            addMetric("Intensity", p.intensity);
+            addMetric("Concentration", p.concentration || p.focus);
+            addMetric("Decision Making", p.decisionMaking);
+            addMetric("Preparation", p.preparation);
           });
 
           matchHistory.forEach(m => {
             addMetric("Technical Execution", m.technicalExecution);
+            addMetric("Skills Level", m.skillsLevel);
+            addMetric("Intensity", m.intensity);
+            addMetric("Concentration", m.concentration);
             addMetric("Decision Making", m.decisionMaking);
-            addMetric("Game Awareness", m.gameAwareness);
-            addMetric("Pressure Handling", m.pressureHandling);
-            addMetric("Team Contribution", m.teamContribution);
-            addMetric("Match Impact", m.matchImpact);
+            addMetric("Preparation", m.preparation);
           });
 
           const averages = Object.entries(metricSums).map(([name, data]) => ({
@@ -1254,12 +1246,12 @@ export default function PlayersPage() {
                   <button
                     onClick={() => {
                       setPracticeForm({
-                        technique: 7,
+                        technicalExecution: 7,
+                        skillsLevel: 7,
                         intensity: 7,
-                        execution: 7,
-                        adaptability: 7,
-                        discipline: 7,
-                        focus: 7,
+                        concentration: 7,
+                        decisionMaking: 7,
+                        preparation: 7,
                         notes: ""
                       });
                       setError("");
@@ -1275,11 +1267,11 @@ export default function PlayersPage() {
                     onClick={() => {
                       setMatchForm({
                         technicalExecution: 7,
+                        skillsLevel: 7,
+                        intensity: 7,
+                        concentration: 7,
                         decisionMaking: 7,
-                        gameAwareness: 7,
-                        pressureHandling: 7,
-                        teamContribution: 7,
-                        matchImpact: 7,
+                        preparation: 7,
                         notes: ""
                       });
                       setError("");
@@ -1688,15 +1680,11 @@ export default function PlayersPage() {
                         loadHistory(nextPlayer.id);
                         setPracticeForm({
                           technicalExecution: 7,
+                          skillsLevel: 7,
+                          intensity: 7,
+                          concentration: 7,
                           decisionMaking: 7,
-                          gameAwareness: 7,
-                          adaptability: 7,
-                          discipline: 7,
                           preparation: 7,
-                          teamwork: 7,
-                          coachability: 7,
-                          workEthic: 7,
-                          emotionalControl: 7,
                           notes: ""
                         });
                         setError("");
@@ -1733,15 +1721,11 @@ export default function PlayersPage() {
           <form onSubmit={handlePracticeSubmit} className="space-y-6">
             {[
               { label: "TECHNICAL EXECUTION", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
+              { label: "SKILLS LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
+              { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" },
+              { label: "CONCENTRATION", key: "concentration", desc: "Mental focus, engagement, and attention to detail" },
               { label: "DECISION MAKING", key: "decisionMaking", desc: "Shot selection and tactical decision making" },
-              { label: "GAME AWARENESS", key: "gameAwareness", desc: "Situational understanding and scenario clarity" },
-              { label: "ADAPTABILITY", key: "adaptability", desc: "Adjustment to variations, pitch, and conditions" },
-              { label: "DISCIPLINE", key: "discipline", desc: "Adherence to training plan and consistency" },
-              { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
-              { label: "TEAMWORK", key: "teamwork", desc: "Support for peers, communication, and fielding energy" },
-              { label: "COACHABILITY", key: "coachability", desc: "Receptiveness to feedback and implementing changes" },
-              { label: "WORK ETHIC", key: "workEthic", desc: "Training intensity, effort, and commitment" },
-              { label: "EMOTIONAL CONTROL", key: "emotionalControl", desc: "Composure, focus, and handling frustration" }
+              { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" }
             ].map((metric) => (
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">
@@ -1801,15 +1785,11 @@ export default function PlayersPage() {
                         loadHistory(nextPlayer.id);
                         setMatchForm({
                           technicalExecution: 7,
+                          skillsLevel: 7,
+                          intensity: 7,
+                          concentration: 7,
                           decisionMaking: 7,
-                          gameAwareness: 7,
-                          adaptability: 7,
-                          discipline: 7,
                           preparation: 7,
-                          teamwork: 7,
-                          coachability: 7,
-                          workEthic: 7,
-                          emotionalControl: 7,
                           notes: ""
                         });
                         setError("");
@@ -1846,15 +1826,11 @@ export default function PlayersPage() {
           <form onSubmit={handleMatchSubmit} className="space-y-6">
             {[
               { label: "TECHNICAL EXECUTION", key: "technicalExecution", desc: "Fundamentals under pressure and match execution" },
+              { label: "SKILLS LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
+              { label: "INTENSITY", key: "intensity", desc: "Competitive intensity, effort, and match urgency" },
+              { label: "CONCENTRATION", key: "concentration", desc: "Focus under pressure, game situation awareness, and composure" },
               { label: "DECISION MAKING", key: "decisionMaking", desc: "Tactical choices, risk-reward, and match situation strategy" },
-              { label: "GAME AWARENESS", key: "gameAwareness", desc: "Understanding match scenario, required run rates, and field gaps" },
-              { label: "ADAPTABILITY", key: "adaptability", desc: "Adapting to match situations, pitch changes, and opponent strategies" },
-              { label: "DISCIPLINE", key: "discipline", desc: "Adhering to team role, shot discipline, and bowling plans" },
-              { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" },
-              { label: "TEAMWORK", key: "teamwork", desc: "Fielding energy, supporting teammates, and backing up" },
-              { label: "COACHABILITY", key: "coachability", desc: "Executing mid-match tactical adjustments from coaches" },
-              { label: "WORK ETHIC", key: "workEthic", desc: "On-field intensity, running between wickets, and relentless effort" },
-              { label: "EMOTIONAL CONTROL", key: "emotionalControl", desc: "Handling pressure moments, setbacks, and staying composure" }
+              { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" }
             ].map((metric) => (
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">
