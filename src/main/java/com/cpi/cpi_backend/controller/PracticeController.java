@@ -58,9 +58,11 @@ public class PracticeController {
             );
         }
 
-        // Calculate PPI
-        double ppi = (request.getTechnique() + request.getIntensity() + request.getExecution() +
-                request.getAdaptability() + request.getDiscipline() + request.getFocus()) / 6.0;
+        // Calculate PPI across 10 parameters
+        double ppi = (request.getTechnicalExecution() + request.getDecisionMaking() + request.getGameAwareness() +
+                request.getAdaptability() + request.getDiscipline() + request.getPreparation() +
+                request.getTeamwork() + request.getCoachability() + request.getWorkEthic() +
+                request.getEmotionalControl()) / 10.0;
 
         java.time.LocalDate assessmentDate = request.getDate() != null ? request.getDate() : java.time.LocalDate.now();
 
@@ -68,12 +70,16 @@ public class PracticeController {
                 .player(player)
                 .coach(managedCoach)
                 .date(assessmentDate)
-                .technique(request.getTechnique())
-                .intensity(request.getIntensity())
-                .execution(request.getExecution())
+                .technicalExecution(request.getTechnicalExecution())
+                .decisionMaking(request.getDecisionMaking())
+                .gameAwareness(request.getGameAwareness())
                 .adaptability(request.getAdaptability())
                 .discipline(request.getDiscipline())
-                .focus(request.getFocus())
+                .preparation(request.getPreparation())
+                .teamwork(request.getTeamwork())
+                .coachability(request.getCoachability())
+                .workEthic(request.getWorkEthic())
+                .emotionalControl(request.getEmotionalControl())
                 .ppiScore(ppi)
                 .notes(request.getNotes())
                 .build();

@@ -32,15 +32,19 @@ export default function HelpPage() {
           </div>
         </div>
         <p className="text-xs font-bold text-zinc-400 leading-normal">
-          PPI measures a player's capability and mindset in practice nets and coaching sessions. It is rated out of 10 across 6 core parameters:
+          PPI measures a player's capability and mindset in practice nets and coaching sessions. It is rated out of 10 across 10 core parameters:
         </p>
         <ul className="text-xs font-bold text-zinc-400 space-y-2 pl-4 list-disc">
-          <li><span className="text-white">Technique:</span> Mechanics, posture, and shot selection.</li>
-          <li><span className="text-white">Intensity:</span> Energy levels and focus throughout drills.</li>
-          <li><span className="text-white">Execution:</span> Ability to hit targets and execute instructions.</li>
-          <li><span className="text-white">Adaptability:</span> Adjusting to different bowling actions or drills.</li>
-          <li><span className="text-white">Discipline:</span> Respecting constraints and maintaining form.</li>
-          <li><span className="text-white">Focus:</span> Concentration and mental resilience under pressure.</li>
+          <li><span className="text-white">Technical Execution:</span> Technique, mechanics, and physical execution.</li>
+          <li><span className="text-white">Decision Making:</span> Tactical choices and shot selection in training.</li>
+          <li><span className="text-white">Game Awareness:</span> Understanding practice scenarios and match simulations.</li>
+          <li><span className="text-white">Adaptability:</span> Adjusting to variations, different pitch types, and drills.</li>
+          <li><span className="text-white">Discipline:</span> Adherence to training structure and shot discipline.</li>
+          <li><span className="text-white">Preparation:</span> Warmup routine, session readiness, and focus.</li>
+          <li><span className="text-white">Teamwork:</span> Peer support, communication, and fielding intensity.</li>
+          <li><span className="text-white">Coachability:</span> Receptiveness to feedback and implementing fixes.</li>
+          <li><span className="text-white">Work Ethic:</span> Training effort, volume, and relentless work rate.</li>
+          <li><span className="text-white">Emotional Control:</span> Managing frustration, maintaining composure, and attitude.</li>
         </ul>
       </div>
 
@@ -56,15 +60,19 @@ export default function HelpPage() {
           </div>
         </div>
         <p className="text-xs font-bold text-zinc-400 leading-normal">
-          MPI measures a player's real-game impact during matches and simulated match play. It is rated out of 10 across 6 core parameters:
+          MPI measures a player's real-game performance during matches. It is rated out of 10 across 10 core parameters:
         </p>
         <ul className="text-xs font-bold text-zinc-400 space-y-2 pl-4 list-disc">
-          <li><span className="text-white">Technical Execution:</span> Playing key moments using sound technique.</li>
-          <li><span className="text-white">Decision Making:</span> Risk management and situational choices.</li>
-          <li><span className="text-white">Game Awareness:</span> Understanding run rate, field settings, and match state.</li>
-          <li><span className="text-white">Pressure Handling:</span> Performing when stakes are high.</li>
-          <li><span className="text-white">Team Contribution:</span> Fielding, running between wickets, backing up, team support.</li>
-          <li><span className="text-white">Match Impact:</span> Game-changing contributions that lead to winning outcomes.</li>
+          <li><span className="text-white">Technical Execution:</span> Delivering sound technique under match pressure.</li>
+          <li><span className="text-white">Decision Making:</span> Risk-reward judgment and match situation choices.</li>
+          <li><span className="text-white">Game Awareness:</span> Match scenario understanding, required rates, and field strategy.</li>
+          <li><span className="text-white">Adaptability:</span> Countering opponent tactics, pitch changes, and bowling variations.</li>
+          <li><span className="text-white">Discipline:</span> Sticking to match plans, team roles, and disciplined execution.</li>
+          <li><span className="text-white">Preparation:</span> Pre-match strategy, mental readiness, and focus.</li>
+          <li><span className="text-white">Teamwork:</span> On-field communication, backing up, and team morale.</li>
+          <li><span className="text-white">Coachability:</span> Executing tactical instructions and mid-match advice.</li>
+          <li><span className="text-white">Work Ethic:</span> Running between wickets, chasing, and high match intensity.</li>
+          <li><span className="text-white">Emotional Control:</span> Composure during crunch moments and handling setbacks.</li>
         </ul>
       </div>
 

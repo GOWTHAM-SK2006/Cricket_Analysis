@@ -60,9 +60,11 @@ public class MatchController {
             );
         }
 
-        // Calculate MPI
+        // Calculate MPI across 10 parameters
         double mpi = (request.getTechnicalExecution() + request.getDecisionMaking() + request.getGameAwareness() +
-                request.getPressureHandling() + request.getTeamContribution() + request.getMatchImpact()) / 6.0;
+                request.getAdaptability() + request.getDiscipline() + request.getPreparation() +
+                request.getTeamwork() + request.getCoachability() + request.getWorkEthic() +
+                request.getEmotionalControl()) / 10.0;
 
         java.time.LocalDate assessmentDate = request.getDate() != null ? request.getDate() : java.time.LocalDate.now();
 
@@ -73,9 +75,13 @@ public class MatchController {
                 .technicalExecution(request.getTechnicalExecution())
                 .decisionMaking(request.getDecisionMaking())
                 .gameAwareness(request.getGameAwareness())
-                .pressureHandling(request.getPressureHandling())
-                .teamContribution(request.getTeamContribution())
-                .matchImpact(request.getMatchImpact())
+                .adaptability(request.getAdaptability())
+                .discipline(request.getDiscipline())
+                .preparation(request.getPreparation())
+                .teamwork(request.getTeamwork())
+                .coachability(request.getCoachability())
+                .workEthic(request.getWorkEthic())
+                .emotionalControl(request.getEmotionalControl())
                 .mpiScore(mpi)
                 .notes(request.getNotes())
                 .build();

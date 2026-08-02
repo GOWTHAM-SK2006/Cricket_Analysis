@@ -17,8 +17,12 @@ public class MatchAssessmentRequest {
     private Integer technicalExecution;
     private Integer decisionMaking;
     private Integer gameAwareness;
-    private Integer pressureHandling;
-    private Integer teamContribution;
-    private Integer matchImpact;
+    private Integer adaptability;
+    private Integer discipline;
+    private Integer preparation;
+    private Integer teamwork;
+    private Integer coachability;
+    private Integer workEthic;
+    private Integer emotionalControl;
     private String notes;
 }

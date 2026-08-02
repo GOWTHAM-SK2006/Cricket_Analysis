@@ -34,12 +34,16 @@ public class PracticeAssessment {
     @Column(name = "session_date", nullable = false)
     private LocalDate date;
 
-    private Integer technique;
-    private Integer intensity;
-    private Integer execution;
+    private Integer technicalExecution;
+    private Integer decisionMaking;
+    private Integer gameAwareness;
     private Integer adaptability;
     private Integer discipline;
-    private Integer focus;
+    private Integer preparation;
+    private Integer teamwork;
+    private Integer coachability;
+    private Integer workEthic;
+    private Integer emotionalControl;
 
     private Double ppiScore;
 
