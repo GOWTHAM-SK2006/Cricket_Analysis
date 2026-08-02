@@ -160,6 +160,30 @@ export default function HelpPage() {
         </div>
       </div>
 
+      {/* HOW TO USE THE CPI AS A COACH */}
+      <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-4">
+        <h3 className="text-sm font-black text-white uppercase tracking-wider">HOW TO USE THE CPI AS A COACH</h3>
+        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+          When assessing a player across the Practice Performance Index (PPI) and Match Performance Index (MPI), the coach should keep a broad view of the player’s total game, because all 16 indexes contribute to the overall picture.
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Where possible, score the player during or immediately after practice and matches, while your observations are still fresh. Add short, thoughtful notes that explain the score and provide context.
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Use the CPI to:
+        </p>
+        <ul className="text-xs font-bold text-zinc-300 space-y-2 pl-4 list-disc">
+          <li>Assess the whole performance, not one skill, moment or result.</li>
+          <li>Compare PPI and MPI scores to see what is transferring from practice into competition.</li>
+          <li>Identify low-scoring indexes and use the accompanying coaching notes to help decide what should be addressed at the next practice.</li>
+          <li>Track scores and player notes over time to identify improvement, recurring weaknesses and early warning signs of declining form.</li>
+          <li>Use the CPI resources and Daryll Cullinan videos for practical ideas, coaching suggestions and guidance on what the CPI, PPI and MPI may be telling you.</li>
+        </ul>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Over time, the CPI App can reveal patterns that are difficult to see through observation alone. The supporting notes and videos then help the coach interpret those patterns, understand what may be driving them and turn that information into practical coaching interventions.
+        </p>
+      </div>
+
       {/* Restart Tour */}
       <button
         onClick={() => {
