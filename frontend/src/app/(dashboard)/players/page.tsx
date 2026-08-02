@@ -1781,7 +1781,7 @@ export default function PlayersPage() {
                 </div>
                 <input
                   type="range"
-                  min="1"
+                  min="0"
                   max="10"
                   value={(practiceForm as any)[metric.key]}
                   onChange={(e) => setPracticeForm({ ...practiceForm, [metric.key]: parseInt(e.target.value) })}
@@ -1894,7 +1894,7 @@ export default function PlayersPage() {
                 </div>
                 <input
                   type="range"
-                  min="1"
+                  min="0"
                   max="10"
                   value={(matchForm as any)[metric.key]}
                   onChange={(e) => setMatchForm({ ...matchForm, [metric.key]: parseInt(e.target.value) })}
