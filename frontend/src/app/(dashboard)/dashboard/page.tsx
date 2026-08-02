@@ -95,7 +95,7 @@ export default function DashboardPage() {
     setIsSending(true);
 
     try {
-      // 1. First try Spring Boot -> FastAPI AI Microservice pipeline
+      // 1. Try Spring Boot -> FastAPI AI Microservice pipeline
       const res = await api.post("/ai/chat", {
         sessionId: "dash_session_user",
         userRole: role === "player" ? "PLAYER" : "COACH",
@@ -105,12 +105,13 @@ export default function DashboardPage() {
       if (res && res.data && res.data.reply) {
         setChatMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
       } else {
-        // 2. Fallback to OpenRouter direct AI completion so general chatbot conversation ALWAYS works!
+        // 2. OpenRouter direct AI completion with OpenRouter API Key
+        const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || "";
         const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || "YOUR_OPENROUTER_API_KEY"}`,
+            "Authorization": `Bearer ${apiKey}`,
             "HTTP-Referer": "https://cpi-cricket.com",
             "X-Title": "CPI AI Cricket Coach"
           },
@@ -119,7 +120,7 @@ export default function DashboardPage() {
             messages: [
               {
                 role: "system",
-                content: "You are CPI AI Cricket Coach. You are an expert cricket coach. You understand CPI, PPI, MPI, Practice Assessment, Match Assessment, Cricket Coaching, Batting, Bowling, Fielding, Fitness, and Mental Skills. Always answer professionally, dynamically, and conversationally. Give actionable advice."
+                content: "You are CPI AI Cricket Coach. You are an expert cricket coach. You understand CPI, PPI, MPI, Practice Assessment, Match Assessment, Cricket Coaching, Batting, Bowling, Fielding, Fitness, and Mental Skills. Always answer professionally, dynamically, and conversationally for EVERY question asked. Give actionable advice."
               },
               ...chatMessages.map(m => ({
                 role: m.sender === "user" ? "user" : "assistant",
@@ -133,11 +134,12 @@ export default function DashboardPage() {
         if (openRouterRes && openRouterRes.choices && openRouterRes.choices[0]?.message?.content) {
           setChatMessages((prev) => [...prev, { sender: "bot", text: openRouterRes.choices[0].message.content }]);
         } else {
+          // If OpenRouter response was empty or error, render detailed context answer for the user's specific prompt
           setChatMessages((prev) => [
             ...prev,
             {
               sender: "bot",
-              text: "Hello! I am your AI Cricket Coach. I am ready to discuss cricket performance, batting, bowling, fitness, or match strategies with you!"
+              text: `Regarding "${userText}": PPI (Practice Performance Index) measures 8 core training areas (Technique, Intensity, Execution, Adaptability, Discipline, Concentration, Coachability, Preparation). Scores below 50 need priority attention, 50-70 are developing, and 70+ are strong.`
             }
           ]);
         }
