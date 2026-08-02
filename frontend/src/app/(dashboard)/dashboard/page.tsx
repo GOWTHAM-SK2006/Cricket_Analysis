@@ -95,62 +95,27 @@ export default function DashboardPage() {
     setIsSending(true);
 
     try {
-      // 1. Try Spring Boot -> FastAPI AI Microservice pipeline
       const res = await api.post("/ai/chat", {
         sessionId: "dash_session_user",
         userRole: role === "player" ? "PLAYER" : "COACH",
         message: userText
-      }).catch(() => null);
+      });
 
       if (res && res.data && res.data.reply) {
         setChatMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
+      } else if (res && res.data && res.data.message) {
+        setChatMessages((prev) => [...prev, { sender: "bot", text: res.data.message }]);
       } else {
-        // 2. OpenRouter direct AI completion with OpenRouter API Key
-        const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || "";
-        const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
-            "HTTP-Referer": "https://cpi-cricket.com",
-            "X-Title": "CPI AI Cricket Coach"
-          },
-          body: JSON.stringify({
-            model: "openai/gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content: "You are CPI AI Cricket Coach. You are an expert cricket coach. You understand CPI, PPI, MPI, Practice Assessment, Match Assessment, Cricket Coaching, Batting, Bowling, Fielding, Fitness, and Mental Skills. Always answer professionally, dynamically, and conversationally for EVERY question asked. Give actionable advice."
-              },
-              ...chatMessages.map(m => ({
-                role: m.sender === "user" ? "user" : "assistant",
-                content: m.text
-              })),
-              { role: "user", content: userText }
-            ]
-          })
-        }).then(r => r.json()).catch(() => null);
-
-        if (openRouterRes && openRouterRes.choices && openRouterRes.choices[0]?.message?.content) {
-          setChatMessages((prev) => [...prev, { sender: "bot", text: openRouterRes.choices[0].message.content }]);
-        } else {
-          // If OpenRouter response was empty or error, render detailed context answer for the user's specific prompt
-          setChatMessages((prev) => [
-            ...prev,
-            {
-              sender: "bot",
-              text: `Regarding "${userText}": PPI (Practice Performance Index) measures 8 core training areas (Technique, Intensity, Execution, Adaptability, Discipline, Concentration, Coachability, Preparation). Scores below 50 need priority attention, 50-70 are developing, and 70+ are strong.`
-            }
-          ]);
-        }
+        setChatMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: "AI Service is temporarily unavailable." }
+        ]);
       }
     } catch (err: any) {
+      const errorMsg = err?.response?.data?.message || err?.response?.data?.reply || "AI Service is temporarily unavailable.";
       setChatMessages((prev) => [
         ...prev,
-        {
-          sender: "bot",
-          text: "Hello! How can I assist you with your cricket training today?"
-        }
+        { sender: "bot", text: errorMsg }
       ]);
     } finally {
       setIsSending(false);
