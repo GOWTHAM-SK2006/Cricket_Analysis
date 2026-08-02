@@ -124,27 +124,38 @@ export default function HelpPage() {
         <p className="text-xs font-bold text-zinc-400 leading-relaxed">
           The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches, the CPI shows what is transferring, where performance is breaking down and what is holding a player back. It moves player development beyond results and personal opinion, giving coaches and players a clearer, evidence based view of the relationship between practice and competition.
         </p>
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4 text-center">
-          <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-1">CPI Calculation Formula</span>
-          <span className="text-lg font-black text-white">CPI = ( PPI + MPI ) / 2</span>
-        </div>
       </div>
 
-      {/* Score Interpretation */}
-      <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
-        <h3 className="text-sm font-black text-white uppercase">How to Interpret Scores</h3>
-        <div className="space-y-3 pt-1">
-          <div className="flex justify-between items-center text-xs font-bold py-1 border-b border-zinc-900">
-            <span className="text-red-500">Below 5.0</span>
-            <span className="text-zinc-400">Needs Immediate Guidance / Development</span>
+      {/* HOW TO INTERPRET CPI SCORES */}
+      <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-4">
+        <h3 className="text-sm font-black text-white uppercase tracking-wider">HOW TO INTERPRET CPI SCORES</h3>
+        <div className="space-y-4 pt-1">
+          <div className="space-y-1 pb-3 border-b border-zinc-900">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 50</span>
+              <span className="text-xs font-bold text-zinc-300 uppercase">- NEEDS ATTENTION</span>
+            </div>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority.
+            </p>
           </div>
-          <div className="flex justify-between items-center text-xs font-bold py-1 border-b border-zinc-900">
-            <span className="text-amber-500">5.0 - 7.5</span>
-            <span className="text-zinc-400">Consistent Performance / Standard Level</span>
+          <div className="space-y-1 pb-3 border-b border-zinc-900">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black text-amber-500 uppercase tracking-wider">50 TO 70</span>
+              <span className="text-xs font-bold text-zinc-300 uppercase">- DEVELOPING</span>
+            </div>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches.
+            </p>
           </div>
-          <div className="flex justify-between items-center text-xs font-bold py-1 border-b border-zinc-900">
-            <span className="text-emerald-500">7.5 - 10.0</span>
-            <span className="text-zinc-400">Outstanding Capability / Elite Potential</span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">70 AND ABOVE</span>
+              <span className="text-xs font-bold text-zinc-300 uppercase">- STRONG</span>
+            </div>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player.
+            </p>
           </div>
         </div>
       </div>
