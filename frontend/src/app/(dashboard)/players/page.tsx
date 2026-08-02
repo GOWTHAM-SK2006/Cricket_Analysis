@@ -1085,35 +1085,35 @@ export default function PlayersPage() {
 
         // Recommendations focus
         let focusAreas = [
-          "Improve Shot Selection",
-          "Improve Target Accuracy",
-          "Improve Match Scenario Practice"
+          "Refine Technical Precision & Repeatability",
+          "Build Pre-Ball Focus & Reset Routines",
+          "Instill Pre-Session Readiness & Routine Discipline"
         ];
 
         const playerRole = selectedPlayer.role ? selectedPlayer.role.toLowerCase() : "";
         if (playerRole.includes("bowler")) {
           focusAreas = [
-            "Improve Line & Length Consistency",
-            "Improve Death Overs Execution",
-            "Develop Pace & Spin Variations"
+            "Sharpen Line & Length Control Under Pressure",
+            "Execute Purposeful Target Variations & Death Spells",
+            "Develop Tactical Pace & Release Adjustments"
           ];
         } else if (playerRole.includes("batsman") || playerRole.includes("batter")) {
           focusAreas = [
-            "Improve Strike Rotation",
-            "Improve Spin Response & Footwork",
-            "Improve Defensive Contact Point"
+            "Refine Tactical Shot Selection & Strike Transfer",
+            "Enhance Footwork Adaptability Against Spin & Pace",
+            "Master Technical Precision & Contact Point Control"
           ];
         } else if (playerRole.includes("all-rounder") || playerRole.includes("all rounder")) {
           focusAreas = [
-            "Improve Match Awareness under Pressure",
-            "Develop Consistent Power Hitting",
-            "Improve Tactical Field Settings"
+            "Heighten Situational Game Awareness Under Pressure",
+            "Harness Controlled Power Hitting Without Sacrificing Method",
+            "Structure Dynamic Field Settings & Match Rhythm"
           ];
         } else if (playerRole.includes("wicketkeeper") || playerRole.includes("keeper")) {
           focusAreas = [
-            "Improve Reaction Glove Timing",
-            "Improve Bowler-Keeper Communication",
-            "Improve Core Agility & Balance"
+            "Elevate Glove Reaction Speed & Collection Mechanics",
+            "Strengthen On-Field Tactical Bowler-Keeper Alignment",
+            "Enhance Footwork Mobility, Balance & Core Posture"
           ];
         }
 
