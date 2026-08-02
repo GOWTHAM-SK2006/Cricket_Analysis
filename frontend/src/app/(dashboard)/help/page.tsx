@@ -121,8 +121,8 @@ export default function HelpPage() {
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Overall Player Rating Index</p>
           </div>
         </div>
-        <p className="text-xs font-bold text-zinc-400 leading-normal">
-          CPI is the overall index calculated as the mathematical average of a player's latest PPI and MPI. 
+        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+          The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches, the CPI shows what is transferring, where performance is breaking down and what is holding a player back. It moves player development beyond results and personal opinion, giving coaches and players a clearer, evidence based view of the relationship between practice and competition.
         </p>
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4 text-center">
           <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-1">CPI Calculation Formula</span>
