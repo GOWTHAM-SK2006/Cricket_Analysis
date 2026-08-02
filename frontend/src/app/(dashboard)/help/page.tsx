@@ -15,7 +15,7 @@ export default function HelpPage() {
 
       {/* Intro Card */}
       <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
-        <p className="text-sm font-bold text-zinc-400 leading-relaxed">
+        <p className="text-sm font-bold text-zinc-200 leading-relaxed">
           Welcome to the Cricket Performance Index (CPI) platform. This guide explains how our index works and how to interpret scores.
         </p>
       </div>
@@ -31,25 +31,25 @@ export default function HelpPage() {
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Practice Assessment Index</p>
           </div>
         </div>
-        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+        <p className="text-xs font-bold text-zinc-200 leading-relaxed">
           The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across 8 key areas: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Its purpose is not simply to give a player a score. It is to help the coach identify what is working well, where development may be required and what action should follow. By tracking these areas consistently, the coach can move beyond general impressions and build a clearer picture of the player’s strengths, weaknesses and progress over time. It also creates better coaching conversations by giving both coach and player something specific to review, discuss and improve.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           The Practice Performance Index is therefore both a measurement tool and a problem-solving tool. It helps the coach answer three important questions:
         </p>
-        <ul className="text-xs font-bold text-zinc-300 space-y-1 pl-4 list-disc">
+        <ul className="text-xs font-bold text-zinc-100 space-y-1 pl-4 list-disc">
           <li>What is the player doing well?</li>
           <li>What is limiting their development?</li>
           <li>What should we work on next?</li>
         </ul>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Used properly, it gives practice greater purpose, helps young players take more ownership of their development and allows the coach to make more informed decisions about how best to coach and mentor each individual.
         </p>
         <div className="pt-2 border-t border-zinc-900 space-y-2">
-          <ul className="text-xs font-medium text-zinc-400 space-y-2 pl-2">
+          <ul className="text-xs font-medium text-zinc-200 space-y-2 pl-2">
             <li><span className="text-white font-bold">Technique:</span> The quality and repeatability of the basic technique and skills a player uses to perform their role effectively.</li>
             <li><span className="text-white font-bold">Intensity:</span> The energy, purpose and competitive effort a player brings to every part of his and the team practice.</li>
             <li><span className="text-white font-bold">Execution:</span> The player’s ability to turn the practiced skill or technique required, into an effective and repeatable action under pressure or instruction.</li>
@@ -73,31 +73,31 @@ export default function HelpPage() {
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Play Assessment Index</p>
           </div>
         </div>
-        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+        <p className="text-xs font-bold text-zinc-200 leading-relaxed">
           The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Its purpose is not simply to give a player a score or judge them by runs, wickets, catches or the result of the match. It’s to help the coach understand what worked, what broke down under pressure and what needs to be developed next.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           By tracking these areas consistently, the coach can move beyond statistics and build a clearer picture of how the player applies their skills in real competition. It also creates better post-match conversations by giving both coach and player something specific to review, discuss and improve.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           The Match Performance Index is therefore both a measurement tool and a problem-solving tool.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           It helps the coach answer three important questions:
         </p>
-        <ul className="text-xs font-bold text-zinc-300 space-y-1 pl-4 list-disc">
+        <ul className="text-xs font-bold text-zinc-100 space-y-1 pl-4 list-disc">
           <li>What did the player do well?</li>
           <li>What limited their performance?</li>
           <li>What should we work on next?</li>
         </ul>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Used properly, it turns every match into a learning opportunity, helps young players understand their own performance more clearly and allows the coach to connect what happens in competition directly back to future practice and development.
         </p>
         <div className="pt-2 border-t border-zinc-900 space-y-2">
-          <ul className="text-xs font-medium text-zinc-400 space-y-2 pl-2">
+          <ul className="text-xs font-medium text-zinc-200 space-y-2 pl-2">
             <li><span className="text-white font-bold">Technical Execution:</span> How confidently and effectively the player applied their core skills and technique in the match, under the pressure, conditions and demands of competition.</li>
             <li><span className="text-white font-bold">Decision Making:</span> This measures how well the player read the situation, understood what was required, and chose the right option at the right time.</li>
             <li><span className="text-white font-bold">Game Awareness:</span> How well the player understood what was happening in the match and adjusted their role, game plan and decisions accordingly.</li>
@@ -121,7 +121,7 @@ export default function HelpPage() {
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Overall Player Rating Index</p>
           </div>
         </div>
-        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+        <p className="text-xs font-bold text-zinc-200 leading-relaxed">
           The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches, the CPI shows what is transferring, where performance is breaking down and what is holding a player back. It moves player development beyond results and personal opinion, giving coaches and players a clearer, evidence based view of the relationship between practice and competition.
         </p>
       </div>
@@ -133,27 +133,27 @@ export default function HelpPage() {
           <div className="space-y-1 pb-3 border-b border-zinc-900">
             <div className="flex items-center gap-2">
               <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 50</span>
-              <span className="text-xs font-bold text-zinc-300 uppercase">- NEEDS ATTENTION</span>
+              <span className="text-xs font-bold text-zinc-100 uppercase">- NEEDS ATTENTION</span>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-zinc-200 leading-relaxed">
               Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority.
             </p>
           </div>
           <div className="space-y-1 pb-3 border-b border-zinc-900">
             <div className="flex items-center gap-2">
               <span className="text-xs font-black text-amber-500 uppercase tracking-wider">50 TO 70</span>
-              <span className="text-xs font-bold text-zinc-300 uppercase">- DEVELOPING</span>
+              <span className="text-xs font-bold text-zinc-100 uppercase">- DEVELOPING</span>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-zinc-200 leading-relaxed">
               There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches.
             </p>
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">70 AND ABOVE</span>
-              <span className="text-xs font-bold text-zinc-300 uppercase">- STRONG</span>
+              <span className="text-xs font-bold text-zinc-100 uppercase">- STRONG</span>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-zinc-200 leading-relaxed">
               Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player.
             </p>
           </div>
@@ -163,23 +163,23 @@ export default function HelpPage() {
       {/* HOW TO USE THE CPI AS A COACH */}
       <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-4">
         <h3 className="text-sm font-black text-white uppercase tracking-wider">HOW TO USE THE CPI AS A COACH</h3>
-        <p className="text-xs font-bold text-zinc-400 leading-relaxed">
+        <p className="text-xs font-bold text-zinc-200 leading-relaxed">
           When assessing a player across the Practice Performance Index (PPI) and Match Performance Index (MPI), the coach should keep a broad view of the player’s total game, because all 16 indexes contribute to the overall picture.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Where possible, score the player during or immediately after practice and matches, while your observations are still fresh. Add short, thoughtful notes that explain the score and provide context.
         </p>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Use the CPI to:
         </p>
-        <ul className="text-xs font-bold text-zinc-300 space-y-2 pl-4 list-disc">
+        <ul className="text-xs font-bold text-zinc-100 space-y-2 pl-4 list-disc">
           <li>Assess the whole performance, not one skill, moment or result.</li>
           <li>Compare PPI and MPI scores to see what is transferring from practice into competition.</li>
           <li>Identify low-scoring indexes and use the accompanying coaching notes to help decide what should be addressed at the next practice.</li>
           <li>Track scores and player notes over time to identify improvement, recurring weaknesses and early warning signs of declining form.</li>
           <li>Use the CPI resources and Daryll Cullinan videos for practical ideas, coaching suggestions and guidance on what the CPI, PPI and MPI may be telling you.</li>
         </ul>
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-zinc-200 leading-relaxed">
           Over time, the CPI App can reveal patterns that are difficult to see through observation alone. The supporting notes and videos then help the coach interpret those patterns, understand what may be driving them and turn that information into practical coaching interventions.
         </p>
       </div>
