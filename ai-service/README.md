@@ -15,7 +15,7 @@ FastAPI AI Service (Microservice)
        ↓
 Google Gemini API REST Client
        ↓
-Gemini 2.5 Flash
+Gemini 2.5 Flash Lite
 ```
 
 - **Spring Boot** handles business logic, authentication, PostgreSQL database storage, and assessments.
@@ -28,7 +28,7 @@ Gemini 2.5 Flash
 - **Python 3.12**
 - **FastAPI** & **Uvicorn**
 - **Pydantic v2** & **Pydantic-Settings**
-- **Google Gemini API** (`gemini-2.5-flash`)
+- **Google Gemini API** (`gemini-2.5-flash-lite`)
 - **HTTPX** (Async HTTP Requests)
 - **Docker**
 
@@ -40,7 +40,7 @@ Create a `.env` file in `ai-service/`:
 
 ```env
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-2.5-flash-lite
 APP_ENV=development
 LOG_LEVEL=INFO
 HOST=0.0.0.0
