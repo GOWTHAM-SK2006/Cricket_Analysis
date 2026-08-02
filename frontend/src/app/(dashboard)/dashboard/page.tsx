@@ -631,7 +631,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-white uppercase tracking-wider">AI CRICKET COACH</h3>
-                  <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Powered by OpenRouter AI</p>
+                  <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Powered by Google Gemini AI</p>
                 </div>
               </div>
               <button
