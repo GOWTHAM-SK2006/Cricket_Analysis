@@ -2,6 +2,7 @@ package com.cpi.cpi_backend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.cpi.cpi_backend.repository.CoachRepository;
 import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.PracticeAssessmentRepository;
 import com.cpi.cpi_backend.repository.MatchAssessmentRepository;
@@ -27,15 +28,28 @@ public class AiService {
 
     private final WebClient webClient;
     private final PlayerRepository playerRepository;
+    private final CoachRepository coachRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
 
-    public ResponseEntity<?> forwardChatRequest(Map<String, Object> requestPayload) {
-        // Fetch all players to build database player list summary safely
+    public ResponseEntity<?> forwardChatRequest(Map<String, Object> requestPayload, com.cpi.cpi_backend.entity.Coach currentCoach) {
+        // Fetch players under current coach to build database player list summary safely
         java.util.List<java.util.Map<String, Object>> allPlayersList = new java.util.ArrayList<>();
         java.util.List<com.cpi.cpi_backend.entity.Player> allPlayers = new java.util.ArrayList<>();
         try {
-            allPlayers = playerRepository.findAll();
+            if (currentCoach != null && currentCoach.getId() != null) {
+                com.cpi.cpi_backend.entity.Coach managedCoach = coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
+                if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
+                    allPlayers = playerRepository.findByCreatorCoachId(managedCoach.getId());
+                } else {
+                    allPlayers = playerRepository.findAll().stream()
+                            .filter(p -> p != null && p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()))
+                            .collect(java.util.stream.Collectors.toList());
+                }
+            } else {
+                allPlayers = playerRepository.findAll();
+            }
+
             if (allPlayers != null) {
                 for (com.cpi.cpi_backend.entity.Player p : allPlayers) {
                     if (p == null || p.getName() == null) continue;
@@ -52,7 +66,7 @@ public class AiService {
                 }
             }
         } catch (Exception ex) {
-            log.warn("Could not load all players summary for AI context: {}", ex.getMessage());
+            log.warn("Could not load players summary for AI context: {}", ex.getMessage());
         }
 
         // Auto-detect player in message and inject context if not already present

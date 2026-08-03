@@ -17,10 +17,10 @@ def format_player_context(context: Optional[Dict[str, Any]]) -> str:
     
     summary = ""
     
-    # Format all registered players list from PostgreSQL DB if present
+    # Format players under this coach from DB if present
     all_players = context.get("allPlayersList")
     if all_players and isinstance(all_players, list):
-        summary += "--- ALL REGISTERED CPI PLAYERS IN DATABASE ---\n"
+        summary += "--- PLAYERS UNDER THIS COACH (DATABASE) ---\n"
         for p in all_players:
             p_name = p.get("name", "Unknown")
             p_role = p.get("role", "N/A")
