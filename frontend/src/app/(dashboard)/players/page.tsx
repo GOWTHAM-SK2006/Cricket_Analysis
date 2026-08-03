@@ -1410,13 +1410,13 @@ export default function PlayersPage() {
               )}
             </div>
 
-            {/* SECTION 2 – CURRENT STATUS (WHERE AM I?) */}
+            {/* SECTION 2 – CURRENT STATUS */}
             <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 1</span>
                 <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500" />
-                  CURRENT STATUS (WHERE AM I?)
+                  CURRENT STATUS
                 </h3>
               </div>
               <div className="grid grid-cols-3 gap-3 text-center pt-1">
@@ -1447,13 +1447,13 @@ export default function PlayersPage() {
               </div>
             </div>
 
-            {/* SECTION 3 – PROGRESS (WHERE WAS I?) */}
+            {/* SECTION 3 – PROGRESS */}
             <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 2</span>
                 <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-orange-500" />
-                  PROGRESS (WHERE WAS I?)
+                  PROGRESS
                 </h3>
               </div>
 
@@ -1637,13 +1637,13 @@ export default function PlayersPage() {
               </div>
             </div>
 
-            {/* SECTION 5 – IMPROVEMENT AREAS */}
+            {/* SECTION 5 – WHAT DO I NEED TO WORK ON? */}
             <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 4</span>
                 <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
-                  WHAT DO I NEED TO WORK ON? (IMPROVEMENT AREAS)
+                  WHAT DO I NEED TO WORK ON?
                 </h3>
               </div>
               
