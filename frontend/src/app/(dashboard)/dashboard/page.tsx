@@ -619,6 +619,91 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Floating AI Chatbot Button & Modal */}
+      <div className="fixed bottom-28 right-6 z-50">
+        <motion.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowChatModal(!showChatModal)}
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-black shadow-2xl flex items-center justify-center cursor-pointer border-2 border-orange-300 active:scale-95 transition-all"
+          title="Ask AI Cricket Coach"
+        >
+          <Bot className="w-7 h-7 stroke-[2.5]" />
+        </motion.button>
+      </div>
+
+      {/* AI Chatbot Overlay Modal */}
+      {showChatModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-zinc-950 border-2 border-zinc-800 rounded-3xl w-full max-w-lg h-[600px] flex flex-col overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="p-4 bg-zinc-900/80 border-b border-zinc-800 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-500">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider">AI CRICKET COACH</h3>
+                  <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Powered by Google Gemini AI</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowChatModal(false)}
+                className="text-zinc-400 hover:text-white p-1"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Chat Messages Body */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-3">
+              {chatMessages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[82%] p-3.5 rounded-2xl text-xs leading-relaxed font-medium ${
+                      msg.sender === "user"
+                        ? "bg-orange-500 text-black font-bold rounded-tr-none"
+                        : "bg-zinc-900 border border-zinc-800 text-white rounded-tl-none"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {isSending && (
+                <div className="flex justify-start">
+                  <div className="bg-zinc-900 border border-zinc-800 text-zinc-400 p-3 rounded-2xl text-xs flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                    <span>Analyzing performance & coach guidelines...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Chat Input Bar */}
+            <form onSubmit={handleSendMessage} className="p-3 bg-zinc-900/50 border-t border-zinc-850 flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask about batting, bowling, drills..."
+                className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500"
+              />
+              <button
+                type="submit"
+                disabled={isSending || !chatInput.trim()}
+                className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-black px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
