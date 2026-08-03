@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { 
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck, 
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, TrendingUp
+  Filter, Check, Copy, Target, Edit2, TrendingUp, ChevronDown
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 
@@ -73,6 +73,7 @@ export default function PlayersPage() {
   const [quickFilter, setQuickFilter] = useState<"all" | "top_performers" | "needs_attention" | "assessed_today" | "not_assessed_recently">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "batsman" | "bowler" | "all_rounder" | "wicket_keeper">("all");
   const [copiedCode, setCopiedCode] = useState(false);
+  const [expandedFocus, setExpandedFocus] = useState<number | null>(null);
 
   // Form states
   const [newPlayer, setNewPlayer] = useState({
@@ -1076,36 +1077,36 @@ export default function PlayersPage() {
         }
 
         // Recommendations focus
-        let focusAreas = [
-          "Refine Technical Precision & Repeatability",
-          "Build Pre-Ball Focus & Reset Routines",
-          "Instill Pre-Session Readiness & Routine Discipline"
+        let focusAreas: { title: string; detail: string }[] = [
+          { title: "Refine Technical Precision & Repeatability", detail: "Focus on executing controlled, repeatable movements under varied practice conditions. Use slow-motion drills and target-based exercises to lock down core technique before increasing speed and pressure." },
+          { title: "Build Pre-Ball Focus & Reset Routines", detail: "Develop a simple reset process between each delivery — step away, breathe, refocus. Practise this routine consistently so it becomes automatic under match pressure and fatigue." },
+          { title: "Instill Pre-Session Readiness & Routine Discipline", detail: "Arrive with equipment ready, a clear warm-up plan and personal session goals. Consistent preparation habits build confidence and ensure every training minute counts." }
         ];
 
         const playerRole = selectedPlayer.role ? selectedPlayer.role.toLowerCase() : "";
         if (playerRole.includes("bowler")) {
           focusAreas = [
-            "Sharpen Line & Length Control Under Pressure",
-            "Execute Purposeful Target Variations & Death Spells",
-            "Develop Tactical Pace & Release Adjustments"
+            { title: "Sharpen Line & Length Control Under Pressure", detail: "Use target-zone drills with consequence-based scoring to build accuracy under fatigue. Prioritise repeatable run-ups and release points during competitive net sessions." },
+            { title: "Execute Purposeful Target Variations & Death Spells", detail: "Practise yorker, wide yorker and slower-ball variations in simulated death-over scenarios. Track execution percentage rather than just outcomes to build consistency." },
+            { title: "Develop Tactical Pace & Release Adjustments", detail: "Work on reading the batter's intent and adjusting pace mid-over. Include scenario-based drills where field settings change between deliveries to sharpen in-game thinking." }
           ];
         } else if (playerRole.includes("batsman") || playerRole.includes("batter")) {
           focusAreas = [
-            "Refine Tactical Shot Selection & Strike Transfer",
-            "Enhance Footwork Adaptability Against Spin & Pace",
-            "Master Technical Precision & Contact Point Control"
+            { title: "Refine Tactical Shot Selection & Strike Transfer", detail: "Practise identifying scoring gaps and rotating strike under pressure. Use match-simulation nets with required run rates to build decision-making discipline." },
+            { title: "Enhance Footwork Adaptability Against Spin & Pace", detail: "Drill quick-feet movement patterns against both spin and pace on varied surfaces. Focus on balanced head position and late adjustment to improve contact quality." },
+            { title: "Master Technical Precision & Contact Point Control", detail: "Use drop-feed and throw-down drills to isolate and reinforce correct bat-face angle and timing. Monitor consistency across 20+ repetitions before adding pace." }
           ];
         } else if (playerRole.includes("all-rounder") || playerRole.includes("all rounder")) {
           focusAreas = [
-            "Heighten Situational Game Awareness Under Pressure",
-            "Harness Controlled Power Hitting Without Sacrificing Method",
-            "Structure Dynamic Field Settings & Match Rhythm"
+            { title: "Heighten Situational Game Awareness Under Pressure", detail: "Practise reading match situations — required rates, field changes, momentum shifts. Use scenario-based games that demand both batting and bowling responses in the same session." },
+            { title: "Harness Controlled Power Hitting Without Sacrificing Method", detail: "Build power through core stability and timing rather than brute force. Use weighted bat drills and targeted boundary-hitting exercises while maintaining proper technique." },
+            { title: "Structure Dynamic Field Settings & Match Rhythm", detail: "Develop the ability to set and adjust fields mid-over based on batter behaviour. Practise bowling plans that adapt after every 2-3 deliveries to sharpen tactical instinct." }
           ];
         } else if (playerRole.includes("wicketkeeper") || playerRole.includes("keeper")) {
           focusAreas = [
-            "Elevate Glove Reaction Speed & Collection Mechanics",
-            "Strengthen On-Field Tactical Bowler-Keeper Alignment",
-            "Enhance Footwork Mobility, Balance & Core Posture"
+            { title: "Elevate Glove Reaction Speed & Collection Mechanics", detail: "Use rapid-fire throw drills and varied-bounce exercises to sharpen collection reflexes. Focus on soft hands, late adjustment and clean takes on both sides consistently." },
+            { title: "Strengthen On-Field Tactical Bowler-Keeper Alignment", detail: "Build communication routines with bowlers between deliveries. Work on reading the bowler's plan and anticipating variations to improve positioning and stumping opportunities." },
+            { title: "Enhance Footwork Mobility, Balance & Core Posture", detail: "Incorporate lateral movement drills and low-stance holds to build endurance behind the stumps. Focus on maintaining balanced ready-position across long innings without fatigue." }
           ];
         }
 
@@ -1565,11 +1566,27 @@ export default function PlayersPage() {
               </h3>
               <div className="space-y-2.5 pt-1">
                 {focusAreas.map((focus, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-zinc-900/60 p-3.5 rounded-2xl border border-zinc-850 text-xs font-black text-white">
-                    <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
-                      {idx + 1}
-                    </span>
-                    {focus}
+                  <div
+                    key={idx}
+                    className="rounded-2xl border border-zinc-800 bg-zinc-900/60 overflow-hidden transition-all duration-300 cursor-pointer"
+                    onClick={() => setExpandedFocus(expandedFocus === idx ? null : idx)}
+                  >
+                    <div className="flex items-center gap-3 p-3.5">
+                      <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
+                        {idx + 1}
+                      </span>
+                      <span className="text-xs font-black text-white flex-1">{focus.title}</span>
+                      <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
+                    </div>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        expandedFocus === idx ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <p className="text-[11px] font-semibold text-zinc-400 leading-relaxed px-5 pb-4 pt-0 border-t border-zinc-800/60">
+                        {focus.detail}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
