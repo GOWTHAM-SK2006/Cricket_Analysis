@@ -663,13 +663,13 @@ export default function DashboardPage() {
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[82%] p-3.5 rounded-2xl text-xs leading-relaxed font-medium ${
+                    className={`max-w-[85%] p-3.5 rounded-2xl text-xs leading-relaxed font-medium ${
                       msg.sender === "user"
                         ? "bg-orange-500 text-black font-bold rounded-tr-none"
-                        : "bg-zinc-900 border border-zinc-800 text-white rounded-tl-none"
+                        : "bg-zinc-900 border border-zinc-800 text-white rounded-tl-none w-full"
                     }`}
                   >
-                    {msg.text}
+                    {msg.sender === "user" ? msg.text : parseMarkdown(msg.text)}
                   </div>
                 </div>
               ))}
@@ -707,3 +707,143 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+// Premium structured Markdown parser helper for bot responses
+const parseMarkdown = (text: string): React.ReactNode => {
+  if (!text) return "";
+  const lines = text.split("\n");
+  let inList = false;
+  const elements: React.ReactNode[] = [];
+  
+  // Basic bold regex: **text**
+  const boldRegex = /\*\*(.*?)\*\*/g;
+  
+  const renderText = (txt: string): React.ReactNode => {
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+    boldRegex.lastIndex = 0;
+    while ((match = boldRegex.exec(txt)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(txt.substring(lastIndex, match.index));
+      }
+      parts.push(
+        <strong key={match.index} className="font-extrabold text-orange-500">
+          {match[1]}
+        </strong>
+      );
+      lastIndex = boldRegex.lastIndex;
+    }
+    if (lastIndex < txt.length) {
+      parts.push(txt.substring(lastIndex));
+    }
+    return parts.length > 0 ? <>{parts}</> : txt;
+  };
+
+  let listItems: React.ReactNode[] = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) {
+      if (inList) {
+        elements.push(
+          <ul key={`list-${i}`} className="list-disc pl-5 my-2 space-y-1 text-zinc-300">
+            {listItems}
+          </ul>
+        );
+        listItems = [];
+        inList = false;
+      }
+      continue;
+    }
+    
+    // Bullet list: starts with "* " or "- "
+    if (line.startsWith("* ") || line.startsWith("- ")) {
+      inList = true;
+      const content = line.substring(2);
+      listItems.push(
+        <li key={`li-${i}`} className="text-zinc-300">
+          {renderText(content)}
+        </li>
+      );
+    } else {
+      if (inList) {
+        elements.push(
+          <ul key={`list-${i}`} className="list-disc pl-5 my-2 space-y-1 text-zinc-300">
+            {listItems}
+          </ul>
+        );
+        listItems = [];
+        inList = false;
+      }
+      
+      // Table check
+      if (line.startsWith("|") && line.endsWith("|")) {
+        const tableRows: string[] = [];
+        while (i < lines.length && lines[i].trim().startsWith("|") && lines[i].trim().endsWith("|")) {
+          tableRows.push(lines[i].trim());
+          i++;
+        }
+        i--; // Adjust index
+        
+        if (tableRows.length > 0) {
+          const parsedRows = tableRows.map(row => 
+            row.split("|")
+              .map(cell => cell.trim())
+              .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1)
+          );
+          
+          // Check if second row is separator like |---|---|
+          const hasSeparator = parsedRows.length > 1 && parsedRows[1].every(cell => cell.startsWith("-") || cell.includes("---"));
+          const headerRow = parsedRows[0];
+          const dataRows = parsedRows.slice(hasSeparator ? 2 : 1);
+          
+          elements.push(
+            <div key={`table-${i}`} className="overflow-x-auto my-3 border border-zinc-800 rounded-xl">
+              <table className="min-w-full divide-y divide-zinc-800 text-[11px]">
+                <thead className="bg-zinc-950">
+                  <tr>
+                    {headerRow.map((cell, idx) => (
+                      <th key={idx} className="px-3 py-2 text-left font-black text-white uppercase tracking-wider border-r border-zinc-850 last:border-r-0">
+                        {renderText(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-850 bg-zinc-950/40">
+                  {dataRows.map((row, rIdx) => (
+                    <tr key={rIdx} className="hover:bg-zinc-900/30">
+                      {row.map((cell, cIdx) => (
+                        <td key={cIdx} className="px-3 py-2 text-zinc-350 border-r border-zinc-850 last:border-r-0">
+                          {renderText(cell)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+      } else {
+        // Normal paragraph
+        elements.push(
+          <p key={`p-${i}`} className="my-1 leading-relaxed">
+            {renderText(line)}
+          </p>
+        );
+      }
+    }
+  }
+  
+  if (inList) {
+    elements.push(
+      <ul key="list-end" className="list-disc pl-5 my-2 space-y-1 text-zinc-300">
+        {listItems}
+      </ul>
+    );
+  }
+  
+  return <div className="space-y-1.5">{elements}</div>;
+};
+
