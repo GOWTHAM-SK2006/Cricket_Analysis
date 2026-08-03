@@ -15,7 +15,12 @@ import {
   Clipboard,
   MessageSquare,
   Bot,
-  X
+  X,
+  BarChart3,
+  TrendingUp,
+  Trophy,
+  Users,
+  Star
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -321,9 +326,15 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-left relative overflow-hidden p-6 rounded-3xl bg-gradient-to-r from-orange-500/10 via-zinc-900/5 to-zinc-950/20 border border-zinc-900/50 backdrop-blur-md shadow-xl"
+        className="text-left relative overflow-hidden p-6 rounded-3xl bg-gradient-to-r from-orange-500/10 via-orange-400/5 to-zinc-950/20 border border-zinc-900/50 backdrop-blur-md shadow-xl min-h-[120px]"
       >
         <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl" />
+        {/* Cricket Batsman Silhouette */}
+        <div className="absolute right-2 -bottom-2 w-32 h-32 opacity-20">
+          <svg viewBox="0 0 200 200" fill="currentColor" className="text-orange-500 w-full h-full">
+            <path d="M120,180 L115,140 L100,120 L95,100 L105,80 L110,60 L108,40 L112,25 C112,20 118,18 120,22 L122,40 L125,55 L140,75 L165,60 L175,55 C178,54 180,57 178,60 L155,80 L130,95 L120,115 L130,135 L135,170 L140,185 C141,190 125,192 120,180 Z M100,25 C100,15 115,15 115,25 C115,35 100,35 100,25 Z M88,100 L60,130 L50,145 C48,149 43,147 45,143 L65,115 L85,90 Z" />
+          </svg>
+        </div>
         <h2 className="text-xs font-bold tracking-widest text-orange-500/80 uppercase">
           WELCOME BACK COACH
         </h2>
@@ -335,7 +346,8 @@ export default function DashboardPage() {
 
       {/* 2. TODAY'S SNAPSHOT */}
       <div id="tour-snapshot" className="space-y-3">
-        <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1">
+        <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1 flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-orange-500" />
           TODAY'S SNAPSHOT
         </h3>
         <motion.div 
@@ -350,11 +362,10 @@ export default function DashboardPage() {
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
             className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
-            <div className="absolute top-0 right-0 w-16 h-16 bg-zinc-900 rounded-full -mr-4 -mt-4 transition-all duration-500 group-hover:scale-150 group-hover:bg-orange-500/5" />
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Players</span>
-              <span className="text-zinc-650 group-hover:text-orange-500 transition-colors">👤</span>
+            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
+              <Users className="w-5 h-5 text-orange-500" />
             </div>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Total Players</span>
             <span className="text-3.5xl font-black text-white block leading-none">{stats?.totalPlayers || 0}</span>
           </motion.div>
           
@@ -364,11 +375,10 @@ export default function DashboardPage() {
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.4)", boxShadow: "0 10px 30px -10px rgba(249,115,22,0.1)" }}
             className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
-            <div className="absolute top-0 right-0 w-16 h-16 bg-orange-500/5 rounded-full -mr-4 -mt-4 transition-all duration-500 group-hover:scale-150 group-hover:bg-orange-500/10" />
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Average CPI</span>
-              <Zap className="w-3.5 h-3.5 text-orange-500" />
+            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-orange-500" />
             </div>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average CPI</span>
             <span className="text-3.5xl font-black text-orange-500 block leading-none">
               {stats?.avgCpi ? formatScoreValue(stats.avgCpi) : "N/A"}
             </span>
@@ -380,11 +390,10 @@ export default function DashboardPage() {
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
             className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
-            <div className="absolute top-0 right-0 w-16 h-16 bg-zinc-900 rounded-full -mr-4 -mt-4 transition-all duration-500 group-hover:scale-150 group-hover:bg-orange-500/5" />
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Average PPI</span>
-              <span className="text-zinc-650 group-hover:text-orange-500 transition-colors">🏏</span>
+            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-orange-500" />
             </div>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average PPI</span>
             <span className="text-3.5xl font-black text-white block leading-none">
               {stats?.avgPpi ? formatScoreValue(stats.avgPpi) : "N/A"}
             </span>
@@ -396,11 +405,10 @@ export default function DashboardPage() {
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
             className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
-            <div className="absolute top-0 right-0 w-16 h-16 bg-zinc-900 rounded-full -mr-4 -mt-4 transition-all duration-500 group-hover:scale-150 group-hover:bg-orange-500/5" />
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Average MPI</span>
-              <span className="text-zinc-655 group-hover:text-orange-500 transition-colors">🏆</span>
+            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-orange-500" />
             </div>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average MPI</span>
             <span className="text-3.5xl font-black text-white block leading-none">
               {stats?.avgMpi ? formatScoreValue(stats.avgMpi) : "N/A"}
             </span>
@@ -468,7 +476,8 @@ export default function DashboardPage() {
         </motion.div>
       ) : (
         <div id="tour-quick-actions" className="space-y-3">
-          <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1">
+          <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1 flex items-center gap-2">
+            <Zap className="w-4 h-4 text-orange-500" />
             QUICK ACTIONS
           </h3>
           <div className="space-y-3">
@@ -533,26 +542,37 @@ export default function DashboardPage() {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="space-y-3 text-left"
           >
-            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2 pl-1">
-              <Award className="w-4 h-4 text-orange-500" />
-              TOP PERFORMERS
-            </h3>
+            <div className="flex items-center justify-between pl-1">
+              <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
+                <Star className="w-4 h-4 text-orange-500" />
+                TOP PERFORMERS
+              </h3>
+              <button onClick={() => router.push('/players')} className="text-[10px] font-bold text-orange-500 uppercase tracking-widest hover:text-orange-400 cursor-pointer flex items-center gap-1">
+                VIEW ALL <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
             <div className="bg-zinc-950 border border-zinc-900/80 rounded-3.5xl divide-y divide-zinc-900/40 overflow-hidden shadow-lg">
               {stats?.topPerformers && stats.topPerformers.length > 0 ? (
                 stats.topPerformers.map((p, idx) => {
                   const lastDate = lastAssessmentDates[p.name.toLowerCase()] || "No assessments";
+                  const initials = p.name.substring(0, 2).toUpperCase();
                   return (
                     <motion.div
                       key={idx}
                       whileHover={{ backgroundColor: "rgba(249, 115, 22, 0.03)", x: 4 }}
                       onClick={() => navigateToPlayer(p.name)}
-                      className="p-5 flex justify-between items-center cursor-pointer transition-colors active:bg-zinc-900/60"
+                      className="p-4 flex justify-between items-center cursor-pointer transition-colors active:bg-zinc-900/60"
                     >
-                      <div className="space-y-0.5">
-                        <span className="text-base font-black text-white uppercase block tracking-tight">{p.name}</span>
-                        <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide block">
-                          Last Assessed: {lastDate}
-                        </span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-500 font-black text-xs uppercase flex-shrink-0">
+                          {initials}
+                        </div>
+                        <div className="space-y-0.5">
+                          <span className="text-base font-black text-white uppercase block tracking-tight">{p.name}</span>
+                          <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide block">
+                            Last Assessed: {lastDate}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-black text-orange-500 bg-orange-500/10 px-3 py-1.5 rounded-xl uppercase tracking-wider font-mono">
@@ -578,26 +598,37 @@ export default function DashboardPage() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="space-y-3 text-left"
           >
-            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2 pl-1">
-              <AlertTriangle className="w-4 h-4 text-red-500" />
-              PLAYERS NEEDING ATTENTION
-            </h3>
+            <div className="flex items-center justify-between pl-1">
+              <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-500" />
+                PLAYERS NEEDING ATTENTION
+              </h3>
+              <button onClick={() => router.push('/players')} className="text-[10px] font-bold text-orange-500 uppercase tracking-widest hover:text-orange-400 cursor-pointer flex items-center gap-1">
+                VIEW ALL <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
             <div className="bg-zinc-950 border border-zinc-900/80 rounded-3.5xl divide-y divide-zinc-900/40 overflow-hidden shadow-lg">
               {stats?.playersNeedingAttention && stats.playersNeedingAttention.length > 0 ? (
                 stats.playersNeedingAttention.map((p, idx) => {
                   const lastDate = lastAssessmentDates[p.name.toLowerCase()] || "No assessments";
+                  const initials = p.name.substring(0, 2).toUpperCase();
                   return (
                     <motion.div
                       key={idx}
                       whileHover={{ backgroundColor: "rgba(239, 68, 68, 0.03)", x: 4 }}
                       onClick={() => navigateToPlayer(p.name)}
-                      className="p-5 flex justify-between items-center cursor-pointer transition-colors active:bg-zinc-900/60"
+                      className="p-4 flex justify-between items-center cursor-pointer transition-colors active:bg-zinc-900/60"
                     >
-                      <div className="space-y-0.5">
-                        <span className="text-base font-black text-white uppercase block tracking-tight">{p.name}</span>
-                        <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide block">
-                          Last Assessed: {lastDate}
-                        </span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 font-black text-xs uppercase flex-shrink-0">
+                          {initials}
+                        </div>
+                        <div className="space-y-0.5">
+                          <span className="text-base font-black text-white uppercase block tracking-tight">{p.name}</span>
+                          <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide block">
+                            Last Assessed: {lastDate}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-black text-red-500 bg-red-500/10 px-3 py-1.5 rounded-xl uppercase tracking-wider font-mono">

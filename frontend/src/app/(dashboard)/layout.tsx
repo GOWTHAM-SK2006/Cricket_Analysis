@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { api } from "@/lib/api";
-import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle } from "lucide-react";
+import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle, Bell } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import OnboardingTour from "./OnboardingTour";
@@ -167,21 +167,31 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-orange-500/30 pb-24">
-      {/* Top Simple Header */}
-      <header className="h-16 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6">
-        {/* Left Side: Circular Profile Avatar */}
-        <Link href="/profile" className="flex items-center justify-center cursor-pointer">
-          <div className="w-11 h-11 rounded-full bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center text-orange-500 font-black text-base uppercase hover:border-orange-500 transition-colors">
-            {userName ? userName.charAt(0).toUpperCase() : <User className="w-5 h-5 stroke-[2.5]" />}
+      {/* Top Header – CPI branding left, notification + profile right */}
+      <header className="h-16 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-5">
+        {/* Left Side: CPI Logo + Text */}
+        <Link href="/dashboard" className="flex items-center gap-2.5 cursor-pointer">
+          <div className="relative w-8 h-9">
+            <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
+          </div>
+          <div className="leading-none">
+            <span className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase block">CRICKET</span>
+            <span className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase block">PERFORMANCE</span>
+            <span className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase block">INDEX</span>
           </div>
         </Link>
 
-        {/* Right Side: CPI logo and text */}
-        <div className="flex items-center gap-2.5">
-          <div className="relative w-7 h-8">
-            <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
-          </div>
-          <span className="text-base font-black tracking-tight text-white uppercase">CPI</span>
+        {/* Right Side: Notification Bell + Profile Avatar */}
+        <div className="flex items-center gap-4">
+          <button className="relative text-zinc-400 hover:text-orange-500 transition-colors cursor-pointer">
+            <Bell className="w-5.5 h-5.5 stroke-[2]" />
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full text-[8px] font-black text-black flex items-center justify-center">3</span>
+          </button>
+          <Link href="/profile" className="flex items-center justify-center cursor-pointer">
+            <div className="w-10 h-10 rounded-full bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center text-orange-500 font-black text-sm uppercase hover:border-orange-500 transition-colors">
+              {userName ? userName.charAt(0).toUpperCase() : <User className="w-5 h-5 stroke-[2.5]" />}
+            </div>
+          </Link>
         </div>
       </header>
 
@@ -210,6 +220,11 @@ export default function DashboardLayout({
           );
         })}
       </nav>
+
+      {/* Footer */}
+      <div className="text-center py-4 text-[10px] text-zinc-600 font-semibold tracking-wide">
+        © {new Date().getFullYear()} CPI – Cricket Performance Index. All rights reserved.
+      </div>
       {showTour && role && (
         <OnboardingTour role={role} page={tourPage} onFinish={() => setShowTour(false)} />
       )}
