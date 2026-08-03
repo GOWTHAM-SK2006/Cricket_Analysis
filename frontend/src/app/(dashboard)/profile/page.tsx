@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, LogOut, User, Sun, Moon, HelpCircle, FileText } from "lucide-react";
+import { Loader2, LogOut, User, Sun, Moon, HelpCircle, FileText, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -119,10 +119,22 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* Performance History Link */}
+            <Link
+              href="/history"
+              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase"
+            >
+              <span className="flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                PERFORMANCE HISTORY
+              </span>
+              <span className="text-xs font-black text-zinc-500">VIEW HISTORY &rarr;</span>
+            </Link>
+
             {/* Help Link */}
             <Link
               href="/help"
-              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase"
+              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase border-t border-zinc-900"
             >
               <span className="flex items-center gap-2">
                 <HelpCircle className="w-5 h-5" />
