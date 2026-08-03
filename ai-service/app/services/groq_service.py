@@ -24,7 +24,7 @@ class GroqService:
     async def generate_chat_completion(
         self,
         messages: List[Dict[str, str]],
-        temperature: float = 0.7,
+        temperature: float = 0.1,
         max_tokens: int = 1000
     ) -> str:
         """Send chat messages to Groq API via OpenAI-compatible REST endpoint."""
@@ -87,7 +87,7 @@ class GroqService:
     async def generate_structured_json(
         self,
         messages: List[Dict[str, str]],
-        temperature: float = 0.2
+        temperature: float = 0.1
     ) -> Dict[str, Any]:
         """Request structured JSON object from Groq API."""
         api_key = self._get_api_key()
