@@ -31,20 +31,28 @@ public class AiService {
     private final MatchAssessmentRepository matchAssessmentRepository;
 
     public ResponseEntity<?> forwardChatRequest(Map<String, Object> requestPayload) {
-        // Fetch all players to build database player list summary
-        java.util.List<com.cpi.cpi_backend.entity.Player> allPlayers = playerRepository.findAll();
+        // Fetch all players to build database player list summary safely
         java.util.List<java.util.Map<String, Object>> allPlayersList = new java.util.ArrayList<>();
-        for (com.cpi.cpi_backend.entity.Player p : allPlayers) {
-            java.util.Map<String, Object> pMap = new java.util.HashMap<>();
-            pMap.put("id", p.getId());
-            pMap.put("name", p.getName());
-            pMap.put("role", p.getRole());
-            double ppi = p.getPpiScore() != null ? p.getPpiScore() : 0.0;
-            double mpi = p.getMpiScore() != null ? p.getMpiScore() : 0.0;
-            pMap.put("ppi", ppi);
-            pMap.put("mpi", mpi);
-            pMap.put("cpi", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
-            allPlayersList.add(pMap);
+        java.util.List<com.cpi.cpi_backend.entity.Player> allPlayers = new java.util.ArrayList<>();
+        try {
+            allPlayers = playerRepository.findAll();
+            if (allPlayers != null) {
+                for (com.cpi.cpi_backend.entity.Player p : allPlayers) {
+                    if (p == null || p.getName() == null) continue;
+                    java.util.Map<String, Object> pMap = new java.util.HashMap<>();
+                    pMap.put("id", p.getId());
+                    pMap.put("name", p.getName());
+                    pMap.put("role", p.getRole() != null ? p.getRole() : "N/A");
+                    double ppi = p.getPpiScore() != null ? p.getPpiScore() : 0.0;
+                    double mpi = p.getMpiScore() != null ? p.getMpiScore() : 0.0;
+                    pMap.put("ppi", ppi);
+                    pMap.put("mpi", mpi);
+                    pMap.put("cpi", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
+                    allPlayersList.add(pMap);
+                }
+            }
+        } catch (Exception ex) {
+            log.warn("Could not load all players summary for AI context: {}", ex.getMessage());
         }
 
         // Auto-detect player in message and inject context if not already present
@@ -55,65 +63,73 @@ public class AiService {
 
             if (message != null && !message.trim().isEmpty()) {
                 for (com.cpi.cpi_backend.entity.Player player : allPlayers) {
-                    java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(player.getName()) + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE);
+                    if (player == null || player.getName() == null || player.getName().trim().isEmpty()) continue;
+                    java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(player.getName().trim()) + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE);
                     java.util.regex.Matcher matcher = pattern.matcher(message);
                     if (matcher.find()) {
                         log.info("Auto-detected player '{}' in chat message. Injecting database context...", player.getName());
                         
-                        // Fetch assessments
-                        java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practiceAssessments = practiceAssessmentRepository.findByPlayerId(player.getId());
-                        java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matchAssessments = matchAssessmentRepository.findByPlayerId(player.getId());
-                        
-                        context.put("playerName", player.getName());
-                        context.put("age", 19);
-                        context.put("role", player.getRole());
-                        
-                        double ppi = player.getPpiScore() != null ? player.getPpiScore() : 0.0;
-                        double mpi = player.getMpiScore() != null ? player.getMpiScore() : 0.0;
-                        context.put("currentPPI", ppi);
-                        context.put("currentMPI", mpi);
-                        context.put("currentCPI", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
-                        context.put("targetCPI", 90.0);
-                        
-                        context.put("technicalExecution", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTechnicalExecution, com.cpi.cpi_backend.entity.MatchAssessment::getTechnicalExecution));
-                        context.put("skillsLevel", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getSkillsLevel, com.cpi.cpi_backend.entity.MatchAssessment::getSkillsLevel));
-                        context.put("intensity", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getIntensity, com.cpi.cpi_backend.entity.MatchAssessment::getIntensity));
-                        context.put("concentration", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getConcentration, com.cpi.cpi_backend.entity.MatchAssessment::getConcentration));
-                        context.put("decisionMaking", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDecisionMaking, com.cpi.cpi_backend.entity.MatchAssessment::getDecisionMaking));
-                        context.put("preparation", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getPreparation, com.cpi.cpi_backend.entity.MatchAssessment::getPreparation));
-                        context.put("gameAwareness", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getGameAwareness, com.cpi.cpi_backend.entity.MatchAssessment::getGameAwareness));
-                        context.put("adaptability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getAdaptability, com.cpi.cpi_backend.entity.MatchAssessment::getAdaptability));
-                        context.put("discipline", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDiscipline, com.cpi.cpi_backend.entity.MatchAssessment::getDiscipline));
-                        context.put("teamwork", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTeamwork, com.cpi.cpi_backend.entity.MatchAssessment::getTeamwork));
-                        context.put("coachability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getCoachability, com.cpi.cpi_backend.entity.MatchAssessment::getCoachability));
-                        context.put("workEthic", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getWorkEthic, com.cpi.cpi_backend.entity.MatchAssessment::getWorkEthic));
-                        context.put("emotionalControl", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getEmotionalControl, com.cpi.cpi_backend.entity.MatchAssessment::getEmotionalControl));
+                        try {
+                            // Fetch assessments
+                            java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practiceAssessments = practiceAssessmentRepository.findByPlayerId(player.getId());
+                            java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matchAssessments = matchAssessmentRepository.findByPlayerId(player.getId());
+                            
+                            context.put("playerName", player.getName());
+                            context.put("age", 19);
+                            context.put("role", player.getRole() != null ? player.getRole() : "Player");
+                            
+                            double ppi = player.getPpiScore() != null ? player.getPpiScore() : 0.0;
+                            double mpi = player.getMpiScore() != null ? player.getMpiScore() : 0.0;
+                            context.put("currentPPI", ppi);
+                            context.put("currentMPI", mpi);
+                            context.put("currentCPI", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
+                            context.put("targetCPI", 90.0);
+                            
+                            if (practiceAssessments == null) practiceAssessments = java.util.Collections.emptyList();
+                            if (matchAssessments == null) matchAssessments = java.util.Collections.emptyList();
 
-                        java.util.List<Double> practiceHistory = practiceAssessments.stream()
-                                .sorted(java.util.Comparator.comparing(com.cpi.cpi_backend.entity.PracticeAssessment::getDate))
-                                .map(a -> a.getPpiScore() != null ? a.getPpiScore() : 0.0)
-                                .collect(java.util.stream.Collectors.toList());
-                        context.put("practiceHistory", practiceHistory);
-                        
-                        java.util.List<Double> matchHistory = matchAssessments.stream()
-                                .sorted(java.util.Comparator.comparing(com.cpi.cpi_backend.entity.MatchAssessment::getDate))
-                                .map(a -> a.getMpiScore() != null ? a.getMpiScore() : 0.0)
-                                .collect(java.util.stream.Collectors.toList());
-                        context.put("matchHistory", matchHistory);
-                        
-                        java.util.List<String> coachFeedback = new java.util.ArrayList<>();
-                        for (com.cpi.cpi_backend.entity.PracticeAssessment a : practiceAssessments) {
-                            if (a.getNotes() != null && !a.getNotes().trim().isEmpty()) {
-                                coachFeedback.add(a.getNotes().trim());
+                            context.put("technicalExecution", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTechnicalExecution, com.cpi.cpi_backend.entity.MatchAssessment::getTechnicalExecution));
+                            context.put("skillsLevel", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getSkillsLevel, com.cpi.cpi_backend.entity.MatchAssessment::getSkillsLevel));
+                            context.put("intensity", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getIntensity, com.cpi.cpi_backend.entity.MatchAssessment::getIntensity));
+                            context.put("concentration", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getConcentration, com.cpi.cpi_backend.entity.MatchAssessment::getConcentration));
+                            context.put("decisionMaking", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDecisionMaking, com.cpi.cpi_backend.entity.MatchAssessment::getDecisionMaking));
+                            context.put("preparation", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getPreparation, com.cpi.cpi_backend.entity.MatchAssessment::getPreparation));
+                            context.put("gameAwareness", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getGameAwareness, com.cpi.cpi_backend.entity.MatchAssessment::getGameAwareness));
+                            context.put("adaptability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getAdaptability, com.cpi.cpi_backend.entity.MatchAssessment::getAdaptability));
+                            context.put("discipline", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDiscipline, com.cpi.cpi_backend.entity.MatchAssessment::getDiscipline));
+                            context.put("teamwork", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTeamwork, com.cpi.cpi_backend.entity.MatchAssessment::getTeamwork));
+                            context.put("coachability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getCoachability, com.cpi.cpi_backend.entity.MatchAssessment::getCoachability));
+                            context.put("workEthic", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getWorkEthic, com.cpi.cpi_backend.entity.MatchAssessment::getWorkEthic));
+                            context.put("emotionalControl", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getEmotionalControl, com.cpi.cpi_backend.entity.MatchAssessment::getEmotionalControl));
+
+                            java.util.List<Double> practiceHistory = practiceAssessments.stream()
+                                    .filter(a -> a != null)
+                                    .map(a -> a.getPpiScore() != null ? a.getPpiScore() : 0.0)
+                                    .collect(java.util.stream.Collectors.toList());
+                            context.put("practiceHistory", practiceHistory);
+                            
+                            java.util.List<Double> matchHistory = matchAssessments.stream()
+                                    .filter(a -> a != null)
+                                    .map(a -> a.getMpiScore() != null ? a.getMpiScore() : 0.0)
+                                    .collect(java.util.stream.Collectors.toList());
+                            context.put("matchHistory", matchHistory);
+                            
+                            java.util.List<String> coachFeedback = new java.util.ArrayList<>();
+                            for (com.cpi.cpi_backend.entity.PracticeAssessment a : practiceAssessments) {
+                                if (a != null && a.getNotes() != null && !a.getNotes().trim().isEmpty()) {
+                                    coachFeedback.add(a.getNotes().trim());
+                                }
                             }
-                        }
-                        for (com.cpi.cpi_backend.entity.MatchAssessment a : matchAssessments) {
-                            if (a.getNotes() != null && !a.getNotes().trim().isEmpty()) {
-                                coachFeedback.add(a.getNotes().trim());
+                            for (com.cpi.cpi_backend.entity.MatchAssessment a : matchAssessments) {
+                                if (a != null && a.getNotes() != null && !a.getNotes().trim().isEmpty()) {
+                                    coachFeedback.add(a.getNotes().trim());
+                                }
                             }
+                            context.put("coachFeedback", coachFeedback);
+                            requestPayload.put("playerId", player.getId());
+                        } catch (Exception ex) {
+                            log.error("Error building context for player {}: {}", player.getName(), ex.getMessage());
                         }
-                        context.put("coachFeedback", coachFeedback);
-                        requestPayload.put("playerId", player.getId());
                         break;
                     }
                 }
