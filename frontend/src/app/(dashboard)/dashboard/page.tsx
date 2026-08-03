@@ -327,26 +327,28 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-left relative overflow-hidden p-6 rounded-3xl bg-gradient-to-r from-white via-orange-50 to-orange-100 border border-orange-200/50 shadow-xl min-h-[120px]"
+        className="text-left relative overflow-hidden rounded-3xl bg-zinc-950 border border-zinc-800 shadow-xl min-h-[140px] flex items-center"
       >
-        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl" />
-        {/* Batsman Hero Image */}
-        <div className="absolute right-0 top-0 bottom-0 w-[80%] md:w-[60%] flex items-end justify-end pointer-events-none">
+        {/* Glowing Batsman Image Container */}
+        <div className="absolute right-0 top-0 bottom-0 w-[60%] sm:w-[70%] pointer-events-none">
           <Image 
-            src="/batsman-hero.png" 
+            src="/glowing-batsman.png" 
             alt="Cricket Batsman Hero" 
             fill
             className="object-cover object-right"
             priority
           />
+          {/* Gradient overlay to fade the image into the background seamlessly on the left */}
+          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent" />
         </div>
-        <div className="relative z-10">
-          <h2 className="text-xs font-bold tracking-widest text-orange-600 uppercase">
+
+        <div className="relative z-10 p-6 sm:px-8 w-full">
+          <h2 className="text-[11px] font-bold tracking-widest text-orange-500 uppercase mb-1 drop-shadow-md">
             WELCOME BACK COACH
           </h2>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight mt-1 leading-none flex items-center gap-2">
+          <h1 className="text-4xl sm:text-5xl font-black text-white uppercase tracking-tight leading-none flex items-center gap-2 drop-shadow-lg">
             {coachName || "GOWTHAM"}
-            <span className="inline-block animate-pulse text-orange-500">⚡</span>
+            <span className="inline-block text-orange-600/80 drop-shadow-md">⚡</span>
           </h1>
         </div>
       </motion.div>
