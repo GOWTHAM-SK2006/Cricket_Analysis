@@ -7,19 +7,19 @@ from app.utils.logger import logger
 
 class GroqService:
     def __init__(self):
-        self.base_url = "https://api.groq.com/openai/v1/chat/completions"
+        self.base_url = "https://openrouter.ai/api/v1/chat/completions"
 
     def _get_api_key(self) -> str:
-        key = settings.GROQ_API_KEY
+        key = settings.OPENROUTER_API_KEY or settings.GROQ_API_KEY
         if not key or key.startswith("YOUR_"):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Groq API Key is not configured. Please set GROQ_API_KEY in your environment/settings."
+                detail="OpenRouter API Key is not configured. Please set OPENROUTER_API_KEY in your environment/settings."
             )
         return key
 
     def _get_model(self) -> str:
-        return settings.GROQ_MODEL or "llama-3.3-70b-versatile"
+        return settings.OPENROUTER_MODEL or settings.GROQ_MODEL or "nvidia/nemotron-3-ultra-550b-a55b:free"
 
     async def generate_chat_completion(
         self,
