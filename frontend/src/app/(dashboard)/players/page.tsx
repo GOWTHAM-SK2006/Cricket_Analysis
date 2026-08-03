@@ -85,25 +85,27 @@ export default function PlayersPage() {
     photo: ""
   });
 
-  // Practice sliders (scores 1-10)
+  // Practice sliders (scores 0-10)
   const [practiceForm, setPracticeForm] = useState({
     technicalExecution: 7,
     skillsLevel: 7,
-    intensity: 7,
-    concentration: 7,
-    decisionMaking: 7,
+    gamePlan: 7,
     preparation: 7,
+    intensity: 7,
+    focus: 7,
+    resilience: 7,
     notes: ""
   });
 
-  // Match sliders (scores 1-10)
+  // Match sliders (scores 0-10)
   const [matchForm, setMatchForm] = useState({
     technicalExecution: 7,
     skillsLevel: 7,
-    intensity: 7,
-    concentration: 7,
-    decisionMaking: 7,
+    gamePlan: 7,
     preparation: 7,
+    intensity: 7,
+    focus: 7,
+    resilience: 7,
     notes: ""
   });
 
@@ -492,6 +494,7 @@ export default function PlayersPage() {
       await api.post("/practice", {
         playerId: selectedPlayer.id,
         date: new Date().toISOString().split("T")[0],
+        concentration: practiceForm.focus,
         ...practiceForm
       });
       setShowPracticeOverlay(false);
@@ -521,6 +524,7 @@ export default function PlayersPage() {
       await api.post("/matches", {
         playerId: selectedPlayer.id,
         date: new Date().toISOString().split("T")[0],
+        concentration: matchForm.focus,
         ...matchForm
       });
       setShowMatchOverlay(false);
@@ -1046,11 +1050,14 @@ export default function PlayersPage() {
 
           practiceHistory.forEach(p => {
             addMetric("Technical Execution", p.technicalExecution);
-            addMetric("Skills Level", p.skillsLevel || p.technique);
-            addMetric("Intensity", p.intensity);
-            addMetric("Concentration", p.concentration || p.focus);
-            addMetric("Decision Making", p.decisionMaking);
+            addMetric("Skill Level", p.skillsLevel || p.technique);
+            addMetric("Game Plan", p.gamePlan || p.decisionMaking || p.gameAwareness);
             addMetric("Preparation", p.preparation);
+            addMetric("Intensity", p.intensity);
+            addMetric("Focus", p.focus || p.concentration);
+            addMetric("Resilience", p.resilience || p.emotionalControl || p.adaptability);
+            addMetric("Concentration", p.concentration);
+            addMetric("Decision Making", p.decisionMaking);
             addMetric("Game Awareness", p.gameAwareness);
             addMetric("Adaptability", p.adaptability);
             addMetric("Discipline", p.discipline);
@@ -1062,11 +1069,14 @@ export default function PlayersPage() {
 
           matchHistory.forEach(m => {
             addMetric("Technical Execution", m.technicalExecution);
-            addMetric("Skills Level", m.skillsLevel);
+            addMetric("Skill Level", m.skillsLevel);
+            addMetric("Game Plan", m.gamePlan || m.decisionMaking || m.gameAwareness);
+            addMetric("Preparation", m.preparation);
             addMetric("Intensity", m.intensity);
+            addMetric("Focus", m.focus || m.concentration);
+            addMetric("Resilience", m.resilience || m.emotionalControl || m.adaptability);
             addMetric("Concentration", m.concentration);
             addMetric("Decision Making", m.decisionMaking);
-            addMetric("Preparation", m.preparation);
             addMetric("Game Awareness", m.gameAwareness);
             addMetric("Adaptability", m.adaptability);
             addMetric("Discipline", m.discipline);
@@ -1342,10 +1352,11 @@ export default function PlayersPage() {
                       setPracticeForm({
                         technicalExecution: 7,
                         skillsLevel: 7,
-                        intensity: 7,
-                        concentration: 7,
-                        decisionMaking: 7,
+                        gamePlan: 7,
                         preparation: 7,
+                        intensity: 7,
+                        focus: 7,
+                        resilience: 7,
                         notes: ""
                       });
                       setError("");
@@ -1362,10 +1373,11 @@ export default function PlayersPage() {
                       setMatchForm({
                         technicalExecution: 7,
                         skillsLevel: 7,
-                        intensity: 7,
-                        concentration: 7,
-                        decisionMaking: 7,
+                        gamePlan: 7,
                         preparation: 7,
+                        intensity: 7,
+                        focus: 7,
+                        resilience: 7,
                         notes: ""
                       });
                       setError("");
@@ -1793,10 +1805,11 @@ export default function PlayersPage() {
                         setPracticeForm({
                           technicalExecution: 7,
                           skillsLevel: 7,
-                          intensity: 7,
-                          concentration: 7,
-                          decisionMaking: 7,
+                          gamePlan: 7,
                           preparation: 7,
+                          intensity: 7,
+                          focus: 7,
+                          resilience: 7,
                           notes: ""
                         });
                         setError("");
@@ -1833,11 +1846,12 @@ export default function PlayersPage() {
           <form onSubmit={handlePracticeSubmit} className="space-y-6">
             {[
               { label: "TECHNICAL EXECUTION", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
-              { label: "SKILLS LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
+              { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
+              { label: "GAME PLAN", key: "gamePlan", desc: "Tactical strategy, role clarity, and game plan execution" },
+              { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
               { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" },
-              { label: "CONCENTRATION", key: "concentration", desc: "Mental focus, engagement, and attention to detail" },
-              { label: "DECISION MAKING", key: "decisionMaking", desc: "Shot selection and tactical decision making" },
-              { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" }
+              { label: "FOCUS", key: "focus", desc: "Mental focus, engagement, and attention to detail" },
+              { label: "RESILIENCE", key: "resilience", desc: "Bouncing back from mistakes, mental toughness, and adaptability" }
             ].map((metric) => (
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">
@@ -1898,10 +1912,11 @@ export default function PlayersPage() {
                         setMatchForm({
                           technicalExecution: 7,
                           skillsLevel: 7,
-                          intensity: 7,
-                          concentration: 7,
-                          decisionMaking: 7,
+                          gamePlan: 7,
                           preparation: 7,
+                          intensity: 7,
+                          focus: 7,
+                          resilience: 7,
                           notes: ""
                         });
                         setError("");
@@ -1938,11 +1953,12 @@ export default function PlayersPage() {
           <form onSubmit={handleMatchSubmit} className="space-y-6">
             {[
               { label: "TECHNICAL EXECUTION", key: "technicalExecution", desc: "Fundamentals under pressure and match execution" },
-              { label: "SKILLS LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
+              { label: "SKILL LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
+              { label: "GAME PLAN", key: "gamePlan", desc: "Adherence to match plan, tactical discipline, and situational awareness" },
+              { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" },
               { label: "INTENSITY", key: "intensity", desc: "Competitive intensity, effort, and match urgency" },
-              { label: "CONCENTRATION", key: "concentration", desc: "Focus under pressure, game situation awareness, and composure" },
-              { label: "DECISION MAKING", key: "decisionMaking", desc: "Tactical choices, risk-reward, and match situation strategy" },
-              { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" }
+              { label: "FOCUS", key: "focus", desc: "Focus under pressure, game situation awareness, and composure" },
+              { label: "RESILIENCE", key: "resilience", desc: "Pressure handling, fighting spirit, and overcoming set-backs" }
             ].map((metric) => (
               <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
                 <div className="flex justify-between items-start">

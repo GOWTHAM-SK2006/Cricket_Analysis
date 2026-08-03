@@ -62,10 +62,13 @@ public class PracticeController {
         java.util.List<Integer> metrics = java.util.Arrays.asList(
                 request.getTechnicalExecution(),
                 request.getSkillsLevel(),
+                request.getGamePlan(),
+                request.getPreparation(),
                 request.getIntensity(),
+                request.getFocus() != null ? request.getFocus() : request.getConcentration(),
+                request.getResilience(),
                 request.getConcentration(),
                 request.getDecisionMaking(),
-                request.getPreparation(),
                 request.getGameAwareness(),
                 request.getAdaptability(),
                 request.getDiscipline(),
@@ -92,10 +95,13 @@ public class PracticeController {
                 .date(assessmentDate)
                 .technicalExecution(request.getTechnicalExecution())
                 .skillsLevel(request.getSkillsLevel())
-                .intensity(request.getIntensity())
-                .concentration(request.getConcentration())
-                .decisionMaking(request.getDecisionMaking())
+                .gamePlan(request.getGamePlan())
                 .preparation(request.getPreparation())
+                .intensity(request.getIntensity())
+                .focus(request.getFocus())
+                .resilience(request.getResilience())
+                .concentration(request.getConcentration() != null ? request.getConcentration() : request.getFocus())
+                .decisionMaking(request.getDecisionMaking())
                 .gameAwareness(request.getGameAwareness())
                 .adaptability(request.getAdaptability())
                 .discipline(request.getDiscipline())

@@ -57,9 +57,10 @@ def format_player_context(context: Optional[Dict[str, Any]]) -> str:
         )
 
         category_keys = [
-            "technicalExecution", "skillsLevel", "intensity", "concentration",
-            "decisionMaking", "preparation", "gameAwareness", "adaptability",
-            "discipline", "teamwork", "coachability", "workEthic", "emotionalControl"
+            "technicalExecution", "skillsLevel", "gamePlan", "preparation",
+            "intensity", "focus", "resilience", "concentration", "decisionMaking",
+            "gameAwareness", "adaptability", "discipline", "teamwork",
+            "coachability", "workEthic", "emotionalControl"
         ]
         categories_found = []
         for key in category_keys:

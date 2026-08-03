@@ -216,9 +216,9 @@ export default function DashboardPage() {
             const calculatePpiScore = (session: any) => {
               if (typeof session.ppiScore === "number" && session.ppiScore > 0) return session.ppiScore;
               const vals = [
-                session.technicalExecution, session.skillsLevel, session.intensity,
-                session.concentration, session.decisionMaking, session.preparation,
-                session.technique, session.execution, session.adaptability, session.discipline, session.focus
+                session.technicalExecution, session.skillsLevel, session.gamePlan,
+                session.preparation, session.intensity, session.focus || session.concentration,
+                session.resilience, session.decisionMaking, session.gameAwareness
               ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
               return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             };
@@ -226,9 +226,9 @@ export default function DashboardPage() {
             const calculateMpiScore = (session: any) => {
               if (typeof session.mpiScore === "number" && session.mpiScore > 0) return session.mpiScore;
               const vals = [
-                session.technicalExecution, session.skillsLevel, session.intensity,
-                session.concentration, session.decisionMaking, session.preparation,
-                session.gameAwareness, session.pressureHandling, session.teamContribution, session.matchImpact
+                session.technicalExecution, session.skillsLevel, session.gamePlan,
+                session.preparation, session.intensity, session.focus || session.concentration,
+                session.resilience, session.decisionMaking, session.gameAwareness
               ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
               return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             };

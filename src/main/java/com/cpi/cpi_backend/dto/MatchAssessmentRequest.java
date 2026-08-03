@@ -16,10 +16,13 @@ public class MatchAssessmentRequest {
     private LocalDate date;
     private Integer technicalExecution;
     private Integer skillsLevel;
+    private Integer gamePlan;
+    private Integer preparation;
     private Integer intensity;
+    private Integer focus;
+    private Integer resilience;
     private Integer concentration;
     private Integer decisionMaking;
-    private Integer preparation;
     private Integer gameAwareness;
     private Integer adaptability;
     private Integer discipline;
