@@ -1031,8 +1031,9 @@ export default function PlayersPage() {
         let weakestArea = "N/A";
         let needsImprovement = "N/A";
 
+        const metricSums: Record<string, { sum: number; count: number }> = {};
+
         if (practiceHistory.length > 0 || matchHistory.length > 0) {
-          const metricSums: Record<string, { sum: number; count: number }> = {};
 
           const addMetric = (key: string, val: number | undefined | null) => {
             if (val === undefined || val === null || val <= 0) return;
@@ -1050,6 +1051,13 @@ export default function PlayersPage() {
             addMetric("Concentration", p.concentration || p.focus);
             addMetric("Decision Making", p.decisionMaking);
             addMetric("Preparation", p.preparation);
+            addMetric("Game Awareness", p.gameAwareness);
+            addMetric("Adaptability", p.adaptability);
+            addMetric("Discipline", p.discipline);
+            addMetric("Teamwork", p.teamwork);
+            addMetric("Coachability", p.coachability);
+            addMetric("Work Ethic", p.workEthic);
+            addMetric("Emotional Control", p.emotionalControl);
           });
 
           matchHistory.forEach(m => {
@@ -1059,6 +1067,13 @@ export default function PlayersPage() {
             addMetric("Concentration", m.concentration);
             addMetric("Decision Making", m.decisionMaking);
             addMetric("Preparation", m.preparation);
+            addMetric("Game Awareness", m.gameAwareness);
+            addMetric("Adaptability", m.adaptability);
+            addMetric("Discipline", m.discipline);
+            addMetric("Teamwork", m.teamwork);
+            addMetric("Coachability", m.coachability);
+            addMetric("Work Ethic", m.workEthic);
+            addMetric("Emotional Control", m.emotionalControl);
           });
 
           const averages = Object.entries(metricSums).map(([name, data]) => ({
@@ -1076,38 +1091,116 @@ export default function PlayersPage() {
           }
         }
 
-        // Recommendations focus
-        let focusAreas: { title: string; detail: string }[] = [
-          { title: "Refine Technical Precision & Repeatability", detail: "Focus on executing controlled, repeatable movements under varied practice conditions. Use slow-motion drills and target-based exercises to lock down core technique before increasing speed and pressure." },
-          { title: "Build Pre-Ball Focus & Reset Routines", detail: "Develop a simple reset process between each delivery — step away, breathe, refocus. Practise this routine consistently so it becomes automatic under match pressure and fatigue." },
-          { title: "Instill Pre-Session Readiness & Routine Discipline", detail: "Arrive with equipment ready, a clear warm-up plan and personal session goals. Consistent preparation habits build confidence and ensure every training minute counts." }
-        ];
+        // Comprehensive coaching recommendation map from Coach's Plan of Action
+        const coachingRecommendations: Record<string, { title: string; detail: string }> = {
+          "Technical Execution": {
+            title: "Strengthen Technical Execution Under Pressure",
+            detail: "This player's technical execution needs targeted improvement. The issue may not be a lack of ability — the skill may exist in practice but is not yet stable enough to survive match pressure. Begin by separating outcome from method: identify whether the player executed poorly or produced a poor result despite sound technique. Focus on finding the recurring fault rather than reacting to every individual mistake. Design future practice sessions that reproduce the type of delivery, bowler, match situation and pitch conditions that exposed the weakness. Provide one clear technical correction the player can understand and apply immediately. Use controlled drop-feed and throw-down drills to isolate correct bat-face angle, contact point and timing. Monitor consistency across 20+ repetitions before increasing pace or adding competitive pressure. The goal is not technical perfection — it is a technique the player can trust and execute when the match demands it."
+          },
+          "Skills Level": {
+            title: "Develop Core Skill Level & Match Readiness",
+            detail: "The player's overall skill level requires focused development to meet competitive demands. Start by protecting what already works — do not make unnecessary technical changes after a strong drill or isolated success. Instead, increase the challenge by testing the player's skills under greater speed, fatigue, match pressure and unpredictability. Develop the player's self-awareness by asking them to explain why their method works and what they feel when performing well. Monitor whether the same quality transfers from practice to competitive situations. Where skills are lacking, prioritise one correction at a time with a clear coaching cue. Simplify drills by reducing speed or complexity until the movement is performed correctly, then rebuild through quality repetition. Progress gradually from controlled environments to realistic, pressure-based practice that mirrors match scenarios the player will face."
+          },
+          "Intensity": {
+            title: "Elevate Practice & Match Intensity",
+            detail: "This player's intensity levels suggest they are not yet bringing the competitive energy and purpose required to improve and perform under pressure. First identify the root cause — whether the low intensity stems from fatigue, poor health, low confidence, boredom, unclear expectations or a lack of motivation. Clarify exactly what good intensity looks like in movement, effort, communication and response between repetitions. Create short, measurable targets within sessions that give the player an immediate purpose and something to compete against. Use competitive drills with clear roles and regular feedback to keep the player mentally and physically engaged. Channel energy into controlled, purposeful effort rather than rushed or reckless activity. Monitor sustainability — the player must maintain intensity throughout the session without burning out or losing discipline. The goal is the right intensity, for the right task, maintained for the right length of time."
+          },
+          "Concentration": {
+            title: "Build Sustained Concentration & Mental Presence",
+            detail: "The player's concentration score indicates difficulty remaining mentally present and connected to the task throughout sessions and matches. Start by identifying the root cause — whether the lapses come from fatigue, boredom, anxiety, unclear instructions, external distractions or poor mental habits. Shorten the focus period by breaking sessions into smaller tasks with one clear objective and an immediate review point. Teach a simple reset routine the player can use after every attempt, mistake or interruption: step away, breathe, refocus on the next ball. Increase active involvement through questions, targets and specific responsibilities to prevent passive participation. Track the pattern of when concentration drops, what triggers it and how quickly the player reconnects. Introduce changing targets, tactical problems and match-related decisions that demand sustained awareness. The goal is not uninterrupted concentration — it is the ability to recognise when focus has drifted, reset quickly and return attention to the next important action."
+          },
+          "Decision Making": {
+            title: "Sharpen In-Game Decision Making",
+            detail: "This player needs to improve their ability to make effective decisions under the pressure and time constraints of competitive cricket. Poor decision making may stem from unclear role understanding, limited game awareness, technical uncertainty or anxiety about consequences. Begin by clarifying the player's role in specific match situations — what decisions they should be making, when, and based on what information. Use scenario-based training that places the player in realistic situations requiring quick judgement: changing required rates, field adjustments, bowling plan shifts and batting partnerships under pressure. Encourage the player to verbalise their thinking process — 'What did you see? What options did you consider? Why did you choose that response?' Develop forward thinking by practising anticipation of the next delivery, possible field change or tactical adjustment. Provide immediate, specific feedback after each decision rather than waiting until the end of a session. The goal is confident, clear decision making grounded in match awareness and role clarity."
+          },
+          "Preparation": {
+            title: "Establish Consistent Pre-Match & Pre-Session Preparation",
+            detail: "This player's preparation habits are limiting their ability to arrive ready to compete and perform from the first ball. Identify whether the weakness lies in poor organisation, unclear expectations, tiredness, lack of support, low motivation or simple forgetfulness. Set clear standards for what the player must complete and understand before arriving at the ground and before play begins. Create a simple, repeatable preparation checklist covering equipment, clothing, nutrition, hydration, warm-up routine, personal role clarity and key match information. Rehearse match-day routines during practice sessions so they become familiar and automatic. Build accountability gradually — assign age-appropriate responsibility rather than allowing others to prepare everything for the player. Connect preparation directly to performance outcomes by reviewing how poor preparation affected confidence, concentration and early involvement. Develop match-day habits that can be repeated before every match, trial or important performance regardless of the occasion. The goal is not simply to arrive at the ground — it is to arrive ready physically, mentally and practically to make the session count."
+          },
+          "Game Awareness": {
+            title: "Develop Tactical Game Awareness & Match Reading",
+            detail: "This player is not yet reading the wider match context effectively — they may be so focused on their own individual performance that they stop tracking the score, opposition plans, field changes and shifting momentum. Begin by identifying what the player consistently misses during matches and clarify which details matter most at different stages of the game. Use simple awareness questions regularly during practice: 'What's happening?', 'What might happen next?' and 'What does your role require right now?' Recreate match situations through scenario-based games that require players to respond to changing scores, conditions and tactical demands in real time. Review specific moments where the player became disconnected from the contest and discuss what information could have helped them respond differently. Develop forward thinking by encouraging anticipation of the next delivery, possible field change, bowling adjustment or batting response. The goal is not simply to watch the game — it is to recognise what is changing, understand what it means and respond before the opportunity has passed."
+          },
+          "Adaptability": {
+            title: "Build Adaptability & Response to Changing Conditions",
+            detail: "This player struggles to adjust when conditions, instructions, roles or challenges change during play. The resistance may stem from confusion, anxiety, technical limitation, rigid thinking or fear of making mistakes. Start by explaining what has changed before asking the player to adjust their response — clarity reduces anxiety. Offer two or three practical solutions rather than overwhelming them with instructions. Introduce small, controlled variations gradually before progressing to more unpredictable and demanding scenarios. After each adaptation challenge, review what the player noticed, what they tried and what they would do differently next time. Develop independent thinking by asking the player what adjustment is required and why they have chosen a particular response. Test decision-making under pressure by introducing time limits, changing targets and competitive consequences. Protect the fundamentals throughout — ensure the player adapts without abandoning the technical and tactical basics that support reliable performance. The goal is not to change for the sake of change — it is to recognise what the situation demands and make the smallest effective adjustment."
+          },
+          "Discipline": {
+            title: "Strengthen Discipline & Behavioural Standards",
+            detail: "This player's discipline score suggests difficulty following instructions, maintaining standards and controlling behaviour consistently. Identify whether the cause is unclear expectations, boredom, frustration, immaturity, poor habits or problems outside cricket. Clarify exactly what acceptable behaviour looks like in practice and matches — punctuality, effort, self-control and respect for the environment. Set fair, consistent, age-appropriate consequences that correct behaviour without humiliating the player. Give the player ownership by asking them to reflect on the behaviour, its effect on teammates and what they will do differently. Monitor patterns to identify the situations, people or emotions that trigger poor discipline. Build responsibility gradually through leadership tasks, personal targets and greater ownership of their own development. Protect independent thinking — ensure discipline does not become fear, silence or an unwillingness to question and learn. The goal is not a player who behaves only when watched — it is a player who chooses the right standard because they understand its value to themselves and the team."
+          },
+          "Teamwork": {
+            title: "Improve Team Contribution & Collaborative Play",
+            detail: "This player is not yet contributing effectively to the collective performance of the team. The cause may be excessive focus on personal performance, unclear role understanding, frustration with teammates or lacking confidence. Clarify what effective teamwork looks like in partnerships, communication, fielding support and response to mistakes. Assign specific responsibilities such as communicating between overs with a partner, supporting a bowler during a difficult spell or maintaining fielding energy during quiet periods. Address any negative behaviour directly — challenge blaming, poor body language, selfish decision making or withdrawal from the contest. Help the player understand how their behaviour affects teammates, momentum and the team's ability to compete collectively. Encourage specific, useful match communication about the pitch, field changes, scoring options and bowling plans rather than empty noise. Build visible leadership through urgency in the field, positive body language, backing up every throw and encouraging composure under pressure. The goal is not simply to play in a team — it is to understand your role, support others and contribute to something greater than your own performance."
+          },
+          "Coachability": {
+            title: "Enhance Coachability & Openness to Feedback",
+            detail: "This player shows resistance to coaching feedback, which may stem from confusion, embarrassment, defensiveness, fear of failure or insufficient trust in the coaching relationship. Improve the delivery of feedback by making it clear, specific, age-appropriate and focused on behaviour or performance rather than personality. Limit instruction to one useful correction at a time and allow enough opportunity for the player to apply it before adding more. Invite participation by asking the player what they noticed, what they think went wrong and what solution they would try — this builds ownership of the learning process. Build trust gradually by recognising effort, improvement and honest questions so the player feels safe enough to learn from mistakes without fear of judgement. Deepen conversations by asking what the player understood, what they felt and how they intend to apply feedback in the next session. The goal is not a player who silently accepts every instruction — it is a player who listens carefully, thinks critically and turns useful feedback into meaningful improvement."
+          },
+          "Work Ethic": {
+            title: "Develop Consistent Work Ethic & Competitive Drive",
+            detail: "This player's work ethic needs strengthening to meet the demands of sustained improvement and competitive performance. Identify whether the issue stems from low motivation, unclear goals, fatigue, lack of purpose or insufficient challenge in training. Set clear, measurable expectations for effort, communication and involvement in every session — not just when the player feels motivated. Create short-term targets that provide immediate purpose and connect daily effort to longer-term development goals. Use competitive drills with clear consequences to build the habit of sustained application under pressure. Monitor whether the player's effort remains consistent across the full session, not just during drills they enjoy or when receiving individual attention. Encourage the player to take ownership of their development by setting personal goals, tracking their own progress and arriving at sessions with a clear plan of what they want to improve. Build accountability by reviewing effort patterns honestly and connecting work habits directly to match performance outcomes. The goal is a player who competes with purpose, maintains standards without supervision and understands that consistent work ethic is the foundation of all meaningful improvement."
+          },
+          "Emotional Control": {
+            title: "Develop Emotional Regulation & Composure",
+            detail: "This player struggles to manage frustration, excitement, anxiety or disappointment during competitive play, which directly impacts their decision making and execution. Begin by identifying the specific triggers — whether the player reacts most strongly to mistakes, dismissal, dropped chances, poor deliveries, criticism, sledging or umpiring decisions. Teach a simple reset response: step away from the crease or mark, take a controlled breath, name the emotion internally and refocus attention on the next ball. Set clear behavioural boundaries — anger, dissent, blaming teammates and damaging equipment are unacceptable responses regardless of the situation. Review incidents privately, focusing on the behaviour, its impact on the team and a better response next time. Practise pressure deliberately by recreating difficult scenarios so the player can rehearse remaining calm and making effective decisions under emotional load. Do not label the player as emotional or difficult — young cricketers often need structured support to understand what they feel and how to respond constructively. The goal is not to remove emotion from cricket — it is to ensure that emotion provides energy without taking away judgement, discipline or control."
+          }
+        };
 
-        const playerRole = selectedPlayer.role ? selectedPlayer.role.toLowerCase() : "";
-        if (playerRole.includes("bowler")) {
-          focusAreas = [
-            { title: "Sharpen Line & Length Control Under Pressure", detail: "Use target-zone drills with consequence-based scoring to build accuracy under fatigue. Prioritise repeatable run-ups and release points during competitive net sessions." },
-            { title: "Execute Purposeful Target Variations & Death Spells", detail: "Practise yorker, wide yorker and slower-ball variations in simulated death-over scenarios. Track execution percentage rather than just outcomes to build consistency." },
-            { title: "Develop Tactical Pace & Release Adjustments", detail: "Work on reading the batter's intent and adjusting pace mid-over. Include scenario-based drills where field settings change between deliveries to sharpen in-game thinking." }
-          ];
-        } else if (playerRole.includes("batsman") || playerRole.includes("batter")) {
-          focusAreas = [
-            { title: "Refine Tactical Shot Selection & Strike Transfer", detail: "Practise identifying scoring gaps and rotating strike under pressure. Use match-simulation nets with required run rates to build decision-making discipline." },
-            { title: "Enhance Footwork Adaptability Against Spin & Pace", detail: "Drill quick-feet movement patterns against both spin and pace on varied surfaces. Focus on balanced head position and late adjustment to improve contact quality." },
-            { title: "Master Technical Precision & Contact Point Control", detail: "Use drop-feed and throw-down drills to isolate and reinforce correct bat-face angle and timing. Monitor consistency across 20+ repetitions before adding pace." }
-          ];
-        } else if (playerRole.includes("all-rounder") || playerRole.includes("all rounder")) {
-          focusAreas = [
-            { title: "Heighten Situational Game Awareness Under Pressure", detail: "Practise reading match situations — required rates, field changes, momentum shifts. Use scenario-based games that demand both batting and bowling responses in the same session." },
-            { title: "Harness Controlled Power Hitting Without Sacrificing Method", detail: "Build power through core stability and timing rather than brute force. Use weighted bat drills and targeted boundary-hitting exercises while maintaining proper technique." },
-            { title: "Structure Dynamic Field Settings & Match Rhythm", detail: "Develop the ability to set and adjust fields mid-over based on batter behaviour. Practise bowling plans that adapt after every 2-3 deliveries to sharpen tactical instinct." }
-          ];
-        } else if (playerRole.includes("wicketkeeper") || playerRole.includes("keeper")) {
-          focusAreas = [
-            { title: "Elevate Glove Reaction Speed & Collection Mechanics", detail: "Use rapid-fire throw drills and varied-bounce exercises to sharpen collection reflexes. Focus on soft hands, late adjustment and clean takes on both sides consistently." },
-            { title: "Strengthen On-Field Tactical Bowler-Keeper Alignment", detail: "Build communication routines with bowlers between deliveries. Work on reading the bowler's plan and anticipating variations to improve positioning and stumping opportunities." },
-            { title: "Enhance Footwork Mobility, Balance & Core Posture", detail: "Incorporate lateral movement drills and low-stance holds to build endurance behind the stumps. Focus on maintaining balanced ready-position across long innings without fatigue." }
-          ];
+        // Dynamically generate focus areas from weakest metrics
+        let focusAreas: { title: string; detail: string }[] = [];
+
+        if (Object.keys(metricSums).length > 0) {
+          // Sort metrics by average ascending (weakest first)
+          const sortedMetrics = Object.entries(metricSums)
+            .map(([name, data]) => ({ name, avg: data.sum / data.count }))
+            .sort((a, b) => a.avg - b.avg);
+
+          // Pick the 3 weakest metrics that have coaching recommendations
+          const weakest3 = sortedMetrics
+            .filter(m => coachingRecommendations[m.name])
+            .slice(0, 3);
+
+          focusAreas = weakest3.map(m => ({
+            title: `${coachingRecommendations[m.name].title} (Avg: ${m.avg.toFixed(1)}/10)`,
+            detail: coachingRecommendations[m.name].detail
+          }));
+        }
+
+        // Fallback if no assessment data exists — use role-based defaults
+        if (focusAreas.length === 0) {
+          const playerRole = selectedPlayer.role ? selectedPlayer.role.toLowerCase() : "";
+          if (playerRole.includes("bowler")) {
+            focusAreas = [
+              coachingRecommendations["Technical Execution"],
+              coachingRecommendations["Concentration"],
+              coachingRecommendations["Adaptability"]
+            ];
+          } else if (playerRole.includes("batsman") || playerRole.includes("batter")) {
+            focusAreas = [
+              coachingRecommendations["Technical Execution"],
+              coachingRecommendations["Decision Making"],
+              coachingRecommendations["Concentration"]
+            ];
+          } else if (playerRole.includes("all-rounder") || playerRole.includes("all rounder")) {
+            focusAreas = [
+              coachingRecommendations["Game Awareness"],
+              coachingRecommendations["Adaptability"],
+              coachingRecommendations["Intensity"]
+            ];
+          } else if (playerRole.includes("wicketkeeper") || playerRole.includes("keeper")) {
+            focusAreas = [
+              coachingRecommendations["Concentration"],
+              coachingRecommendations["Preparation"],
+              coachingRecommendations["Discipline"]
+            ];
+          } else {
+            focusAreas = [
+              coachingRecommendations["Technical Execution"],
+              coachingRecommendations["Concentration"],
+              coachingRecommendations["Preparation"]
+            ];
+          }
         }
 
         // Get self-assessment averages
@@ -1579,13 +1672,15 @@ export default function PlayersPage() {
                       <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
                     </div>
                     <div
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        expandedFocus === idx ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                      className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                        expandedFocus === idx ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
                       }`}
                     >
-                      <p className="text-[11px] font-semibold text-zinc-400 leading-relaxed px-5 pb-4 pt-0 border-t border-zinc-800/60">
-                        {focus.detail}
-                      </p>
+                      <div className="px-5 pb-5 pt-3 border-t border-zinc-800/60 space-y-2">
+                        <p className="text-[11px] font-semibold text-zinc-400 leading-[1.7] whitespace-pre-line">
+                          {focus.detail}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ))}
