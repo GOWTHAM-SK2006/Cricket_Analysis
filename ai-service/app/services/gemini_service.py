@@ -18,7 +18,7 @@ class GeminiService:
         return key
 
     def _get_model(self) -> str:
-        return settings.GEMINI_MODEL or "gemini-2.5-flash-lite"
+        return settings.GEMINI_MODEL or "gemini-3.5-flash"
 
     async def generate_chat_completion(
         self,

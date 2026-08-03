@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "CPI AI Service"
     API_V1_STR: str = "/api/v1"
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.5-flash-lite"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
     APP_ENV: str = "development"
     LOG_LEVEL: str = "INFO"
     HOST: str = "0.0.0.0"
