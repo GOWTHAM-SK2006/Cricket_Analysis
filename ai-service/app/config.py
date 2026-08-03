@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-3.5-flash"
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
     APP_ENV: str = "development"
     LOG_LEVEL: str = "INFO"
     HOST: str = "0.0.0.0"

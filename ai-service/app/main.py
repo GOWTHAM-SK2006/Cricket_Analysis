@@ -33,7 +33,7 @@ app.include_router(health.router)
 @app.on_event("startup")
 async def startup_event():
     logger.info(f"Starting {settings.APP_NAME} in {settings.APP_ENV} mode...")
-    logger.info(f"Gemini Model configured: {settings.GEMINI_MODEL}")
+    logger.info(f"Groq Model configured: {settings.GROQ_MODEL}")
 
 @app.on_event("shutdown")
 async def shutdown_event():
