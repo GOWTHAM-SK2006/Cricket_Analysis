@@ -38,6 +38,23 @@ def format_player_context(context: Optional[Dict[str, Any]]) -> str:
         f"Last Practice Assessments (PPI History): {practice_history}\n"
         f"Last Match Assessments (MPI History): {match_history}\n"
         f"Coach Feedback & Remarks: {', '.join(coach_feedback) if coach_feedback else 'None recorded'}\n"
-        f"--------------------------------------------"
     )
+
+    category_keys = [
+        "technicalExecution", "skillsLevel", "intensity", "concentration",
+        "decisionMaking", "preparation", "gameAwareness", "adaptability",
+        "discipline", "teamwork", "coachability", "workEthic", "emotionalControl"
+    ]
+    categories_found = []
+    for key in category_keys:
+        val = context.get(key)
+        if val is not None:
+            import re
+            human_name = re.sub(r'(?<!^)(?=[A-Z])', ' ', key).title()
+            categories_found.append(f"  - {human_name}: {val}")
+
+    if categories_found:
+        summary += "Detailed Performance Indices (Averages):\n" + "\n".join(categories_found) + "\n"
+
+    summary += "--------------------------------------------"
     return summary

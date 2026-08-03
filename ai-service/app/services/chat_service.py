@@ -11,6 +11,7 @@ class ChatService:
         self.system_prompt = load_prompt_file("system_prompt.txt")
         self.coach_prompt = load_prompt_file("coach_prompt.txt")
         self.player_prompt = load_prompt_file("player_prompt.txt")
+        self.coach_plan_of_action = load_prompt_file("coach_plan_of_action.txt")
 
     def _get_role_prompt(self, role: str) -> str:
         if role and role.upper() == "PLAYER":
@@ -24,7 +25,7 @@ class ChatService:
         if session_id not in self.sessions:
             role_prompt = self._get_role_prompt(request.userRole)
             initial_messages = [
-                {"role": "system", "content": f"{self.system_prompt}\n\n{role_prompt}"}
+                {"role": "system", "content": f"{self.system_prompt}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"}
             ]
             self.sessions[session_id] = initial_messages
 

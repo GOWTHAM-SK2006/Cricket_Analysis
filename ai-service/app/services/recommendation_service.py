@@ -7,6 +7,7 @@ from app.utils.logger import logger
 class RecommendationService:
     def __init__(self):
         self.system_prompt = load_prompt_file("system_prompt.txt")
+        self.coach_plan_of_action = load_prompt_file("coach_plan_of_action.txt")
 
     async def generate_recommendation(self, request: RecommendationRequest) -> RecommendationResponse:
         context_dict = request.context.model_dump()
@@ -33,7 +34,7 @@ class RecommendationService:
         )
         
         messages = [
-            {"role": "system", "content": f"{self.system_prompt}\n\n{json_schema_prompt}"},
+            {"role": "system", "content": f"{self.system_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}\n\n{json_schema_prompt}"},
             {"role": "user", "content": formatted_context}
         ]
 

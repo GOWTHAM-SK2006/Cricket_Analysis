@@ -59,6 +59,21 @@ public class AiService {
                         context.put("currentCPI", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
                         context.put("targetCPI", 90.0);
                         
+                        // Inject average sub-category scores for plan of action alignment
+                        context.put("technicalExecution", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTechnicalExecution, com.cpi.cpi_backend.entity.MatchAssessment::getTechnicalExecution));
+                        context.put("skillsLevel", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getSkillsLevel, com.cpi.cpi_backend.entity.MatchAssessment::getSkillsLevel));
+                        context.put("intensity", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getIntensity, com.cpi.cpi_backend.entity.MatchAssessment::getIntensity));
+                        context.put("concentration", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getConcentration, com.cpi.cpi_backend.entity.MatchAssessment::getConcentration));
+                        context.put("decisionMaking", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDecisionMaking, com.cpi.cpi_backend.entity.MatchAssessment::getDecisionMaking));
+                        context.put("preparation", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getPreparation, com.cpi.cpi_backend.entity.MatchAssessment::getPreparation));
+                        context.put("gameAwareness", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getGameAwareness, com.cpi.cpi_backend.entity.MatchAssessment::getGameAwareness));
+                        context.put("adaptability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getAdaptability, com.cpi.cpi_backend.entity.MatchAssessment::getAdaptability));
+                        context.put("discipline", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDiscipline, com.cpi.cpi_backend.entity.MatchAssessment::getDiscipline));
+                        context.put("teamwork", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTeamwork, com.cpi.cpi_backend.entity.MatchAssessment::getTeamwork));
+                        context.put("coachability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getCoachability, com.cpi.cpi_backend.entity.MatchAssessment::getCoachability));
+                        context.put("workEthic", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getWorkEthic, com.cpi.cpi_backend.entity.MatchAssessment::getWorkEthic));
+                        context.put("emotionalControl", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getEmotionalControl, com.cpi.cpi_backend.entity.MatchAssessment::getEmotionalControl));
+
                         // Sort practice assessments by date ascending and get ppiScores
                         java.util.List<Double> practiceHistory = practiceAssessments.stream()
                                 .sorted(java.util.Comparator.comparing(com.cpi.cpi_backend.entity.PracticeAssessment::getDate))
@@ -164,5 +179,34 @@ public class AiService {
                             "message", "AI Service is temporarily unavailable."
                     ));
         }
+    }
+
+    private Double getAverageMetric(
+            java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practices,
+            java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matches,
+            java.util.function.Function<com.cpi.cpi_backend.entity.PracticeAssessment, Integer> pracExtractor,
+            java.util.function.Function<com.cpi.cpi_backend.entity.MatchAssessment, Integer> matchExtractor
+    ) {
+        double sum = 0.0;
+        int count = 0;
+        if (practices != null) {
+            for (com.cpi.cpi_backend.entity.PracticeAssessment p : practices) {
+                Integer val = pracExtractor.apply(p);
+                if (val != null) {
+                    sum += val;
+                    count++;
+                }
+            }
+        }
+        if (matches != null) {
+            for (com.cpi.cpi_backend.entity.MatchAssessment m : matches) {
+                Integer val = matchExtractor.apply(m);
+                if (val != null) {
+                    sum += val;
+                    count++;
+                }
+            }
+        }
+        return count > 0 ? (double) Math.round((sum / count) * 10) / 10.0 : null;
     }
 }

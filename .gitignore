@@ -47,3 +47,8 @@ src/main/resources/static/*
 .env.*.local
 ai-service/.env
 
+# Python env and cache
+ai-service/venv/
+__pycache__/
+ai-service/app/**/__pycache__/
+*.pyc
