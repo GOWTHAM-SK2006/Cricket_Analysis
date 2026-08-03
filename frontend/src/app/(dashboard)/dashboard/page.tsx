@@ -23,6 +23,7 @@ import {
   Star
 } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -326,22 +327,28 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-left relative overflow-hidden p-6 rounded-3xl bg-gradient-to-r from-orange-500/10 via-orange-400/5 to-zinc-950/20 border border-zinc-900/50 backdrop-blur-md shadow-xl min-h-[120px]"
+        className="text-left relative overflow-hidden p-6 rounded-3xl bg-gradient-to-r from-white via-orange-50 to-orange-100 border border-orange-200/50 shadow-xl min-h-[120px]"
       >
-        <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl" />
-        {/* Cricket Batsman Silhouette */}
-        <div className="absolute right-2 -bottom-2 w-32 h-32 opacity-20">
-          <svg viewBox="0 0 200 200" fill="currentColor" className="text-orange-500 w-full h-full">
-            <path d="M120,180 L115,140 L100,120 L95,100 L105,80 L110,60 L108,40 L112,25 C112,20 118,18 120,22 L122,40 L125,55 L140,75 L165,60 L175,55 C178,54 180,57 178,60 L155,80 L130,95 L120,115 L130,135 L135,170 L140,185 C141,190 125,192 120,180 Z M100,25 C100,15 115,15 115,25 C115,35 100,35 100,25 Z M88,100 L60,130 L50,145 C48,149 43,147 45,143 L65,115 L85,90 Z" />
-          </svg>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl" />
+        {/* Batsman Hero Image */}
+        <div className="absolute right-0 top-0 bottom-0 w-[80%] md:w-[60%] flex items-end justify-end pointer-events-none">
+          <Image 
+            src="/batsman-hero.png" 
+            alt="Cricket Batsman Hero" 
+            fill
+            className="object-cover object-right"
+            priority
+          />
         </div>
-        <h2 className="text-xs font-bold tracking-widest text-orange-500/80 uppercase">
-          WELCOME BACK COACH
-        </h2>
-        <h1 className="text-3xl font-black text-white uppercase tracking-tight mt-1 leading-none flex items-center gap-2">
-          {coachName || "GOWTHAM"}
-          <span className="inline-block animate-pulse text-orange-500">⚡</span>
-        </h1>
+        <div className="relative z-10">
+          <h2 className="text-xs font-bold tracking-widest text-orange-600 uppercase">
+            WELCOME BACK COACH
+          </h2>
+          <h1 className="text-4xl font-black text-black uppercase tracking-tight mt-1 leading-none flex items-center gap-2">
+            {coachName || "GOWTHAM"}
+            <span className="inline-block animate-pulse text-orange-500">⚡</span>
+          </h1>
+        </div>
       </motion.div>
 
       {/* 2. TODAY'S SNAPSHOT */}
