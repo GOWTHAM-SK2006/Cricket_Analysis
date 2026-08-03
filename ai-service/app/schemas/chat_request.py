@@ -1,7 +1,9 @@
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 class PlayerContext(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     playerName: Optional[str] = Field(None, example="John")
     age: Optional[int] = Field(None, example=19)
     role: Optional[str] = Field(None, example="Batsman")
@@ -12,6 +14,7 @@ class PlayerContext(BaseModel):
     practiceHistory: Optional[List[float]] = Field(default=[], example=[78, 80, 76, 82, 84])
     matchHistory: Optional[List[float]] = Field(default=[], example=[65, 66, 70, 68, 72])
     coachFeedback: Optional[List[str]] = Field(default=[], example=["Good timing", "Needs better footwork"])
+    allPlayersList: Optional[List[Dict[str, Any]]] = Field(default=None)
 
 class ChatRequest(BaseModel):
     sessionId: str = Field(..., example="abc123session")

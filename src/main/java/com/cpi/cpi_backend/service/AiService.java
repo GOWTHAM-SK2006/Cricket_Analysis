@@ -31,11 +31,29 @@ public class AiService {
     private final MatchAssessmentRepository matchAssessmentRepository;
 
     public ResponseEntity<?> forwardChatRequest(Map<String, Object> requestPayload) {
+        // Fetch all players to build database player list summary
+        java.util.List<com.cpi.cpi_backend.entity.Player> allPlayers = playerRepository.findAll();
+        java.util.List<java.util.Map<String, Object>> allPlayersList = new java.util.ArrayList<>();
+        for (com.cpi.cpi_backend.entity.Player p : allPlayers) {
+            java.util.Map<String, Object> pMap = new java.util.HashMap<>();
+            pMap.put("id", p.getId());
+            pMap.put("name", p.getName());
+            pMap.put("role", p.getRole());
+            double ppi = p.getPpiScore() != null ? p.getPpiScore() : 0.0;
+            double mpi = p.getMpiScore() != null ? p.getMpiScore() : 0.0;
+            pMap.put("ppi", ppi);
+            pMap.put("mpi", mpi);
+            pMap.put("cpi", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
+            allPlayersList.add(pMap);
+        }
+
         // Auto-detect player in message and inject context if not already present
         if (!requestPayload.containsKey("context") || requestPayload.get("context") == null) {
             String message = (String) requestPayload.get("message");
+            java.util.Map<String, Object> context = new java.util.HashMap<>();
+            context.put("allPlayersList", allPlayersList);
+
             if (message != null && !message.trim().isEmpty()) {
-                java.util.List<com.cpi.cpi_backend.entity.Player> allPlayers = playerRepository.findAll();
                 for (com.cpi.cpi_backend.entity.Player player : allPlayers) {
                     java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\b" + java.util.regex.Pattern.quote(player.getName()) + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE);
                     java.util.regex.Matcher matcher = pattern.matcher(message);
@@ -46,10 +64,8 @@ public class AiService {
                         java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practiceAssessments = practiceAssessmentRepository.findByPlayerId(player.getId());
                         java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matchAssessments = matchAssessmentRepository.findByPlayerId(player.getId());
                         
-                        // Build context
-                        java.util.Map<String, Object> context = new java.util.HashMap<>();
                         context.put("playerName", player.getName());
-                        context.put("age", 19); // Default age matching UI presentation
+                        context.put("age", 19);
                         context.put("role", player.getRole());
                         
                         double ppi = player.getPpiScore() != null ? player.getPpiScore() : 0.0;
@@ -59,7 +75,6 @@ public class AiService {
                         context.put("currentCPI", (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2.0 : (ppi > 0 ? ppi : mpi));
                         context.put("targetCPI", 90.0);
                         
-                        // Inject average sub-category scores for plan of action alignment
                         context.put("technicalExecution", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTechnicalExecution, com.cpi.cpi_backend.entity.MatchAssessment::getTechnicalExecution));
                         context.put("skillsLevel", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getSkillsLevel, com.cpi.cpi_backend.entity.MatchAssessment::getSkillsLevel));
                         context.put("intensity", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getIntensity, com.cpi.cpi_backend.entity.MatchAssessment::getIntensity));
@@ -74,21 +89,18 @@ public class AiService {
                         context.put("workEthic", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getWorkEthic, com.cpi.cpi_backend.entity.MatchAssessment::getWorkEthic));
                         context.put("emotionalControl", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getEmotionalControl, com.cpi.cpi_backend.entity.MatchAssessment::getEmotionalControl));
 
-                        // Sort practice assessments by date ascending and get ppiScores
                         java.util.List<Double> practiceHistory = practiceAssessments.stream()
                                 .sorted(java.util.Comparator.comparing(com.cpi.cpi_backend.entity.PracticeAssessment::getDate))
                                 .map(a -> a.getPpiScore() != null ? a.getPpiScore() : 0.0)
                                 .collect(java.util.stream.Collectors.toList());
                         context.put("practiceHistory", practiceHistory);
                         
-                        // Sort match assessments by date ascending and get mpiScores
                         java.util.List<Double> matchHistory = matchAssessments.stream()
                                 .sorted(java.util.Comparator.comparing(com.cpi.cpi_backend.entity.MatchAssessment::getDate))
                                 .map(a -> a.getMpiScore() != null ? a.getMpiScore() : 0.0)
                                 .collect(java.util.stream.Collectors.toList());
                         context.put("matchHistory", matchHistory);
                         
-                        // Collect notes as feedback
                         java.util.List<String> coachFeedback = new java.util.ArrayList<>();
                         for (com.cpi.cpi_backend.entity.PracticeAssessment a : practiceAssessments) {
                             if (a.getNotes() != null && !a.getNotes().trim().isEmpty()) {
@@ -101,13 +113,12 @@ public class AiService {
                             }
                         }
                         context.put("coachFeedback", coachFeedback);
-                        
-                        requestPayload.put("context", context);
                         requestPayload.put("playerId", player.getId());
-                        break; // Inject first matched player
+                        break;
                     }
                 }
             }
+            requestPayload.put("context", context);
         }
 
         String targetUrl = aiServiceUrl + "/api/v1/chat";
