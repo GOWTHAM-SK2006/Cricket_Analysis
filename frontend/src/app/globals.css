@@ -18,14 +18,31 @@
 
 @layer base {
   body {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     font-family: Arial, Helvetica, sans-serif;
   }
-}
-  
-  /* Global smooth transition for elements */
-  html, body, header, main, nav, div, button, input, select, textarea, span, p, h1, h2, h3, h4, h5, h6, svg, path {
+
+  html,
+  body,
+  header,
+  main,
+  nav,
+  div,
+  button,
+  input,
+  select,
+  textarea,
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  svg,
+  path {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
   }
 }

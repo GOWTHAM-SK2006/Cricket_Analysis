@@ -7,9 +7,9 @@ import { ArrowRight, BarChart3, Activity, Shield } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-orange-500/30">
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-orange-500/20 font-sans">
       {/* Navigation */}
-      <nav className="fixed w-full z-50 top-0 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md">
+      <nav className="fixed w-full z-50 top-0 border-b border-slate-200 bg-white/90 backdrop-blur-md shadow-xs">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="relative w-8 h-9 flex-shrink-0">
@@ -21,15 +21,15 @@ export default function Home() {
                 priority
               />
             </div>
-            <span className="text-lg font-bold tracking-tight text-white">CPI Analytics</span>
+            <span className="text-lg font-black tracking-tight text-slate-900">CPI Analytics</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors">
+            <Link href="/login" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors uppercase">
               Log in
             </Link>
             <Link
               href="/signup"
-              className="h-9 px-4 rounded-xl text-xs font-bold bg-white hover:opacity-90 text-black inline-flex items-center justify-center transition-all cursor-pointer shadow-md"
+              className="h-9 px-4 rounded-xl text-xs font-black bg-orange-500 hover:bg-orange-600 text-white inline-flex items-center justify-center transition-all cursor-pointer shadow-md"
             >
               Get Started
             </Link>
@@ -47,7 +47,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border border-orange-500/30 bg-orange-500/10 text-orange-400 text-xs font-bold mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 text-orange-600 text-xs font-black mb-6 shadow-xs"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
@@ -60,11 +60,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-7xl font-extrabold tracking-tight mb-6 text-zinc-900 dark:text-white"
+            className="text-4xl md:text-7xl font-black tracking-tight mb-6 text-slate-900"
           >
             Cricket Performance
             <br />
-            <span className="text-orange-500 font-extrabold px-1 inline-block">
+            <span className="text-orange-500 font-black px-1 inline-block">
               Intelligence
             </span>
           </motion.h1>
@@ -73,7 +73,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 font-normal leading-relaxed"
+            className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 font-medium leading-relaxed"
           >
             Are we training properly? If not, what must we do better?
             The premier analytics platform designed for elite cricket coaches.
@@ -87,17 +87,17 @@ export default function Home() {
           >
             <Link
               href="/signup"
-              className="h-12 px-6 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-500 text-zinc-50 inline-flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-orange-600/15 cursor-pointer"
+              className="h-12 px-6 rounded-xl text-sm font-black bg-orange-500 hover:bg-orange-600 text-white inline-flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-orange-500/20 cursor-pointer"
             >
               Start Coaching Now
-              <ArrowRight className="w-4 h-4 text-zinc-50" />
+              <ArrowRight className="w-4 h-4 text-white" />
             </Link>
           </motion.div>
         </div>
       </main>
 
       {/* Features Section */}
-      <section className="py-20 px-6 border-t border-zinc-900 relative z-10">
+      <section className="py-20 px-6 border-t border-slate-200 relative z-10 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-6">
             <FeatureCard
@@ -124,12 +124,12 @@ export default function Home() {
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="p-6 rounded-xl border border-zinc-800 bg-zinc-950 hover:bg-zinc-900 transition-all duration-200 group shadow-md">
-      <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+    <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-orange-200 transition-all duration-200 group shadow-sm hover:shadow-md">
+      <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
         {icon}
       </div>
-      <h3 className="text-base font-bold mb-2 text-white">{title}</h3>
-      <p className="text-zinc-400 text-xs leading-relaxed">{description}</p>
+      <h3 className="text-base font-black mb-2 text-slate-900">{title}</h3>
+      <p className="text-slate-500 text-xs font-medium leading-relaxed">{description}</p>
     </div>
   );
 }
