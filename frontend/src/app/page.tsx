@@ -60,11 +60,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-7xl font-bold tracking-tighter mb-6 text-white"
+            className="text-4xl md:text-7xl font-extrabold tracking-tight mb-6 text-zinc-900 dark:text-white"
           >
             Cricket Performance
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-650">
+            <span className="text-orange-500 font-extrabold px-1 inline-block">
               Intelligence
             </span>
           </motion.h1>
