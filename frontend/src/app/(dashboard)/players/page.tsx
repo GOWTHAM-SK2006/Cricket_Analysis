@@ -1662,35 +1662,6 @@ export default function PlayersPage() {
               </div>
             </div>
 
-            {/* SECTION 6 – PLAYER DEVELOPMENT */}
-            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
-                <Heart className="w-4 h-4 text-rose-500" />
-                PLAYER DEVELOPMENT
-              </h3>
-              <div className="grid grid-cols-2 gap-3.5 pt-1">
-                {devMetrics.map((m) => {
-                  const rating = parseFloat(m.val);
-                  const colorClass = rating >= 8 ? "text-green-500" : rating >= 6 ? "text-orange-500" : "text-red-500";
-                  const barColor = rating >= 8 ? "bg-green-500" : rating >= 6 ? "bg-orange-500" : "bg-red-500";
-                  return (
-                    <div key={m.name} className="bg-zinc-900/30 p-3.5 rounded-2xl border border-zinc-900 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-bold text-zinc-550 uppercase tracking-wider">{m.name}</span>
-                        <span className={`text-xs font-bold font-mono ${colorClass}`}>{m.val}/10</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${barColor} rounded-full`} 
-                          style={{ width: `${rating * 10}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* SECTION 7 – ASSESSMENT HISTORY */}
             <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
               <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
