@@ -1597,43 +1597,6 @@ export default function PlayersPage() {
                     />
                   </div>
                 </div>
-
-                {/* Development Goal Card */}
-                <div className="space-y-1.5">
-                  <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest block pl-1">PLAYER DEVELOPMENT GOAL</span>
-                  {isEditingGoal ? (
-                    <div className="space-y-2 text-left">
-                      <textarea
-                        value={tempTargetGoal}
-                        onChange={(e) => setTempTargetGoal(e.target.value)}
-                        className="w-full bg-black border-2 border-zinc-850 rounded-xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:border-orange-500 resize-none h-16"
-                        placeholder="e.g. Consistently rotate strike in A-grade nets..."
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleSaveTargetGoal}
-                          className="px-3.5 py-1.5 bg-orange-500 hover:bg-orange-655 text-black rounded-lg text-xs font-bold uppercase cursor-pointer"
-                        >
-                          SAVE
-                        </button>
-                        <button
-                          onClick={() => setIsEditingGoal(false)}
-                          className="px-3.5 py-1.5 bg-zinc-900 border border-zinc-855 hover:bg-zinc-800 text-zinc-400 rounded-lg text-xs font-bold uppercase cursor-pointer"
-                        >
-                          CANCEL
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div 
-                      onClick={() => { setTempTargetGoal(targetGoal); setIsEditingGoal(true); }}
-                      className="cursor-pointer group bg-zinc-900/30 p-4 rounded-2xl border border-zinc-900 hover:border-zinc-800 transition-all flex items-center justify-between text-sm font-bold text-zinc-300"
-                    >
-                      <span className="text-white text-left uppercase tracking-tight leading-relaxed">{targetGoal}</span>
-                      <Edit2 className="w-4 h-4 text-zinc-500 group-hover:text-orange-500 transition-colors shrink-0 ml-3" />
-                    </div>
-                  )}
-                </div>
               </div>
             </div>
 
