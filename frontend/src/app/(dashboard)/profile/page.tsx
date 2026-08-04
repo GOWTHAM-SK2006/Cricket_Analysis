@@ -62,19 +62,19 @@ export default function ProfilePage() {
       
       <div className="space-y-2">
         <h1 className="text-zinc-500 font-black tracking-widest text-xs uppercase">USER DETAILS</h1>
-        <h2 className="text-3xl font-black text-white uppercase tracking-tight">MY PROFILE</h2>
+        <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">MY PROFILE</h2>
       </div>
 
       {profile && (
         <div className="space-y-6">
           
           {/* Avatar and Primary Details */}
-          <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-6 space-y-4">
-            <div className="w-20 h-20 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-orange-500">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-4">
+            <div className="w-20 h-20 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-orange-500">
               <User className="w-10 h-10 stroke-[2.5]" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tight leading-none">
+              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight leading-none">
                 {profile.name}
               </h3>
               <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest">
@@ -84,14 +84,14 @@ export default function ProfilePage() {
           </div>
 
           {/* Details & Settings Card */}
-          <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-4 text-left">
-            <div className="flex justify-between items-center py-2.5 border-b border-zinc-900">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4 text-left">
+            <div className="flex justify-between items-center py-2.5 border-b border-slate-200">
               <span className="text-xs font-black text-zinc-500 uppercase tracking-widest">EMAIL ADDRESS</span>
-              <span className="text-sm font-bold text-white uppercase tracking-tight">{profile.email}</span>
+              <span className="text-sm font-bold text-slate-900 uppercase tracking-tight">{profile.email}</span>
             </div>
 
             {/* Theme Selection */}
-            <div className="space-y-2 py-2.5 border-b border-zinc-900">
+            <div className="space-y-2 py-2.5 border-b border-slate-200">
               <span className="text-xs font-black text-zinc-500 uppercase tracking-widest block">THEME SELECTION</span>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <button
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
                     theme === "light"
                       ? "bg-white text-black border-white shadow-md"
-                      : "bg-zinc-950 text-zinc-400 border-zinc-900 hover:text-white"
+                      : "bg-slate-100 text-slate-500 border-slate-200 hover:text-slate-900"
                   }`}
                 >
                   <Sun className="w-4 h-4" />
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
                     theme === "dark"
                       ? "bg-white text-black border-white shadow-md"
-                      : "bg-zinc-950 text-zinc-400 border-zinc-900 hover:text-white"
+                      : "bg-slate-100 text-slate-500 border-slate-200 hover:text-slate-900"
                   }`}
                 >
                   <Moon className="w-4 h-4" />
@@ -134,7 +134,7 @@ export default function ProfilePage() {
             {/* Help Link */}
             <Link
               href="/help"
-              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase border-t border-zinc-900"
+              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase border-t border-slate-200"
             >
               <span className="flex items-center gap-2">
                 <HelpCircle className="w-5 h-5" />
@@ -146,7 +146,7 @@ export default function ProfilePage() {
             {/* Terms Link */}
             <Link
               href="/terms"
-              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase border-t border-zinc-900"
+              className="flex items-center justify-between py-3 text-orange-500 hover:text-orange-400 transition-colors font-black text-sm uppercase border-t border-slate-200"
             >
               <span className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />

@@ -297,7 +297,7 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
         top: `${y}px`,
         width: `${width}px`,
         height: `${height}px`,
-        boxShadow: "0 0 0 9999px rgba(0,0,0,0.82)",
+        boxShadow: "0 0 0 9999px rgba(255,255,255,0.85)",
         borderRadius: "24px",
         transition: "all 420ms cubic-bezier(0.16,1,0.3,1)",
         pointerEvents: "none",
@@ -309,7 +309,7 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
         top: "50%",
         width: "0px",
         height: "0px",
-        boxShadow: "0 0 0 9999px rgba(0,0,0,0.82)",
+        boxShadow: "0 0 0 9999px rgba(255,255,255,0.85)",
         borderRadius: "0px",
         transition: "all 420ms cubic-bezier(0.16,1,0.3,1)",
         pointerEvents: "none",
@@ -382,13 +382,13 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
       {/* Tour Card */}
       <div
         key={`step-${currentStep}`}
-        className={`bg-zinc-950/90 backdrop-blur-xl border border-zinc-800/80 rounded-3xl p-6 shadow-[0_0_50px_-12px_rgba(249,115,22,0.3)] pointer-events-auto flex flex-col text-left z-[1000] ${
+        className={`bg-white border border-slate-200 rounded-3xl p-6 shadow-[0_0_50px_-12px_rgba(249,115,22,0.2)] pointer-events-auto flex flex-col text-left z-[1000] ${
           highlightRect ? "tour-card-positioned" : "tour-modal-center"
         }`}
         style={getCardStyle()}
       >
         {/* Progress Bar */}
-        <div className="w-full bg-zinc-900/60 h-1.5 rounded-full overflow-hidden mb-4">
+        <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-4">
           <div
             className="bg-gradient-to-r from-orange-500 to-amber-400 h-full rounded-full transition-all duration-500 ease-out"
             style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
@@ -403,7 +403,7 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
           {currentStep < steps.length - 1 && (
             <button
               onClick={handleComplete}
-              className="text-[10px] font-black text-zinc-500 hover:text-white uppercase tracking-wider transition-colors cursor-pointer"
+              className="text-[10px] font-black text-slate-400 hover:text-slate-700 uppercase tracking-wider transition-colors cursor-pointer"
             >
               Skip
             </button>
@@ -412,26 +412,26 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
 
         {/* Icon + Title + Description */}
         <div className="flex gap-4 items-start mb-6">
-          <div className="p-3 bg-zinc-900/80 border border-zinc-800/50 rounded-2xl shrink-0">
+          <div className="p-3 bg-slate-100 border border-slate-200 rounded-2xl shrink-0">
             {getStepIcon(currentStepData.iconName)}
           </div>
           <div className="space-y-1.5">
-            <h3 className="text-lg font-black text-white uppercase tracking-tight leading-tight">
+            <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight leading-tight">
               {currentStepData.title}
             </h3>
-            <p className="text-[12.5px] font-semibold text-zinc-400 leading-relaxed">
+            <p className="text-[12.5px] font-semibold text-slate-500 leading-relaxed">
               {currentStepData.description}
             </p>
           </div>
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center pt-3 border-t border-zinc-900/80">
+        <div className="flex justify-between items-center pt-3 border-t border-slate-200">
           <div>
             {currentStep > 0 && (
               <button
                 onClick={handlePrev}
-                className="text-xs font-black text-zinc-400 hover:text-white uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors active:scale-95"
+                className="text-xs font-black text-slate-400 hover:text-slate-700 uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors active:scale-95"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Back

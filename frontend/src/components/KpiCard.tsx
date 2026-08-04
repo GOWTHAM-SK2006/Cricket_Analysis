@@ -27,7 +27,7 @@ export default function KpiCard({
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 flex flex-col justify-between h-36 relative overflow-hidden transition-all duration-300 ${glowStyle} select-none`}
+      className={`bg-white border-2 border-slate-200 rounded-3xl p-5 flex flex-col justify-between h-36 relative overflow-hidden transition-all duration-300 ${glowStyle} select-none`}
     >
       {/* Decorative background glow node */}
       <div className="absolute -top-6 -right-6 w-20 h-20 bg-orange-500/5 blur-2xl rounded-full pointer-events-none" />
@@ -37,17 +37,17 @@ export default function KpiCard({
           <span className="text-[10px] font-black tracking-widest text-zinc-500 uppercase block">
             {title}
           </span>
-          <span className="text-3xl font-black text-white tracking-tight uppercase">
+          <span className="text-3xl font-black text-slate-900 tracking-tight uppercase">
             {value}
           </span>
         </div>
 
-        <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-orange-500">
+        <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-orange-500">
           <Icon className="w-5 h-5" />
         </div>
       </div>
 
-      <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mt-2">
+      <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-2">
         {subtitle}
       </div>
     </motion.div>

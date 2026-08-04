@@ -765,9 +765,9 @@ export default function PlayersPage() {
       
       {/* ------------------ SUCCESS ANIMATION OVERLAY ------------------ */}
       {showSuccessOverlay && (
-        <div className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center space-y-4 animate-fade-in">
+        <div className="fixed inset-0 bg-white/90 z-[100] flex flex-col items-center justify-center space-y-4 animate-fade-in">
           <CheckCircle2 className="w-20 h-20 text-orange-500 stroke-[2] animate-bounce" />
-          <h2 className="text-3xl font-bold text-white uppercase tracking-tight">{successMessage}</h2>
+          <h2 className="text-3xl font-bold text-slate-900 uppercase tracking-tight">{successMessage}</h2>
         </div>
       )}
 
@@ -785,7 +785,7 @@ export default function PlayersPage() {
                   placeholder="SEARCH PLAYERS..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-14 bg-zinc-950 border-2 border-zinc-900 rounded-2xl pl-12 pr-4 text-base font-bold text-white placeholder-zinc-650 focus:outline-none focus:border-orange-500 transition-colors uppercase"
+                  className="w-full h-14 bg-white border-2 border-slate-200 rounded-2xl pl-12 pr-4 text-base font-bold text-slate-900 placeholder-zinc-650 focus:outline-none focus:border-orange-500 transition-colors uppercase"
                 />
               </div>
 
@@ -795,7 +795,7 @@ export default function PlayersPage() {
                 className={`h-14 w-14 rounded-2xl flex items-center justify-center border shrink-0 cursor-pointer transition-all active:scale-95 ${
                   sortBy !== "highest_cpi" || quickFilter !== "all" || roleFilter !== "all"
                     ? "bg-orange-500 text-black border-orange-400"
-                    : "bg-zinc-950 border-2 border-zinc-900 text-zinc-400 hover:text-white"
+                    : "bg-white border-2 border-slate-200 text-zinc-400 hover:text-slate-900"
                 }`}
                 title="Filter Squad"
               >
@@ -850,7 +850,7 @@ export default function PlayersPage() {
                     setQuickFilter("all");
                     setRoleFilter("all");
                   }}
-                  className="text-xs font-bold text-zinc-500 hover:text-white uppercase tracking-wider pl-1 cursor-pointer"
+                  className="text-xs font-bold text-zinc-500 hover:text-slate-900 uppercase tracking-wider pl-1 cursor-pointer"
                 >
                   Clear All
                 </button>
@@ -860,12 +860,12 @@ export default function PlayersPage() {
 
           {/* Add Player Form (Clean inline card) */}
           {showAddForm && (
-            <div className="border-2 border-orange-500 bg-zinc-950 rounded-3xl p-6 space-y-5">
-              <div className="flex justify-between items-center pb-2 border-b border-zinc-900">
-                <h3 className="text-xl font-bold text-white uppercase tracking-wider">ADD NEW PLAYER</h3>
+            <div className="border-2 border-orange-500 bg-white rounded-3xl p-6 space-y-5">
+              <div className="flex justify-between items-center pb-2 border-b border-slate-200">
+                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wider">ADD NEW PLAYER</h3>
                 <button 
                   onClick={() => { setShowAddForm(false); router.replace("/players"); }}
-                  className="p-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400"
+                  className="p-1 rounded bg-slate-100 hover:bg-slate-100 text-zinc-400"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -884,7 +884,7 @@ export default function PlayersPage() {
                   <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-24 h-24 rounded-3xl bg-zinc-900 border-2 border-zinc-850 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
+                    className="w-24 h-24 rounded-3xl bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
                   >
                     {newPlayer.photo ? (
                       <img src={newPlayer.photo} alt="Preview" className="w-full h-full object-cover" />
@@ -911,7 +911,7 @@ export default function PlayersPage() {
                     required
                     value={newPlayer.name}
                     onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
-                    className="w-full bg-black border-2 border-zinc-800 rounded-xl px-4 py-3.5 text-base text-white font-semibold focus:outline-none focus:border-orange-500"
+                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
                     placeholder="Enter player full name"
                   />
                 </div>
@@ -924,7 +924,7 @@ export default function PlayersPage() {
                       required
                       value={newPlayer.age}
                       onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
-                      className="w-full bg-black border-2 border-zinc-800 rounded-xl px-4 py-3.5 text-base text-white font-semibold focus:outline-none focus:border-orange-500"
+                      className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
                       placeholder="e.g. 16"
                     />
                   </div>
@@ -933,7 +933,7 @@ export default function PlayersPage() {
                     <select
                       value={newPlayer.role}
                       onChange={(e) => setNewPlayer({ ...newPlayer, role: e.target.value })}
-                      className="w-full h-[52px] bg-black border-2 border-zinc-800 rounded-xl px-3 py-2 text-base text-white font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                      className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
                     >
                       <option value="Batsman">Batsman</option>
                       <option value="Bowler">Bowler</option>
@@ -961,7 +961,7 @@ export default function PlayersPage() {
               <p className="text-zinc-500 font-bold uppercase tracking-wider text-xs">Loading Squad...</p>
             </div>
           ) : sortedPlayers.length === 0 ? (
-            <div className="text-center py-16 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-zinc-900 rounded-3xl">
+            <div className="text-center py-16 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-slate-200 rounded-3xl">
               No players found
             </div>
           ) : (
@@ -989,11 +989,11 @@ export default function PlayersPage() {
                   <div
                     key={player.id}
                     onClick={() => handleSelectPlayer(player)}
-                    className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 flex items-center justify-between hover:border-zinc-800 transition-all active:scale-[0.99] cursor-pointer"
+                    className="bg-white border-2 border-slate-200 rounded-3xl p-5 flex items-center justify-between hover:border-slate-200 transition-all active:scale-[0.99] cursor-pointer"
                   >
                     <div className="flex items-center gap-4 min-w-0">
                       {/* Photo or Initials Avatar */}
-                      <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 overflow-hidden relative">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 overflow-hidden relative">
                         {cachedPhoto ? (
                           <img src={cachedPhoto} alt={player.name} className="w-full h-full object-cover" />
                         ) : (
@@ -1002,7 +1002,7 @@ export default function PlayersPage() {
                       </div>
                       
                       <div className="min-w-0 text-left space-y-0.5">
-                        <h4 className="text-xl font-bold text-white truncate uppercase tracking-tight leading-none">{player.name}</h4>
+                        <h4 className="text-xl font-bold text-slate-900 truncate uppercase tracking-tight leading-none">{player.name}</h4>
                         <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest truncate">{player.role}</p>
                         <p className="text-sm font-semibold text-zinc-400 uppercase tracking-tight">Last: {assessDate}</p>
                       </div>
@@ -1299,7 +1299,7 @@ export default function PlayersPage() {
               <div className="flex items-center gap-3 text-left">
                 <button
                   onClick={() => { setView("list"); router.replace("/players"); }}
-                  className="h-11 px-4 bg-zinc-955 bg-zinc-950 border-2 border-zinc-900 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-white cursor-pointer"
+                  className="h-11 px-4 bg-white bg-white border-2 border-slate-200 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-slate-900 cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4 stroke-[3]" />
                   BACK TO LIST
@@ -1308,18 +1308,18 @@ export default function PlayersPage() {
             )}
 
             {/* SECTION 1 – PLAYER HEADER */}
-            <div className="bg-zinc-955 bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-6 space-y-4 text-center">
+            <div className="bg-white bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-4 text-center">
               <div 
                 onClick={() => profilePhotoInputRef.current?.click()}
-                className="w-28 h-28 rounded-3xl bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center mx-auto overflow-hidden relative cursor-pointer group hover:border-orange-500"
+                className="w-28 h-28 rounded-3xl bg-slate-100 border-2 border-slate-200 flex items-center justify-center mx-auto overflow-hidden relative cursor-pointer group hover:border-orange-500"
               >
                 {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
                   <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-4xl font-bold text-orange-500">{getInitials(selectedPlayer.name)}</span>
                 )}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                  <Camera className="w-6 h-6 text-white" />
+                <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <Camera className="w-6 h-6 text-slate-900" />
                 </div>
               </div>
               
@@ -1332,7 +1332,7 @@ export default function PlayersPage() {
               />
 
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-white uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
+                <h2 className="text-3xl font-bold text-slate-900 uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
                 <p className="text-xs font-bold text-zinc-550 uppercase tracking-widest">{selectedPlayer.role}</p>
                 <div className="text-sm text-zinc-400 font-semibold uppercase mt-1">
                   Age: {((selectedPlayer.id % 5) + 19)} • Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
@@ -1411,10 +1411,10 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 2 – CURRENT STATUS */}
-            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 1</span>
-                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
+                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500" />
                   CURRENT STATUS
                 </h3>
@@ -1428,19 +1428,19 @@ export default function PlayersPage() {
                     {formatScoreValue(currentCpi)}
                   </p>
                 </div>
-                <div className="bg-zinc-900/40 p-4 rounded-2xl border border-zinc-900">
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <p className="text-xs font-bold text-zinc-550 uppercase tracking-wider mb-1">
                     Current PPI
                   </p>
-                  <p className="text-3xl font-bold text-white font-mono leading-none">
+                  <p className="text-3xl font-bold text-slate-900 font-mono leading-none">
                     {formatScoreValue(currentPpi)}
                   </p>
                 </div>
-                <div className="bg-zinc-900/40 p-4 rounded-2xl border border-zinc-900">
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <p className="text-xs font-bold text-zinc-550 uppercase tracking-wider mb-1">
                     Current MPI
                   </p>
-                  <p className="text-3xl font-bold text-white font-mono leading-none">
+                  <p className="text-3xl font-bold text-slate-900 font-mono leading-none">
                     {formatScoreValue(currentMpi)}
                   </p>
                 </div>
@@ -1448,10 +1448,10 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 3 – PROGRESS */}
-            <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
+            <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 2</span>
-                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
+                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-orange-500" />
                   PROGRESS
                 </h3>
@@ -1460,7 +1460,7 @@ export default function PlayersPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                 {/* Last 5 Practice */}
                 <div className="space-y-2">
-                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-zinc-900 pb-1">
+                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-slate-200 pb-1">
                     Last 5 Practice Assessments
                   </span>
                   {last5Prac.length === 0 ? (
@@ -1471,12 +1471,12 @@ export default function PlayersPage() {
                         const prevScore = idx > 0 ? last5Prac[idx - 1].ppiScore : null;
                         const currentScore = p.ppiScore;
                         return (
-                          <div key={p.id || idx} className="flex justify-between items-center text-xs font-bold bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
+                          <div key={p.id || idx} className="flex justify-between items-center text-xs font-bold bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200">
                             <span className="text-zinc-400 uppercase">
                               {new Date(p.date || p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                             </span>
                             <div className="flex items-center gap-1.5">
-                              <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850">
+                              <span className="text-sm font-black text-slate-900 font-mono bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                                 {formatScoreValue(currentScore)}
                               </span>
                               {prevScore !== null && currentScore !== null && (
@@ -1498,7 +1498,7 @@ export default function PlayersPage() {
 
                 {/* Last 5 Match */}
                 <div className="space-y-2">
-                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-zinc-900 pb-1">
+                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-slate-200 pb-1">
                     Last 5 Match Assessments
                   </span>
                   {last5Match.length === 0 ? (
@@ -1509,12 +1509,12 @@ export default function PlayersPage() {
                         const prevScore = idx > 0 ? last5Match[idx - 1].mpiScore : null;
                         const currentScore = m.mpiScore;
                         return (
-                          <div key={m.id || idx} className="flex justify-between items-center text-xs font-bold bg-zinc-900/30 px-3 py-2.5 rounded-xl border border-zinc-900">
+                          <div key={m.id || idx} className="flex justify-between items-center text-xs font-bold bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200">
                             <span className="text-zinc-400 uppercase">
                               {new Date(m.date || m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                             </span>
                             <div className="flex items-center gap-1.5">
-                              <span className="text-sm font-black text-white font-mono bg-zinc-900 px-2 py-0.5 rounded-lg border border-zinc-850">
+                              <span className="text-sm font-black text-slate-900 font-mono bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                                 {formatScoreValue(currentScore)}
                               </span>
                               {prevScore !== null && currentScore !== null && (
@@ -1537,10 +1537,10 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 4 – TARGETS (WHERE DO I WANT TO BE?) */}
-            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 3</span>
-                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
+                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Target className="w-4 h-4 text-orange-500" />
                   WHERE DO I WANT TO BE?
                 </h3>
@@ -1548,7 +1548,7 @@ export default function PlayersPage() {
               
               <div className="space-y-4 pt-1">
                 {/* Target CPI Editing Card */}
-                <div className="bg-zinc-900/30 p-4.5 rounded-2xl border border-zinc-900 flex justify-between items-center">
+                <div className="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 flex justify-between items-center">
                   <div>
                     <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block">TARGET CPI</span>
                     <span className="text-xs font-bold text-zinc-400 uppercase block mt-0.5">
@@ -1560,7 +1560,7 @@ export default function PlayersPage() {
                       <select
                         value={tempTargetCpi}
                         onChange={(e) => setTempTargetCpi(e.target.value)}
-                        className="bg-black border-2 border-zinc-800 rounded-xl px-2 py-1.5 font-mono font-bold text-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
+                        className="bg-white border-2 border-slate-200 rounded-xl px-2 py-1.5 font-mono font-bold text-slate-900 text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
                         {[70, 75, 80, 85, 90, 95, 100].map((v) => (
                           <option key={v} value={v}>{v}</option>
@@ -1576,7 +1576,7 @@ export default function PlayersPage() {
                   ) : (
                     <div 
                       onClick={() => { setTempTargetCpi(targetCpi.toString()); setIsEditingTarget(true); }}
-                      className="cursor-pointer group flex items-center gap-1.5 bg-zinc-900 px-3.5 py-2 rounded-xl border border-zinc-800 hover:border-orange-500 transition-all"
+                      className="cursor-pointer group flex items-center gap-1.5 bg-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 hover:border-orange-500 transition-all"
                     >
                       <span className="text-xl font-bold text-orange-500 font-mono">{targetCpi}</span>
                       <Edit2 className="w-3.5 h-3.5 text-zinc-500 group-hover:text-orange-500 transition-colors" />
@@ -1590,7 +1590,7 @@ export default function PlayersPage() {
                     <span>Progress to Target</span>
                     <span className="font-mono text-orange-500">{targetPercent}%</span>
                   </div>
-                  <div className="w-full h-3.5 bg-zinc-900 border border-zinc-850 rounded-full overflow-hidden p-0.5">
+                  <div className="w-full h-3.5 bg-slate-100 border border-slate-200 rounded-full overflow-hidden p-0.5">
                     <div 
                       className="h-full bg-orange-500 rounded-full transition-all duration-500" 
                       style={{ width: `${targetPercent}%` }} 
@@ -1601,25 +1601,25 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 5 – WHAT DO I NEED TO WORK ON? */}
-            <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-zinc-900 pb-2">
+            <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
                 <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 4</span>
-                <h3 className="text-sm font-bold tracking-wider text-white uppercase flex items-center gap-2">
+                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
                   WHAT DO I NEED TO WORK ON?
                 </h3>
               </div>
               
               <div className="space-y-3 pt-1">
-                <div className="flex justify-between items-center bg-zinc-900/30 p-3 rounded-xl border border-zinc-900">
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                   <span className="text-sm font-bold text-zinc-500 uppercase">Strongest Area</span>
                   <span className="text-xs font-bold text-green-500 uppercase">{strongestArea}</span>
                 </div>
-                <div className="flex justify-between items-center bg-zinc-900/30 p-3 rounded-xl border border-zinc-900">
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                   <span className="text-sm font-bold text-zinc-500 uppercase">Needs Improvement</span>
                   <span className="text-xs font-bold text-orange-500 uppercase">{needsImprovement}</span>
                 </div>
-                <div className="flex justify-between items-center bg-zinc-900/30 p-3 rounded-xl border border-zinc-900">
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                   <span className="text-sm font-bold text-zinc-500 uppercase">Weakest Area</span>
                   <span className="text-xs font-bold text-red-550 text-red-500 uppercase">{weakestArea}</span>
                 </div>
@@ -1627,8 +1627,8 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 5 – RECOMMENDED FOCUS */}
-            <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <h3 className="text-xs font-black tracking-widest text-white uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+              <h3 className="text-xs font-black tracking-widest text-slate-900 uppercase border-b border-slate-200 pb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-orange-500" />
                 RECOMMENDED FOCUS
               </h3>
@@ -1636,14 +1636,14 @@ export default function PlayersPage() {
                 {focusAreas.map((focus, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl border border-zinc-800 bg-zinc-900/60 overflow-hidden transition-all duration-300 cursor-pointer"
+                    className="rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden transition-all duration-300 cursor-pointer"
                     onClick={() => setExpandedFocus(expandedFocus === idx ? null : idx)}
                   >
                     <div className="flex items-center gap-3 p-3.5">
                       <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
                         {idx + 1}
                       </span>
-                      <span className="text-xs font-black text-white flex-1">{focus.title}</span>
+                      <span className="text-xs font-black text-slate-900 flex-1">{focus.title}</span>
                       <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
                     </div>
                     <div
@@ -1651,7 +1651,7 @@ export default function PlayersPage() {
                         expandedFocus === idx ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
                       }`}
                     >
-                      <div className="px-5 pb-5 pt-3 border-t border-zinc-800/60 space-y-2">
+                      <div className="px-5 pb-5 pt-3 border-t border-slate-100 space-y-2">
                         <p className="text-[11px] font-semibold text-zinc-400 leading-[1.7] whitespace-pre-line">
                           {focus.detail}
                         </p>
@@ -1663,8 +1663,8 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 7 – ASSESSMENT HISTORY */}
-            <div className="bg-zinc-955 bg-zinc-950 border border-zinc-900 rounded-3xl p-5.5 space-y-4 text-left">
-              <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-zinc-900 pb-2 flex items-center gap-2">
+            <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+              <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-slate-200 pb-2 flex items-center gap-2">
                 <Brain className="w-4 h-4 text-orange-500" />
                 ASSESSMENT HISTORY
               </h3>
@@ -1672,7 +1672,7 @@ export default function PlayersPage() {
               <div className="space-y-4 pt-1">
                 {/* Practice History scroll area */}
                 <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-zinc-900 pb-1">
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
                     Practice History
                   </span>
                   {practiceHistory.length === 0 ? (
@@ -1680,9 +1680,9 @@ export default function PlayersPage() {
                   ) : (
                     <div className="max-h-[160px] overflow-y-auto space-y-1.5 pr-1">
                       {practiceHistory.map((p, idx) => (
-                        <div key={p.id || idx} className="bg-zinc-900/30 p-2.5 rounded-xl border border-zinc-900/80 flex justify-between items-center text-xs">
+                        <div key={p.id || idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                           <div>
-                            <span className="font-bold text-white block">Practice Assessment</span>
+                            <span className="font-bold text-slate-900 block">Practice Assessment</span>
                             <span className="text-xs text-zinc-550">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
                           </div>
                           <span className="font-bold text-orange-500 font-mono text-sm">PPI {formatScoreValue(p.ppiScore)}</span>
@@ -1694,7 +1694,7 @@ export default function PlayersPage() {
 
                 {/* Match History scroll area */}
                 <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-zinc-900 pb-1">
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
                     Match History
                   </span>
                   {matchHistory.length === 0 ? (
@@ -1702,9 +1702,9 @@ export default function PlayersPage() {
                   ) : (
                     <div className="max-h-[160px] overflow-y-auto space-y-1.5 pr-1">
                       {matchHistory.map((m, idx) => (
-                        <div key={m.id || idx} className="bg-zinc-900/30 p-2.5 rounded-xl border border-zinc-900/80 flex justify-between items-center text-xs">
+                        <div key={m.id || idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                           <div>
-                            <span className="font-bold text-white block">Match Assessment</span>
+                            <span className="font-bold text-slate-900 block">Match Assessment</span>
                             <span className="text-xs text-zinc-550">{new Date(m.date || m.createdAt).toLocaleDateString()}</span>
                           </div>
                           <span className="font-bold text-orange-500 font-mono text-sm">MPI {formatScoreValue(m.mpiScore)}</span>
@@ -1722,10 +1722,10 @@ export default function PlayersPage() {
 
       {/* ------------------ OVERLAY: PRACTICE ASSESSMENT ------------------ */}
       {showPracticeOverlay && selectedPlayer && (
-        <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
-          <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
+        <div className="fixed inset-0 bg-white z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-2">
-              <h3 className="text-xl font-bold uppercase tracking-wider text-white">PRACTICE GRADES</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">PRACTICE GRADES</h3>
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Player:</span>
                 <div className="relative inline-block">
@@ -1750,10 +1750,10 @@ export default function PlayersPage() {
                         window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
                       }
                     }}
-                    className="appearance-none bg-zinc-950 border border-zinc-800 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
+                    className="appearance-none bg-white border border-slate-200 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
                   >
                     {players.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-black text-white font-bold font-mono">
+                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-mono">
                         {p.name}
                       </option>
                     ))}
@@ -1766,7 +1766,7 @@ export default function PlayersPage() {
                 </div>
               </div>
             </div>
-            <button onClick={() => setShowPracticeOverlay(false)} className="text-zinc-500 hover:text-white p-1">
+            <button onClick={() => setShowPracticeOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
             </button>
           </div>
@@ -1787,10 +1787,10 @@ export default function PlayersPage() {
               { label: "FOCUS", key: "focus", desc: "Mental focus, engagement, and attention to detail" },
               { label: "RESILIENCE", key: "resilience", desc: "Bouncing back from mistakes, mental toughness, and adaptability" }
             ].map((metric) => (
-              <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
+              <div key={metric.key} className="space-y-2 bg-white p-4 border border-slate-200 rounded-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <label className="text-sm font-bold tracking-widest text-white uppercase">{metric.label}</label>
+                    <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                     <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
                   <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(practiceForm as any)[metric.key]}/10</span>
@@ -1801,7 +1801,7 @@ export default function PlayersPage() {
                   max="10"
                   value={(practiceForm as any)[metric.key]}
                   onChange={(e) => setPracticeForm({ ...practiceForm, [metric.key]: parseInt(e.target.value) })}
-                  className="w-full h-3 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                  className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
                 />
               </div>
             ))}
@@ -1811,7 +1811,7 @@ export default function PlayersPage() {
               <textarea
                 value={practiceForm.notes}
                 onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
-                className="w-full bg-zinc-950 border-2 border-zinc-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-orange-500 resize-none h-20"
+                className="w-full bg-white border-2 border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:border-orange-500 resize-none h-20"
                 placeholder="Optional coach remarks..."
               />
             </div>
@@ -1829,10 +1829,10 @@ export default function PlayersPage() {
 
       {/* ------------------ OVERLAY: MATCH ASSESSMENT ------------------ */}
       {showMatchOverlay && selectedPlayer && (
-        <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
-          <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
+        <div className="fixed inset-0 bg-white z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-2">
-              <h3 className="text-xl font-bold uppercase tracking-wider text-white">MATCH GRADES</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">MATCH GRADES</h3>
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Player:</span>
                 <div className="relative inline-block">
@@ -1857,10 +1857,10 @@ export default function PlayersPage() {
                         window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
                       }
                     }}
-                    className="appearance-none bg-zinc-950 border border-zinc-800 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
+                    className="appearance-none bg-white border border-slate-200 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
                   >
                     {players.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-black text-white font-bold font-mono">
+                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-mono">
                         {p.name}
                       </option>
                     ))}
@@ -1873,7 +1873,7 @@ export default function PlayersPage() {
                 </div>
               </div>
             </div>
-            <button onClick={() => setShowMatchOverlay(false)} className="text-zinc-500 hover:text-white p-1">
+            <button onClick={() => setShowMatchOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
             </button>
           </div>
@@ -1894,10 +1894,10 @@ export default function PlayersPage() {
               { label: "FOCUS", key: "focus", desc: "Focus under pressure, game situation awareness, and composure" },
               { label: "RESILIENCE", key: "resilience", desc: "Pressure handling, fighting spirit, and overcoming set-backs" }
             ].map((metric) => (
-              <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
+              <div key={metric.key} className="space-y-2 bg-white p-4 border border-slate-200 rounded-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <label className="text-sm font-bold tracking-widest text-white uppercase">{metric.label}</label>
+                    <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                     <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
                   <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(matchForm as any)[metric.key]}/10</span>
@@ -1908,7 +1908,7 @@ export default function PlayersPage() {
                   max="10"
                   value={(matchForm as any)[metric.key]}
                   onChange={(e) => setMatchForm({ ...matchForm, [metric.key]: parseInt(e.target.value) })}
-                  className="w-full h-3 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                  className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
                 />
               </div>
             ))}
@@ -1918,7 +1918,7 @@ export default function PlayersPage() {
               <textarea
                 value={matchForm.notes}
                 onChange={(e) => setMatchForm({ ...matchForm, notes: e.target.value })}
-                className="w-full bg-zinc-950 border-2 border-zinc-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-orange-500 resize-none h-20"
+                className="w-full bg-white border-2 border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:border-orange-500 resize-none h-20"
                 placeholder="Optional match details..."
               />
             </div>
@@ -1936,13 +1936,13 @@ export default function PlayersPage() {
 
       {/* ------------------ OVERLAY: SELF ASSESSMENT ------------------ */}
       {showSelfOverlay && selectedPlayer && (
-        <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
-          <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
+        <div className="fixed inset-0 bg-white z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-1">
-              <h3 className="text-xl font-bold uppercase tracking-wider text-white">MY SELF GRADES</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">MY SELF GRADES</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
-            <button onClick={() => setShowSelfOverlay(false)} className="text-zinc-500 hover:text-white p-1">
+            <button onClick={() => setShowSelfOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
             </button>
           </div>
@@ -1956,10 +1956,10 @@ export default function PlayersPage() {
               { label: "MENTAL READINESS", key: "mental", desc: "Confidence and cognitive calmness" },
               { label: "FITNESS & PHYSICAL STRENGTH", key: "fitness", desc: "General stamina, muscle soreness, and power level" }
             ].map((metric) => (
-              <div key={metric.key} className="space-y-2 bg-zinc-950 p-4 border border-zinc-900 rounded-2xl">
+              <div key={metric.key} className="space-y-2 bg-white p-4 border border-slate-200 rounded-2xl">
                 <div className="flex justify-between items-start">
                   <div>
-                    <label className="text-sm font-bold tracking-widest text-white uppercase">{metric.label}</label>
+                    <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                     <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
                   <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(selfForm as any)[metric.key]}/10</span>
@@ -1970,7 +1970,7 @@ export default function PlayersPage() {
                   max="10"
                   value={(selfForm as any)[metric.key]}
                   onChange={(e) => setSelfForm({ ...selfForm, [metric.key]: parseInt(e.target.value) })}
-                  className="w-full h-3 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                  className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
                 />
               </div>
             ))}
@@ -1987,19 +1987,19 @@ export default function PlayersPage() {
 
       {/* ------------------ OVERLAY: ASSESSMENT HISTORY ------------------ */}
       {showHistoryOverlay && selectedPlayer && (
-        <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-12">
-          <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
+        <div className="fixed inset-0 bg-white z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-12">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-1">
-              <h3 className="text-xl font-bold uppercase tracking-wider text-white">PLAYER LOGS</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">PLAYER LOGS</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
-            <button onClick={() => setShowHistoryOverlay(false)} className="text-zinc-500 hover:text-white p-1">
+            <button onClick={() => setShowHistoryOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
             </button>
           </div>
 
           {/* CPI Trend */}
-          <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
             <h4 className="text-xs font-bold tracking-widest text-orange-500 uppercase">CPI RECENT TREND</h4>
             {[...practiceHistory, ...matchHistory].length === 0 ? (
               <p className="text-xs text-zinc-500 font-bold uppercase">No records logged yet.</p>
@@ -2012,9 +2012,9 @@ export default function PlayersPage() {
                   .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                   .slice(-6)
                   .map((s, idx) => (
-                    <div key={idx} className="flex-1 min-w-[70px] flex flex-col items-center bg-zinc-900 border border-zinc-850 rounded-xl py-3">
+                    <div key={idx} className="flex-1 min-w-[70px] flex flex-col items-center bg-slate-100 border border-slate-200 rounded-xl py-3">
                       <span className="text-sm font-bold text-zinc-500 uppercase tracking-widest">{s.type}</span>
-                      <span className="text-base font-bold text-white mt-1">{formatScoreValue(s.score)}</span>
+                      <span className="text-base font-bold text-slate-900 mt-1">{formatScoreValue(s.score)}</span>
                       <span className="text-[7px] font-semibold text-zinc-400 mt-0.5">{s.date.split("-").slice(1).join("/")}</span>
                     </div>
                   ))}
@@ -2030,10 +2030,10 @@ export default function PlayersPage() {
             ) : (
               <div className="space-y-3">
                 {practiceHistory.map((h, i) => (
-                  <div key={i} className="bg-zinc-950 border border-zinc-900 rounded-2xl p-4 flex justify-between items-center">
+                  <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
                     <div>
                       <div className="text-xs font-bold text-zinc-500">{h.date}</div>
-                      <div className="text-sm font-semibold text-white mt-1 italic">
+                      <div className="text-sm font-semibold text-slate-900 mt-1 italic">
                         {h.notes ? `"${h.notes}"` : "Practice Session"}
                       </div>
                     </div>
@@ -2047,17 +2047,17 @@ export default function PlayersPage() {
           </div>
 
           {/* Match History timeline */}
-          <div className="space-y-4 pt-4 border-t border-zinc-900">
+          <div className="space-y-4 pt-4 border-t border-slate-200">
             <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">MATCH ASSESSMENTS</h4>
             {matchHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No match logs</p>
             ) : (
               <div className="space-y-3">
                 {matchHistory.map((h, i) => (
-                  <div key={i} className="bg-zinc-950 border border-zinc-900 rounded-2xl p-4 flex justify-between items-center">
+                  <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
                     <div>
                       <div className="text-xs font-bold text-zinc-500">{h.date}</div>
-                      <div className="text-sm font-semibold text-white mt-1 italic">
+                      <div className="text-sm font-semibold text-slate-900 mt-1 italic">
                         {h.notes ? `"${h.notes}"` : "Match Session"}
                       </div>
                     </div>
@@ -2071,7 +2071,7 @@ export default function PlayersPage() {
           </div>
 
           {/* Self History timeline */}
-          <div className="space-y-4 pt-4 border-t border-zinc-900">
+          <div className="space-y-4 pt-4 border-t border-slate-200">
             <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">SELF ASSESSMENTS</h4>
             {selfHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No self-assess logs</p>
@@ -2080,7 +2080,7 @@ export default function PlayersPage() {
                 {selfHistory.map((h, i) => {
                   const avg = (h.sleep + h.nutrition + h.preparation + h.health + h.mental) / 5;
                   return (
-                    <div key={i} className="bg-zinc-950 border border-zinc-900 rounded-2xl p-4 flex justify-between items-center">
+                    <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
                       <div>
                         <div className="text-xs font-bold text-zinc-500">{h.date}</div>
                         <div className="text-xs font-semibold text-zinc-400 mt-1">
@@ -2101,24 +2101,24 @@ export default function PlayersPage() {
 
       {/* ------------------ OVERLAY: RECOMMENDATIONS ------------------ */}
       {showRecsOverlay && selectedPlayer && (
-        <div className="fixed inset-0 bg-black z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-12">
-          <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
+        <div className="fixed inset-0 bg-white z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-12">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-1">
-              <h3 className="text-xl font-bold uppercase tracking-wider text-white">COACH ADVICE</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">COACH ADVICE</h3>
               <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
             </div>
-            <button onClick={() => setShowRecsOverlay(false)} className="text-zinc-500 hover:text-white p-1">
+            <button onClick={() => setShowRecsOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
             </button>
           </div>
 
           <div className="space-y-4">
             {getRecommendations().map((rec, i) => (
-              <div key={i} className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-2">
+              <div key={i} className="bg-white border border-slate-200 rounded-3xl p-5 space-y-2">
                 <span className="text-sm font-bold tracking-widest text-orange-500 uppercase block">
                   {rec.type}
                 </span>
-                <p className="text-base font-bold text-white leading-relaxed">
+                <p className="text-base font-bold text-slate-900 leading-relaxed">
                   {rec.tip}
                 </p>
               </div>
@@ -2129,17 +2129,17 @@ export default function PlayersPage() {
 
       {/* ------------------ OVERLAY: FILTER & SORT ------------------ */}
       {showFilterOverlay && (
-        <div className="fixed inset-0 bg-black/80 z-[60] flex items-end justify-center animate-fade-in select-none">
-          <div className="bg-zinc-950 border-t-2 border-zinc-900 w-full max-w-lg rounded-t-[32px] p-6 space-y-6 pb-10 shadow-2xl animate-slide-up">
+        <div className="fixed inset-0 bg-white/80 z-[60] flex items-end justify-center animate-fade-in select-none">
+          <div className="bg-white border-t-2 border-slate-200 w-full max-w-lg rounded-t-[32px] p-6 space-y-6 pb-10 shadow-2xl animate-slide-up">
             
-            <div className="flex justify-between items-center pb-2 border-b border-zinc-900">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200">
               <div className="space-y-0.5">
-                <h3 className="text-xl font-bold text-white uppercase tracking-tight text-left">FILTER & SORT SQUAD</h3>
+                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight text-left">FILTER & SORT SQUAD</h3>
                 <p className="text-sm text-zinc-500 font-bold uppercase text-left">{sortedPlayers.length} players matched</p>
               </div>
               <button 
                 onClick={() => setShowFilterOverlay(false)} 
-                className="p-2 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-slate-100 text-zinc-400 hover:text-slate-900 transition-colors cursor-pointer"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -2165,7 +2165,7 @@ export default function PlayersPage() {
                     className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
                       sortBy === opt.val
                         ? "bg-white text-black border-white"
-                        : "bg-zinc-900 text-zinc-400 border-zinc-850 hover:border-zinc-700"
+                        : "bg-slate-100 text-zinc-400 border-slate-200 hover:border-zinc-700"
                     }`}
                   >
                     {opt.label}
@@ -2192,7 +2192,7 @@ export default function PlayersPage() {
                     className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
                       quickFilter === opt.val
                         ? "bg-orange-500 text-black border-orange-450"
-                        : "bg-zinc-900 text-zinc-400 border-zinc-850 hover:border-zinc-700"
+                        : "bg-slate-100 text-zinc-400 border-slate-200 hover:border-zinc-700"
                     }`}
                   >
                     {opt.label}
@@ -2219,7 +2219,7 @@ export default function PlayersPage() {
                     className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${
                       roleFilter === opt.val
                         ? "bg-orange-500 text-black border-orange-450"
-                        : "bg-zinc-900 text-zinc-400 border-zinc-850 hover:border-zinc-700"
+                        : "bg-slate-100 text-zinc-400 border-slate-200 hover:border-zinc-700"
                     }`}
                   >
                     {opt.label}

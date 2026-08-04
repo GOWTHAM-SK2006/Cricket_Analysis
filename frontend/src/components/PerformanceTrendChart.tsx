@@ -16,7 +16,7 @@ interface PerformanceTrendChartProps {
 export default function PerformanceTrendChart({ data }: PerformanceTrendChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-48 border border-zinc-900 bg-zinc-950/40 rounded-3xl p-6 text-zinc-500 font-bold uppercase text-xs tracking-wider">
+      <div className="flex flex-col items-center justify-center h-48 border border-slate-200 bg-white rounded-3xl p-6 text-slate-400 font-bold uppercase text-xs tracking-wider">
         No assessment data logged yet
       </div>
     );
@@ -65,12 +65,12 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
   const yGridLines = [2, 4, 6, 8, 10];
 
   return (
-    <div className="bg-zinc-950/60 border border-zinc-900 rounded-3xl p-5 shadow-2xl relative overflow-hidden select-none">
+    <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-md relative overflow-hidden select-none">
       {/* Subtle Glow Background Accent */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-orange-500/5 blur-[80px] rounded-full pointer-events-none" />
 
       <div className="flex items-center justify-between mb-4">
-        <h4 className="text-[10px] font-black tracking-widest text-zinc-400 uppercase">
+        <h4 className="text-[10px] font-black tracking-widest text-slate-500 uppercase">
           Performance Trends
         </h4>
         
@@ -78,15 +78,15 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
         <div className="flex items-center gap-3 text-[9px] font-black tracking-wider uppercase">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-0.5 bg-orange-500 rounded-full inline-block shadow-[0_0_8px_#f97316]" />
-            <span className="text-white">CPI</span>
+            <span className="text-slate-700">CPI</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-0.5 border-t border-dashed border-zinc-400 inline-block" />
-            <span className="text-zinc-400">PPI</span>
+            <span className="text-slate-500">PPI</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-0.5 bg-amber-500 inline-block" />
-            <span className="text-zinc-500">MPI</span>
+            <span className="text-slate-400">MPI</span>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   y1={y}
                   x2={width - paddingRight}
                   y2={y}
-                  stroke="#1f2937"
+                  stroke="#e2e8f0"
                   strokeWidth={0.8}
                   strokeDasharray="2 4"
                 />
@@ -149,7 +149,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
             y1={getY(0)}
             x2={width - paddingRight}
             y2={getY(0)}
-            stroke="#111827"
+            stroke="#e2e8f0"
             strokeWidth={1.5}
           />
 
@@ -230,7 +230,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   cx={x}
                   cy={yPpi}
                   r={3}
-                  fill="#111827"
+                  fill="#f1f5f9"
                   stroke="#9ca3af"
                   strokeWidth={1.5}
                 />
@@ -239,7 +239,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   cx={x}
                   cy={yMpi}
                   r={3}
-                  fill="#111827"
+                  fill="#f1f5f9"
                   stroke="#d97706"
                   strokeWidth={1.5}
                 />

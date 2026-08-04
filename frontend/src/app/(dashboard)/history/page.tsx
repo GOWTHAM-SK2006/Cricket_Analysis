@@ -105,7 +105,7 @@ export default function HistoryPage() {
 
   if (players.length === 0) {
     return (
-      <div className="text-center py-20 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-zinc-900 rounded-3xl">
+      <div className="text-center py-20 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-slate-200 rounded-3xl">
         No player history logs available.
       </div>
     );
@@ -130,7 +130,7 @@ export default function HistoryPage() {
       
       <div className="space-y-2 text-center">
         <h1 className="text-zinc-500 font-black tracking-widest text-xs uppercase">TIMELINE LOGS</h1>
-        <h2 className="text-3xl font-black text-white uppercase tracking-tight">PERFORMANCE HISTORY</h2>
+        <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">PERFORMANCE HISTORY</h2>
       </div>
 
       {/* Select Player (only for Coach role) */}
@@ -140,7 +140,7 @@ export default function HistoryPage() {
           <select
             value={selectedPlayerId || ""}
             onChange={(e) => handlePlayerChange(Number(e.target.value))}
-            className="w-full h-14 bg-zinc-950 border-2 border-zinc-900 rounded-2xl px-4 text-base text-white font-black uppercase cursor-pointer focus:outline-none focus:border-orange-500"
+            className="w-full h-14 bg-white border-2 border-slate-200 rounded-2xl px-4 text-base text-slate-900 font-black uppercase cursor-pointer focus:outline-none focus:border-orange-500"
           >
             {players.map((p) => (
               <option key={p.id} value={p.id}>
@@ -155,7 +155,7 @@ export default function HistoryPage() {
         <div className="space-y-6">
           
           {/* CPI Trend card */}
-          <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-4">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
             <h3 className="text-xs font-black tracking-widest text-orange-500 uppercase">CPI RECENT TREND</h3>
             {lastSessions.length === 0 ? (
               <p className="text-xs text-zinc-650 font-bold uppercase">No scoring trend logs recorded yet.</p>
@@ -168,9 +168,9 @@ export default function HistoryPage() {
                 </div>
                 <div className="flex items-center justify-between gap-2 pt-2">
                   {lastSessions.map((s, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center bg-zinc-900 border border-zinc-805 rounded-xl py-3 px-1">
+                    <div key={idx} className="flex-1 flex flex-col items-center bg-slate-100 border border-slate-200 rounded-xl py-3 px-1">
                       <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">{s.type === "Practice" ? "Prac" : "Match"}</span>
-                      <span className="text-lg font-black text-white mt-1">{formatScoreValue(s.score)}</span>
+                      <span className="text-lg font-black text-slate-900 mt-1">{formatScoreValue(s.score)}</span>
                     </div>
                   ))}
                 </div>
@@ -190,20 +190,20 @@ export default function HistoryPage() {
               <div className="space-y-3">
                 <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase block pl-1">PRACTICE TIMELINE</h4>
                 {practiceHistory.length === 0 ? (
-                  <div className="bg-zinc-950/20 border-2 border-dashed border-zinc-900 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
+                  <div className="bg-slate-50 border-2 border-dashed border-slate-200 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
                     No practice assessments recorded.
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {practiceHistory.map((item, idx) => (
-                      <div key={idx} className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between">
+                      <div key={idx} className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
                             <Clipboard className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="text-xs font-bold text-zinc-500">{item.date}</div>
-                            <div className="text-sm font-bold text-white truncate max-w-[180px] uppercase">
+                            <div className="text-sm font-bold text-slate-900 truncate max-w-[180px] uppercase">
                               {item.notes || "PRACTICE DRILLS"}
                             </div>
                           </div>
@@ -221,20 +221,20 @@ export default function HistoryPage() {
               <div className="space-y-3">
                 <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase block pl-1">MATCH PLAY TIMELINE</h4>
                 {matchHistory.length === 0 ? (
-                  <div className="bg-zinc-950/20 border-2 border-dashed border-zinc-900 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
+                  <div className="bg-slate-50 border-2 border-dashed border-slate-200 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
                     No match play assessments recorded.
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {matchHistory.map((item, idx) => (
-                      <div key={idx} className="bg-zinc-950 border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between">
+                      <div key={idx} className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
                             <ShieldCheck className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="text-xs font-bold text-zinc-500">{item.date}</div>
-                            <div className="text-sm font-bold text-white truncate max-w-[180px] uppercase">
+                            <div className="text-sm font-bold text-slate-900 truncate max-w-[180px] uppercase">
                               {item.notes || "MATCH SESSION"}
                             </div>
                           </div>

@@ -327,7 +327,7 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-left relative overflow-hidden rounded-3xl bg-zinc-950 border border-zinc-800 shadow-xl min-h-[140px] flex items-center"
+        className="text-left relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl min-h-[140px] flex items-center"
       >
         {/* Glowing Batsman Image Container */}
         <div className="absolute right-0 top-0 bottom-0 w-[60%] sm:w-[70%] pointer-events-none">
@@ -339,14 +339,14 @@ export default function DashboardPage() {
             priority
           />
           {/* Gradient overlay to fade the image into the background seamlessly on the left */}
-          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
 
         <div className="relative z-10 p-6 sm:px-8 w-full">
           <h2 className="text-[11px] font-bold tracking-widest text-orange-500 uppercase mb-1 drop-shadow-md">
             WELCOME BACK COACH
           </h2>
-          <h1 className="text-4xl sm:text-5xl font-black text-white uppercase tracking-tight leading-none flex items-center gap-2 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl font-black text-slate-900 uppercase tracking-tight leading-none flex items-center gap-2 drop-shadow-lg">
             {coachName || "GOWTHAM"}
             <span className="inline-block text-orange-600/80 drop-shadow-md">⚡</span>
           </h1>
@@ -369,20 +369,20 @@ export default function DashboardPage() {
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
-            className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <Users className="w-5 h-5 text-orange-500" />
             </div>
             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Total Players</span>
-            <span className="text-3.5xl font-black text-white block leading-none">{stats?.totalPlayers || 0}</span>
+            <span className="text-3.5xl font-black text-slate-900 block leading-none">{stats?.totalPlayers || 0}</span>
           </motion.div>
           
           {/* Card 2: Average CPI */}
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.4)", boxShadow: "0 10px 30px -10px rgba(249,115,22,0.1)" }}
-            className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-orange-500" />
@@ -397,13 +397,13 @@ export default function DashboardPage() {
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
-            className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-orange-500" />
             </div>
             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average PPI</span>
-            <span className="text-3.5xl font-black text-white block leading-none">
+            <span className="text-3.5xl font-black text-slate-900 block leading-none">
               {stats?.avgPpi ? formatScoreValue(stats.avgPpi) : "N/A"}
             </span>
           </motion.div>
@@ -412,13 +412,13 @@ export default function DashboardPage() {
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
-            className="bg-zinc-950 border border-zinc-900/80 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
           >
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <Trophy className="w-5 h-5 text-orange-500" />
             </div>
             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average MPI</span>
-            <span className="text-3.5xl font-black text-white block leading-none">
+            <span className="text-3.5xl font-black text-slate-900 block leading-none">
               {stats?.avgMpi ? formatScoreValue(stats.avgMpi) : "N/A"}
             </span>
           </motion.div>
@@ -464,10 +464,10 @@ export default function DashboardPage() {
               <MessageSquare className="w-3.5 h-3.5 text-orange-500" />
               LATEST COACH FEEDBACK
             </h3>
-            <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-5 space-y-4 shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-lg">
               {coachFeedback.length > 0 ? (
                 coachFeedback.map((feedbackStr, idx) => (
-                  <div key={idx} className="border-l-2 border-orange-500 pl-4 py-1 text-sm text-zinc-300 font-semibold leading-relaxed italic relative">
+                  <div key={idx} className="border-l-2 border-orange-500 pl-4 py-1 text-sm text-slate-700 font-semibold leading-relaxed italic relative">
                     <span className="absolute -left-2.5 top-0 text-3xl text-orange-500/20 font-serif leading-none">"</span>
                     {feedbackStr}
                   </div>
@@ -512,7 +512,7 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.01, translateY: -2, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)" }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?action=match")}
-              className="w-full bg-zinc-900 hover:bg-zinc-850 text-white rounded-2.5xl py-4.5 px-5 text-base font-black flex items-center justify-between border border-zinc-850 cursor-pointer uppercase tracking-tight transition-all duration-200"
+              className="w-full bg-white hover:bg-slate-50 text-slate-900 rounded-2.5xl py-4.5 px-5 text-base font-black flex items-center justify-between border border-slate-300 cursor-pointer uppercase tracking-tight transition-all duration-200"
             >
               <span className="flex items-center gap-3">
                 <Activity className="w-5.5 h-5.5 stroke-[2] text-orange-500" />
@@ -531,7 +531,7 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.01, translateY: -1, borderColor: "rgba(249, 115, 22, 0.4)" }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?add=true")}
-              className="w-full bg-zinc-950 border border-zinc-900 hover:border-zinc-850 text-white rounded-2.5xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 cursor-pointer uppercase transition-all duration-200"
+              className="w-full bg-white border border-slate-300 hover:border-orange-300 text-slate-900 rounded-2.5xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 cursor-pointer uppercase transition-all duration-200"
             >
               <Plus className="w-4.5 h-4.5 stroke-[3] text-orange-500" />
               Add Player
@@ -560,7 +560,7 @@ export default function DashboardPage() {
                 VIEW ALL <ChevronRight className="w-3 h-3" />
               </button>
             </div>
-            <div className="bg-zinc-950 border border-zinc-900/80 rounded-3.5xl divide-y divide-zinc-900/40 overflow-hidden shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-3.5xl divide-y divide-slate-100 overflow-hidden shadow-lg">
               {stats?.topPerformers && stats.topPerformers.length > 0 ? (
                 stats.topPerformers.map((p, idx) => {
                   const lastDate = lastAssessmentDates[p.name.toLowerCase()] || "No assessments";
@@ -570,14 +570,14 @@ export default function DashboardPage() {
                       key={idx}
                       whileHover={{ backgroundColor: "rgba(249, 115, 22, 0.03)", x: 4 }}
                       onClick={() => navigateToPlayer(p.name)}
-                      className="p-4 flex justify-between items-center cursor-pointer transition-colors active:bg-zinc-900/60"
+                      className="p-4 flex justify-between items-center cursor-pointer transition-colors active:bg-slate-50"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-500 font-black text-xs uppercase flex-shrink-0">
                           {initials}
                         </div>
                         <div className="space-y-0.5">
-                          <span className="text-base font-black text-white uppercase block tracking-tight">{p.name}</span>
+                          <span className="text-base font-black text-slate-900 uppercase block tracking-tight">{p.name}</span>
                           <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide block">
                             Last Assessed: {lastDate}
                           </span>
@@ -616,7 +616,7 @@ export default function DashboardPage() {
                 VIEW ALL <ChevronRight className="w-3 h-3" />
               </button>
             </div>
-            <div className="bg-zinc-950 border border-zinc-900/80 rounded-3.5xl divide-y divide-zinc-900/40 overflow-hidden shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-3.5xl divide-y divide-slate-100 overflow-hidden shadow-lg">
               {stats?.playersNeedingAttention && stats.playersNeedingAttention.length > 0 ? (
                 stats.playersNeedingAttention.map((p, idx) => {
                   const lastDate = lastAssessmentDates[p.name.toLowerCase()] || "No assessments";
@@ -626,14 +626,14 @@ export default function DashboardPage() {
                       key={idx}
                       whileHover={{ backgroundColor: "rgba(239, 68, 68, 0.03)", x: 4 }}
                       onClick={() => navigateToPlayer(p.name)}
-                      className="p-4 flex justify-between items-center cursor-pointer transition-colors active:bg-zinc-900/60"
+                      className="p-4 flex justify-between items-center cursor-pointer transition-colors active:bg-slate-50"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 font-black text-xs uppercase flex-shrink-0">
                           {initials}
                         </div>
                         <div className="space-y-0.5">
-                          <span className="text-base font-black text-white uppercase block tracking-tight">{p.name}</span>
+                          <span className="text-base font-black text-slate-900 uppercase block tracking-tight">{p.name}</span>
                           <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide block">
                             Last Assessed: {lastDate}
                           </span>
@@ -674,22 +674,22 @@ export default function DashboardPage() {
 
       {/* AI Chatbot Overlay Modal */}
       {showChatModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-zinc-950 border-2 border-zinc-800 rounded-3xl w-full max-w-lg h-[600px] flex flex-col overflow-hidden shadow-2xl">
+        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl w-full max-w-lg h-[600px] flex flex-col overflow-hidden shadow-2xl">
             {/* Modal Header */}
-            <div className="p-4 bg-zinc-900/80 border-b border-zinc-800 flex justify-between items-center">
+            <div className="p-4 bg-white border-b border-slate-200 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-500">
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-wider">AI CRICKET COACH</h3>
+                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">AI CRICKET COACH</h3>
                   <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Powered by OpenRouter AI</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowChatModal(false)}
-                className="text-zinc-400 hover:text-white p-1"
+                className="text-slate-400 hover:text-slate-700 p-1"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -706,7 +706,7 @@ export default function DashboardPage() {
                     className={`max-w-[85%] p-3.5 rounded-2xl text-xs leading-relaxed font-medium ${
                       msg.sender === "user"
                         ? "bg-orange-500 text-black font-bold rounded-tr-none"
-                        : "bg-zinc-900 border border-zinc-800 text-white rounded-tl-none w-full"
+                        : "bg-slate-100 border border-slate-200 text-slate-800 rounded-tl-none w-full"
                     }`}
                   >
                     {msg.sender === "user" ? msg.text : parseMarkdown(msg.text)}
@@ -715,7 +715,7 @@ export default function DashboardPage() {
               ))}
               {isSending && (
                 <div className="flex justify-start">
-                  <div className="bg-zinc-900 border border-zinc-800 text-zinc-400 p-3 rounded-2xl text-xs flex items-center gap-2">
+                  <div className="bg-slate-100 border border-slate-200 text-slate-500 p-3 rounded-2xl text-xs flex items-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
                     <span>Analyzing performance & coach guidelines...</span>
                   </div>
@@ -724,13 +724,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Chat Input Bar */}
-            <form onSubmit={handleSendMessage} className="p-3 bg-zinc-900/50 border-t border-zinc-850 flex gap-2">
+            <form onSubmit={handleSendMessage} className="p-3 bg-slate-50 border-t border-slate-200 flex gap-2">
               <input
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Ask about batting, bowling, drills..."
-                className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500"
+                className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-500"
               />
               <button
                 type="submit"
@@ -802,14 +802,14 @@ const parseMarkdown = (text: string): React.ReactNode => {
       inList = true;
       const content = line.substring(2);
       listItems.push(
-        <li key={`li-${i}`} className="text-zinc-300">
+        <li key={`li-${i}`} className="text-slate-700">
           {renderText(content)}
         </li>
       );
     } else {
       if (inList) {
         elements.push(
-          <ul key={`list-${i}`} className="list-disc pl-5 my-2 space-y-1 text-zinc-300">
+          <ul key={`list-${i}`} className="list-disc pl-5 my-2 space-y-1 text-slate-700">
             {listItems}
           </ul>
         );
@@ -839,22 +839,22 @@ const parseMarkdown = (text: string): React.ReactNode => {
           const dataRows = parsedRows.slice(hasSeparator ? 2 : 1);
           
           elements.push(
-            <div key={`table-${i}`} className="overflow-x-auto my-3 border border-zinc-800 rounded-xl">
-              <table className="min-w-full divide-y divide-zinc-800 text-[11px]">
-                <thead className="bg-zinc-950">
+            <div key={`table-${i}`} className="overflow-x-auto my-3 border border-slate-200 rounded-xl">
+              <table className="min-w-full divide-y divide-slate-200 text-[11px]">
+                <thead className="bg-slate-100">
                   <tr>
                     {headerRow.map((cell, idx) => (
-                      <th key={idx} className="px-3 py-2 text-left font-black text-white uppercase tracking-wider border-r border-zinc-850 last:border-r-0">
+                      <th key={idx} className="px-3 py-2 text-left font-black text-slate-900 uppercase tracking-wider border-r border-slate-200 last:border-r-0">
                         {renderText(cell)}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-850 bg-zinc-950/40">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {dataRows.map((row, rIdx) => (
-                    <tr key={rIdx} className="hover:bg-zinc-900/30">
+                    <tr key={rIdx} className="hover:bg-slate-50">
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="px-3 py-2 text-zinc-350 border-r border-zinc-850 last:border-r-0">
+                        <td key={cIdx} className="px-3 py-2 text-slate-700 border-r border-slate-100 last:border-r-0">
                           {renderText(cell)}
                         </td>
                       ))}
@@ -878,7 +878,7 @@ const parseMarkdown = (text: string): React.ReactNode => {
   
   if (inList) {
     elements.push(
-      <ul key="list-end" className="list-disc pl-5 my-2 space-y-1 text-zinc-300">
+      <ul key="list-end" className="list-disc pl-5 my-2 space-y-1 text-slate-700">
         {listItems}
       </ul>
     );

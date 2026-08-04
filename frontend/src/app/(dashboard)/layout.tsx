@@ -110,7 +110,7 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-5">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-5">
         <div className="relative w-20 h-24">
           <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain animate-pulse" priority />
         </div>
@@ -123,8 +123,8 @@ export default function DashboardLayout({
   const isPlayer = role === "player";
   if (!isPlayer && (status === "PENDING" || status === "REJECTED")) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-6 text-white text-center">
-        <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-8 space-y-6">
+      <div className="min-h-screen bg-white flex items-center justify-center p-6 text-slate-900 text-center">
+        <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-8 space-y-6">
           <div className="relative w-20 h-24 mx-auto">
             <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" priority />
           </div>
@@ -136,12 +136,12 @@ export default function DashboardLayout({
           <p className="text-zinc-400 text-sm leading-relaxed font-bold">
             {status === "PENDING" ? (
               <>
-                Your request to join <span className="text-white">{orgName}</span> is pending review.
+                Your request to join <span className="text-slate-900 font-black">{orgName}</span> is pending review.
                 Please contact the administrator.
               </>
             ) : (
               <>
-                Your application to join <span className="text-white">{orgName}</span> has been rejected.
+                Your application to join <span className="text-slate-900 font-black">{orgName}</span> has been rejected.
               </>
             )}
           </p>

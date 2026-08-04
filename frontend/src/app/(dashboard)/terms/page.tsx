@@ -10,11 +10,11 @@ export default function TermsPage() {
       {/* Title */}
       <div className="space-y-2 text-center">
         <h1 className="text-zinc-500 font-black tracking-widest text-xs uppercase">LEGAL AGREEMENTS</h1>
-        <h2 className="text-3xl font-black text-white uppercase tracking-tight">TERMS & CONDITIONS</h2>
+        <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">TERMS & CONDITIONS</h2>
       </div>
 
       {/* Intro Card */}
-      <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
         <p className="text-sm font-bold text-zinc-400 leading-relaxed">
           Welcome to the Cricket Performance Index (CPI). These Terms and Conditions govern your access and use of the CPI platform, services, and related applications. By registering or using our platform, you agree to comply with these terms.
         </p>
@@ -25,13 +25,13 @@ export default function TermsPage() {
       <div className="space-y-4">
         
         {/* Section 1 */}
-        <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-white uppercase">1. Platform Services</h3>
+              <h3 className="text-base font-black text-slate-900 uppercase">1. Platform Services</h3>
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Scope and Usage</p>
             </div>
           </div>
@@ -45,13 +45,13 @@ export default function TermsPage() {
         </div>
 
         {/* Section 2 */}
-        <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-white uppercase">2. Accounts & Registration</h3>
+              <h3 className="text-base font-black text-slate-900 uppercase">2. Accounts & Registration</h3>
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Access Requirements</p>
             </div>
           </div>
@@ -66,13 +66,13 @@ export default function TermsPage() {
         </div>
 
         {/* Section 3 */}
-        <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
               <Lock className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-white uppercase">3. Privacy & Performance Data</h3>
+              <h3 className="text-base font-black text-slate-900 uppercase">3. Privacy & Performance Data</h3>
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Information & Privacy</p>
             </div>
           </div>
@@ -87,13 +87,13 @@ export default function TermsPage() {
         </div>
 
         {/* Section 4 */}
-        <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-white uppercase">4. Code of Conduct</h3>
+              <h3 className="text-base font-black text-slate-900 uppercase">4. Code of Conduct</h3>
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Fair Play & Respect</p>
             </div>
           </div>
@@ -107,13 +107,13 @@ export default function TermsPage() {
         </div>
 
         {/* Section 5 */}
-        <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3xl p-5 space-y-3">
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
               <HelpCircle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-white uppercase">5. Liability & Disclaimers</h3>
+              <h3 className="text-base font-black text-slate-900 uppercase">5. Liability & Disclaimers</h3>
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Limit of Responsibility</p>
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function TermsPage() {
       {/* Back Button */}
       <Link
         href="/profile"
-        className="w-full bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl py-4.5 text-base font-extrabold flex items-center justify-center gap-2 transition-all border border-zinc-800 cursor-pointer"
+        className="w-full bg-slate-100 hover:bg-slate-100 text-slate-900 rounded-2xl py-4.5 text-base font-extrabold flex items-center justify-center gap-2 transition-all border border-slate-200 cursor-pointer"
       >
         <ArrowLeft className="w-5 h-5" />
         BACK TO PROFILE
