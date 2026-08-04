@@ -82,7 +82,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col justify-between p-6 select-none">
+    <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white flex flex-col justify-between p-6 select-none transition-colors">
       <div className="my-auto max-w-md w-full mx-auto space-y-8">
         
         {/* Logo and Welcome */}
@@ -96,53 +96,53 @@ export default function SignupPage() {
               priority
             />
           </div>
-          <h1 className="text-4xl font-black tracking-tight text-white mb-1 uppercase">CREATE ACCOUNT</h1>
-          <p className="text-zinc-400 text-lg font-bold">Join Cricket Performance Index</p>
+          <h1 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white mb-1 uppercase">CREATE ACCOUNT</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 text-lg font-bold">Join Cricket Performance Index</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSignup} className="space-y-6">
           {error && (
-            <div className="bg-red-950 border-2 border-red-500 text-red-200 p-4 rounded-xl text-sm font-bold text-center uppercase tracking-wide">
+            <div className="bg-red-500/10 border-2 border-red-500 text-red-600 dark:text-red-300 p-4 rounded-2xl text-sm font-bold text-center uppercase tracking-wide">
               {error}
             </div>
           )}
 
           <div className="space-y-2 text-left">
-            <label className="text-sm font-black tracking-wide text-zinc-300 block">FULL NAME</label>
+            <label className="text-xs font-black tracking-widest text-zinc-500 dark:text-zinc-400 block uppercase">FULL NAME</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="w-full bg-zinc-950 border-2 border-zinc-800 rounded-xl px-4 py-4 text-lg text-white font-semibold focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-4 text-base text-zinc-900 dark:text-white font-semibold focus:outline-none focus:border-orange-500 transition-all shadow-sm"
               placeholder="Enter your name"
             />
           </div>
 
           <div className="space-y-2 text-left">
-            <label className="text-sm font-black tracking-wide text-zinc-300 block">EMAIL ADDRESS</label>
+            <label className="text-xs font-black tracking-widest text-zinc-500 dark:text-zinc-400 block uppercase">EMAIL ADDRESS</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full bg-zinc-950 border-2 border-zinc-800 rounded-xl px-4 py-4 text-lg text-white font-semibold focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-4 text-base text-zinc-900 dark:text-white font-semibold focus:outline-none focus:border-orange-500 transition-all shadow-sm"
               placeholder="Enter your email"
             />
           </div>
 
           <div className="space-y-2 text-left">
-            <label className="text-sm font-black tracking-wide text-zinc-300 block">PASSWORD</label>
+            <label className="text-xs font-black tracking-widest text-zinc-500 dark:text-zinc-400 block uppercase">PASSWORD</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="w-full bg-zinc-950 border-2 border-zinc-800 rounded-xl px-4 py-4 text-lg text-white font-semibold focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-4 text-base text-zinc-900 dark:text-white font-semibold focus:outline-none focus:border-orange-500 transition-all shadow-sm"
               placeholder="Enter password (min 8 chars)"
             />
           </div>
@@ -150,7 +150,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-black transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-white shadow-xl"
+            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black rounded-2xl py-4.5 text-lg font-black tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-orange-500/20 active:scale-[0.98]"
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin text-black" /> : "REGISTER"}
           </button>
@@ -159,7 +159,7 @@ export default function SignupPage() {
         <div className="text-center pt-2">
           <Link
             href="/login"
-            className="text-orange-500 hover:text-orange-400 text-lg font-black tracking-wide block py-2"
+            className="text-orange-600 dark:text-orange-500 hover:underline text-base font-black tracking-wide block py-2"
           >
             ALREADY HAVE AN ACCOUNT? LOG IN
           </Link>
@@ -167,9 +167,10 @@ export default function SignupPage() {
 
       </div>
 
-      <div className="text-center text-xs text-zinc-650 font-bold uppercase tracking-widest py-4">
+      <div className="text-center text-xs text-zinc-400 dark:text-zinc-600 font-bold uppercase tracking-widest py-4">
         Mobile Sunlight Optimized • Simple UX
       </div>
     </div>
   );
 }
+
