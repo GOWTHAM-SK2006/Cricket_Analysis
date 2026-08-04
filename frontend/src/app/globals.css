@@ -11,19 +11,30 @@
   --text-tertiary: #71717a;
 }
 
+html.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
+  --border-color: #e4e4e7;
+  --border-color-light: #d4d4d8;
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-tertiary: #71717a;
+}
+
 @theme {
   --color-orange-500: #f97316;
   --color-orange-600: #ea580c;
   
-  --color-black: #000000;
-  --color-zinc-955: #09090b;
-  --color-zinc-950: #0c0c0e;
-  --color-zinc-900: #18181b;
-  --color-zinc-850: #27272a;
-  --color-zinc-800: #3f3f46;
-  --color-white: #ffffff;
-  --color-zinc-400: #a1a1aa;
-  --color-zinc-500: #71717a;
+  --color-black: var(--bg-primary);
+  --color-zinc-955: var(--bg-secondary);
+  --color-zinc-950: var(--bg-secondary);
+  --color-zinc-900: var(--bg-tertiary);
+  --color-zinc-850: var(--border-color);
+  --color-zinc-800: var(--border-color-light);
+  --color-white: var(--text-primary);
+  --color-zinc-400: var(--text-secondary);
+  --color-zinc-500: var(--text-tertiary);
 }
 
 @layer base {

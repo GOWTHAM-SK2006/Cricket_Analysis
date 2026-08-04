@@ -46,9 +46,18 @@ export default function DashboardLayout({
   }, [pathname, role]);
 
   useEffect(() => {
-    document.documentElement.classList.remove("light");
-    setTheme("dark");
-    localStorage.setItem("theme", "dark");
+    const storedTheme = localStorage.getItem("theme") as "light" | "dark";
+    if (storedTheme) {
+      setTheme(storedTheme);
+      if (storedTheme === "light") {
+        document.documentElement.classList.add("light");
+      } else {
+        document.documentElement.classList.remove("light");
+      }
+    } else {
+      setTheme("light");
+      document.documentElement.classList.add("light");
+    }
   }, []);
 
   const toggleTheme = () => {
