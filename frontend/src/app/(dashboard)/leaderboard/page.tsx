@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Trophy, Medal, Flame, Target, Zap, ChevronRight, Award, Crown, Sparkles, TrendingUp, ShieldCheck, User } from "lucide-react";
+import { Loader2, Trophy, Target, Flame, Zap, ChevronRight, Users, TrendingUp, TrendingDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
@@ -75,24 +75,25 @@ export default function LeaderboardPage() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 select-none">
         <Loader2 className="w-9 h-9 text-orange-500 animate-spin" />
-        <p className="text-zinc-500 dark:text-zinc-400 font-extrabold uppercase tracking-widest text-xs">Computing Squad Rankings...</p>
+        <p className="text-slate-400 font-extrabold uppercase tracking-widest text-xs">Loading Squad Rankings...</p>
       </div>
     );
   }
 
   const topThree = sortedPlayers.slice(0, 3);
+  
+  // Calculate summary stats
+  const totalPlayers = sortedPlayers.length;
+  const avgCpi = totalPlayers > 0 
+    ? Math.round(sortedPlayers.reduce((acc, p) => acc + getPlayerScores(p).cpi, 0) / totalPlayers) 
+    : 0;
+  const highestCpi = sortedPlayers.length > 0 ? getPlayerScores(sortedPlayers[0]).cpi : 0;
 
-  const getRankBadgeStyle = (rank: number) => {
-    if (rank === 1) return "bg-gradient-to-br from-amber-400 to-orange-500 text-black font-black shadow-md shadow-orange-500/20";
-    if (rank === 2) return "bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-black";
-    if (rank === 3) return "bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-800/60 text-amber-700 dark:text-amber-500 font-black";
-    return "bg-zinc-100 dark:bg-zinc-900 border border-zinc-250 dark:border-zinc-850 text-zinc-600 dark:text-zinc-400 font-mono font-bold";
-  };
-
-  const getTierColor = (score: number) => {
-    if (score >= 80) return "text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
-    if (score >= 60) return "text-orange-700 dark:text-orange-400 bg-orange-500/10 border-orange-500/30";
-    return "text-amber-700 dark:text-amber-500 bg-amber-500/10 border-amber-500/30";
+  // Mock month variations for realistic visual
+  const getRankDelta = (index: number) => {
+    if (index === 0) return { dir: "up", val: 4 };
+    if (index === 1) return { dir: "down", val: 1 };
+    return { dir: "down", val: 2 };
   };
 
   return (
@@ -100,24 +101,24 @@ export default function LeaderboardPage() {
       initial="hidden"
       animate="show"
       variants={containerVariants}
-      className="space-y-7 pb-20 select-none text-left max-w-xl mx-auto"
+      className="space-y-6 pb-16 select-none text-left max-w-2xl mx-auto"
     >
       {/* Header Banner */}
-      <motion.div variants={itemVariants} className="space-y-1.5 text-center pt-2">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-orange-600 dark:text-orange-500 mb-1">
-          <Trophy className="w-4 h-4 stroke-[2.5]" />
-          <span className="text-[11px] font-black uppercase tracking-widest">SQUAD RANKINGS</span>
+      <motion.div variants={itemVariants} className="space-y-1.5 text-center pt-1">
+        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-orange-200 text-orange-600 shadow-xs mb-1">
+          <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
+          <span className="text-[11px] font-black uppercase tracking-wider">SQUAD RANKINGS</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white uppercase tracking-tight leading-none">
-          LEADERBOARD
+        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 uppercase tracking-tight leading-none">
+          LEADER<span className="text-orange-500">BOARD</span>
         </h1>
-        <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
           Top performers based on performance index
         </p>
       </motion.div>
 
       {/* Metric Segmented Filter Switcher */}
-      <motion.div variants={itemVariants} className="grid grid-cols-3 gap-1.5 bg-zinc-100 dark:bg-zinc-950 p-1.5 rounded-2.5xl border border-zinc-200 dark:border-zinc-900 shadow-lg">
+      <motion.div variants={itemVariants} className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-3 gap-2">
         {[
           { id: "cpi", label: "CPI INDEX", icon: Zap },
           { id: "ppi", label: "PPI INDEX", icon: Target },
@@ -129,46 +130,53 @@ export default function LeaderboardPage() {
             <button
               key={tab.id}
               onClick={() => setMetricTab(tab.id as any)}
-              className={`py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+              className={`py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${
                 isActive
-                  ? "bg-gradient-to-r from-orange-500 to-amber-500 text-black shadow-lg shadow-orange-500/25 scale-[1.02]"
-                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-900/60"
+                  ? "bg-white text-orange-600 border border-orange-300 shadow-md shadow-orange-500/10"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <div className="flex items-center gap-1.5">
-                <Icon className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>{tab.label}</span>
-              </div>
+              <Icon className="w-4 h-4 stroke-[2.5]" />
+              <span>{tab.label}</span>
             </button>
           );
         })}
       </motion.div>
 
-      {/* Premium Podium Display */}
+      {/* Premium 3-Podium Display */}
       {topThree.length > 0 && (
-        <motion.div variants={itemVariants} className="grid grid-cols-3 gap-3 items-end pt-6 pb-2">
+        <motion.div variants={itemVariants} className="grid grid-cols-3 gap-3 items-end pt-4 pb-1">
           
           {/* RANK 2 - SILVER */}
           {topThree[1] ? (
             <motion.div
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              whileHover={{ y: -4 }}
               onClick={() => router.push(`/players?id=${topThree[1].id}`)}
-              className="bg-white dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-850 hover:border-orange-500/50 rounded-3xl p-3.5 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-44 relative group shadow-lg"
+              className="bg-white border-2 border-slate-200 rounded-3xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-between min-h-[220px] relative group shadow-sm hover:shadow-md"
             >
-              <div className="absolute -top-4 w-9 h-9 rounded-full bg-zinc-200 dark:bg-zinc-800 border-2 border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-mono font-black text-sm flex items-center justify-center shadow-md">
+              <div className="absolute -top-3 w-8 h-8 rounded-full bg-slate-200 border-2 border-slate-300 text-slate-700 font-mono font-black text-xs flex items-center justify-center shadow-xs">
                 2
               </div>
-              <div className="pt-3 w-full flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-800 dark:text-zinc-300 font-black text-sm uppercase shadow-inner">
+              <div className="pt-2 w-full flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-black text-sm uppercase">
                   {topThree[1].name.substring(0, 2).toUpperCase()}
                 </div>
-                <div className="space-y-0.5 w-full">
-                  <p className="text-xs font-black text-zinc-900 dark:text-white uppercase truncate px-1">{topThree[1].name}</p>
-                  <p className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase truncate">{topThree[1].role}</p>
+                <div className="w-full space-y-0.5">
+                  <p className="text-sm font-black text-slate-900 uppercase truncate px-1">{topThree[1].name}</p>
+                  <p className="text-[9px] font-bold text-slate-400 uppercase truncate">{topThree[1].role}</p>
                 </div>
               </div>
-              <div className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl py-1.5 text-orange-600 dark:text-orange-400 font-mono text-base font-black tracking-tight">
-                {getPlayerScores(topThree[1])[metricTab] || "N/A"}
+              <div className="w-full space-y-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase block tracking-wider">CPI SCORE</span>
+                <span className="text-2xl font-black text-slate-800 font-mono block">
+                  {getPlayerScores(topThree[1])[metricTab] || "0"}
+                </span>
+                {/* Micro trendline graphic */}
+                <div className="w-full h-4 mt-1">
+                  <svg className="w-full h-full text-slate-300 stroke-current fill-none" viewBox="0 0 100 20">
+                    <path d="M0 15 Q25 18, 50 10 T100 4" strokeWidth="2" />
+                  </svg>
+                </div>
               </div>
             </motion.div>
           ) : <div />}
@@ -176,24 +184,33 @@ export default function LeaderboardPage() {
           {/* RANK 1 - GOLD CHAMPION */}
           {topThree[0] && (
             <motion.div
-              whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}
+              whileHover={{ y: -6 }}
               onClick={() => router.push(`/players?id=${topThree[0].id}`)}
-              className="bg-gradient-to-b from-orange-500/15 via-white dark:via-zinc-950 to-white dark:to-zinc-950 border-2 border-orange-500 hover:border-orange-400 rounded-3.5xl p-4 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-52 relative shadow-2xl shadow-orange-500/15 group"
+              className="bg-white border-2 border-orange-400 rounded-3.5xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-between min-h-[250px] relative shadow-lg shadow-orange-500/10 group"
             >
-              <div className="absolute -top-5 w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-black font-black text-base flex items-center justify-center shadow-xl shadow-orange-500/30">
+              <div className="absolute -top-4 w-9 h-9 rounded-full bg-amber-400 border-2 border-amber-300 text-amber-950 font-black text-sm flex items-center justify-center shadow-md">
                 👑
               </div>
               <div className="pt-3 w-full flex flex-col items-center gap-2">
-                <div className="w-14 h-14 rounded-2xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center text-orange-600 dark:text-orange-400 font-black text-base uppercase shadow-lg">
+                <div className="w-16 h-16 rounded-full bg-orange-100 border-2 border-orange-200 flex items-center justify-center text-orange-600 font-black text-base uppercase">
                   {topThree[0].name.substring(0, 2).toUpperCase()}
                 </div>
-                <div className="space-y-0.5 w-full">
-                  <p className="text-sm font-black text-zinc-900 dark:text-white uppercase truncate px-1 tracking-tight">{topThree[0].name}</p>
-                  <p className="text-[10px] font-extrabold text-orange-600 dark:text-orange-400 uppercase truncate">{topThree[0].role}</p>
+                <div className="w-full space-y-0.5">
+                  <p className="text-base font-black text-slate-900 uppercase truncate px-1 tracking-tight">{topThree[0].name}</p>
+                  <p className="text-[10px] font-extrabold text-orange-600 uppercase truncate">{topThree[0].role}</p>
                 </div>
               </div>
-              <div className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-black rounded-xl py-1.5 font-mono text-lg font-black tracking-tight shadow-md">
-                {getPlayerScores(topThree[0])[metricTab] || "N/A"}
+              <div className="w-full space-y-1">
+                <span className="text-[9px] font-black text-orange-600 uppercase block tracking-wider bg-orange-50 py-0.5 rounded-full">CPI SCORE</span>
+                <span className="text-3xl font-black text-orange-600 font-mono block">
+                  {getPlayerScores(topThree[0])[metricTab] || "0"}
+                </span>
+                {/* Micro trendline graphic */}
+                <div className="w-full h-5 mt-1">
+                  <svg className="w-full h-full text-orange-500 stroke-current fill-none" viewBox="0 0 100 20">
+                    <path d="M0 16 Q30 18, 60 8 T100 2" strokeWidth="2.5" />
+                  </svg>
+                </div>
               </div>
             </motion.div>
           )}
@@ -201,24 +218,33 @@ export default function LeaderboardPage() {
           {/* RANK 3 - BRONZE */}
           {topThree[2] ? (
             <motion.div
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              whileHover={{ y: -4 }}
               onClick={() => router.push(`/players?id=${topThree[2].id}`)}
-              className="bg-white dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-850 hover:border-orange-500/50 rounded-3xl p-3.5 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-40 relative group shadow-lg"
+              className="bg-white border-2 border-slate-200 rounded-3xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-between min-h-[220px] relative group shadow-sm hover:shadow-md"
             >
-              <div className="absolute -top-4 w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-950 border-2 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-500 font-mono font-black text-sm flex items-center justify-center shadow-md">
+              <div className="absolute -top-3 w-8 h-8 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-800 font-mono font-black text-xs flex items-center justify-center shadow-xs">
                 3
               </div>
-              <div className="pt-3 w-full flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-amber-700 dark:text-amber-500 font-black text-sm uppercase shadow-inner">
+              <div className="pt-2 w-full flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 font-black text-sm uppercase">
                   {topThree[2].name.substring(0, 2).toUpperCase()}
                 </div>
-                <div className="space-y-0.5 w-full">
-                  <p className="text-xs font-black text-zinc-900 dark:text-white uppercase truncate px-1">{topThree[2].name}</p>
-                  <p className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase truncate">{topThree[2].role}</p>
+                <div className="w-full space-y-0.5">
+                  <p className="text-sm font-black text-slate-900 uppercase truncate px-1">{topThree[2].name}</p>
+                  <p className="text-[9px] font-bold text-slate-400 uppercase truncate">{topThree[2].role}</p>
                 </div>
               </div>
-              <div className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl py-1.5 text-orange-600 dark:text-orange-400 font-mono text-base font-black tracking-tight">
-                {getPlayerScores(topThree[2])[metricTab] || "N/A"}
+              <div className="w-full space-y-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase block tracking-wider">CPI SCORE</span>
+                <span className="text-2xl font-black text-orange-600 font-mono block">
+                  {getPlayerScores(topThree[2])[metricTab] || "0"}
+                </span>
+                {/* Micro trendline graphic */}
+                <div className="w-full h-4 mt-1">
+                  <svg className="w-full h-full text-orange-400 stroke-current fill-none" viewBox="0 0 100 20">
+                    <path d="M0 14 Q35 16, 70 9 T100 5" strokeWidth="2" />
+                  </svg>
+                </div>
               </div>
             </motion.div>
           ) : <div />}
@@ -228,72 +254,115 @@ export default function LeaderboardPage() {
 
       {/* Full Squad Rankings List */}
       <motion.div variants={itemVariants} className="space-y-3 pt-2">
-        <div className="flex items-center justify-between pl-1">
-          <h3 className="text-xs font-black tracking-widest text-zinc-600 dark:text-zinc-400 uppercase flex items-center gap-2">
-            <Award className="w-4 h-4 text-orange-500" />
-            FULL SQUAD RANKINGS
-          </h3>
-          <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
-            {sortedPlayers.length} PLAYERS
-          </span>
-        </div>
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+          <div className="p-4 bg-white border-b border-slate-100 flex items-center justify-between">
+            <h3 className="text-xs font-black tracking-wider text-slate-700 uppercase flex items-center gap-2">
+              <Users className="w-4 h-4 text-orange-500" />
+              FULL SQUAD RANKINGS
+            </h3>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+              {sortedPlayers.length} PLAYERS
+            </span>
+          </div>
 
-        <div className="bg-white dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-900 rounded-3.5xl divide-y divide-zinc-200 dark:divide-zinc-900/60 overflow-hidden shadow-xl">
-          {sortedPlayers.length === 0 ? (
-            <div className="p-10 text-center space-y-2">
-              <User className="w-8 h-8 text-zinc-400 dark:text-zinc-600 mx-auto" />
-              <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">No player records registered.</p>
-            </div>
-          ) : (
-            sortedPlayers.map((player, index) => {
+          <div className="divide-y divide-slate-100">
+            {sortedPlayers.map((player, index) => {
               const scores = getPlayerScores(player);
               const scoreVal = scores[metricTab];
               const rank = index + 1;
               const initials = player.name.substring(0, 2).toUpperCase();
+              const delta = getRankDelta(index);
 
               return (
-                <motion.div
+                <div
                   key={player.id}
-                  whileHover={{ backgroundColor: "rgba(249, 115, 22, 0.05)", x: 4 }}
                   onClick={() => router.push(`/players?id=${player.id}`)}
-                  className="p-4 flex items-center justify-between transition-all cursor-pointer active:bg-zinc-100 dark:active:bg-zinc-900/80 group"
+                  className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer group"
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-4">
                     {/* Rank Badge */}
-                    <div className={`w-8 h-8 rounded-xl font-mono text-xs font-black flex items-center justify-center shrink-0 shadow-sm ${getRankBadgeStyle(rank)}`}>
+                    <div className={`w-8 h-8 rounded-full font-mono text-xs font-black flex items-center justify-center shrink-0 ${
+                      rank === 1 ? "bg-orange-500 text-white" : rank === 2 ? "bg-slate-200 text-slate-700" : rank === 3 ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-600"
+                    }`}>
                       #{rank}
                     </div>
 
                     {/* Avatar & Details */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-orange-600 dark:text-orange-500 font-black text-xs uppercase shrink-0 group-hover:border-orange-500/40 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 font-black text-xs uppercase shrink-0">
                         {initials}
                       </div>
                       <div className="text-left space-y-0.5">
-                        <span className="text-sm font-black text-zinc-900 dark:text-white uppercase block leading-tight tracking-tight group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                        <span className="text-sm font-black text-slate-900 uppercase block leading-tight tracking-tight group-hover:text-orange-600 transition-colors">
                           {player.name}
                         </span>
-                        <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase block tracking-wider">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block tracking-wider">
                           {player.role}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Score & Navigation Arrow */}
-                  <div className="flex items-center gap-3">
-                    <div className={`px-3 py-1.5 rounded-xl border font-mono font-black text-sm tracking-tight ${getTierColor(scoreVal)}`}>
-                      {scoreVal > 0 ? scoreVal : "N/A"}
+                  {/* Monthly Delta & CPI Score */}
+                  <div className="flex items-center gap-6">
+                    <div className="hidden sm:flex flex-col items-center text-center">
+                      <span className={`text-[11px] font-black flex items-center gap-0.5 ${delta.dir === "up" ? "text-emerald-600" : "text-rose-500"}`}>
+                        {delta.dir === "up" ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                        {delta.val}
+                      </span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase">VS LAST MONTH</span>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-650 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+
+                    <div className="text-right">
+                      <span className="text-[8px] font-black text-slate-400 uppercase block tracking-wider">CPI SCORE</span>
+                      <span className="text-base font-black text-slate-900 font-mono block">
+                        {scoreVal > 0 ? scoreVal : "0"}
+                      </span>
+                    </div>
+
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
                   </div>
-                </motion.div>
+                </div>
               );
-            })
-          )}
+            })}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Footer Summary Stats Cards (Total Players, Average CPI, Highest CPI) */}
+      <motion.div variants={itemVariants} className="grid grid-cols-3 gap-3 pt-2">
+        <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-3.5 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+            <Users className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-lg font-black text-slate-900 font-mono leading-none">{totalPlayers}</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">TOTAL PLAYERS</p>
+          </div>
+        </div>
+
+        <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-3.5 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+            <TrendingUp className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-lg font-black text-slate-900 font-mono leading-none">{avgCpi}</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">AVERAGE CPI</p>
+          </div>
+        </div>
+
+        <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-3.5 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+            <Trophy className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-lg font-black text-slate-900 font-mono leading-none">{highestCpi}</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">HIGHEST CPI</p>
+          </div>
         </div>
       </motion.div>
 
     </motion.div>
   );
 }
+

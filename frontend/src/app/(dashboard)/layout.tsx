@@ -166,29 +166,29 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-orange-500/30 pb-24">
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-orange-500/20 pb-24 font-sans">
       {/* Top Header – CPI branding left, notification + profile right */}
-      <header className="h-16 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-5">
+      <header className="h-16 border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm">
         {/* Left Side: CPI Logo + Text */}
-        <Link href="/dashboard" className="flex items-center gap-2.5 cursor-pointer">
-          <div className="relative w-8 h-9">
+        <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
+          <div className="relative w-9 h-9">
             <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
           </div>
           <div className="leading-none">
-            <span className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase block">CRICKET</span>
-            <span className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase block">PERFORMANCE</span>
-            <span className="text-[10px] font-extrabold tracking-widest text-zinc-400 uppercase block">INDEX</span>
+            <span className="text-[11px] font-black tracking-wider text-slate-800 uppercase block">CRICKET</span>
+            <span className="text-[11px] font-black tracking-wider text-orange-600 uppercase block">PERFORMANCE</span>
+            <span className="text-[11px] font-black tracking-wider text-slate-800 uppercase block">INDEX</span>
           </div>
         </Link>
 
         {/* Right Side: Notification Bell + Profile Avatar */}
         <div className="flex items-center gap-4">
-          <button className="relative text-zinc-400 hover:text-orange-500 transition-colors cursor-pointer">
+          <button className="relative text-slate-500 hover:text-orange-600 transition-colors cursor-pointer p-1">
             <Bell className="w-5.5 h-5.5 stroke-[2]" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full text-[8px] font-black text-black flex items-center justify-center">3</span>
+            <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-[9px] font-black text-white flex items-center justify-center border-2 border-white">3</span>
           </button>
           <Link href="/profile" className="flex items-center justify-center cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center text-orange-500 font-black text-sm uppercase hover:border-orange-500 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-orange-100 border-2 border-orange-300 flex items-center justify-center text-orange-700 font-black text-sm uppercase hover:border-orange-500 transition-colors shadow-sm">
               {userName ? userName.charAt(0).toUpperCase() : <User className="w-5 h-5 stroke-[2.5]" />}
             </div>
           </Link>
@@ -196,12 +196,12 @@ export default function DashboardLayout({
       </header>
 
       {/* Main Content Container */}
-      <main className="p-4 max-w-lg mx-auto">
+      <main className="p-4 md:p-6 max-w-3xl mx-auto">
         {children}
       </main>
 
       {/* Bottom 4-Tab Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-zinc-950 border-t-2 border-zinc-900 z-40 flex items-center justify-around px-2 pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 h-18 bg-white border-t border-slate-200 z-40 flex items-center justify-around px-2 pb-safe shadow-lg">
         {tabs.map((tab) => {
           const isActive = pathname === tab.path;
           const Icon = tab.icon;
@@ -210,19 +210,19 @@ export default function DashboardLayout({
               key={tab.path}
               id={`nav-${tab.name.toLowerCase()}`}
               href={tab.path}
-              className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-all ${
-                isActive ? "text-orange-500 font-black scale-105" : "text-zinc-500 font-bold"
+              className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all ${
+                isActive ? "text-orange-600 font-black" : "text-slate-400 font-bold hover:text-slate-600"
               }`}
             >
-              <Icon className={`w-6 h-6 mb-1 ${isActive ? "stroke-[2.5]" : "stroke-[2]"}`} />
-              <span className="text-[10px] tracking-widest uppercase">{tab.name}</span>
+              <Icon className={`w-5.5 h-5.5 mb-1 ${isActive ? "stroke-[2.5]" : "stroke-[2]"}`} />
+              <span className="text-[10px] tracking-wider uppercase font-extrabold">{tab.name}</span>
             </Link>
           );
         })}
       </nav>
 
       {/* Footer */}
-      <div className="text-center py-4 text-[10px] text-zinc-600 font-semibold tracking-wide">
+      <div className="text-center py-6 text-xs text-slate-400 font-semibold tracking-wide">
         © {new Date().getFullYear()} CPI – Cricket Performance Index. All rights reserved.
       </div>
       {showTour && role && (
