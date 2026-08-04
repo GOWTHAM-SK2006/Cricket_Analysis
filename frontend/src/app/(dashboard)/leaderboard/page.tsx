@@ -75,26 +75,24 @@ export default function LeaderboardPage() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 select-none">
         <Loader2 className="w-9 h-9 text-orange-500 animate-spin" />
-        <p className="text-zinc-500 font-extrabold uppercase tracking-widest text-xs">Computing Squad Rankings...</p>
+        <p className="text-zinc-500 dark:text-zinc-400 font-extrabold uppercase tracking-widest text-xs">Computing Squad Rankings...</p>
       </div>
     );
   }
 
   const topThree = sortedPlayers.slice(0, 3);
-  const remainingRankings = sortedPlayers.slice(3);
 
-  // Helper for rank badge styling
   const getRankBadgeStyle = (rank: number) => {
-    if (rank === 1) return "bg-gradient-to-br from-amber-400 to-orange-500 text-black shadow-lg shadow-orange-500/25";
-    if (rank === 2) return "bg-zinc-800 border border-zinc-700 text-zinc-200";
-    if (rank === 3) return "bg-amber-950/80 border border-amber-800/60 text-amber-500";
-    return "bg-zinc-900 border border-zinc-850 text-zinc-500 font-mono";
+    if (rank === 1) return "bg-gradient-to-br from-amber-400 to-orange-500 text-black font-black shadow-md shadow-orange-500/20";
+    if (rank === 2) return "bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-black";
+    if (rank === 3) return "bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-800/60 text-amber-700 dark:text-amber-500 font-black";
+    return "bg-zinc-100 dark:bg-zinc-900 border border-zinc-250 dark:border-zinc-850 text-zinc-600 dark:text-zinc-400 font-mono font-bold";
   };
 
   const getTierColor = (score: number) => {
-    if (score >= 80) return "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
-    if (score >= 60) return "text-orange-400 bg-orange-500/10 border-orange-500/30";
-    return "text-amber-500 bg-amber-500/10 border-amber-500/30";
+    if (score >= 80) return "text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+    if (score >= 60) return "text-orange-700 dark:text-orange-400 bg-orange-500/10 border-orange-500/30";
+    return "text-amber-700 dark:text-amber-500 bg-amber-500/10 border-amber-500/30";
   };
 
   return (
@@ -104,26 +102,26 @@ export default function LeaderboardPage() {
       variants={containerVariants}
       className="space-y-7 pb-20 select-none text-left max-w-xl mx-auto"
     >
-      {/* Page Header */}
+      {/* Header Banner */}
       <motion.div variants={itemVariants} className="space-y-1.5 text-center pt-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 mb-1">
-          <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span className="text-[10px] font-black uppercase tracking-widest">SQUAD RANKINGS</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-orange-600 dark:text-orange-500 mb-1">
+          <Trophy className="w-4 h-4 stroke-[2.5]" />
+          <span className="text-[11px] font-black uppercase tracking-widest">SQUAD RANKINGS</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight leading-none">
+        <h1 className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white uppercase tracking-tight leading-none">
           LEADERBOARD
         </h1>
-        <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+        <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
           Top performers based on performance index
         </p>
       </motion.div>
 
-      {/* Metric Segmented Control */}
-      <motion.div variants={itemVariants} className="grid grid-cols-3 gap-1.5 bg-zinc-950 p-1.5 rounded-2.5xl border border-zinc-900 shadow-xl">
+      {/* Metric Segmented Filter Switcher */}
+      <motion.div variants={itemVariants} className="grid grid-cols-3 gap-1.5 bg-zinc-100 dark:bg-zinc-950 p-1.5 rounded-2.5xl border border-zinc-200 dark:border-zinc-900 shadow-lg">
         {[
-          { id: "cpi", label: "CPI INDEX", icon: Zap, desc: "Combined" },
-          { id: "ppi", label: "PPI INDEX", icon: Target, desc: "Practice" },
-          { id: "mpi", label: "MPI INDEX", icon: Flame, desc: "Match" }
+          { id: "cpi", label: "CPI INDEX", icon: Zap },
+          { id: "ppi", label: "PPI INDEX", icon: Target },
+          { id: "mpi", label: "MPI INDEX", icon: Flame }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = metricTab === tab.id;
@@ -133,8 +131,8 @@ export default function LeaderboardPage() {
               onClick={() => setMetricTab(tab.id as any)}
               className={`py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
                 isActive
-                  ? "bg-gradient-to-r from-orange-500 to-amber-500 text-black shadow-lg shadow-orange-500/20"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
+                  ? "bg-gradient-to-r from-orange-500 to-amber-500 text-black shadow-lg shadow-orange-500/25 scale-[1.02]"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-900/60"
               }`}
             >
               <div className="flex items-center gap-1.5">
@@ -155,21 +153,21 @@ export default function LeaderboardPage() {
             <motion.div
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               onClick={() => router.push(`/players?id=${topThree[1].id}`)}
-              className="bg-zinc-950 border-2 border-zinc-850 hover:border-zinc-700 rounded-3xl p-3.5 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-44 relative group shadow-xl"
+              className="bg-white dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-850 hover:border-orange-500/50 rounded-3xl p-3.5 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-44 relative group shadow-lg"
             >
-              <div className="absolute -top-4 w-9 h-9 rounded-full bg-zinc-800 border-2 border-zinc-700 text-zinc-200 font-mono font-black text-sm flex items-center justify-center shadow-lg">
+              <div className="absolute -top-4 w-9 h-9 rounded-full bg-zinc-200 dark:bg-zinc-800 border-2 border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-mono font-black text-sm flex items-center justify-center shadow-md">
                 2
               </div>
               <div className="pt-3 w-full flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 font-black text-sm uppercase shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-800 dark:text-zinc-300 font-black text-sm uppercase shadow-inner">
                   {topThree[1].name.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="space-y-0.5 w-full">
-                  <p className="text-xs font-black text-white uppercase truncate px-1">{topThree[1].name}</p>
-                  <p className="text-[9px] font-bold text-zinc-500 uppercase truncate">{topThree[1].role}</p>
+                  <p className="text-xs font-black text-zinc-900 dark:text-white uppercase truncate px-1">{topThree[1].name}</p>
+                  <p className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase truncate">{topThree[1].role}</p>
                 </div>
               </div>
-              <div className="w-full bg-zinc-900 border border-zinc-850 rounded-xl py-1.5 text-orange-400 font-mono text-base font-black tracking-tight">
+              <div className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl py-1.5 text-orange-600 dark:text-orange-400 font-mono text-base font-black tracking-tight">
                 {getPlayerScores(topThree[1])[metricTab] || "N/A"}
               </div>
             </motion.div>
@@ -180,18 +178,18 @@ export default function LeaderboardPage() {
             <motion.div
               whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}
               onClick={() => router.push(`/players?id=${topThree[0].id}`)}
-              className="bg-gradient-to-b from-orange-500/20 via-zinc-950 to-zinc-950 border-2 border-orange-500 hover:border-orange-400 rounded-3.5xl p-4 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-52 relative shadow-2xl shadow-orange-500/10 group"
+              className="bg-gradient-to-b from-orange-500/15 via-white dark:via-zinc-950 to-white dark:to-zinc-950 border-2 border-orange-500 hover:border-orange-400 rounded-3.5xl p-4 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-52 relative shadow-2xl shadow-orange-500/15 group"
             >
               <div className="absolute -top-5 w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-black font-black text-base flex items-center justify-center shadow-xl shadow-orange-500/30">
                 👑
               </div>
               <div className="pt-3 w-full flex flex-col items-center gap-2">
-                <div className="w-14 h-14 rounded-2xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center text-orange-400 font-black text-base uppercase shadow-lg">
+                <div className="w-14 h-14 rounded-2xl bg-orange-500/20 border-2 border-orange-500/40 flex items-center justify-center text-orange-600 dark:text-orange-400 font-black text-base uppercase shadow-lg">
                   {topThree[0].name.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="space-y-0.5 w-full">
-                  <p className="text-sm font-black text-white uppercase truncate px-1 tracking-tight">{topThree[0].name}</p>
-                  <p className="text-[10px] font-extrabold text-orange-400 uppercase truncate">{topThree[0].role}</p>
+                  <p className="text-sm font-black text-zinc-900 dark:text-white uppercase truncate px-1 tracking-tight">{topThree[0].name}</p>
+                  <p className="text-[10px] font-extrabold text-orange-600 dark:text-orange-400 uppercase truncate">{topThree[0].role}</p>
                 </div>
               </div>
               <div className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-black rounded-xl py-1.5 font-mono text-lg font-black tracking-tight shadow-md">
@@ -205,21 +203,21 @@ export default function LeaderboardPage() {
             <motion.div
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               onClick={() => router.push(`/players?id=${topThree[2].id}`)}
-              className="bg-zinc-950 border-2 border-zinc-850 hover:border-zinc-700 rounded-3xl p-3.5 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-40 relative group shadow-xl"
+              className="bg-white dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-850 hover:border-orange-500/50 rounded-3xl p-3.5 text-center space-y-3 cursor-pointer transition-all flex flex-col items-center justify-between h-40 relative group shadow-lg"
             >
-              <div className="absolute -top-4 w-9 h-9 rounded-full bg-amber-950 border-2 border-amber-800 text-amber-500 font-mono font-black text-sm flex items-center justify-center shadow-lg">
+              <div className="absolute -top-4 w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-950 border-2 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-500 font-mono font-black text-sm flex items-center justify-center shadow-md">
                 3
               </div>
               <div className="pt-3 w-full flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-500 font-black text-sm uppercase shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-amber-700 dark:text-amber-500 font-black text-sm uppercase shadow-inner">
                   {topThree[2].name.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="space-y-0.5 w-full">
-                  <p className="text-xs font-black text-white uppercase truncate px-1">{topThree[2].name}</p>
-                  <p className="text-[9px] font-bold text-zinc-500 uppercase truncate">{topThree[2].role}</p>
+                  <p className="text-xs font-black text-zinc-900 dark:text-white uppercase truncate px-1">{topThree[2].name}</p>
+                  <p className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase truncate">{topThree[2].role}</p>
                 </div>
               </div>
-              <div className="w-full bg-zinc-900 border border-zinc-850 rounded-xl py-1.5 text-orange-400 font-mono text-base font-black tracking-tight">
+              <div className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl py-1.5 text-orange-600 dark:text-orange-400 font-mono text-base font-black tracking-tight">
                 {getPlayerScores(topThree[2])[metricTab] || "N/A"}
               </div>
             </motion.div>
@@ -231,20 +229,20 @@ export default function LeaderboardPage() {
       {/* Full Squad Rankings List */}
       <motion.div variants={itemVariants} className="space-y-3 pt-2">
         <div className="flex items-center justify-between pl-1">
-          <h3 className="text-xs font-black tracking-widest text-zinc-400 uppercase flex items-center gap-2">
+          <h3 className="text-xs font-black tracking-widest text-zinc-600 dark:text-zinc-400 uppercase flex items-center gap-2">
             <Award className="w-4 h-4 text-orange-500" />
             FULL SQUAD RANKINGS
           </h3>
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
             {sortedPlayers.length} PLAYERS
           </span>
         </div>
 
-        <div className="bg-zinc-950 border-2 border-zinc-900 rounded-3.5xl divide-y divide-zinc-900/60 overflow-hidden shadow-2xl">
+        <div className="bg-white dark:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-900 rounded-3.5xl divide-y divide-zinc-200 dark:divide-zinc-900/60 overflow-hidden shadow-xl">
           {sortedPlayers.length === 0 ? (
             <div className="p-10 text-center space-y-2">
-              <User className="w-8 h-8 text-zinc-600 mx-auto" />
-              <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider">No player records registered.</p>
+              <User className="w-8 h-8 text-zinc-400 dark:text-zinc-600 mx-auto" />
+              <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">No player records registered.</p>
             </div>
           ) : (
             sortedPlayers.map((player, index) => {
@@ -256,9 +254,9 @@ export default function LeaderboardPage() {
               return (
                 <motion.div
                   key={player.id}
-                  whileHover={{ backgroundColor: "rgba(249, 115, 22, 0.04)", x: 4 }}
+                  whileHover={{ backgroundColor: "rgba(249, 115, 22, 0.05)", x: 4 }}
                   onClick={() => router.push(`/players?id=${player.id}`)}
-                  className="p-4 flex items-center justify-between transition-all cursor-pointer active:bg-zinc-900/80 group"
+                  className="p-4 flex items-center justify-between transition-all cursor-pointer active:bg-zinc-100 dark:active:bg-zinc-900/80 group"
                 >
                   <div className="flex items-center gap-3.5">
                     {/* Rank Badge */}
@@ -268,14 +266,14 @@ export default function LeaderboardPage() {
 
                     {/* Avatar & Details */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-orange-500 font-black text-xs uppercase shrink-0 group-hover:border-orange-500/40 transition-colors">
+                      <div className="w-10 h-10 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-orange-600 dark:text-orange-500 font-black text-xs uppercase shrink-0 group-hover:border-orange-500/40 transition-colors">
                         {initials}
                       </div>
                       <div className="text-left space-y-0.5">
-                        <span className="text-sm font-black text-white uppercase block leading-tight tracking-tight group-hover:text-orange-400 transition-colors">
+                        <span className="text-sm font-black text-zinc-900 dark:text-white uppercase block leading-tight tracking-tight group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                           {player.name}
                         </span>
-                        <span className="text-[10px] font-bold text-zinc-500 uppercase block tracking-wider">
+                        <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase block tracking-wider">
                           {player.role}
                         </span>
                       </div>
@@ -287,7 +285,7 @@ export default function LeaderboardPage() {
                     <div className={`px-3 py-1.5 rounded-xl border font-mono font-black text-sm tracking-tight ${getTierColor(scoreVal)}`}>
                       {scoreVal > 0 ? scoreVal : "N/A"}
                     </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-650 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-650 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </motion.div>
               );
