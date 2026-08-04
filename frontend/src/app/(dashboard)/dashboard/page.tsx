@@ -590,12 +590,12 @@ export default function DashboardPage() {
                   />
                   <div
                     style={{ width: `${(avgCategoryPlayers.length / players.length) * 100}%` }}
-                    className="bg-amber-500 h-full transition-all duration-500"
+                    className="bg-yellow-400 h-full transition-all duration-500"
                     title={`Average: ${avgCategoryPlayers.length}`}
                   />
                   <div
                     style={{ width: `${(lowCategoryPlayers.length / players.length) * 100}%` }}
-                    className="bg-rose-500 h-full rounded-r-full transition-all duration-500"
+                    className="bg-red-500 h-full rounded-r-full transition-all duration-500"
                     title={`Low: ${lowCategoryPlayers.length}`}
                   />
                 </>
@@ -605,56 +605,56 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 3 Category Cards: BEST, AVG, LOW */}
+          {/* 3 Category Cards: BEST (Green), AVG (Yellow), LOW (Red) */}
           <div className="grid grid-cols-3 gap-3">
-            {/* BEST: Above 70 CPI */}
-            <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-2.5xl p-3.5 text-center space-y-1">
-              <div className="flex items-center justify-center gap-1 text-emerald-700">
+            {/* BEST: Above 70 CPI - GREEN */}
+            <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
+              <div className="flex items-center justify-center gap-1 text-emerald-800">
                 <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span className="text-[10px] font-black uppercase tracking-wider">BEST</span>
+                <span className="text-[11px] font-black uppercase tracking-wider">BEST</span>
               </div>
-              <span className="text-xs font-extrabold text-emerald-600 block uppercase tracking-tight">
+              <span className="text-xs font-black text-emerald-700 block uppercase tracking-tight">
                 &gt; 70 CPI
               </span>
               <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
                 {bestCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-emerald-700/80 block uppercase">
-                {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% of Squad
+              <span className="text-[9.5px] font-extrabold text-emerald-800 block uppercase">
+                {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
-            {/* AVG: 50 to 70 CPI */}
-            <div className="bg-amber-50/60 border border-amber-200/80 rounded-2.5xl p-3.5 text-center space-y-1">
-              <div className="flex items-center justify-center gap-1 text-amber-700">
+            {/* AVG: 50 to 70 CPI - YELLOW */}
+            <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
+              <div className="flex items-center justify-center gap-1 text-yellow-900">
                 <Zap className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span className="text-[10px] font-black uppercase tracking-wider">AVG</span>
+                <span className="text-[11px] font-black uppercase tracking-wider">AVG</span>
               </div>
-              <span className="text-xs font-extrabold text-amber-600 block uppercase tracking-tight">
+              <span className="text-xs font-black text-yellow-800 block uppercase tracking-tight">
                 50 - 70 CPI
               </span>
               <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
                 {avgCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-amber-700/80 block uppercase">
-                {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% of Squad
+              <span className="text-[9.5px] font-extrabold text-yellow-900 block uppercase">
+                {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
-            {/* LOW: Below 50 CPI */}
-            <div className="bg-rose-50/60 border border-rose-200/80 rounded-2.5xl p-3.5 text-center space-y-1">
-              <div className="flex items-center justify-center gap-1 text-rose-700">
+            {/* LOW: Below 50 CPI - RED */}
+            <div className="bg-red-50 border-2 border-red-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
+              <div className="flex items-center justify-center gap-1 text-red-800">
                 <AlertTriangle className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span className="text-[10px] font-black uppercase tracking-wider">LOW</span>
+                <span className="text-[11px] font-black uppercase tracking-wider">LOW</span>
               </div>
-              <span className="text-xs font-extrabold text-rose-600 block uppercase tracking-tight">
+              <span className="text-xs font-black text-red-700 block uppercase tracking-tight">
                 &lt; 50 CPI
               </span>
               <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
                 {lowCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-rose-700/80 block uppercase">
-                {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% of Squad
+              <span className="text-[9.5px] font-extrabold text-red-800 block uppercase">
+                {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
           </div>
