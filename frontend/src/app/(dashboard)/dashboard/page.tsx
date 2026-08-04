@@ -135,6 +135,25 @@ export default function DashboardPage() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [lastAssessmentDates, setLastAssessmentDates] = useState<Record<string, string>>({});
 
+  const getPlayerCpiScore = (p: Player) => {
+    const ppi = p.ppiScore ? (p.ppiScore <= 10 ? Math.round(p.ppiScore * 10) : Math.round(p.ppiScore)) : 0;
+    const mpi = p.mpiScore ? (p.mpiScore <= 10 ? Math.round(p.mpiScore * 10) : Math.round(p.mpiScore)) : 0;
+    if (ppi > 0 && mpi > 0) return Math.round(ppi * 0.4 + mpi * 0.6);
+    if (ppi > 0) return ppi;
+    if (mpi > 0) return mpi;
+    return 0;
+  };
+
+  const bestCategoryPlayers = players.filter((p) => getPlayerCpiScore(p) > 70);
+  const avgCategoryPlayers = players.filter((p) => {
+    const score = getPlayerCpiScore(p);
+    return score >= 50 && score <= 70;
+  });
+  const lowCategoryPlayers = players.filter((p) => {
+    const score = getPlayerCpiScore(p);
+    return score < 50;
+  });
+
   const fetchLastAssessmentDates = async (playerList: Player[]) => {
     const datesMap: Record<string, string> = {};
     await Promise.all(playerList.map(async (p) => {
@@ -539,6 +558,109 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* PERFORMANCE CHART (BEST / AVG / LOW) */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="space-y-3 pt-2 text-left"
+      >
+        <h3 className="text-xs font-bold tracking-widest text-zinc-700 uppercase pl-1 flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-orange-500" />
+          PERFORMANCE CHART
+        </h3>
+
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-5 shadow-lg">
+          {/* Distribution Overview Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center text-xs font-black uppercase tracking-wider text-slate-700">
+              <span>CPI DISTRIBUTION</span>
+              <span className="text-slate-400 font-mono text-[11px]">{players.length} TOTAL PLAYERS</span>
+            </div>
+
+            {/* Segmented Progress Bar */}
+            <div className="h-4 bg-slate-100 rounded-full overflow-hidden flex p-0.5 border border-slate-200">
+              {players.length > 0 ? (
+                <>
+                  <div
+                    style={{ width: `${(bestCategoryPlayers.length / players.length) * 100}%` }}
+                    className="bg-emerald-500 h-full rounded-l-full transition-all duration-500"
+                    title={`Best: ${bestCategoryPlayers.length}`}
+                  />
+                  <div
+                    style={{ width: `${(avgCategoryPlayers.length / players.length) * 100}%` }}
+                    className="bg-amber-500 h-full transition-all duration-500"
+                    title={`Average: ${avgCategoryPlayers.length}`}
+                  />
+                  <div
+                    style={{ width: `${(lowCategoryPlayers.length / players.length) * 100}%` }}
+                    className="bg-rose-500 h-full rounded-r-full transition-all duration-500"
+                    title={`Low: ${lowCategoryPlayers.length}`}
+                  />
+                </>
+              ) : (
+                <div className="w-full bg-slate-200 h-full rounded-full" />
+              )}
+            </div>
+          </div>
+
+          {/* 3 Category Cards: BEST, AVG, LOW */}
+          <div className="grid grid-cols-3 gap-3">
+            {/* BEST: Above 70 CPI */}
+            <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-2.5xl p-3.5 text-center space-y-1">
+              <div className="flex items-center justify-center gap-1 text-emerald-700">
+                <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span className="text-[10px] font-black uppercase tracking-wider">BEST</span>
+              </div>
+              <span className="text-xs font-extrabold text-emerald-600 block uppercase tracking-tight">
+                &gt; 70 CPI
+              </span>
+              <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
+                {bestCategoryPlayers.length}
+              </p>
+              <span className="text-[9px] font-bold text-emerald-700/80 block uppercase">
+                {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% of Squad
+              </span>
+            </div>
+
+            {/* AVG: 50 to 70 CPI */}
+            <div className="bg-amber-50/60 border border-amber-200/80 rounded-2.5xl p-3.5 text-center space-y-1">
+              <div className="flex items-center justify-center gap-1 text-amber-700">
+                <Zap className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span className="text-[10px] font-black uppercase tracking-wider">AVG</span>
+              </div>
+              <span className="text-xs font-extrabold text-amber-600 block uppercase tracking-tight">
+                50 - 70 CPI
+              </span>
+              <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
+                {avgCategoryPlayers.length}
+              </p>
+              <span className="text-[9px] font-bold text-amber-700/80 block uppercase">
+                {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% of Squad
+              </span>
+            </div>
+
+            {/* LOW: Below 50 CPI */}
+            <div className="bg-rose-50/60 border border-rose-200/80 rounded-2.5xl p-3.5 text-center space-y-1">
+              <div className="flex items-center justify-center gap-1 text-rose-700">
+                <AlertTriangle className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span className="text-[10px] font-black uppercase tracking-wider">LOW</span>
+              </div>
+              <span className="text-xs font-extrabold text-rose-600 block uppercase tracking-tight">
+                &lt; 50 CPI
+              </span>
+              <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
+                {lowCategoryPlayers.length}
+              </p>
+              <span className="text-[9px] font-bold text-rose-700/80 block uppercase">
+                {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% of Squad
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </motion.div>
 
 
 
