@@ -374,7 +374,7 @@ export default function DashboardPage() {
 
       {/* 2. TODAY'S SNAPSHOT */}
       <div id="tour-snapshot" className="space-y-3">
-        <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1 flex items-center gap-2">
+        <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-orange-500" />
           TODAY'S SNAPSHOT
         </h3>
@@ -393,7 +393,7 @@ export default function DashboardPage() {
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <Users className="w-5 h-5 text-orange-500" />
             </div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Total Players</span>
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Total Players</span>
             <span className="text-3.5xl font-black text-slate-900 block leading-none">{stats?.totalPlayers || 0}</span>
           </motion.div>
           
@@ -406,7 +406,7 @@ export default function DashboardPage() {
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-orange-500" />
             </div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average CPI</span>
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Average CPI</span>
             <span className="text-3.5xl font-black text-orange-500 block leading-none">
               {stats?.avgCpi ? formatScoreValue(stats.avgCpi) : "N/A"}
             </span>
@@ -421,7 +421,7 @@ export default function DashboardPage() {
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-orange-500" />
             </div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average PPI</span>
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Average PPI</span>
             <span className="text-3.5xl font-black text-slate-900 block leading-none">
               {stats?.avgPpi ? formatScoreValue(stats.avgPpi) : "N/A"}
             </span>
@@ -436,7 +436,7 @@ export default function DashboardPage() {
             <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
               <Trophy className="w-5 h-5 text-orange-500" />
             </div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Average MPI</span>
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Average MPI</span>
             <span className="text-3.5xl font-black text-slate-900 block leading-none">
               {stats?.avgMpi ? formatScoreValue(stats.avgMpi) : "N/A"}
             </span>
@@ -455,7 +455,7 @@ export default function DashboardPage() {
           
           {/* SELF ASSESSMENT */}
           <motion.div id="tour-self-assessment" variants={itemVariants} className="space-y-3">
-            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1">
+            <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1">
               SELF ASSESSMENT
             </h3>
             <motion.button
@@ -479,7 +479,7 @@ export default function DashboardPage() {
 
           {/* LATEST COACH FEEDBACK */}
           <motion.div id="tour-coach-feedback" variants={itemVariants} className="space-y-3">
-            <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase flex items-center gap-2 pl-1">
+            <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase flex items-center gap-2 pl-1">
               <MessageSquare className="w-3.5 h-3.5 text-orange-500" />
               LATEST COACH FEEDBACK
             </h3>
@@ -504,7 +504,7 @@ export default function DashboardPage() {
         </motion.div>
       ) : (
         <div id="tour-quick-actions" className="space-y-3">
-          <h3 className="text-xs font-bold tracking-widest text-zinc-700 dark:text-zinc-400 uppercase pl-1 flex items-center gap-2">
+          <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1 flex items-center gap-2">
             <Zap className="w-4 h-4 text-orange-500" />
             QUICK ACTIONS
           </h3>
@@ -566,7 +566,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.4 }}
         className="space-y-3 pt-2 text-left"
       >
-        <h3 className="text-xs font-bold tracking-widest text-zinc-700 uppercase pl-1 flex items-center gap-2">
+        <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-orange-500" />
           PERFORMANCE CHART
         </h3>
