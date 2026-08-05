@@ -6,9 +6,10 @@ import { api } from "@/lib/api";
 import { 
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck, 
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, TrendingUp, ChevronDown
+  Filter, Check, Copy, Target, Edit2, TrendingUp, ChevronDown, FileText, Download
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
+import jsPDF from "jspdf";
 
 interface Player {
   id: number;
@@ -28,6 +29,233 @@ const formatScoreValue = (val: number | null | undefined) => {
     return Math.round(val * 10).toString();
   }
   return Math.round(val).toString();
+};
+
+const generatePlayerPdfReport = (
+  player: Player,
+  currentCpi: number | null,
+  currentPpi: number | null,
+  currentMpi: number | null,
+  targetCpi: number,
+  targetGoal: string,
+  last5Prac: any[],
+  last5Match: any[],
+  focusAreas: { title: string; detail: string }[]
+) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Top Header Banner
+  doc.setFillColor(249, 115, 22);
+  doc.rect(0, 0, pageWidth, 14, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text("CRICKET PERFORMANCE INDEX — OFFICIAL PLAYER REPORT", 14, 9);
+
+  let y = 26;
+
+  // Player Basic Details
+  doc.setFontSize(22);
+  doc.setTextColor(15, 23, 42);
+  doc.text(player.name.toUpperCase(), 14, y);
+
+  y += 7;
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(249, 115, 22);
+  doc.text(player.role.toUpperCase(), 14, y);
+
+  y += 6;
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  const ageStr = `Age: ${(player.id % 5) + 19} | Batting: ${player.battingStyle || "N/A"} | Bowling: ${player.bowlingStyle || "N/A"}`;
+  doc.text(ageStr, 14, y);
+
+  y += 5;
+  doc.text(`Report Generated: ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, 14, y);
+
+  y += 8;
+  doc.setDrawColor(226, 232, 240);
+  doc.line(14, y, pageWidth - 14, y);
+
+  y += 10;
+
+  // Key Performance Cards Overview
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(14, y, pageWidth - 28, 30, 4, 4, "F");
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("PERFORMANCE OVERVIEW (CPI / PPI / MPI)", 20, y + 8);
+
+  const cpiValStr = currentCpi ? formatScoreValue(currentCpi) : "0";
+  const ppiValStr = currentPpi ? formatScoreValue(currentPpi) : "N/A";
+  const mpiValStr = currentMpi ? formatScoreValue(currentMpi) : "N/A";
+
+  // CPI
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("CURRENT CPI", 20, y + 17);
+  doc.setFontSize(15);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(249, 115, 22);
+  doc.text(cpiValStr, 20, y + 25);
+
+  // PPI
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("CURRENT PPI", 70, y + 17);
+  doc.setFontSize(15);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(ppiValStr, 70, y + 25);
+
+  // MPI
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("CURRENT MPI", 120, y + 17);
+  doc.setFontSize(15);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(mpiValStr, 120, y + 25);
+
+  // TARGET CPI
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("TARGET CPI", 165, y + 17);
+  doc.setFontSize(15);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(targetCpi.toString(), 165, y + 25);
+
+  y += 38;
+
+  // Development Target Goal
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("DEVELOPMENT TARGET & GOAL", 14, y);
+
+  y += 6;
+  doc.setFontSize(9.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(51, 65, 85);
+  const goalText = targetGoal || "Maintain baseline execution and performance consistency.";
+  doc.text(`Goal: ${goalText}`, 14, y);
+
+  y += 12;
+
+  // Practice Assessments History
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("LAST 5 PRACTICE ASSESSMENTS", 14, y);
+
+  y += 6;
+  if (!last5Prac || last5Prac.length === 0) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 116, 139);
+    doc.text("No practice assessment history logged.", 14, y);
+    y += 8;
+  } else {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    last5Prac.forEach((p: any, idx: number) => {
+      const dStr = new Date(p.date || p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      const scoreStr = formatScoreValue(p.ppiScore);
+      doc.setTextColor(15, 23, 42);
+      doc.text(`Practice Session ${idx + 1}: ${dStr}`, 18, y);
+      doc.setTextColor(249, 115, 22);
+      doc.setFont("helvetica", "bold");
+      doc.text(`PPI Score: ${scoreStr}`, 110, y);
+      doc.setFont("helvetica", "normal");
+      y += 6;
+    });
+  }
+
+  y += 6;
+
+  // Match Assessments History
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("LAST 5 MATCH ASSESSMENTS", 14, y);
+
+  y += 6;
+  if (!last5Match || last5Match.length === 0) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 116, 139);
+    doc.text("No match assessment history logged.", 14, y);
+    y += 8;
+  } else {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    last5Match.forEach((m: any, idx: number) => {
+      const dStr = new Date(m.date || m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      const scoreStr = formatScoreValue(m.mpiScore);
+      doc.setTextColor(15, 23, 42);
+      doc.text(`Match Session ${idx + 1}: ${dStr}`, 18, y);
+      doc.setTextColor(249, 115, 22);
+      doc.setFont("helvetica", "bold");
+      doc.text(`MPI Score: ${scoreStr}`, 110, y);
+      doc.setFont("helvetica", "normal");
+      y += 6;
+    });
+  }
+
+  y += 10;
+
+  // Recommended Focus Areas
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("RECOMMENDED FOCUS AREAS", 14, y);
+
+  y += 6;
+  if (focusAreas && focusAreas.length > 0) {
+    focusAreas.forEach((f: any, idx: number) => {
+      if (y > 255) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.setFontSize(9.5);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(249, 115, 22);
+      doc.text(`${idx + 1}. ${f.title}`, 14, y);
+      y += 5;
+
+      doc.setFontSize(8.5);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(51, 65, 85);
+      const splitLines = doc.splitTextToSize(f.detail, pageWidth - 28);
+      doc.text(splitLines, 18, y);
+      y += splitLines.length * 4.5 + 4;
+    });
+  } else {
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 116, 139);
+    doc.text("No specific focus recommendations logged.", 14, y);
+    y += 8;
+  }
+
+  // Footer
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(148, 163, 184);
+  doc.text("Cricket Performance Index (CPI) • Confidential Player Report", 14, 285);
+
+  doc.save(`${player.name.replace(/\s+/g, "_")}_Performance_Report.pdf`);
 };
 
 export default function PlayersPage() {
@@ -1359,6 +1587,28 @@ export default function PlayersPage() {
                 <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
                   Last Assessed: {lastAssessmentDate}
                 </div>
+              </div>
+
+              {/* Generate PDF Report option in bottom of player card box */}
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={() => generatePlayerPdfReport(
+                    selectedPlayer,
+                    currentCpi,
+                    currentPpi,
+                    currentMpi,
+                    targetCpi,
+                    targetGoal,
+                    last5Prac,
+                    last5Match,
+                    focusAreas
+                  )}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-black text-xs uppercase tracking-wider transition-all shadow-xs cursor-pointer active:scale-95 group"
+                >
+                  <FileText className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
+                  <span>Generate Player PDF Report</span>
+                  <Download className="w-3.5 h-3.5 text-orange-500" />
+                </button>
               </div>
             </div>
 
