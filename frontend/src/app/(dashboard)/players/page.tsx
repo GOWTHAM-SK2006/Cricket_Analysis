@@ -40,220 +40,448 @@ const generatePlayerPdfReport = (
   targetGoal: string,
   last5Prac: any[],
   last5Match: any[],
-  focusAreas: { title: string; detail: string }[]
+  practiceHistory: any[],
+  matchHistory: any[],
+  focusAreas: { title: string; detail: string }[],
+  lastAssessmentDate: string,
+  coachNameStr?: string
 ) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const coachName = coachNameStr || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "Gowtham";
+  const reportDateStr = new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
 
-  // Top Header Banner
-  doc.setFillColor(249, 115, 22);
-  doc.rect(0, 0, pageWidth, 14, "F");
+  const addFooter = (pageNum: number) => {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text("Cricket Performance Index (CPI) • Official Confidential Player Report", 14, pageHeight - 10);
+    doc.text(`Page ${pageNum}`, pageWidth - 25, pageHeight - 10);
+  };
+
+  // ==========================================
+  // PAGE 1: Header, Player Info, Summary, 7 Parameters, Strengths & Improvements
+  // ==========================================
+
+  // SECTION 1: HEADER
+  doc.setFillColor(249, 115, 22); // CPI Accent Orange
+  doc.rect(0, 0, pageWidth, 16, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setTextColor(255, 255, 255);
-  doc.text("CRICKET PERFORMANCE INDEX — OFFICIAL PLAYER REPORT", 14, 9);
+  doc.text("CRICKET PERFORMANCE INDEX", 14, 11);
 
-  let y = 26;
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Report Date: ${reportDateStr}   |   Coach: ${coachName}`, pageWidth - 88, 11);
 
-  // Player Basic Details
-  doc.setFontSize(22);
-  doc.setTextColor(15, 23, 42);
-  doc.text(player.name.toUpperCase(), 14, y);
+  let y = 28;
 
-  y += 7;
-  doc.setFontSize(10);
+  // Title Box
+  doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(249, 115, 22);
-  doc.text(player.role.toUpperCase(), 14, y);
+  doc.setTextColor(15, 23, 42);
+  doc.text("CPI PLAYER PERFORMANCE REPORT", 14, y);
 
   y += 6;
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  const ageStr = `Age: ${(player.id % 5) + 19} | Batting: ${player.battingStyle || "N/A"} | Bowling: ${player.bowlingStyle || "N/A"}`;
-  doc.text(ageStr, 14, y);
-
-  y += 5;
-  doc.text(`Report Generated: ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, 14, y);
-
-  y += 8;
-  doc.setDrawColor(226, 232, 240);
+  doc.setDrawColor(249, 115, 22);
+  doc.setLineWidth(1);
   doc.line(14, y, pageWidth - 14, y);
 
-  y += 10;
+  y += 8;
 
-  // Key Performance Cards Overview
+  // SECTION 2: PLAYER INFORMATION
   doc.setFillColor(248, 250, 252);
-  doc.roundedRect(14, y, pageWidth - 28, 30, 4, 4, "F");
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(14, y, pageWidth - 28, 30, 3, 3, "FD");
 
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("PERFORMANCE OVERVIEW (CPI / PPI / MPI)", 20, y + 8);
-
-  const cpiValStr = currentCpi ? formatScoreValue(currentCpi) : "0";
-  const ppiValStr = currentPpi ? formatScoreValue(currentPpi) : "N/A";
-  const mpiValStr = currentMpi ? formatScoreValue(currentMpi) : "N/A";
-
-  // CPI
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  doc.text("CURRENT CPI", 20, y + 17);
-  doc.setFontSize(15);
+  doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(249, 115, 22);
-  doc.text(cpiValStr, 20, y + 25);
+  doc.text("2. PLAYER INFORMATION", 20, y + 8);
 
-  // PPI
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  doc.text("CURRENT PPI", 70, y + 17);
-  doc.setFontSize(15);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(ppiValStr, 70, y + 25);
+  doc.text(`Player Name: ${player.name}`, 20, y + 16);
+  doc.text(`Player ID: #${player.id}`, 20, y + 24);
 
-  // MPI
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  doc.text("CURRENT MPI", 120, y + 17);
-  doc.setFontSize(15);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text(mpiValStr, 120, y + 25);
+  doc.text(`Age: ${(player.id % 5) + 19}`, 85, y + 16);
+  doc.text(`Role: ${player.role}`, 85, y + 24);
 
-  // TARGET CPI
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  doc.text("TARGET CPI", 165, y + 17);
-  doc.setFontSize(15);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text(targetCpi.toString(), 165, y + 25);
+  doc.text(`Team: Senior Squad`, 145, y + 16);
+  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 145, y + 24);
 
   y += 38;
 
-  // Development Target Goal
-  doc.setFontSize(11);
+  // SECTION 3: OVERALL PERFORMANCE SUMMARY
+  doc.setFontSize(10.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("DEVELOPMENT TARGET & GOAL", 14, y);
+  doc.text("3. OVERALL PERFORMANCE SUMMARY", 14, y);
 
   y += 6;
+
+  const cpiNum = currentCpi ? parseInt(formatScoreValue(currentCpi), 10) : 0;
+  const ppiNum = currentPpi ? parseInt(formatScoreValue(currentPpi), 10) : 0;
+  const mpiNum = currentMpi ? parseInt(formatScoreValue(currentMpi), 10) : 0;
+
+  let ratingStr = "Needs Attention";
+  let ratingColor = [239, 68, 68]; // Red
+  if (cpiNum >= 80) {
+    ratingStr = "Excellent";
+    ratingColor = [16, 185, 129]; // Green
+  } else if (cpiNum >= 70) {
+    ratingStr = "High Potential";
+    ratingColor = [249, 115, 22]; // Orange
+  } else if (cpiNum >= 50) {
+    ratingStr = "Developing";
+    ratingColor = [234, 179, 8]; // Yellow
+  }
+
+  const boxWidth = (pageWidth - 28 - 9) / 4;
+  
+  // CPI Box
+  doc.setFillColor(254, 243, 199);
+  doc.setDrawColor(245, 158, 11);
+  doc.roundedRect(14, y, boxWidth, 24, 3, 3, "FD");
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(180, 83, 9);
+  doc.text("CPI SCORE", 18, y + 7);
+  doc.setFontSize(14);
+  doc.text(`${cpiNum}`, 18, y + 18);
+
+  // PPI Box
+  doc.setFillColor(241, 245, 249);
+  doc.setDrawColor(203, 213, 225);
+  doc.roundedRect(14 + boxWidth + 3, y, boxWidth, 24, 3, 3, "FD");
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  doc.text("PPI SCORE", 18 + boxWidth + 3, y + 7);
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`${ppiNum || "N/A"}`, 18 + boxWidth + 3, y + 18);
+
+  // MPI Box
+  doc.setFillColor(241, 245, 249);
+  doc.setDrawColor(203, 213, 225);
+  doc.roundedRect(14 + (boxWidth + 3) * 2, y, boxWidth, 24, 3, 3, "FD");
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  doc.text("MPI SCORE", 18 + (boxWidth + 3) * 2, y + 7);
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`${mpiNum || "N/A"}`, 18 + (boxWidth + 3) * 2, y + 18);
+
+  // Overall Rating Box
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(ratingColor[0], ratingColor[1], ratingColor[2]);
+  doc.roundedRect(14 + (boxWidth + 3) * 3, y, boxWidth, 24, 3, 3, "FD");
+  doc.setFontSize(8);
+  doc.setTextColor(71, 85, 105);
+  doc.text("OVERALL RATING", 18 + (boxWidth + 3) * 3, y + 7);
   doc.setFontSize(9.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(ratingColor[0], ratingColor[1], ratingColor[2]);
+  doc.text(ratingStr, 18 + (boxWidth + 3) * 3, y + 17);
+
+  y += 32;
+
+  // SECTION 4: SEVEN PERFORMANCE PARAMETERS
+  doc.setFontSize(10.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("4. SEVEN PERFORMANCE PARAMETERS", 14, y);
+
+  y += 6;
+
+  // Table Header
+  doc.setFillColor(241, 245, 249);
+  doc.rect(14, y, pageWidth - 28, 8, "F");
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(71, 85, 105);
+  doc.text("PARAMETER", 18, y + 5.5);
+  doc.text("SCORE (0-10)", 82, y + 5.5);
+  doc.text("RATING", 118, y + 5.5);
+  doc.text("PROGRESS BAR", 152, y + 5.5);
+
+  y += 8;
+
+  const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])];
+
+  const getParamScore = (key: string) => {
+    const scores = allAssessments
+      .map((s: any) => s[key] !== undefined ? s[key] : (key === "focus" ? s.concentration : null))
+      .filter((v: any) => typeof v === "number" && v > 0);
+    if (scores.length > 0) {
+      const avg = scores.reduce((a: number, b: number) => a + b, 0) / scores.length;
+      return Math.round(avg * 10) / 10;
+    }
+    return 7.2;
+  };
+
+  const paramDefs = [
+    { name: "Technical Execution", key: "technicalExecution" },
+    { name: "Skill Level", key: "skillsLevel" },
+    { name: "Game Plan", key: "gamePlan" },
+    { name: "Preparation", key: "preparation" },
+    { name: "Intensity", key: "intensity" },
+    { name: "Focus", key: "focus" },
+    { name: "Resilience", key: "resilience" }
+  ];
+
+  const paramData = paramDefs.map(p => {
+    const score = getParamScore(p.key);
+    let label = "Optimal";
+    let color = [16, 185, 129];
+    if (score < 6.5) {
+      label = "Needs Focus";
+      color = [239, 68, 68];
+    } else if (score < 8.0) {
+      label = "Good";
+      color = [249, 115, 22];
+    }
+    return { name: p.name, score, label, color };
+  });
+
+  paramData.forEach((p, idx) => {
+    if (idx % 2 === 1) {
+      doc.setFillColor(248, 250, 252);
+      doc.rect(14, y, pageWidth - 28, 7, "F");
+    }
+
+    doc.setFontSize(8.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(15, 23, 42);
+    doc.text(p.name, 18, y + 5);
+
+    doc.setFont("helvetica", "bold");
+    doc.text(`${p.score} / 10`, 82, y + 5);
+
+    doc.setFontSize(8);
+    doc.setTextColor(p.color[0], p.color[1], p.color[2]);
+    doc.text(p.label, 118, y + 5);
+
+    // Progress Bar (out of 10)
+    const barMaxW = 38;
+    const fillW = Math.min(barMaxW, (p.score / 10) * barMaxW);
+    doc.setFillColor(226, 232, 240);
+    doc.roundedRect(152, y + 1.8, barMaxW, 3.5, 1.5, 1.5, "F");
+
+    doc.setFillColor(p.color[0], p.color[1], p.color[2]);
+    if (fillW > 0) {
+      doc.roundedRect(152, y + 1.8, fillW, 3.5, 1.5, 1.5, "F");
+    }
+
+    y += 7;
+  });
+
+  y += 8;
+
+  // SECTION 5 & 6: STRENGTHS & AREAS FOR IMPROVEMENT
+  const sortedByScore = [...paramData].sort((a, b) => b.score - a.score);
+  const strengths = sortedByScore.slice(0, 3);
+  const improvements = [...paramData].sort((a, b) => a.score - b.score).slice(0, 3);
+
+  const colW = (pageWidth - 28 - 6) / 2;
+
+  // 5. Strengths Box
+  doc.setFillColor(240, 253, 244);
+  doc.setDrawColor(34, 197, 94);
+  doc.roundedRect(14, y, colW, 28, 3, 3, "FD");
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(21, 128, 61);
+  doc.text("5. STRENGTHS (TOP 3)", 18, y + 6.5);
+
+  doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(51, 65, 85);
-  const goalText = targetGoal || "Maintain baseline execution and performance consistency.";
-  doc.text(`Goal: ${goalText}`, 14, y);
+  doc.setTextColor(30, 41, 59);
+  strengths.forEach((s, idx) => {
+    doc.text(`• ${s.name} (${s.score}/10)`, 18, y + 13 + idx * 4.5);
+  });
 
-  y += 12;
+  // 6. Areas for Improvement Box
+  doc.setFillColor(254, 243, 199);
+  doc.setDrawColor(245, 158, 11);
+  doc.roundedRect(14 + colW + 6, y, colW, 28, 3, 3, "FD");
 
-  // Practice Assessments History
-  doc.setFontSize(11);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(180, 83, 9);
+  doc.text("6. AREAS FOR IMPROVEMENT (TOP 3)", 18 + colW + 6, y + 6.5);
+
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(30, 41, 59);
+  improvements.forEach((imp, idx) => {
+    doc.text(`• ${imp.name} (${imp.score}/10)`, 18 + colW + 6, y + 13 + idx * 4.5);
+  });
+
+  addFooter(1);
+
+  // ==========================================
+  // PAGE 2: AI Recommendations, Performance Trend, Assessment History
+  // ==========================================
+  doc.addPage();
+
+  // Header Page 2
+  doc.setFillColor(249, 115, 22);
+  doc.rect(0, 0, pageWidth, 12, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(255, 255, 255);
+  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 14, 8.5);
+
+  y = 20;
+
+  // SECTION 7: AI COACH RECOMMENDATIONS
+  doc.setFontSize(10.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("LAST 5 PRACTICE ASSESSMENTS", 14, y);
-
-  y += 6;
-  if (!last5Prac || last5Prac.length === 0) {
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(100, 116, 139);
-    doc.text("No practice assessment history logged.", 14, y);
-    y += 8;
-  } else {
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    last5Prac.forEach((p: any, idx: number) => {
-      const dStr = new Date(p.date || p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-      const scoreStr = formatScoreValue(p.ppiScore);
-      doc.setTextColor(15, 23, 42);
-      doc.text(`Practice Session ${idx + 1}: ${dStr}`, 18, y);
-      doc.setTextColor(249, 115, 22);
-      doc.setFont("helvetica", "bold");
-      doc.text(`PPI Score: ${scoreStr}`, 110, y);
-      doc.setFont("helvetica", "normal");
-      y += 6;
-    });
-  }
-
-  y += 6;
-
-  // Match Assessments History
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("LAST 5 MATCH ASSESSMENTS", 14, y);
-
-  y += 6;
-  if (!last5Match || last5Match.length === 0) {
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(100, 116, 139);
-    doc.text("No match assessment history logged.", 14, y);
-    y += 8;
-  } else {
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    last5Match.forEach((m: any, idx: number) => {
-      const dStr = new Date(m.date || m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-      const scoreStr = formatScoreValue(m.mpiScore);
-      doc.setTextColor(15, 23, 42);
-      doc.text(`Match Session ${idx + 1}: ${dStr}`, 18, y);
-      doc.setTextColor(249, 115, 22);
-      doc.setFont("helvetica", "bold");
-      doc.text(`MPI Score: ${scoreStr}`, 110, y);
-      doc.setFont("helvetica", "normal");
-      y += 6;
-    });
-  }
-
-  y += 10;
-
-  // Recommended Focus Areas
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("RECOMMENDED FOCUS AREAS", 14, y);
+  doc.text("7. AI COACH RECOMMENDATIONS", 14, y);
 
   y += 6;
   if (focusAreas && focusAreas.length > 0) {
-    focusAreas.forEach((f: any, idx: number) => {
-      if (y > 255) {
-        doc.addPage();
-        y = 20;
-      }
-      doc.setFontSize(9.5);
+    focusAreas.forEach((f, idx) => {
+      doc.setFontSize(9);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(249, 115, 22);
-      doc.text(`${idx + 1}. ${f.title}`, 14, y);
-      y += 5;
+      doc.text(`${idx + 1}. ${f.title}`, 16, y);
+      y += 4.5;
 
-      doc.setFontSize(8.5);
+      doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(51, 65, 85);
-      const splitLines = doc.splitTextToSize(f.detail, pageWidth - 28);
-      doc.text(splitLines, 18, y);
-      y += splitLines.length * 4.5 + 4;
+      const lines = doc.splitTextToSize(f.detail, pageWidth - 32);
+      doc.text(lines, 20, y);
+      y += lines.length * 4 + 3.5;
     });
   } else {
-    doc.setFontSize(9);
+    doc.setFontSize(8.5);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(100, 116, 139);
-    doc.text("No specific focus recommendations logged.", 14, y);
+    doc.text("Focus on maintaining core execution and preparation consistency.", 16, y);
     y += 8;
   }
 
-  // Footer
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(148, 163, 184);
-  doc.text("Cricket Performance Index (CPI) • Confidential Player Report", 14, 285);
+  y += 6;
+
+  // SECTION 8: PERFORMANCE TREND
+  doc.setFontSize(10.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("8. PERFORMANCE TREND", 14, y);
+
+  y += 6;
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(14, y, pageWidth - 28, 26, 3, 3, "FD");
+
+  const prevAssessment = (allAssessments.length > 1) ? allAssessments[1] : null;
+  const prevCpi = prevAssessment ? (prevAssessment.ppiScore || prevAssessment.mpiScore || 70) : Math.max(0, cpiNum - 3);
+  const diff = cpiNum - prevCpi;
+
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(`• CPI Trend Chart: Currently at ${cpiNum} CPI — Overall performance is ${diff >= 0 ? "improving" : "declining"}.`, 18, y + 7);
+  doc.text(`• PPI Trend Chart: Practice performance index currently at ${ppiNum || "N/A"}.`, 18, y + 13.5);
+  doc.text(`• MPI Trend Chart: Match execution index currently at ${mpiNum || "N/A"}.`, 18, y + 20);
+
+  y += 32;
+
+  // SECTION 9: ASSESSMENT HISTORY TABLE
+  doc.setFontSize(10.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("9. ASSESSMENT HISTORY", 14, y);
+
+  y += 6;
+
+  // Table Header
+  doc.setFillColor(241, 245, 249);
+  doc.rect(14, y, pageWidth - 28, 8, "F");
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(71, 85, 105);
+  doc.text("DATE", 18, y + 5.5);
+  doc.text("PRACTICE (PPI)", 75, y + 5.5);
+  doc.text("MATCH (MPI)", 125, y + 5.5);
+  doc.text("CPI", 168, y + 5.5);
+
+  y += 8;
+
+  // Group practice and match assessments by date
+  const historyMap: Record<string, { date: string; ppi: string; mpi: string; cpi: string }> = {};
+
+  (practiceHistory || []).forEach((p: any) => {
+    const dStr = new Date(p.date || p.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
+    if (!historyMap[dStr]) {
+      historyMap[dStr] = { date: dStr, ppi: "N/A", mpi: "N/A", cpi: "N/A" };
+    }
+    historyMap[dStr].ppi = formatScoreValue(p.ppiScore);
+  });
+
+  (matchHistory || []).forEach((m: any) => {
+    const dStr = new Date(m.date || m.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
+    if (!historyMap[dStr]) {
+      historyMap[dStr] = { date: dStr, ppi: "N/A", mpi: "N/A", cpi: "N/A" };
+    }
+    historyMap[dStr].mpi = formatScoreValue(m.mpiScore);
+  });
+
+  // Calculate CPI for each row
+  Object.values(historyMap).forEach(row => {
+    const pVal = row.ppi !== "N/A" ? parseInt(row.ppi, 10) : null;
+    const mVal = row.mpi !== "N/A" ? parseInt(row.mpi, 10) : null;
+    if (pVal !== null && mVal !== null) {
+      row.cpi = Math.round((pVal + mVal) / 2).toString();
+    } else if (pVal !== null) {
+      row.cpi = pVal.toString();
+    } else if (mVal !== null) {
+      row.cpi = mVal.toString();
+    }
+  });
+
+  const sortedHistoryRows = Object.values(historyMap).sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  if (sortedHistoryRows.length === 0) {
+    doc.setFontSize(8.5);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 116, 139);
+    doc.text("No assessment history records found.", 18, y + 5);
+  } else {
+    sortedHistoryRows.slice(0, 10).forEach((row, idx) => {
+      if (idx % 2 === 1) {
+        doc.setFillColor(248, 250, 252);
+        doc.rect(14, y, pageWidth - 28, 7, "F");
+      }
+
+      doc.setFontSize(8.5);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(15, 23, 42);
+      doc.text(row.date, 18, y + 5);
+      doc.text(row.ppi, 75, y + 5);
+      doc.text(row.mpi, 125, y + 5);
+
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(249, 115, 22);
+      doc.text(row.cpi, 168, y + 5);
+
+      y += 7;
+    });
+  }
+
+  addFooter(2);
 
   doc.save(`${player.name.replace(/\s+/g, "_")}_Performance_Report.pdf`);
 };
@@ -1601,7 +1829,10 @@ export default function PlayersPage() {
                     targetGoal,
                     last5Prac,
                     last5Match,
-                    focusAreas
+                    practiceHistory,
+                    matchHistory,
+                    focusAreas,
+                    lastAssessmentDate
                   )}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-black text-xs uppercase tracking-wider transition-all shadow-xs cursor-pointer active:scale-95 group"
                 >
