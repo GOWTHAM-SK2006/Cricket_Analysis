@@ -662,6 +662,15 @@ export default function PlayersPage() {
       .toUpperCase();
   };
 
+  const getRoleEmoji = (roleStr: string) => {
+    const r = (roleStr || "").toLowerCase();
+    if (r.includes("batsman") || r.includes("batter")) return "🏏";
+    if (r.includes("bowler")) return "⚾";
+    if (r.includes("wicketkeeper") || r.includes("wicket-keeper") || r.includes("wicket keeper") || r.includes("keeper")) return "🧤";
+    if (r.includes("all-rounder") || r.includes("all rounder") || r.includes("allrounder")) return "⚡";
+    return "🏏";
+  };
+
   const getPlayerScores = (p: Player) => {
     const ppi = p.ppiScore && p.ppiScore > 0 ? p.ppiScore : null;
     const mpi = p.mpiScore && p.mpiScore > 0 ? p.mpiScore : null;
@@ -993,12 +1002,17 @@ export default function PlayersPage() {
                   >
                     <div className="flex items-center gap-4 min-w-0">
                       {/* Photo or Initials Avatar */}
-                      <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 overflow-hidden relative">
-                        {cachedPhoto ? (
-                          <img src={cachedPhoto} alt={player.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-xl font-bold text-orange-500">{getInitials(player.name)}</span>
-                        )}
+                      <div className="relative shrink-0">
+                        <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
+                          {cachedPhoto ? (
+                            <img src={cachedPhoto} alt={player.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-xl font-bold text-orange-500">{getInitials(player.name)}</span>
+                          )}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white border border-slate-200 rounded-full flex items-center justify-center text-xs shadow-xs z-10" title={player.role}>
+                          {getRoleEmoji(player.role)}
+                        </div>
                       </div>
                       
                       <div className="min-w-0 text-left space-y-0.5">
@@ -1309,17 +1323,23 @@ export default function PlayersPage() {
 
             {/* SECTION 1 – PLAYER HEADER */}
             <div className="bg-white bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-4 text-center">
-              <div 
-                onClick={() => profilePhotoInputRef.current?.click()}
-                className="w-28 h-28 rounded-3xl bg-slate-100 border-2 border-slate-200 flex items-center justify-center mx-auto overflow-hidden relative cursor-pointer group hover:border-orange-500"
-              >
-                {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
-                  <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-4xl font-bold text-orange-500">{getInitials(selectedPlayer.name)}</span>
-                )}
-                <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                  <Camera className="w-6 h-6 text-slate-900" />
+              {/* Profile Avatar */}
+              <div className="relative inline-block mx-auto">
+                <div 
+                  onClick={() => profilePhotoInputRef.current?.click()}
+                  className="w-28 h-28 rounded-3xl bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500"
+                >
+                  {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
+                    <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-4xl font-bold text-orange-500">{getInitials(selectedPlayer.name)}</span>
+                  )}
+                  <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <Camera className="w-6 h-6 text-slate-900" />
+                  </div>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-sm shadow-md z-10" title={selectedPlayer.role}>
+                  {getRoleEmoji(selectedPlayer.role)}
                 </div>
               </div>
               

@@ -20,6 +20,15 @@ const formatScore = (val: number | null | undefined) => {
   return Math.round(val);
 };
 
+const getRoleEmoji = (roleStr: string) => {
+  const r = (roleStr || "").toLowerCase();
+  if (r.includes("batsman") || r.includes("batter")) return "🏏";
+  if (r.includes("bowler")) return "⚾";
+  if (r.includes("wicketkeeper") || r.includes("wicket-keeper") || r.includes("wicket keeper") || r.includes("keeper")) return "🧤";
+  if (r.includes("all-rounder") || r.includes("all rounder") || r.includes("allrounder")) return "⚡";
+  return "🏏";
+};
+
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -289,8 +298,13 @@ export default function LeaderboardPage() {
 
                     {/* Avatar & Details */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 font-black text-xs uppercase shrink-0">
-                        {initials}
+                      <div className="relative shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 font-black text-xs uppercase">
+                          {initials}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4.5 h-4.5 bg-white border border-slate-200 rounded-full flex items-center justify-center text-[9px] shadow-xs z-10" title={player.role}>
+                          {getRoleEmoji(player.role)}
+                        </div>
                       </div>
                       <div className="text-left space-y-0.5">
                         <span className="text-sm font-black text-slate-900 uppercase block leading-tight tracking-tight group-hover:text-orange-600 transition-colors">
