@@ -183,7 +183,7 @@ export default function LeaderboardPage() {
                 {/* Micro trendline graphic */}
                 <div className="w-full h-4 mt-1">
                   <svg className="w-full h-full text-slate-400 stroke-current fill-none" viewBox="0 0 100 20">
-                    <path d="M0 15 L12 5 L25 15 L37 5 L50 15 L62 5 L75 15 L87 5 L100 15" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M0 18 L11 10 L22 17 L33 8 L44 15 L55 5 L66 13 L77 3 L88 10 L100 2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               </div>
@@ -217,7 +217,7 @@ export default function LeaderboardPage() {
                 {/* Micro trendline graphic */}
                 <div className="w-full h-5 mt-1">
                   <svg className="w-full h-full text-orange-500 stroke-current fill-none" viewBox="0 0 100 20">
-                    <path d="M0 16 L12 4 L25 16 L37 4 L50 16 L62 4 L75 16 L87 4 L100 16" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M0 19 L11 7 L22 18 L33 5 L44 16 L55 3 L66 14 L77 1 L88 9 L100 1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               </div>
@@ -251,7 +251,7 @@ export default function LeaderboardPage() {
                 {/* Micro trendline graphic */}
                 <div className="w-full h-4 mt-1">
                   <svg className="w-full h-full text-orange-400 stroke-current fill-none" viewBox="0 0 100 20">
-                    <path d="M0 15 L12 5 L25 15 L37 5 L50 15 L62 5 L75 15 L87 5 L100 15" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M0 18 L11 10 L22 17 L33 8 L44 15 L55 5 L66 13 L77 3 L88 10 L100 2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
               </div>
