@@ -1670,8 +1670,8 @@ export default function PlayersPage() {
                         expandedFocus === idx ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
                       }`}
                     >
-                      <div className="px-5 pb-5 pt-3 border-t border-slate-100 space-y-2">
-                        <p className="text-[11px] font-semibold text-zinc-400 leading-[1.7] whitespace-pre-line">
+                      <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
+                        <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
                           {focus.detail}
                         </p>
                       </div>
