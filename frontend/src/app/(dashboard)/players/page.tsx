@@ -1018,7 +1018,6 @@ export default function PlayersPage() {
                       <div className="min-w-0 text-left space-y-0.5">
                         <h4 className="text-xl font-bold text-slate-900 truncate uppercase tracking-tight leading-none">{player.name}</h4>
                         <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest truncate">{player.role}</p>
-                        <p className="text-sm font-semibold text-zinc-400 uppercase tracking-tight">Last: {assessDate}</p>
                       </div>
                     </div>
 
