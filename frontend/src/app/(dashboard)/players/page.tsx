@@ -1283,14 +1283,14 @@ export default function PlayersPage() {
               ? currentMpi 
               : null;
 
-        // Compute Trend data
+        // Compute Trend data (latest first)
         const last5Prac = [...practiceHistory]
-          .sort((a, b) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
-          .slice(-5);
+          .sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime())
+          .slice(0, 5);
 
         const last5Match = [...matchHistory]
-          .sort((a, b) => new Date(a.date || a.createdAt).getTime() - new Date(b.date || b.createdAt).getTime())
-          .slice(-5);
+          .sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime())
+          .slice(0, 5);
 
         const cpiVal = currentCpi ? parseInt(formatScoreValue(currentCpi), 10) : 0;
         const gapVal = targetCpi - cpiVal;
@@ -1487,7 +1487,7 @@ export default function PlayersPage() {
                   ) : (
                     <div className="space-y-2">
                       {last5Prac.map((p, idx) => {
-                        const prevScore = idx > 0 ? last5Prac[idx - 1].ppiScore : null;
+                        const prevScore = idx < last5Prac.length - 1 ? last5Prac[idx + 1].ppiScore : null;
                         const currentScore = p.ppiScore;
                         return (
                           <div key={p.id || idx} className="flex justify-between items-center text-xs font-bold bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200">
@@ -1525,7 +1525,7 @@ export default function PlayersPage() {
                   ) : (
                     <div className="space-y-2">
                       {last5Match.map((m, idx) => {
-                        const prevScore = idx > 0 ? last5Match[idx - 1].mpiScore : null;
+                        const prevScore = idx < last5Match.length - 1 ? last5Match[idx + 1].mpiScore : null;
                         const currentScore = m.mpiScore;
                         return (
                           <div key={m.id || idx} className="flex justify-between items-center text-xs font-bold bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200">
