@@ -31,9 +31,33 @@ const formatScoreValue = (val: number | null | undefined) => {
   return Math.round(val).toString();
 };
 
-const FAVICON_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADdElEQVR4nCWT7U9VdQCAn9+5557LuRfMlwuBgiExLJCS7MUmuCmGk0lFONdW64Oz6L3N5sqNEmfzS5ZbWyu1qeG8vkC64kWRKaPLHISMoUECCSKL14twgcvl3HvO+fWBP+DZsz3bI0KhkBRCIITAsi00l0Z4aorR0+fQkldhBSZxxHtZVfIa2BILcLhcWNEodiSCoigKQgikkMToLqyoxZWbbQyuXcefEZXAM89SHQjT2dWHpaqISITxS1UYExM4nE4UKSQIiaqqtLV381n5j5z9o4khUxDWdIKam/7pEGXfn6Xqcj2jPh//HPiKydZWHJqGmF8ISc3p4npjC0eOVxE2BftLd/Hf8Bi6AigOxkM2WRnJJA92o4+PkrxtK56sdYti3aXz9737HDtTjVRd3Dz9NZ7mbwnqk5xz7mY2MEqu/oD81GVMZWxhqXc5735zih0BgzcKXka1bJvGWx10PRinqaKcJR43E8Ew+kAz27PWEGPfZuVIJ6a9gXBMHDV1zURmZ8h4IhFbgjIzF6Ktq5/nstJITkqgp7sDlzeJhaFuvB2/sDIxntqkD7kbSaHySj3/DgwzFgzT0t6NoggUw4gyN2+gunRuXDhBvAgSm7cXkfkKy8wZ6vSd+Ce9VFReR/d4KPv0be4PTxKYnkFKiaqqKk+nJnLv4SMetwLU+DWC7XPsSXkJX5+DoZpfKS95AWPNZlakrufh8DhmJErC8sdQhIKyJM5DTmY6TiccbYWm3llmwjZltyCYVsAnxblEKw8haw8CcPLiNeJ0J9lrUwFQNFUlJzsDxZb4eyYpKdrCi1YPJYNn2JM6iye/lJBYgbdwH5ca2vjp/FV2b99I1lNPYlomImwYMkbT8Ld0cLH+LwrTY8ibv01sTj5G5jZm+u9gtP5Og3cHx05U8U7RJkoK80hbncxCxEARAqKmycbns8GKcPjyHTbVuTk1ksB3FbUU7PfxcWcCvt8aOHn4A6r9d0E4kFIuRjRNE4/u5ufzV/Fda2XgxnHmQ/OAZF+jn9UpiRx871U2vP45RVv76B0cYy5kLP4jLRSQgCTW7UJIGJl4xEggyPTcArFuN22dvRz64QJfvF9CQe565sMGDgcscgLVIRwsGAZv7syjq3eQ4tIj2KbFgY92Eb80lreKN3P0y70ADI9NkJ7ixak6kNIGKfgfLJSE62qbz04AAAAASUVORK5CYII=";
+const loadHighResLogo = (): Promise<string> => {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve("");
+    const img = new window.Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || 300;
+        canvas.height = img.naturalHeight || 300;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        } else {
+          resolve("");
+        }
+      } catch (e) {
+        resolve("");
+      }
+    };
+    img.onerror = () => resolve("");
+    img.src = "/cpi-logo.png";
+  });
+};
 
-const generatePlayerPdfReport = (
+const generatePlayerPdfReport = async (
   player: Player,
   currentCpi: number | null,
   currentPpi: number | null,
@@ -48,6 +72,7 @@ const generatePlayerPdfReport = (
   lastAssessmentDate: string,
   coachNameStr?: string
 ) => {
+  const logoDataUrl = await loadHighResLogo();
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -73,17 +98,21 @@ const generatePlayerPdfReport = (
   doc.setFillColor(249, 115, 22); // CPI Accent Stripe
   doc.rect(0, 21, pageWidth, 1, "F");
 
-  // CPI Logo Badge Icon (Using Favicon icon)
-  doc.setFillColor(255, 255, 255);
-  doc.circle(18, 11, 7, "F");
-
-  doc.setDrawColor(249, 115, 22);
-  doc.setLineWidth(0.6);
-  doc.circle(18, 11, 7, "S");
-
-  try {
-    doc.addImage(FAVICON_BASE64, "PNG", 13.5, 6.5, 9, 9);
-  } catch (e) {
+  // CPI High-Res Logo Badge Icon (Crisp, sharp, non-blurry)
+  if (logoDataUrl) {
+    try {
+      doc.addImage(logoDataUrl, "PNG", 12, 3, 14, 16);
+    } catch (e) {
+      doc.setFillColor(255, 255, 255);
+      doc.circle(18, 11, 7, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(7.5);
+      doc.setTextColor(249, 115, 22);
+      doc.text("CPI", 18, 13.5, { align: "center" });
+    }
+  } else {
+    doc.setFillColor(255, 255, 255);
+    doc.circle(18, 11, 7, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
     doc.setTextColor(249, 115, 22);
@@ -356,12 +385,21 @@ const generatePlayerPdfReport = (
   doc.setFillColor(249, 115, 22);
   doc.rect(0, 13, pageWidth, 1, "F");
 
-  // Mini Favicon Logo on Page 2
-  doc.setFillColor(255, 255, 255);
-  doc.circle(18, 7, 4.5, "F");
-  try {
-    doc.addImage(FAVICON_BASE64, "PNG", 15, 4, 6, 6);
-  } catch (e) {
+  // Mini High-Res Logo on Page 2
+  if (logoDataUrl) {
+    try {
+      doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10);
+    } catch (e) {
+      doc.setFillColor(255, 255, 255);
+      doc.circle(18, 7, 4.5, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(5.5);
+      doc.setTextColor(249, 115, 22);
+      doc.text("CPI", 18, 8.8, { align: "center" });
+    }
+  } else {
+    doc.setFillColor(255, 255, 255);
+    doc.circle(18, 7, 4.5, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(5.5);
     doc.setTextColor(249, 115, 22);
