@@ -213,6 +213,9 @@ export default function DashboardPage() {
         ]);
 
         setCoachName(profileRes.data.name);
+        if (profileRes.data.name) {
+          localStorage.setItem("userName", profileRes.data.name);
+        }
         setStats(statsRes.data);
         const playerList = playersRes.data || [];
         setPlayers(playerList);
@@ -366,7 +369,7 @@ export default function DashboardPage() {
             WELCOME BACK COACH
           </h2>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 uppercase tracking-tight leading-none flex items-center gap-2 drop-shadow-lg">
-            {coachName || "GOWTHAM"}
+            {coachName || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "COACH"}
             <span className="inline-block text-orange-600/80 drop-shadow-md">⚡</span>
           </h1>
         </div>

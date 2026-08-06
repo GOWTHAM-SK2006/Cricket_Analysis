@@ -21,6 +21,11 @@ interface Player {
   mpiScore: number | null;
   invitationCode?: string;
   invitationCodeActivated?: boolean;
+  creatorCoach?: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
 const formatScoreValue = (val: number | null | undefined) => {
@@ -76,7 +81,7 @@ const generatePlayerPdfReport = async (
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const coachName = coachNameStr || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "Gowtham";
+  const coachName = coachNameStr || (player as any)?.creatorCoach?.name || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "Coach";
   const reportDateStr = new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
 
   const addFooter = (pageNum: number) => {
@@ -565,6 +570,7 @@ export default function PlayersPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [role, setRole] = useState<string | null>(null);
+  const [currentCoachName, setCurrentCoachName] = useState<string>("");
 
   // Last assessment date cache
   const [lastAssessmentDates, setLastAssessmentDates] = useState<Record<number, string>>({});
@@ -767,6 +773,13 @@ export default function PlayersPage() {
     }
     
     fetchData();
+
+    api.get("/profile").then((res) => {
+      if (res.data && res.data.name) {
+        setCurrentCoachName(res.data.name);
+        localStorage.setItem("userName", res.data.name);
+      }
+    }).catch(() => {});
 
     // URL direct navigation check
     if (searchParams.get("add") === "true") {
@@ -1904,7 +1917,8 @@ export default function PlayersPage() {
                     practiceHistory,
                     matchHistory,
                     focusAreas,
-                    lastAssessmentDate
+                    lastAssessmentDate,
+                    currentCoachName || selectedPlayer.creatorCoach?.name || (typeof window !== "undefined" ? localStorage.getItem("userName") || "" : "")
                   )}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-black text-xs uppercase tracking-wider transition-all shadow-xs cursor-pointer active:scale-95 group"
                 >

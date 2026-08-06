@@ -31,6 +31,9 @@ export default function LoginPage() {
         
         const userRole = profileRes.data.role === "USER" ? "player" : "coach";
         localStorage.setItem("userRole", userRole);
+        if (profileRes.data.name) {
+          localStorage.setItem("userName", profileRes.data.name);
+        }
         router.push("/dashboard");
       }
     } catch (err: any) {

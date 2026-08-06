@@ -86,6 +86,9 @@ export default function DashboardLayout({
         setStatus(res.data.approvalStatus || "APPROVED");
         setOrgName(res.data.organization?.name || "the Academy");
         setUserName(res.data.name || "");
+        if (res.data.name) {
+          localStorage.setItem("userName", res.data.name);
+        }
         
         const backendRole = res.data.role;
         const mappedRole = backendRole === "USER" ? "player" : "coach";
