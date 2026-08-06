@@ -2391,9 +2391,9 @@ export default function PlayersPage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-xl active:scale-98"
             >
-              {saving ? <Loader2 className="w-6 h-6 animate-spin text-black" /> : "SAVE ASSESSMENT"}
+              {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
             </button>
           </form>
         </div>
@@ -2498,9 +2498,9 @@ export default function PlayersPage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-xl active:scale-98"
             >
-              {saving ? <Loader2 className="w-6 h-6 animate-spin text-black" /> : "SAVE ASSESSMENT"}
+              {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
             </button>
           </form>
         </div>
@@ -2549,7 +2549,7 @@ export default function PlayersPage() {
 
             <button
               type="submit"
-              className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-white shadow-xl active:scale-98"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-xl active:scale-98"
             >
               SAVE SELF ASSESSMENT
             </button>
