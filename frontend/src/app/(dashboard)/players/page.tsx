@@ -2110,8 +2110,7 @@ export default function PlayersPage() {
 
             {/* SECTION 2 – CURRENT STATUS */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
-                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 1</span>
+              <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500" />
                   CURRENT STATUS
@@ -2147,8 +2146,7 @@ export default function PlayersPage() {
 
             {/* SECTION 3 – PROGRESS */}
             <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
-                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 2</span>
+              <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-orange-500" />
                   PROGRESS
@@ -2236,8 +2234,7 @@ export default function PlayersPage() {
 
             {/* SECTION 4 – TARGETS (WHERE DO I WANT TO BE?) */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
-                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 3</span>
+              <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Target className="w-4 h-4 text-orange-500" />
                   WHERE DO I WANT TO BE?
@@ -2300,8 +2297,7 @@ export default function PlayersPage() {
 
             {/* SECTION 5 – WHAT DO I NEED TO WORK ON? */}
             <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="flex flex-col gap-0.5 border-b border-slate-200 pb-2">
-                <span className="text-sm font-bold text-orange-500 uppercase tracking-widest">QUESTION 4</span>
+              <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
                   WHAT DO I NEED TO WORK ON?
