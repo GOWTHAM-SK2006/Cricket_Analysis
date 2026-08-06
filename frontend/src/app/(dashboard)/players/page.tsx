@@ -603,11 +603,137 @@ export default function PlayersPage() {
   
   // Filter States
   const [showFilterOverlay, setShowFilterOverlay] = useState(false);
+  const [showPdfDateOverlay, setShowPdfDateOverlay] = useState(false);
+  const [pdfFromDate, setPdfFromDate] = useState<string>("");
+  const [pdfToDate, setPdfToDate] = useState<string>("");
   const [sortBy, setSortBy] = useState<"highest_cpi" | "lowest_cpi" | "highest_ppi" | "lowest_ppi" | "highest_mpi" | "lowest_mpi" | "recently_assessed">("highest_cpi");
   const [quickFilter, setQuickFilter] = useState<"all" | "top_performers" | "needs_attention" | "assessed_today" | "not_assessed_recently">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "batsman" | "bowler" | "all_rounder" | "wicket_keeper">("all");
   const [copiedCode, setCopiedCode] = useState(false);
   const [expandedFocus, setExpandedFocus] = useState<number | null>(null);
+
+  const handleGenerateFilteredPdfReport = () => {
+    if (!selectedPlayer) return;
+
+    const getItemDateStr = (item: any) => {
+      const val = item.date || item.createdAt;
+      if (!val) return "";
+      try {
+        const d = new Date(val);
+        if (isNaN(d.getTime())) return "";
+        return d.toISOString().split("T")[0];
+      } catch (e) {
+        return "";
+      }
+    };
+
+    const filteredPrac = (practiceHistory || []).filter((p: any) => {
+      const dStr = getItemDateStr(p);
+      if (!dStr) return true;
+      if (pdfFromDate && dStr < pdfFromDate) return false;
+      if (pdfToDate && dStr > pdfToDate) return false;
+      return true;
+    });
+
+    const filteredMatch = (matchHistory || []).filter((m: any) => {
+      const dStr = getItemDateStr(m);
+      if (!dStr) return true;
+      if (pdfFromDate && dStr < pdfFromDate) return false;
+      if (pdfToDate && dStr > pdfToDate) return false;
+      return true;
+    });
+
+    const calcAveragePpi = (list: any[]) => {
+      if (!list || list.length === 0) return null;
+      const scores = list.map((s: any) => {
+        if (typeof s.ppiScore === "number" && s.ppiScore > 0) {
+          return s.ppiScore <= 10 ? s.ppiScore * 10 : s.ppiScore;
+        }
+        const metrics = [
+          s.technicalExecution, s.skillsLevel, s.gamePlan,
+          s.preparation, s.intensity, s.focus || s.concentration,
+          s.resilience, s.decisionMaking, s.gameAwareness
+        ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
+        if (metrics.length > 0) {
+          const avg = metrics.reduce((a, b) => a + b, 0) / metrics.length;
+          return avg <= 10 ? avg * 10 : avg;
+        }
+        return null;
+      }).filter((v): v is number => v !== null);
+
+      if (scores.length === 0) return null;
+      return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+    };
+
+    const calcAverageMpi = (list: any[]) => {
+      if (!list || list.length === 0) return null;
+      const scores = list.map((s: any) => {
+        if (typeof s.mpiScore === "number" && s.mpiScore > 0) {
+          return s.mpiScore <= 10 ? s.mpiScore * 10 : s.mpiScore;
+        }
+        const metrics = [
+          s.technicalExecution, s.skillsLevel, s.gamePlan,
+          s.preparation, s.intensity, s.focus || s.concentration,
+          s.resilience, s.decisionMaking, s.gameAwareness
+        ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
+        if (metrics.length > 0) {
+          const avg = metrics.reduce((a, b) => a + b, 0) / metrics.length;
+          return avg <= 10 ? avg * 10 : avg;
+        }
+        return null;
+      }).filter((v): v is number => v !== null);
+
+      if (scores.length === 0) return null;
+      return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+    };
+
+    const filteredPpiVal = calcAveragePpi(filteredPrac);
+    const filteredMpiVal = calcAverageMpi(filteredMatch);
+
+    let filteredCpiVal: number | null = null;
+    if (filteredPpiVal !== null && filteredMpiVal !== null) {
+      filteredCpiVal = Math.round((filteredPpiVal + filteredMpiVal) / 2);
+    } else if (filteredPpiVal !== null) {
+      filteredCpiVal = filteredPpiVal;
+    } else if (filteredMpiVal !== null) {
+      filteredCpiVal = filteredMpiVal;
+    }
+
+    const last5PracFiltered = [...filteredPrac]
+      .sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime())
+      .slice(0, 5);
+
+    const last5MatchFiltered = [...filteredMatch]
+      .sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime())
+      .slice(0, 5);
+
+    let dateLabel = "All Assessments";
+    if (pdfFromDate && pdfToDate) {
+      dateLabel = `${pdfFromDate} to ${pdfToDate}`;
+    } else if (pdfFromDate) {
+      dateLabel = `From ${pdfFromDate}`;
+    } else if (pdfToDate) {
+      dateLabel = `Up to ${pdfToDate}`;
+    }
+
+    setShowPdfDateOverlay(false);
+
+    generatePlayerPdfReport(
+      selectedPlayer,
+      filteredCpiVal,
+      filteredPpiVal,
+      filteredMpiVal,
+      targetCpi,
+      targetGoal,
+      last5PracFiltered,
+      last5MatchFiltered,
+      filteredPrac,
+      filteredMatch,
+      focusAreas,
+      dateLabel,
+      currentCoachName || selectedPlayer.creatorCoach?.name || (typeof window !== "undefined" ? localStorage.getItem("userName") || "" : "")
+    );
+  };
 
   // Form states
   const [newPlayer, setNewPlayer] = useState({
@@ -1905,21 +2031,7 @@ export default function PlayersPage() {
               {/* Generate PDF Report option in bottom of player card box */}
               <div className="pt-2 flex justify-center">
                 <button
-                  onClick={() => generatePlayerPdfReport(
-                    selectedPlayer,
-                    currentCpi,
-                    currentPpi,
-                    currentMpi,
-                    targetCpi,
-                    targetGoal,
-                    last5Prac,
-                    last5Match,
-                    practiceHistory,
-                    matchHistory,
-                    focusAreas,
-                    lastAssessmentDate,
-                    currentCoachName || selectedPlayer.creatorCoach?.name || (typeof window !== "undefined" ? localStorage.getItem("userName") || "" : "")
-                  )}
+                  onClick={() => setShowPdfDateOverlay(true)}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-black text-xs uppercase tracking-wider transition-all shadow-xs cursor-pointer active:scale-95 group"
                 >
                   <FileText className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
@@ -2821,6 +2933,130 @@ export default function PlayersPage() {
             >
               APPLY & VIEW SQUAD
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* PDF DATE RANGE SELECTION OVERLAY */}
+      {showPdfDateOverlay && (
+        <div className="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl w-full max-w-md p-6 space-y-6 shadow-2xl text-left select-none">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-orange-100 border border-orange-300 flex items-center justify-center text-orange-600">
+                  <FileText className="w-5 h-5 stroke-[2.5]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">GENERATE PDF REPORT</h3>
+                  <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Select Date Range</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPdfDateOverlay(false)}
+                className="text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 font-semibold leading-relaxed">
+              Select <span className="font-extrabold text-slate-900">From Date</span> and <span className="font-extrabold text-slate-900">To Date</span>. The report will calculate average CPI, PPI, MPI, and 7 performance parameters exclusively for assessments within this date range.
+            </p>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-black tracking-wider text-slate-700 uppercase block">FROM DATE</label>
+                <input
+                  type="date"
+                  value={pdfFromDate}
+                  onChange={(e) => setPdfFromDate(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl p-3.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-orange-500 transition-all shadow-xs"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-black tracking-wider text-slate-700 uppercase block">TO DATE</label>
+                <input
+                  type="date"
+                  value={pdfToDate}
+                  onChange={(e) => setPdfToDate(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl p-3.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-orange-500 transition-all shadow-xs"
+                />
+              </div>
+
+              {/* Quick Presets */}
+              <div className="space-y-1.5 pt-1">
+                <label className="text-[10px] font-black tracking-widest text-slate-400 uppercase block">QUICK PRESETS</label>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPdfFromDate("");
+                      setPdfToDate("");
+                    }}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
+                  >
+                    All Time
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setDate(end.getDate() - 30);
+                      setPdfFromDate(start.toISOString().split("T")[0]);
+                      setPdfToDate(end.toISOString().split("T")[0]);
+                    }}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
+                  >
+                    Last 30 Days
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setDate(end.getDate() - 90);
+                      setPdfFromDate(start.toISOString().split("T")[0]);
+                      setPdfToDate(end.toISOString().split("T")[0]);
+                    }}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
+                  >
+                    Last 90 Days
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const end = new Date();
+                      const start = new Date(end.getFullYear(), 0, 1);
+                      setPdfFromDate(start.toISOString().split("T")[0]);
+                      setPdfToDate(end.toISOString().split("T")[0]);
+                    }}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
+                  >
+                    This Year
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowPdfDateOverlay(false)}
+                className="flex-1 py-3.5 rounded-2xl border-2 border-slate-200 text-slate-600 font-black text-xs uppercase tracking-wider hover:bg-slate-100 transition-all cursor-pointer"
+              >
+                CANCEL
+              </button>
+              <button
+                type="button"
+                onClick={handleGenerateFilteredPdfReport}
+                className="flex-1 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-orange-500/20 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                GENERATE REPORT
+              </button>
+            </div>
           </div>
         </div>
       )}
