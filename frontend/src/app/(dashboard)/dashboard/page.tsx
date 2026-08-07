@@ -328,7 +328,7 @@ export default function DashboardPage() {
     let num = typeof val === "number" ? val : parseFloat(val as any);
     if (isNaN(num) || num <= 0) return "N/A";
     if (num > 10) num = num / 10;
-    return (Math.round(num * 10) / 10).toFixed(1).replace(/\.0$/, "");
+    return (Math.round(num * 10) / 10).toFixed(1);
   };
 
   if (loading) {

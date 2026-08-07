@@ -33,7 +33,7 @@ const formatScoreValue = (val: number | null | undefined) => {
   let num = typeof val === "number" ? val : parseFloat(val as any);
   if (isNaN(num) || num <= 0) return "N/A";
   if (num > 10) num = num / 10;
-  return (Math.round(num * 10) / 10).toFixed(1).replace(/\.0$/, "");
+  return (Math.round(num * 10) / 10).toFixed(1);
 };
 
 const coachingRecommendations: Record<string, { title: string; detail: string }> = {
@@ -1507,10 +1507,10 @@ export default function PlayersPage() {
   };
 
   const getPlayerScores = (p: Player) => {
-    const ppi = p.ppiScore && p.ppiScore > 0 ? p.ppiScore : null;
-    const mpi = p.mpiScore && p.mpiScore > 0 ? p.mpiScore : null;
+    const ppi = p.ppiScore && p.ppiScore > 0 ? Math.round(p.ppiScore * 10) / 10 : null;
+    const mpi = p.mpiScore && p.mpiScore > 0 ? Math.round(p.mpiScore * 10) / 10 : null;
     const cpi = ppi && mpi 
-      ? (ppi + mpi) / 2 
+      ? Math.round(((ppi + mpi) / 2) * 10) / 10 
       : ppi 
         ? ppi 
         : mpi 
@@ -1991,10 +1991,10 @@ export default function PlayersPage() {
           });
         }
 
-        const currentPpi = selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? selectedPlayer.ppiScore : null;
-        const currentMpi = selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0 ? selectedPlayer.mpiScore : null;
+        const currentPpi = selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? Math.round(selectedPlayer.ppiScore * 10) / 10 : null;
+        const currentMpi = selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0 ? Math.round(selectedPlayer.mpiScore * 10) / 10 : null;
         const currentCpi = currentPpi && currentMpi 
-          ? (currentPpi + currentMpi) / 2 
+          ? Math.round(((currentPpi + currentMpi) / 2) * 10) / 10 
           : currentPpi 
             ? currentPpi 
             : currentMpi 
@@ -2160,35 +2160,35 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 2 – CURRENT STATUS */}
-            <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-3.5 sm:p-5.5 space-y-4 text-left">
               <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500" />
                   CURRENT STATUS
                 </h3>
               </div>
-              <div className="grid grid-cols-3 gap-3 text-center pt-1">
-                <div className="bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
-                  <p className="text-xs font-bold text-orange-400 uppercase tracking-wider mb-1">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center pt-1">
+                <div className="bg-orange-500/10 border border-orange-500/30 px-1.5 py-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
+                  <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-orange-400 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     Current CPI
                   </p>
-                  <p className="text-3xl font-bold text-orange-400 font-mono leading-none">
+                  <p className="text-xl sm:text-3xl font-bold text-orange-400 font-mono leading-none whitespace-nowrap">
                     {formatScoreValue(currentCpi)}
                   </p>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <p className="text-xs font-bold text-zinc-550 uppercase tracking-wider mb-1">
+                <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
+                  <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     Current PPI
                   </p>
-                  <p className="text-3xl font-bold text-slate-900 font-mono leading-none">
+                  <p className="text-xl sm:text-3xl font-bold text-slate-900 font-mono leading-none whitespace-nowrap">
                     {formatScoreValue(currentPpi)}
                   </p>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <p className="text-xs font-bold text-zinc-550 uppercase tracking-wider mb-1">
+                <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
+                  <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     Current MPI
                   </p>
-                  <p className="text-3xl font-bold text-slate-900 font-mono leading-none">
+                  <p className="text-xl sm:text-3xl font-bold text-slate-900 font-mono leading-none whitespace-nowrap">
                     {formatScoreValue(currentMpi)}
                   </p>
                 </div>
