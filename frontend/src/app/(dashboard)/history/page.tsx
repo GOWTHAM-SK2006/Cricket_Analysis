@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Loader2, Clipboard, ShieldCheck, ChevronRight } from "lucide-react";
+import { Loader2, Clipboard, ShieldCheck, ChevronRight, X, FileText } from "lucide-react";
 
 interface Player {
   id: number;
@@ -28,6 +28,7 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [role, setRole] = useState<string | null>(null);
+  const [selectedAssessmentDetail, setSelectedAssessmentDetail] = useState<{ type: "Practice" | "Match"; data: any } | null>(null);
 
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
@@ -116,8 +117,8 @@ export default function HistoryPage() {
   // Compute Trend data (last 5 sessions)
   const getTrendData = () => {
     const allSessions = [
-      ...practiceHistory.map((h) => ({ date: h.date, score: h.ppiScore, type: "Practice" })),
-      ...matchHistory.map((h) => ({ date: h.date, score: h.mpiScore, type: "Match" }))
+      ...practiceHistory.map((h) => ({ date: h.date, score: h.ppiScore, type: "Practice", raw: h })),
+      ...matchHistory.map((h) => ({ date: h.date, score: h.mpiScore, type: "Match", raw: h }))
     ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     return allSessions.slice(-5);
@@ -168,8 +169,13 @@ export default function HistoryPage() {
                 </div>
                 <div className="flex items-center justify-between gap-2 pt-2">
                   {lastSessions.map((s, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center bg-slate-100 border border-slate-200 rounded-xl py-3 px-1">
-                      <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">{s.type === "Practice" ? "Prac" : "Match"}</span>
+                    <div 
+                      key={idx} 
+                      onClick={() => setSelectedAssessmentDetail({ type: s.type as any, data: s.raw })}
+                      className="flex-1 flex flex-col items-center bg-slate-100 border border-slate-200 rounded-xl py-3 px-1 cursor-pointer hover:border-orange-400 transition-all group"
+                      title="Click to view assessment details"
+                    >
+                      <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest group-hover:scale-105 transition-transform">{s.type === "Practice" ? "Prac" : "Match"}</span>
                       <span className="text-lg font-black text-slate-900 mt-1">{formatScoreValue(s.score)}</span>
                     </div>
                   ))}
@@ -196,14 +202,18 @@ export default function HistoryPage() {
                 ) : (
                   <div className="space-y-3">
                     {practiceHistory.map((item, idx) => (
-                      <div key={idx} className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between">
+                      <div 
+                        key={idx} 
+                        onClick={() => setSelectedAssessmentDetail({ type: "Practice", data: item })}
+                        className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-orange-400 hover:shadow-sm transition-all group"
+                      >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+                          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 group-hover:scale-105 transition-transform">
                             <Clipboard className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="text-xs font-bold text-zinc-500">{item.date}</div>
-                            <div className="text-sm font-bold text-slate-900 truncate max-w-[180px] uppercase">
+                            <div className="text-sm font-bold text-slate-900 truncate max-w-[180px] uppercase group-hover:text-orange-600 transition-colors">
                               {item.notes || "PRACTICE DRILLS"}
                             </div>
                           </div>
@@ -227,14 +237,18 @@ export default function HistoryPage() {
                 ) : (
                   <div className="space-y-3">
                     {matchHistory.map((item, idx) => (
-                      <div key={idx} className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between">
+                      <div 
+                        key={idx} 
+                        onClick={() => setSelectedAssessmentDetail({ type: "Match", data: item })}
+                        className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-orange-400 hover:shadow-sm transition-all group"
+                      >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+                          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 group-hover:scale-105 transition-transform">
                             <ShieldCheck className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="text-xs font-bold text-zinc-500">{item.date}</div>
-                            <div className="text-sm font-bold text-slate-900 truncate max-w-[180px] uppercase">
+                            <div className="text-sm font-bold text-slate-900 truncate max-w-[180px] uppercase group-hover:text-orange-600 transition-colors">
                               {item.notes || "MATCH SESSION"}
                             </div>
                           </div>
@@ -251,6 +265,101 @@ export default function HistoryPage() {
             </div>
           )}
 
+        </div>
+      )}
+
+      {/* ------------------ MODAL: ASSESSMENT DETAIL (NOTES & 7 SLIDERS) ------------------ */}
+      {selectedAssessmentDetail && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 max-w-md w-full space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+            
+            {/* Header */}
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <div>
+                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">
+                  {selectedAssessmentDetail.type === "Practice" ? "Practice Assessment Details" : "Match Assessment Details"}
+                </h3>
+                <p className="text-xs font-bold text-orange-500 uppercase">{selectedPlayer?.name}</p>
+              </div>
+              <button
+                onClick={() => setSelectedAssessmentDetail(null)}
+                className="p-1 text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Assessment Date & Score */}
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center">
+              <div>
+                <span className="text-xs font-bold text-zinc-500 uppercase block">Assessment Date</span>
+                <span className="text-sm font-bold text-slate-900">
+                  {selectedAssessmentDetail.data.date || (selectedAssessmentDetail.data.createdAt ? new Date(selectedAssessmentDetail.data.createdAt).toLocaleDateString("en-US", {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  }) : "N/A")}
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-bold text-zinc-500 uppercase block">
+                  {selectedAssessmentDetail.type === "Practice" ? "PPI Score" : "MPI Score"}
+                </span>
+                <span className="text-2xl font-extrabold text-orange-500 tracking-tight">
+                  {formatScoreValue(selectedAssessmentDetail.type === "Practice" ? selectedAssessmentDetail.data.ppiScore : selectedAssessmentDetail.data.mpiScore)}
+                </span>
+              </div>
+            </div>
+
+            {/* Parameter Ratings (7 Parameters) */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold tracking-widest text-slate-900 uppercase border-b border-slate-100 pb-1">
+                Parameter Ratings (Out of 10)
+              </h4>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { label: "Technical Execution", val: selectedAssessmentDetail.data.technicalExecution },
+                  { label: "Skill Level", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique },
+                  { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
+                  { label: "Preparation", val: selectedAssessmentDetail.data.preparation },
+                  { label: "Intensity", val: selectedAssessmentDetail.data.intensity },
+                  { label: "Focus / Concentration", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration },
+                  { label: "Resilience / Adaptability", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                    <span className="font-semibold text-slate-700">{item.label}</span>
+                    <span className="font-bold text-slate-900 tracking-tight">{item.val !== undefined && item.val !== null ? `${item.val}/10` : "N/A"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Coach Notes */}
+            <div className="space-y-2 pt-1 border-t border-slate-200">
+              <h4 className="text-xs font-bold tracking-widest text-slate-900 uppercase flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-orange-500" />
+                Coach Notes & Comments
+              </h4>
+              <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80 text-xs leading-relaxed text-slate-800 italic">
+                {selectedAssessmentDetail.data.notes && selectedAssessmentDetail.data.notes.trim() !== "" ? (
+                  `"${selectedAssessmentDetail.data.notes}"`
+                ) : (
+                  <span className="text-slate-400 not-italic">No coach notes recorded for this assessment session.</span>
+                )}
+              </div>
+            </div>
+
+            {/* Close Button */}
+            <div className="pt-2">
+              <button
+                onClick={() => setSelectedAssessmentDetail(null)}
+                className="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Close Details
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
