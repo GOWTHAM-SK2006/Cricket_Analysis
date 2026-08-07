@@ -2344,17 +2344,9 @@ export default function PlayersPage() {
               <div className="space-y-4 pt-1">
                 {/* Practice History scroll area */}
                 <div>
-                  <div className="flex justify-between items-center mb-2 border-b border-slate-200 pb-1">
-                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block">
-                      Practice History
-                    </span>
-                    <button
-                      onClick={() => setShowHistoryOverlay(true)}
-                      className="text-xs font-bold text-orange-500 hover:text-orange-600 uppercase tracking-wider transition-colors cursor-pointer"
-                    >
-                      VIEW ALL
-                    </button>
-                  </div>
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
+                    Practice History
+                  </span>
                   {practiceHistory.length === 0 ? (
                     <p className="text-xs text-zinc-605 font-bold uppercase py-1">No Practice History</p>
                   ) : (
@@ -2374,17 +2366,9 @@ export default function PlayersPage() {
 
                 {/* Match History scroll area */}
                 <div>
-                  <div className="flex justify-between items-center mb-2 border-b border-slate-200 pb-1">
-                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block">
-                      Match History
-                    </span>
-                    <button
-                      onClick={() => setShowHistoryOverlay(true)}
-                      className="text-xs font-bold text-orange-500 hover:text-orange-600 uppercase tracking-wider transition-colors cursor-pointer"
-                    >
-                      VIEW ALL
-                    </button>
-                  </div>
+                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
+                    Match History
+                  </span>
                   {matchHistory.length === 0 ? (
                     <p className="text-xs text-zinc-605 font-bold uppercase py-1">No Match History</p>
                   ) : (
