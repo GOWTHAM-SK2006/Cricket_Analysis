@@ -266,7 +266,7 @@ export default function HelpPage() {
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              IF SCORE IS HIGH (&ge; 7.0)
+              IF SCORE IS HIGH (&gt;7)
             </button>
             <button
               onClick={() => setScoreTab("low")}
@@ -276,7 +276,7 @@ export default function HelpPage() {
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              IF SCORE IS LOW (&lt; 5.0)
+              IF SCORE IS LOW (&lt;5)
             </button>
           </div>
 
