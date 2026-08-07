@@ -266,7 +266,6 @@ export default function HelpPage() {
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <CheckCircle2 className="w-3.5 h-3.5" />
               IF SCORE IS HIGH (&ge; 7.0)
             </button>
             <button
@@ -277,7 +276,6 @@ export default function HelpPage() {
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <AlertTriangle className="w-3.5 h-3.5" />
               IF SCORE IS LOW (&lt; 5.0)
             </button>
           </div>
