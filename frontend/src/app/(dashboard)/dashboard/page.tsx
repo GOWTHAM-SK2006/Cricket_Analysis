@@ -613,7 +613,6 @@ export default function DashboardPage() {
             {/* BEST: Above 70 CPI - GREEN */}
             <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
               <div className="flex items-center justify-center gap-1 text-emerald-800">
-                <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span className="text-[11px] font-black uppercase tracking-wider">BEST</span>
               </div>
               <span className="text-xs font-black text-emerald-700 block uppercase tracking-tight">
@@ -630,7 +629,6 @@ export default function DashboardPage() {
             {/* AVG: 50 to 70 CPI - YELLOW */}
             <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
               <div className="flex items-center justify-center gap-1 text-yellow-900">
-                <Zap className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span className="text-[11px] font-black uppercase tracking-wider">AVG</span>
               </div>
               <span className="text-xs font-black text-yellow-800 block uppercase tracking-tight">
@@ -647,7 +645,6 @@ export default function DashboardPage() {
             {/* LOW: Below 50 CPI - RED */}
             <div className="bg-red-50 border-2 border-red-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
               <div className="flex items-center justify-center gap-1 text-red-800">
-                <AlertTriangle className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span className="text-[11px] font-black uppercase tracking-wider">LOW</span>
               </div>
               <span className="text-xs font-black text-red-700 block uppercase tracking-tight">
