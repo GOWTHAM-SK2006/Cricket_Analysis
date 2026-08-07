@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { 
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck, 
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, TrendingUp, ChevronDown, FileText, Download
+  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import jsPDF from "jspdf";
@@ -2201,93 +2201,6 @@ export default function PlayersPage() {
               </div>
             </div>
 
-            {/* SECTION 3 – PROGRESS */}
-            <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-              <div className="border-b border-slate-200 pb-2">
-                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-orange-500" />
-                  PROGRESS
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                {/* Last 5 Practice */}
-                <div className="space-y-2">
-                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-slate-200 pb-1">
-                    Last 5 Practice Assessments
-                  </span>
-                  {last5Prac.length === 0 ? (
-                    <span className="text-xs text-zinc-650 font-bold uppercase block py-2">No Practice Data</span>
-                  ) : (
-                    <div className="space-y-2">
-                      {last5Prac.map((p, idx) => {
-                        const prevScore = idx < last5Prac.length - 1 ? last5Prac[idx + 1].ppiScore : null;
-                        const currentScore = p.ppiScore;
-                        return (
-                          <div key={p.id || idx} className="flex justify-between items-center text-xs font-bold bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200">
-                            <span className="text-zinc-400 uppercase">
-                              {new Date(p.date || p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                            </span>
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-sm font-black text-slate-900 font-mono bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
-                                {formatScoreValue(currentScore)}
-                              </span>
-                              {prevScore !== null && currentScore !== null && (
-                                currentScore > prevScore ? (
-                                  <span className="text-green-500 font-extrabold text-xs">↑</span>
-                                ) : currentScore < prevScore ? (
-                                  <span className="text-red-500 font-extrabold text-xs">↓</span>
-                                ) : (
-                                  <span className="text-zinc-650 font-bold text-xs">•</span>
-                                )
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                {/* Last 5 Match */}
-                <div className="space-y-2">
-                  <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block border-b border-slate-200 pb-1">
-                    Last 5 Match Assessments
-                  </span>
-                  {last5Match.length === 0 ? (
-                    <span className="text-xs text-zinc-655 font-bold uppercase block py-2">No Match Data</span>
-                  ) : (
-                    <div className="space-y-2">
-                      {last5Match.map((m, idx) => {
-                        const prevScore = idx < last5Match.length - 1 ? last5Match[idx + 1].mpiScore : null;
-                        const currentScore = m.mpiScore;
-                        return (
-                          <div key={m.id || idx} className="flex justify-between items-center text-xs font-bold bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200">
-                            <span className="text-zinc-400 uppercase">
-                              {new Date(m.date || m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                            </span>
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-sm font-black text-slate-900 font-mono bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
-                                {formatScoreValue(currentScore)}
-                              </span>
-                              {prevScore !== null && currentScore !== null && (
-                                currentScore > prevScore ? (
-                                  <span className="text-green-500 font-extrabold text-xs">↑</span>
-                                ) : currentScore < prevScore ? (
-                                  <span className="text-red-500 font-extrabold text-xs">↓</span>
-                                ) : (
-                                  <span className="text-zinc-650 font-bold text-xs">•</span>
-                                )
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
 
             {/* SECTION 4 – TARGETS (WHERE DO I WANT TO BE?) */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
