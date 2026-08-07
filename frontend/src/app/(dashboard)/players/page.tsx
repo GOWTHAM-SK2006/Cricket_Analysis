@@ -761,6 +761,7 @@ export default function PlayersPage() {
   const [showMatchOverlay, setShowMatchOverlay] = useState(false);
   const [showSelfOverlay, setShowSelfOverlay] = useState(false);
   const [showHistoryOverlay, setShowHistoryOverlay] = useState(false);
+  const [selectedAssessmentDetail, setSelectedAssessmentDetail] = useState<{ type: "Practice" | "Match"; data: any } | null>(null);
   const [showRecsOverlay, setShowRecsOverlay] = useState(false);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -2352,9 +2353,14 @@ export default function PlayersPage() {
                   ) : (
                     <div className="max-h-[160px] overflow-y-auto space-y-1.5 pr-1">
                       {practiceHistory.map((p, idx) => (
-                        <div key={p.id || idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                        <div
+                          key={p.id || idx}
+                          onClick={() => setSelectedAssessmentDetail({ type: "Practice", data: p })}
+                          className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs cursor-pointer hover:bg-slate-100 hover:border-orange-300 transition-all group"
+                          title="Click to view assessment details and coach notes"
+                        >
                           <div>
-                            <span className="font-bold text-slate-900 block">Practice Assessment</span>
+                            <span className="font-bold text-slate-900 block group-hover:text-orange-600 transition-colors">Practice Assessment</span>
                             <span className="text-xs text-zinc-550">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
                           </div>
                           <span className="font-bold text-orange-500 font-mono text-sm">PPI {formatScoreValue(p.ppiScore)}</span>
@@ -2374,9 +2380,14 @@ export default function PlayersPage() {
                   ) : (
                     <div className="max-h-[160px] overflow-y-auto space-y-1.5 pr-1">
                       {matchHistory.map((m, idx) => (
-                        <div key={m.id || idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                        <div
+                          key={m.id || idx}
+                          onClick={() => setSelectedAssessmentDetail({ type: "Match", data: m })}
+                          className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs cursor-pointer hover:bg-slate-100 hover:border-orange-300 transition-all group"
+                          title="Click to view assessment details and coach notes"
+                        >
                           <div>
-                            <span className="font-bold text-slate-900 block">Match Assessment</span>
+                            <span className="font-bold text-slate-900 block group-hover:text-orange-600 transition-colors">Match Assessment</span>
                             <span className="text-xs text-zinc-550">{new Date(m.date || m.createdAt).toLocaleDateString()}</span>
                           </div>
                           <span className="font-bold text-orange-500 font-mono text-sm">MPI {formatScoreValue(m.mpiScore)}</span>
@@ -2702,7 +2713,11 @@ export default function PlayersPage() {
             ) : (
               <div className="space-y-3">
                 {practiceHistory.map((h, i) => (
-                  <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
+                  <div
+                    key={i}
+                    onClick={() => setSelectedAssessmentDetail({ type: "Practice", data: h })}
+                    className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center cursor-pointer hover:border-orange-400 hover:shadow-sm transition-all"
+                  >
                     <div>
                       <div className="text-xs font-bold text-zinc-500">{h.date}</div>
                       <div className="text-sm font-semibold text-slate-900 mt-1 italic">
@@ -2726,7 +2741,11 @@ export default function PlayersPage() {
             ) : (
               <div className="space-y-3">
                 {matchHistory.map((h, i) => (
-                  <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center">
+                  <div
+                    key={i}
+                    onClick={() => setSelectedAssessmentDetail({ type: "Match", data: h })}
+                    className="bg-white border border-slate-200 rounded-2xl p-4 flex justify-between items-center cursor-pointer hover:border-orange-400 hover:shadow-sm transition-all"
+                  >
                     <div>
                       <div className="text-xs font-bold text-zinc-500">{h.date}</div>
                       <div className="text-sm font-semibold text-slate-900 mt-1 italic">
@@ -2767,6 +2786,102 @@ export default function PlayersPage() {
                 })}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ------------------ OVERLAY: ASSESSMENT DETAILS ------------------ */}
+      {selectedAssessmentDetail && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-5 text-left border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex justify-between items-center pb-3 border-b border-slate-200">
+              <div>
+                <span className="text-[10px] font-extrabold text-orange-500 uppercase tracking-widest block">
+                  {selectedAssessmentDetail.type === "Practice" ? "Practice Assessment Details" : "Match Assessment Details"}
+                </span>
+                <h3 className="text-lg font-bold text-slate-900 uppercase">
+                  {selectedPlayer?.name || "Player Assessment"}
+                </h3>
+              </div>
+              <button
+                onClick={() => setSelectedAssessmentDetail(null)}
+                className="p-1 text-slate-400 hover:text-slate-900 rounded-full hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Assessment Date & Score */}
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center">
+              <div>
+                <span className="text-xs font-bold text-zinc-500 uppercase block">Assessment Date</span>
+                <span className="text-sm font-bold text-slate-900">
+                  {new Date(selectedAssessmentDetail.data.date || selectedAssessmentDetail.data.createdAt).toLocaleDateString("en-US", {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  })}
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-bold text-zinc-500 uppercase block">
+                  {selectedAssessmentDetail.type === "Practice" ? "PPI Score" : "MPI Score"}
+                </span>
+                <span className="text-2xl font-black text-orange-500 font-mono">
+                  {formatScoreValue(selectedAssessmentDetail.type === "Practice" ? selectedAssessmentDetail.data.ppiScore : selectedAssessmentDetail.data.mpiScore)}
+                </span>
+              </div>
+            </div>
+
+            {/* Parameter Ratings */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold tracking-widest text-slate-900 uppercase border-b border-slate-100 pb-1">
+                Parameter Ratings (Out of 10)
+              </h4>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { label: "Technical Execution", val: selectedAssessmentDetail.data.technicalExecution },
+                  { label: "Skill Level", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique },
+                  { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
+                  { label: "Preparation", val: selectedAssessmentDetail.data.preparation },
+                  { label: "Intensity", val: selectedAssessmentDetail.data.intensity },
+                  { label: "Focus / Concentration", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration },
+                  { label: "Resilience", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                    <span className="font-semibold text-slate-700">{item.label}</span>
+                    <span className="font-bold text-slate-900 font-mono">{item.val !== undefined && item.val !== null ? `${item.val}/10` : "N/A"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Coach Notes */}
+            <div className="space-y-2 pt-1 border-t border-slate-200">
+              <h4 className="text-xs font-bold tracking-widest text-slate-900 uppercase flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-orange-500" />
+                Coach Notes & Comments
+              </h4>
+              <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80 text-xs leading-relaxed text-slate-800 italic">
+                {selectedAssessmentDetail.data.notes && selectedAssessmentDetail.data.notes.trim() !== "" ? (
+                  `"${selectedAssessmentDetail.data.notes}"`
+                ) : (
+                  <span className="text-slate-400 not-italic">No coach notes recorded for this assessment session.</span>
+                )}
+              </div>
+            </div>
+
+            {/* Close Button */}
+            <div className="pt-2">
+              <button
+                onClick={() => setSelectedAssessmentDetail(null)}
+                className="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-slate-800 transition-colors"
+              >
+                Close Details
+              </button>
+            </div>
           </div>
         </div>
       )}
