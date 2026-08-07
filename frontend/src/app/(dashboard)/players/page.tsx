@@ -2172,7 +2172,7 @@ export default function PlayersPage() {
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-orange-400 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     Current CPI
                   </p>
-                  <p className="text-xl sm:text-3xl font-bold text-orange-400 font-mono leading-none whitespace-nowrap">
+                  <p className="text-xl sm:text-3xl font-extrabold text-orange-500 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentCpi)}
                   </p>
                 </div>
@@ -2180,7 +2180,7 @@ export default function PlayersPage() {
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     Current PPI
                   </p>
-                  <p className="text-xl sm:text-3xl font-bold text-slate-900 font-mono leading-none whitespace-nowrap">
+                  <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentPpi)}
                   </p>
                 </div>
@@ -2188,7 +2188,7 @@ export default function PlayersPage() {
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     Current MPI
                   </p>
-                  <p className="text-xl sm:text-3xl font-bold text-slate-900 font-mono leading-none whitespace-nowrap">
+                  <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentMpi)}
                   </p>
                 </div>
@@ -2219,7 +2219,7 @@ export default function PlayersPage() {
                       <select
                         value={tempTargetCpi}
                         onChange={(e) => setTempTargetCpi(e.target.value)}
-                        className="bg-white border-2 border-slate-200 rounded-xl px-2 py-1.5 font-mono font-bold text-slate-900 text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
+                        className="bg-white border-2 border-slate-200 rounded-xl px-2 py-1.5 font-bold text-slate-900 text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
                         {[7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0].map((v) => (
                           <option key={v} value={v.toString()}>{v}</option>
@@ -2237,7 +2237,7 @@ export default function PlayersPage() {
                       onClick={() => { setTempTargetCpi(targetCpi.toString()); setIsEditingTarget(true); }}
                       className="cursor-pointer group flex items-center gap-1.5 bg-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 hover:border-orange-500 transition-all"
                     >
-                      <span className="text-xl font-bold text-orange-500 font-mono">{targetCpi}</span>
+                      <span className="text-xl font-bold text-orange-500 tracking-tight">{targetCpi}</span>
                       <Edit2 className="w-3.5 h-3.5 text-zinc-500 group-hover:text-orange-500 transition-colors" />
                     </div>
                   )}
@@ -2247,7 +2247,7 @@ export default function PlayersPage() {
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center text-sm font-bold text-zinc-500 uppercase tracking-wider px-1">
                     <span>Progress to Target</span>
-                    <span className="font-mono text-orange-500">{targetPercent}%</span>
+                    <span className="font-bold text-orange-500 tracking-tight">{targetPercent}%</span>
                   </div>
                   <div className="w-full h-3.5 bg-slate-100 border border-slate-200 rounded-full overflow-hidden p-0.5">
                     <div 
@@ -2356,7 +2356,7 @@ export default function PlayersPage() {
                             <span className="font-bold text-slate-900 block group-hover:text-orange-600 transition-colors">Practice Assessment</span>
                             <span className="text-xs text-zinc-550">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <span className="font-bold text-orange-500 font-mono text-sm">PPI {formatScoreValue(p.ppiScore)}</span>
+                          <span className="font-bold text-orange-500 text-sm tracking-tight">PPI {formatScoreValue(p.ppiScore)}</span>
                         </div>
                       ))}
                     </div>
@@ -2383,7 +2383,7 @@ export default function PlayersPage() {
                             <span className="font-bold text-slate-900 block group-hover:text-orange-600 transition-colors">Match Assessment</span>
                             <span className="text-xs text-zinc-550">{new Date(m.date || m.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <span className="font-bold text-orange-500 font-mono text-sm">MPI {formatScoreValue(m.mpiScore)}</span>
+                          <span className="font-bold text-orange-500 text-sm tracking-tight">MPI {formatScoreValue(m.mpiScore)}</span>
                         </div>
                       ))}
                     </div>
@@ -2822,7 +2822,7 @@ export default function PlayersPage() {
                 <span className="text-xs font-bold text-zinc-500 uppercase block">
                   {selectedAssessmentDetail.type === "Practice" ? "PPI Score" : "MPI Score"}
                 </span>
-                <span className="text-2xl font-black text-orange-500 font-mono">
+                <span className="text-2xl font-extrabold text-orange-500 tracking-tight">
                   {formatScoreValue(selectedAssessmentDetail.type === "Practice" ? selectedAssessmentDetail.data.ppiScore : selectedAssessmentDetail.data.mpiScore)}
                 </span>
               </div>
@@ -2845,7 +2845,7 @@ export default function PlayersPage() {
                 ].map((item, idx) => (
                   <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                     <span className="font-semibold text-slate-700">{item.label}</span>
-                    <span className="font-bold text-slate-900 font-mono">{item.val !== undefined && item.val !== null ? `${item.val}/10` : "N/A"}</span>
+                    <span className="font-bold text-slate-900 tracking-tight">{item.val !== undefined && item.val !== null ? `${item.val}/10` : "N/A"}</span>
                   </div>
                 ))}
               </div>

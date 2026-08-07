@@ -179,7 +179,7 @@ export default function LeaderboardPage() {
               </div>
               <div className="w-full space-y-1">
                 <span className="text-[9px] font-black text-slate-400 uppercase block tracking-wider">CPI SCORE</span>
-                <span className="text-2xl font-black text-slate-800 font-mono block">
+                <span className="text-2xl font-extrabold text-slate-800 tracking-tight block">
                   {getPlayerScores(topThree[1])[metricTab] || "0"}
                 </span>
               </div>
@@ -207,7 +207,7 @@ export default function LeaderboardPage() {
               </div>
               <div className="w-full space-y-1">
                 <span className="text-[9px] font-black text-orange-600 uppercase block tracking-wider bg-orange-50 py-0.5 rounded-full">CPI SCORE</span>
-                <span className="text-3xl font-black text-orange-600 font-mono block">
+                <span className="text-3xl font-extrabold text-orange-600 tracking-tight block">
                   {getPlayerScores(topThree[0])[metricTab] || "0"}
                 </span>
               </div>
@@ -221,7 +221,7 @@ export default function LeaderboardPage() {
               onClick={() => router.push(`/players?id=${topThree[2].id}`)}
               className="bg-white border-2 border-slate-200 rounded-3xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-between min-h-[220px] relative group shadow-sm hover:shadow-md"
             >
-              <div className="absolute -top-3 w-8 h-8 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-800 font-mono font-black text-xs flex items-center justify-center shadow-xs">
+              <div className="absolute -top-3 w-8 h-8 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs">
                 3
               </div>
               <div className="pt-2 w-full flex flex-col items-center gap-2">
@@ -235,7 +235,7 @@ export default function LeaderboardPage() {
               </div>
               <div className="w-full space-y-1">
                 <span className="text-[9px] font-black text-slate-400 uppercase block tracking-wider">CPI SCORE</span>
-                <span className="text-2xl font-black text-orange-600 font-mono block">
+                <span className="text-2xl font-extrabold text-orange-600 tracking-tight block">
                   {getPlayerScores(topThree[2])[metricTab] || "0"}
                 </span>
               </div>
