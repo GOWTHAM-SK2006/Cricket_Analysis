@@ -136,22 +136,22 @@ export default function DashboardPage() {
   const [lastAssessmentDates, setLastAssessmentDates] = useState<Record<string, string>>({});
 
   const getPlayerCpiScore = (p: Player) => {
-    const ppi = p.ppiScore ? (p.ppiScore <= 10 ? Math.round(p.ppiScore * 10) : Math.round(p.ppiScore)) : 0;
-    const mpi = p.mpiScore ? (p.mpiScore <= 10 ? Math.round(p.mpiScore * 10) : Math.round(p.mpiScore)) : 0;
-    if (ppi > 0 && mpi > 0) return Math.round(ppi * 0.4 + mpi * 0.6);
-    if (ppi > 0) return ppi;
-    if (mpi > 0) return mpi;
+    let ppi = p.ppiScore ? (p.ppiScore > 10 ? p.ppiScore / 10 : p.ppiScore) : 0;
+    let mpi = p.mpiScore ? (p.mpiScore > 10 ? p.mpiScore / 10 : p.mpiScore) : 0;
+    if (ppi > 0 && mpi > 0) return Math.round((ppi * 0.4 + mpi * 0.6) * 10) / 10;
+    if (ppi > 0) return Math.round(ppi * 10) / 10;
+    if (mpi > 0) return Math.round(mpi * 10) / 10;
     return 0;
   };
 
-  const bestCategoryPlayers = players.filter((p) => getPlayerCpiScore(p) > 70);
+  const bestCategoryPlayers = players.filter((p) => getPlayerCpiScore(p) > 7.0);
   const avgCategoryPlayers = players.filter((p) => {
     const score = getPlayerCpiScore(p);
-    return score >= 50 && score <= 70;
+    return score >= 5.0 && score <= 7.0;
   });
   const lowCategoryPlayers = players.filter((p) => {
     const score = getPlayerCpiScore(p);
-    return score < 50;
+    return score < 5.0;
   });
 
   const fetchLastAssessmentDates = async (playerList: Player[]) => {
@@ -324,10 +324,11 @@ export default function DashboardPage() {
   };
 
   const formatScoreValue = (val: number) => {
-    if (val <= 10) {
-      return Math.round(val * 10);
-    }
-    return Math.round(val);
+    if (!val || val === 0) return "N/A";
+    let num = typeof val === "number" ? val : parseFloat(val as any);
+    if (isNaN(num) || num <= 0) return "N/A";
+    if (num > 10) num = num / 10;
+    return (Math.round(num * 10) / 10).toFixed(1).replace(/\.0$/, "");
   };
 
   if (loading) {
@@ -610,13 +611,13 @@ export default function DashboardPage() {
 
           {/* 3 Category Cards: BEST (Green), AVG (Yellow), LOW (Red) */}
           <div className="grid grid-cols-3 gap-3">
-            {/* BEST: Above 70 CPI - GREEN */}
+            {/* BEST: Above 7 CPI - GREEN */}
             <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
               <div className="flex items-center justify-center gap-1 text-emerald-800">
                 <span className="text-[11px] font-black uppercase tracking-wider">BEST</span>
               </div>
               <span className="text-xs font-black text-emerald-700 block uppercase tracking-tight">
-                &gt; 70 CPI
+                &gt; 7 CPI
               </span>
               <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
                 {bestCategoryPlayers.length}
@@ -626,13 +627,13 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            {/* AVG: 50 to 70 CPI - YELLOW */}
+            {/* AVG: 5 to 7 CPI - YELLOW */}
             <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
               <div className="flex items-center justify-center gap-1 text-yellow-900">
                 <span className="text-[11px] font-black uppercase tracking-wider">AVG</span>
               </div>
               <span className="text-xs font-black text-yellow-800 block uppercase tracking-tight">
-                50 - 70 CPI
+                5 - 7 CPI
               </span>
               <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
                 {avgCategoryPlayers.length}
@@ -642,13 +643,13 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            {/* LOW: Below 50 CPI - RED */}
+            {/* LOW: Below 5 CPI - RED */}
             <div className="bg-red-50 border-2 border-red-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
               <div className="flex items-center justify-center gap-1 text-red-800">
                 <span className="text-[11px] font-black uppercase tracking-wider">LOW</span>
               </div>
               <span className="text-xs font-black text-red-700 block uppercase tracking-tight">
-                &lt; 50 CPI
+                &lt; 5 CPI
               </span>
               <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
                 {lowCategoryPlayers.length}

@@ -30,10 +30,10 @@ interface Player {
 
 const formatScoreValue = (val: number | null | undefined) => {
   if (val === null || val === undefined || val === 0) return "N/A";
-  if (val <= 10) {
-    return Math.round(val * 10).toString();
-  }
-  return Math.round(val).toString();
+  let num = typeof val === "number" ? val : parseFloat(val as any);
+  if (isNaN(num) || num <= 0) return "N/A";
+  if (num > 10) num = num / 10;
+  return (Math.round(num * 10) / 10).toFixed(1).replace(/\.0$/, "");
 };
 
 const coachingRecommendations: Record<string, { title: string; detail: string }> = {
@@ -341,19 +341,19 @@ const generatePlayerPdfReport = async (
 
   y += 6;
 
-  const cpiNum = currentCpi ? parseInt(formatScoreValue(currentCpi), 10) : 0;
-  const ppiNum = currentPpi ? parseInt(formatScoreValue(currentPpi), 10) : 0;
-  const mpiNum = currentMpi ? parseInt(formatScoreValue(currentMpi), 10) : 0;
+  const cpiNum = currentCpi ? parseFloat(formatScoreValue(currentCpi)) : 0;
+  const ppiNum = currentPpi ? parseFloat(formatScoreValue(currentPpi)) : 0;
+  const mpiNum = currentMpi ? parseFloat(formatScoreValue(currentMpi)) : 0;
 
   let ratingStr = "Needs Attention";
   let ratingColor = [239, 68, 68]; // Red
-  if (cpiNum >= 80) {
+  if (cpiNum >= 8.0) {
     ratingStr = "Excellent";
     ratingColor = [16, 185, 129]; // Green
-  } else if (cpiNum >= 70) {
+  } else if (cpiNum >= 7.0) {
     ratingStr = "High Potential";
     ratingColor = [249, 115, 22]; // Orange
-  } else if (cpiNum >= 50) {
+  } else if (cpiNum >= 5.0) {
     ratingStr = "Developing";
     ratingColor = [234, 179, 8]; // Yellow
   }
@@ -955,9 +955,9 @@ export default function PlayersPage() {
   const [error, setError] = useState("");
 
   // Target Goals states
-  const [targetCpi, setTargetCpi] = useState<number>(85);
+  const [targetCpi, setTargetCpi] = useState<number>(8.5);
   const [targetGoal, setTargetGoal] = useState<string>("Improve core consistency");
-  const [tempTargetCpi, setTempTargetCpi] = useState<string>("85");
+  const [tempTargetCpi, setTempTargetCpi] = useState<string>("8.5");
   const [tempTargetGoal, setTempTargetGoal] = useState<string>("");
   const [isEditingTarget, setIsEditingTarget] = useState(false);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
@@ -965,7 +965,8 @@ export default function PlayersPage() {
   useEffect(() => {
     if (selectedPlayer) {
       const storedTarget = localStorage.getItem(`player_target_cpi_${selectedPlayer.id}`);
-      const val = storedTarget ? parseInt(storedTarget, 10) : 85;
+      let val = storedTarget ? parseFloat(storedTarget) : 8.5;
+      if (val > 10) val = val / 10;
       setTargetCpi(val);
       setTempTargetCpi(val.toString());
 
@@ -1990,14 +1991,6 @@ export default function PlayersPage() {
           });
         }
 
-        const formatScoreValue = (val: number | null | undefined) => {
-          if (val === null || val === undefined) return "N/A";
-          if (val <= 10) {
-            return Math.round(val * 10).toString();
-          }
-          return Math.round(val).toString();
-        };
-
         const currentPpi = selectedPlayer.ppiScore && selectedPlayer.ppiScore > 0 ? selectedPlayer.ppiScore : null;
         const currentMpi = selectedPlayer.mpiScore && selectedPlayer.mpiScore > 0 ? selectedPlayer.mpiScore : null;
         const currentCpi = currentPpi && currentMpi 
@@ -2017,8 +2010,8 @@ export default function PlayersPage() {
           .sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime())
           .slice(0, 5);
 
-        const cpiVal = currentCpi ? parseInt(formatScoreValue(currentCpi), 10) : 0;
-        const gapVal = targetCpi - cpiVal;
+        const cpiVal = currentCpi ? parseFloat(formatScoreValue(currentCpi)) : 0;
+        const gapVal = targetCpi > 0 && cpiVal > 0 ? Math.round((targetCpi - cpiVal) * 10) / 10 : 0;
         const targetPercent = Math.min(100, Math.max(0, Math.round((cpiVal / targetCpi) * 100)));
 
         const devMetrics = [
@@ -2228,8 +2221,8 @@ export default function PlayersPage() {
                         onChange={(e) => setTempTargetCpi(e.target.value)}
                         className="bg-white border-2 border-slate-200 rounded-xl px-2 py-1.5 font-mono font-bold text-slate-900 text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
-                        {[70, 75, 80, 85, 90, 95, 100].map((v) => (
-                          <option key={v} value={v}>{v}</option>
+                        {[7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0].map((v) => (
+                          <option key={v} value={v.toString()}>{v}</option>
                         ))}
                       </select>
                       <button

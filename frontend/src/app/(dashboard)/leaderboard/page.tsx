@@ -14,10 +14,12 @@ interface Player {
   mpiScore: number | null;
 }
 
-const formatScore = (val: number | null | undefined) => {
+const formatScore = (val: number | null | undefined): number => {
   if (val === null || val === undefined || val === 0) return 0;
-  if (val <= 10) return Math.round(val * 10);
-  return Math.round(val);
+  let num = typeof val === "number" ? val : parseFloat(val as any);
+  if (isNaN(num) || num <= 0) return 0;
+  if (num > 10) num = num / 10;
+  return Math.round(num * 10) / 10;
 };
 
 const getRoleEmoji = (roleStr: string) => {
@@ -65,7 +67,7 @@ export default function LeaderboardPage() {
     const mpi = formatScore(p.mpiScore);
     let cpi = 0;
     if (ppi > 0 && mpi > 0) {
-      cpi = Math.round(ppi * 0.4 + mpi * 0.6);
+      cpi = Math.round((ppi * 0.4 + mpi * 0.6) * 10) / 10;
     } else if (ppi > 0) {
       cpi = ppi;
     } else if (mpi > 0) {

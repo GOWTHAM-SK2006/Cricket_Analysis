@@ -14,10 +14,10 @@ interface Player {
 
 const formatScoreValue = (val: number | null | undefined) => {
   if (val === null || val === undefined || val === 0) return "N/A";
-  if (val <= 10) {
-    return Math.round(val * 10).toString();
-  }
-  return Math.round(val).toString();
+  let num = typeof val === "number" ? val : parseFloat(val as any);
+  if (isNaN(num) || num <= 0) return "N/A";
+  if (num > 10) num = num / 10;
+  return (Math.round(num * 10) / 10).toFixed(1).replace(/\.0$/, "");
 };
 
 export default function HistoryPage() {
