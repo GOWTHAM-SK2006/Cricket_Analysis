@@ -2328,17 +2328,33 @@ export default function PlayersPage() {
 
             {/* SECTION 7 – ASSESSMENT HISTORY */}
             <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-              <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase border-b border-slate-200 pb-2 flex items-center gap-2">
-                <Brain className="w-4 h-4 text-orange-500" />
-                ASSESSMENT HISTORY
-              </h3>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-orange-500" />
+                  ASSESSMENT HISTORY
+                </h3>
+                <button
+                  onClick={() => setShowHistoryOverlay(true)}
+                  className="text-xs font-bold text-orange-500 hover:text-orange-600 uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  VIEW ALL
+                </button>
+              </div>
               
               <div className="space-y-4 pt-1">
                 {/* Practice History scroll area */}
                 <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
-                    Practice History
-                  </span>
+                  <div className="flex justify-between items-center mb-2 border-b border-slate-200 pb-1">
+                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block">
+                      Practice History
+                    </span>
+                    <button
+                      onClick={() => setShowHistoryOverlay(true)}
+                      className="text-xs font-bold text-orange-500 hover:text-orange-600 uppercase tracking-wider transition-colors cursor-pointer"
+                    >
+                      VIEW ALL
+                    </button>
+                  </div>
                   {practiceHistory.length === 0 ? (
                     <p className="text-xs text-zinc-605 font-bold uppercase py-1">No Practice History</p>
                   ) : (
@@ -2358,9 +2374,17 @@ export default function PlayersPage() {
 
                 {/* Match History scroll area */}
                 <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
-                    Match History
-                  </span>
+                  <div className="flex justify-between items-center mb-2 border-b border-slate-200 pb-1">
+                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block">
+                      Match History
+                    </span>
+                    <button
+                      onClick={() => setShowHistoryOverlay(true)}
+                      className="text-xs font-bold text-orange-500 hover:text-orange-600 uppercase tracking-wider transition-colors cursor-pointer"
+                    >
+                      VIEW ALL
+                    </button>
+                  </div>
                   {matchHistory.length === 0 ? (
                     <p className="text-xs text-zinc-605 font-bold uppercase py-1">No Match History</p>
                   ) : (
