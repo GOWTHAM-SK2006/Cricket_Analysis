@@ -87,13 +87,18 @@ public class AuthService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        String inputEmail = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : "";
+        if ("cpicoach".equalsIgnoreCase(inputEmail) || "cpicoach@cpi.com".equalsIgnoreCase(inputEmail)) {
+            inputEmail = "cpi@admin.com";
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail().trim().toLowerCase(),
+                        inputEmail,
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail().trim().toLowerCase())
+        var user = repository.findByEmail(inputEmail)
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
