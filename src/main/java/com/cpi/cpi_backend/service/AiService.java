@@ -39,12 +39,9 @@ public class AiService {
         try {
             if (currentCoach != null && currentCoach.getId() != null) {
                 com.cpi.cpi_backend.entity.Coach managedCoach = coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
-                if (managedCoach.getRole() == com.cpi.cpi_backend.entity.Role.ADMIN) {
-                    allPlayers = playerRepository.findByCreatorCoachId(managedCoach.getId());
-                } else {
-                    allPlayers = playerRepository.findAll().stream()
-                            .filter(p -> p != null && p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()))
-                            .collect(java.util.stream.Collectors.toList());
+                allPlayers = playerRepository.findByCreatorCoachId(managedCoach.getId());
+                if (allPlayers == null || allPlayers.isEmpty()) {
+                    allPlayers = playerRepository.findAll();
                 }
             } else {
                 allPlayers = playerRepository.findAll();

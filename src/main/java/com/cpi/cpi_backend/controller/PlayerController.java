@@ -41,15 +41,9 @@ public class PlayerController {
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new RuntimeException("Coach not found"));
 
-        List<Player> allPlayers;
-        if (managedCoach.getRole() == Role.ADMIN) {
-            allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
-        } else {
-            allPlayers = new ArrayList<>();
-            playerRepository.findAll().stream()
-                    .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()))
-                    .findFirst()
-                    .ifPresent(allPlayers::add);
+        List<Player> allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
+        if (allPlayers.isEmpty()) {
+            allPlayers.addAll(playerRepository.findAll());
         }
 
         // Generate invitation codes for any players missing one

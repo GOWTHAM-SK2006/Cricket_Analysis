@@ -38,19 +38,19 @@ public class DashboardController {
         final List<PracticeAssessment> practiceAssessments = new ArrayList<>();
         final List<MatchAssessment> matchAssessments = new ArrayList<>();
 
-        if (managedCoach.getRole() == Role.ADMIN) {
-            players.addAll(playerRepository.findByCreatorCoachId(coachId));
-            practiceAssessments.addAll(practiceAssessmentRepository.findByCoachId(coachId));
-            matchAssessments.addAll(matchAssessmentRepository.findByCoachId(coachId));
-        } else {
-            playerRepository.findAll().stream()
-                    .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(managedCoach.getName()))
-                    .findFirst()
-                    .ifPresent(p -> {
-                        players.add(p);
-                        practiceAssessments.addAll(practiceAssessmentRepository.findByPlayerId(p.getId()));
-                        matchAssessments.addAll(matchAssessmentRepository.findByPlayerId(p.getId()));
-                    });
+        players.addAll(playerRepository.findByCreatorCoachId(coachId));
+        if (players.isEmpty()) {
+            players.addAll(playerRepository.findAll());
+        }
+
+        practiceAssessments.addAll(practiceAssessmentRepository.findByCoachId(coachId));
+        if (practiceAssessments.isEmpty()) {
+            practiceAssessments.addAll(practiceAssessmentRepository.findAll());
+        }
+
+        matchAssessments.addAll(matchAssessmentRepository.findByCoachId(coachId));
+        if (matchAssessments.isEmpty()) {
+            matchAssessments.addAll(matchAssessmentRepository.findAll());
         }
 
         // Compute Card Stats
