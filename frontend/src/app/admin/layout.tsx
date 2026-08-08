@@ -50,16 +50,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [adminUser, setAdminUser] = useState<string>("CPI Master Admin");
   const [globalSearchQuery, setGlobalSearchQuery] = useState("");
 
-  const isLoginPage = pathname === "/admin/login";
-
   useEffect(() => {
-    if (!isLoginPage) {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
-      if (!token) {
-        router.push("/admin/login");
-      }
+    const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
     }
-  }, [pathname, isLoginPage, router]);
+  }, [pathname, router]);
 
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -78,16 +74,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     showToast("Logged out from CPI Master Admin Console", "info");
     router.push("/login");
   };
-
-  if (isLoginPage) {
-    return (
-      <ToastContext.Provider value={{ showToast }}>
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
-          {children}
-        </div>
-      </ToastContext.Provider>
-    );
-  }
 
   const navItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
