@@ -216,16 +216,45 @@ export default function HelpPage() {
         if (data && data.helpJson) {
           try {
             const parsed = JSON.parse(data.helpJson);
-            if (parsed && typeof parsed === "object") {
-              if (parsed.coachPlanData && Array.isArray(parsed.coachPlanData)) {
-                setPlans(parsed.coachPlanData);
+            if (parsed) {
+              if (!Array.isArray(parsed) && typeof parsed === "object") {
+                if (parsed.coachPlanData && Array.isArray(parsed.coachPlanData)) {
+                  // Ensure every item in coachPlanData has highPoints, lowPoints, coachSummary
+                  const sanitized = parsed.coachPlanData.map((item: any, i: number) => {
+                    const fallback = coachPlanData[i] || coachPlanData[0];
+                    return {
+                      id: item.id || fallback.id,
+                      name: item.name || item.parameter || fallback.name,
+                      description: item.description || item.explanation || fallback.description,
+                      highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints : fallback.highPoints,
+                      highSummary: item.highSummary || item.rangeHigh || fallback.highSummary,
+                      lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints : fallback.lowPoints,
+                      coachSummary: item.coachSummary || fallback.coachSummary
+                    };
+                  });
+                  setPlans(sanitized);
+                }
+                if (parsed.ppiDescription) setPpiDesc(parsed.ppiDescription);
+                if (parsed.mpiDescription) setMpiDesc(parsed.mpiDescription);
+                if (parsed.cpiDescription) setCpiDesc(parsed.cpiDescription);
+                if (parsed.below5Text) setBelow5(parsed.below5Text);
+                if (parsed.between5And7Text) setBetween5And7(parsed.between5And7Text);
+                if (parsed.above7Text) setAbove7(parsed.above7Text);
+              } else if (Array.isArray(parsed)) {
+                // Legacy array format migration
+                const sanitized = coachPlanData.map((fallback, i) => {
+                  const match = parsed.find((p: any) => p.parameter === fallback.name) || parsed[i];
+                  if (match) {
+                    return {
+                      ...fallback,
+                      description: match.explanation || fallback.description,
+                      highSummary: match.rangeHigh || fallback.highSummary,
+                    };
+                  }
+                  return fallback;
+                });
+                setPlans(sanitized);
               }
-              if (parsed.ppiDescription) setPpiDesc(parsed.ppiDescription);
-              if (parsed.mpiDescription) setMpiDesc(parsed.mpiDescription);
-              if (parsed.cpiDescription) setCpiDesc(parsed.cpiDescription);
-              if (parsed.below5Text) setBelow5(parsed.below5Text);
-              if (parsed.between5And7Text) setBetween5And7(parsed.between5And7Text);
-              if (parsed.above7Text) setAbove7(parsed.above7Text);
             }
           } catch (e) {
             console.error("Error parsing helpJson in HelpPage", e);
@@ -236,6 +265,18 @@ export default function HelpPage() {
   }, []);
 
   const currentPlan = plans[selectedPlanIndex] || plans[0] || coachPlanData[0];
+  const safeName = currentPlan?.name || "Parameter";
+  const safeDescription = currentPlan?.description || "";
+  const safeHighPoints = Array.isArray(currentPlan?.highPoints) ? currentPlan.highPoints : [];
+  const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints : [];
+  const activePoints = scoreTab === "high" ? safeHighPoints : safeLowPoints;
+  const safeHighSummary = currentPlan?.highSummary || "";
+  const safeCoachSummary = currentPlan?.coachSummary || {
+    overview: "Overview of parameter performance.",
+    high: "protect and refine.",
+    low: "simplify and rebuild.",
+    goal: "develop consistent performance under pressure."
+  };
 
   return (
     <div className="space-y-6 pb-12 select-none max-w-2xl mx-auto text-left">
@@ -294,10 +335,10 @@ export default function HelpPage() {
         <div className="space-y-4 pt-1 border-t border-slate-100">
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
             <span className="text-xs font-black text-orange-600 uppercase tracking-wider block">
-              {currentPlan.name} Index Overview
+              {safeName} Index Overview
             </span>
             <p className="text-xs font-semibold text-slate-800 leading-relaxed">
-              {currentPlan.description}
+              {safeDescription}
             </p>
           </div>
 
@@ -328,10 +369,10 @@ export default function HelpPage() {
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `High ${currentPlan.name} Score Action Points:` : `Low ${currentPlan.name} Score Action Points:`}
+              {scoreTab === "high" ? `High ${safeName} Score Action Points:` : `Low ${safeName} Score Action Points:`}
             </span>
             <div className="space-y-2">
-              {(scoreTab === "high" ? currentPlan.highPoints : currentPlan.lowPoints).map((pt, i) => (
+              {activePoints.map((pt, i) => (
                 <div key={i} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-3 items-start text-xs">
                   <span className={`w-5 h-5 rounded-full flex items-center justify-center font-mono font-black text-[10px] shrink-0 mt-0.5 ${
                     scoreTab === "high" ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-rose-100 text-rose-800 border border-rose-300"
@@ -347,9 +388,9 @@ export default function HelpPage() {
             </div>
 
             {/* High/Low Summary Banner */}
-            {scoreTab === "high" && (
+            {scoreTab === "high" && safeHighSummary && (
               <div className="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 text-xs font-semibold text-emerald-950 leading-relaxed italic">
-                {currentPlan.highSummary}
+                {safeHighSummary}
               </div>
             )}
           </div>
@@ -357,15 +398,15 @@ export default function HelpPage() {
           {/* THE COACH’S SUMMARY BOX */}
           <div className="bg-slate-900 text-white p-4.5 rounded-2.5xl space-y-2.5 text-xs shadow-md">
             <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest block">
-              THE COACH’S SUMMARY — {currentPlan.name.toUpperCase()}
+              THE COACH’S SUMMARY — {safeName.toUpperCase()}
             </span>
             <p className="font-medium text-slate-200 leading-relaxed">
-              {currentPlan.coachSummary.overview}
+              {safeCoachSummary.overview}
             </p>
             <div className="pt-2 border-t border-slate-800 space-y-1.5">
-              <p><span className="text-emerald-400 font-bold uppercase">High score:</span> <span className="text-slate-300 capitalize">{currentPlan.coachSummary.high}</span></p>
-              <p><span className="text-rose-400 font-bold uppercase">Low score:</span> <span className="text-slate-300 capitalize">{currentPlan.coachSummary.low}</span></p>
-              <p className="pt-1 text-orange-300 font-bold"><span className="uppercase text-orange-400">The goal:</span> {currentPlan.coachSummary.goal}</p>
+              <p><span className="text-emerald-400 font-bold uppercase">High score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.high}</span></p>
+              <p><span className="text-rose-400 font-bold uppercase">Low score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.low}</span></p>
+              <p className="pt-1 text-orange-300 font-bold"><span className="uppercase text-orange-400">The goal:</span> {safeCoachSummary.goal}</p>
             </div>
           </div>
         </div>
