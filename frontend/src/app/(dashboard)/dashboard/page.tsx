@@ -352,19 +352,6 @@ export default function DashboardPage() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="text-left relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl min-h-[140px] flex items-center"
       >
-        {/* Glowing Batsman Image Container */}
-        <div className="absolute right-0 top-0 bottom-0 w-[60%] sm:w-[70%] pointer-events-none">
-          <Image 
-            src="/glowing-batsman.png" 
-            alt="Cricket Batsman Hero" 
-            fill
-            className="object-cover object-right"
-            priority
-          />
-          {/* Gradient overlay to fade the image into the background seamlessly on the left */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
-        </div>
-
         <div className="relative z-10 p-6 sm:px-8 w-full">
           <h2 className="text-[11px] font-bold tracking-widest text-orange-500 uppercase mb-1 drop-shadow-md">
             WELCOME BACK COACH
