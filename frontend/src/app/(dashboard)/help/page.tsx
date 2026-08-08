@@ -183,6 +183,32 @@ const coachPlanData: CoachPlanItem[] = [
       low: "simplify, reset and rebuild.",
       goal: "stay present, reset quickly and give the next ball your full attention."
     }
+  },
+  {
+    id: "resilience",
+    name: "Resilience",
+    description: "Resilience measures how well a player responds to adversity, pressure, mistakes and setbacks in both practice and matches. The key question is: does the player maintain effort, focus and body language when things go wrong, or do they fold under pressure?",
+    highPoints: [
+      { title: "Confirm the mindset", detail: "Acknowledge the player's mental toughness and ability to handle high-pressure crunch overs." },
+      { title: "Expose to extreme scenarios", detail: "Test resilience in net drills with high consequence for wickets lost." },
+      { title: "Develop squad leadership", detail: "Position the player to guide teammates through tough match phases." },
+      { title: "Maintain emotional control", detail: "Ensure competitive drive does not spill over into frustration." },
+      { title: "Track response consistency", detail: "Check that resilience remains high across consecutive difficult matches." }
+    ],
+    highSummary: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
+    lowPoints: [
+      { title: "Identify error triggers", detail: "Pinpoint whether dropped catches, early wickets, or umpire calls trigger emotional drops." },
+      { title: "Implement 5-second reset", detail: "Teach a quick physical reset routine (breath, body language) post-error." },
+      { title: "Separate identity from outcome", detail: "Remind the player that one mistake does not define their skill level." },
+      { title: "Simulate low-stakes pressure", detail: "Build confidence gradually through controlled pressure scenarios in practice." },
+      { title: "Celebrate bounce-back effort", detail: "Reward positive body language and recovery efforts after setbacks." }
+    ],
+    coachSummary: {
+      overview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
+      high: "anchor, challenge and lead.",
+      low: "identify, reset and rebuild.",
+      goal: "develop unshakeable mental toughness under competitive pressure."
+    }
   }
 ];
 
@@ -210,58 +236,57 @@ export default function HelpPage() {
   );
 
   useEffect(() => {
-    fetch("/api/public/config")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.helpJson) {
-          try {
-            const parsed = JSON.parse(data.helpJson);
-            if (parsed) {
-              if (!Array.isArray(parsed) && typeof parsed === "object") {
-                if (parsed.coachPlanData && Array.isArray(parsed.coachPlanData)) {
-                  // Ensure every item in coachPlanData has highPoints, lowPoints, coachSummary
-                  const sanitized = parsed.coachPlanData.map((item: any, i: number) => {
-                    const fallback = coachPlanData[i] || coachPlanData[0];
-                    return {
-                      id: item.id || fallback.id,
-                      name: item.name || item.parameter || fallback.name,
-                      description: item.description || item.explanation || fallback.description,
-                      highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints : fallback.highPoints,
-                      highSummary: item.highSummary || item.rangeHigh || fallback.highSummary,
-                      lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints : fallback.lowPoints,
-                      coachSummary: item.coachSummary || fallback.coachSummary
-                    };
-                  });
-                  setPlans(sanitized);
-                }
-                if (parsed.ppiDescription) setPpiDesc(parsed.ppiDescription);
-                if (parsed.mpiDescription) setMpiDesc(parsed.mpiDescription);
-                if (parsed.cpiDescription) setCpiDesc(parsed.cpiDescription);
-                if (parsed.below5Text) setBelow5(parsed.below5Text);
-                if (parsed.between5And7Text) setBetween5And7(parsed.between5And7Text);
-                if (parsed.above7Text) setAbove7(parsed.above7Text);
-              } else if (Array.isArray(parsed)) {
-                // Legacy array format migration
-                const sanitized = coachPlanData.map((fallback, i) => {
-                  const match = parsed.find((p: any) => p.parameter === fallback.name) || parsed[i];
-                  if (match) {
-                    return {
-                      ...fallback,
-                      description: match.explanation || fallback.description,
-                      highSummary: match.rangeHigh || fallback.highSummary,
-                    };
+    async function loadConfig() {
+      try {
+        const res = await fetch("/api/public/config");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.helpJson && typeof data.helpJson === "string") {
+          const parsed = JSON.parse(data.helpJson);
+          if (parsed && typeof parsed === "object") {
+            if (Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0) {
+              const sanitized = parsed.coachPlanData.map((item: any, i: number) => {
+                const fallback = coachPlanData[i] || coachPlanData[0];
+                return {
+                  id: String(item?.id || fallback.id),
+                  name: String(item?.name || item?.parameter || fallback.name),
+                  description: String(item?.description || item?.explanation || fallback.description),
+                  highPoints: Array.isArray(item?.highPoints) && item.highPoints.length > 0
+                    ? item.highPoints.map((pt: any, pIdx: number) => ({
+                        title: String(pt?.title || fallback.highPoints[pIdx]?.title || "Action Point"),
+                        detail: String(pt?.detail || fallback.highPoints[pIdx]?.detail || "")
+                      }))
+                    : fallback.highPoints,
+                  highSummary: String(item?.highSummary || item?.rangeHigh || fallback.highSummary),
+                  lowPoints: Array.isArray(item?.lowPoints) && item.lowPoints.length > 0
+                    ? item.lowPoints.map((pt: any, pIdx: number) => ({
+                        title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Action Point"),
+                        detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || "")
+                      }))
+                    : fallback.lowPoints,
+                  coachSummary: {
+                    overview: String(item?.coachSummary?.overview || fallback.coachSummary.overview),
+                    high: String(item?.coachSummary?.high || fallback.coachSummary.high),
+                    low: String(item?.coachSummary?.low || fallback.coachSummary.low),
+                    goal: String(item?.coachSummary?.goal || fallback.coachSummary.goal)
                   }
-                  return fallback;
-                });
-                setPlans(sanitized);
-              }
+                };
+              });
+              setPlans(sanitized);
             }
-          } catch (e) {
-            console.error("Error parsing helpJson in HelpPage", e);
+            if (typeof parsed.ppiDescription === "string") setPpiDesc(parsed.ppiDescription);
+            if (typeof parsed.mpiDescription === "string") setMpiDesc(parsed.mpiDescription);
+            if (typeof parsed.cpiDescription === "string") setCpiDesc(parsed.cpiDescription);
+            if (typeof parsed.below5Text === "string") setBelow5(parsed.below5Text);
+            if (typeof parsed.between5And7Text === "string") setBetween5And7(parsed.between5And7Text);
+            if (typeof parsed.above7Text === "string") setAbove7(parsed.above7Text);
           }
         }
-      })
-      .catch((err) => console.error("Failed to load public help config", err));
+      } catch (err) {
+        console.warn("Could not load dynamic help config, using local default:", err);
+      }
+    }
+    loadConfig();
   }, []);
 
   const currentPlan = plans[selectedPlanIndex] || plans[0] || coachPlanData[0];
