@@ -40,8 +40,7 @@ export default function LoginPage() {
           return;
         }
 
-        const userRole = profileRes.data.role === "USER" ? "player" : "coach";
-        localStorage.setItem("userRole", userRole);
+        localStorage.setItem("userRole", "coach");
         if (profileRes.data.name) {
           localStorage.setItem("userName", profileRes.data.name);
         }

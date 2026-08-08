@@ -96,10 +96,8 @@ export default function DashboardLayout({
           localStorage.setItem("userName", res.data.name);
         }
         
-        const backendRole = res.data.role;
-        const mappedRole = backendRole === "USER" ? "player" : "coach";
-        localStorage.setItem("userRole", mappedRole);
-        setRole(mappedRole);
+        localStorage.setItem("userRole", "coach");
+        setRole("coach");
         setLoading(false);
       })
       .catch((err) => {

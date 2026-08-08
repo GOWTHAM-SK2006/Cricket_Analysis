@@ -201,8 +201,8 @@ export default function DashboardPage() {
   const [lastFivePpi, setLastFivePpi] = useState<any[]>([]);
 
   useEffect(() => {
-    const storedRole = localStorage.getItem("userRole");
-    setRole(storedRole);
+    const storedRole = localStorage.getItem("userRole") || "coach";
+    setRole(storedRole === "player" ? "player" : "coach");
 
     const loadDashboardData = async () => {
       try {
