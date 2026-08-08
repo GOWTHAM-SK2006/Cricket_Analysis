@@ -159,10 +159,10 @@ export default function ProfilePage() {
           {/* Logout Action */}
           <button
             onClick={handleLogout}
-            className="w-full bg-red-650 hover:bg-red-750 text-white rounded-2xl py-5 text-xl font-extrabold flex items-center justify-center gap-3 transition-all border border-red-500 shadow-md cursor-pointer"
+            className="w-full bg-red-600 hover:bg-red-700 text-white rounded-2xl py-4 text-base font-black flex items-center justify-center gap-2.5 transition-all border border-red-600 shadow-lg shadow-red-600/25 cursor-pointer uppercase tracking-wider"
           >
-            <LogOut className="w-6 h-6" />
-            SIGN OUT / EXIT
+            <LogOut className="w-5 h-5 stroke-[2.5]" />
+            <span>SIGN OUT / EXIT</span>
           </button>
 
         </div>
