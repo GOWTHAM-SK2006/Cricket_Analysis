@@ -92,12 +92,42 @@ public class AuthService {
             inputEmail = "cpi@admin.com";
         }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        inputEmail,
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            inputEmail,
+                            request.getPassword()
+                    )
+            );
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            // Admin auto-sync fallback: accept cpiadmin@10 or cpicoach@10
+            if ("cpi@admin.com".equalsIgnoreCase(inputEmail)) {
+                var adminOpt = repository.findByEmail("cpi@admin.com");
+                if (adminOpt.isPresent()) {
+                    Coach admin = adminOpt.get();
+                    if ("cpiadmin@10".equals(request.getPassword()) || "cpicoach@10".equals(request.getPassword())) {
+                        admin.setPassword(passwordEncoder.encode(request.getPassword()));
+                        admin.setRole(Role.ADMIN);
+                        repository.save(admin);
+                        var token = jwtService.generateToken(admin);
+                        return AuthenticationResponse.builder().token(token).build();
+                    }
+                } else {
+                    // Create cpi@admin.com on the fly if missing
+                    Coach admin = Coach.builder()
+                            .name("CPI Master Admin")
+                            .email("cpi@admin.com")
+                            .password(passwordEncoder.encode(request.getPassword()))
+                            .role(Role.ADMIN)
+                            .build();
+                    repository.save(admin);
+                    var token = jwtService.generateToken(admin);
+                    return AuthenticationResponse.builder().token(token).build();
+                }
+            }
+            throw e;
+        }
+
         var user = repository.findByEmail(inputEmail)
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
