@@ -189,8 +189,53 @@ const coachPlanData: CoachPlanItem[] = [
 export default function HelpPage() {
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [scoreTab, setScoreTab] = useState<"high" | "low">("high");
+  const [plans, setPlans] = useState<CoachPlanItem[]>(coachPlanData);
+  const [ppiDesc, setPpiDesc] = useState<string>(
+    "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation."
+  );
+  const [mpiDesc, setMpiDesc] = useState<string>(
+    "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation."
+  );
+  const [cpiDesc, setCpiDesc] = useState<string>(
+    "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back."
+  );
+  const [below5, setBelow5] = useState<string>(
+    "Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority."
+  );
+  const [between5And7, setBetween5And7] = useState<string>(
+    "There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches."
+  );
+  const [above7, setAbove7] = useState<string>(
+    "Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player."
+  );
 
-  const currentPlan = coachPlanData[selectedPlanIndex];
+  useEffect(() => {
+    fetch("/api/public/config")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.helpJson) {
+          try {
+            const parsed = JSON.parse(data.helpJson);
+            if (parsed && typeof parsed === "object") {
+              if (parsed.coachPlanData && Array.isArray(parsed.coachPlanData)) {
+                setPlans(parsed.coachPlanData);
+              }
+              if (parsed.ppiDescription) setPpiDesc(parsed.ppiDescription);
+              if (parsed.mpiDescription) setMpiDesc(parsed.mpiDescription);
+              if (parsed.cpiDescription) setCpiDesc(parsed.cpiDescription);
+              if (parsed.below5Text) setBelow5(parsed.below5Text);
+              if (parsed.between5And7Text) setBetween5And7(parsed.between5And7Text);
+              if (parsed.above7Text) setAbove7(parsed.above7Text);
+            }
+          } catch (e) {
+            console.error("Error parsing helpJson in HelpPage", e);
+          }
+        }
+      })
+      .catch((err) => console.error("Failed to load public help config", err));
+  }, []);
+
+  const currentPlan = plans[selectedPlanIndex] || plans[0] || coachPlanData[0];
 
   return (
     <div className="space-y-6 pb-12 select-none max-w-2xl mx-auto text-left">
@@ -229,7 +274,7 @@ export default function HelpPage() {
         <div className="space-y-2">
           <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">Select Index Parameter:</span>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {coachPlanData.map((plan, idx) => (
+            {plans.map((plan, idx) => (
               <button
                 key={plan.id}
                 onClick={() => { setSelectedPlanIndex(idx); setScoreTab("high"); }}
@@ -338,10 +383,7 @@ export default function HelpPage() {
           </div>
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-relaxed">
-          The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across 8 key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.
-        </p>
-        <p className="text-xs font-medium text-slate-900 leading-relaxed">
-          Its purpose is not simply to give a player a score. It is to help the coach identify what is working well, where development may be required and what action should follow. By tracking these areas consistently, the coach can move beyond general impressions and build a clearer picture of the player’s strengths, weaknesses and progress over time.
+          {ppiDesc}
         </p>
       </div>
 
@@ -357,7 +399,7 @@ export default function HelpPage() {
           </div>
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-relaxed">
-          The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.
+          {mpiDesc}
         </p>
       </div>
 
@@ -373,7 +415,7 @@ export default function HelpPage() {
           </div>
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-relaxed">
-          The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back.
+          {cpiDesc}
         </p>
       </div>
 
@@ -387,7 +429,7 @@ export default function HelpPage() {
               <span className="text-xs font-black text-slate-900 uppercase">- NEEDS ATTENTION</span>
             </div>
             <p className="text-xs font-medium text-slate-900 leading-relaxed">
-              Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority.
+              {below5}
             </p>
           </div>
           <div className="space-y-1 pb-3 border-b border-slate-200">
@@ -396,7 +438,7 @@ export default function HelpPage() {
               <span className="text-xs font-black text-slate-900 uppercase">- DEVELOPING</span>
             </div>
             <p className="text-xs font-medium text-slate-900 leading-relaxed">
-              There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches.
+              {between5And7}
             </p>
           </div>
           <div className="space-y-1">
@@ -405,7 +447,7 @@ export default function HelpPage() {
               <span className="text-xs font-black text-slate-900 uppercase">- STRONG</span>
             </div>
             <p className="text-xs font-medium text-slate-900 leading-relaxed">
-              Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player.
+              {above7}
             </p>
           </div>
         </div>
