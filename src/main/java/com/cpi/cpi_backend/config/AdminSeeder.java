@@ -30,7 +30,7 @@ public class AdminSeeder implements CommandLineRunner {
 
     private void seedAdminAccount() {
         String adminEmail = "cpi@admin.com";
-        String rawPassword = "cpicoach@10";
+        String rawPassword = "cpiadmin@10";
 
         var existingOld = coachRepository.findByEmail("cpicoach@cpi.com");
         if (existingOld.isPresent()) {
