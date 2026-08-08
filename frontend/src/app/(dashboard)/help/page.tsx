@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   HelpCircle, ChevronRight, Clipboard, ShieldCheck, TrendingUp, 
   Target, Sparkles, Flame, CheckCircle2, AlertTriangle, BookOpen, Layers
