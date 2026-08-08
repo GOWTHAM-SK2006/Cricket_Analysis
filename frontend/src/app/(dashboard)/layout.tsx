@@ -83,6 +83,11 @@ export default function DashboardLayout({
 
     api.get("/profile")
       .then((res) => {
+        if (res.data.role === "ADMIN") {
+          localStorage.setItem("cpi_admin_token", token);
+          router.push("/admin/dashboard");
+          return;
+        }
         setStatus(res.data.approvalStatus || "APPROVED");
         setOrgName(res.data.organization?.name || "the Academy");
         setUserName(res.data.name || "");

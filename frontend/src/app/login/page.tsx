@@ -29,6 +29,16 @@ export default function LoginPage() {
           headers: { Authorization: `Bearer ${response.data.token}` }
         });
         
+        if (profileRes.data.role === "ADMIN") {
+          localStorage.setItem("cpi_admin_token", response.data.token);
+          localStorage.setItem("userRole", "admin");
+          if (profileRes.data.name) {
+            localStorage.setItem("userName", profileRes.data.name);
+          }
+          router.push("/admin/dashboard");
+          return;
+        }
+
         const userRole = profileRes.data.role === "USER" ? "player" : "coach";
         localStorage.setItem("userRole", userRole);
         if (profileRes.data.name) {
