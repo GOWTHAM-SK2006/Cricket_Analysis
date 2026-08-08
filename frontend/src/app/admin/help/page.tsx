@@ -593,38 +593,41 @@ export default function AdminHelpPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-              Practice Performance (PPI) Text
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+              <span>Practice Performance (PPI) Text</span>
+              <span className="text-[10px] text-slate-400 font-medium">Practice Index</span>
             </label>
             <textarea
-              rows={4}
+              rows={7}
               value={helpConfig.ppiDescription}
               onChange={(e) => setHelpConfig({ ...helpConfig, ppiDescription: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 leading-relaxed"
+              className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-              Match Performance (MPI) Text
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+              <span>Match Performance (MPI) Text</span>
+              <span className="text-[10px] text-slate-400 font-medium">Match Index</span>
             </label>
             <textarea
-              rows={4}
+              rows={7}
               value={helpConfig.mpiDescription}
               onChange={(e) => setHelpConfig({ ...helpConfig, mpiDescription: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 leading-relaxed"
+              className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-              Cricket Performance (CPI) Text
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+              <span>Cricket Performance (CPI) Text</span>
+              <span className="text-[10px] text-slate-400 font-medium">Overall Rating Index</span>
             </label>
             <textarea
-              rows={4}
+              rows={7}
               value={helpConfig.cpiDescription}
               onChange={(e) => setHelpConfig({ ...helpConfig, cpiDescription: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 leading-relaxed"
+              className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
             />
           </div>
         </div>
@@ -635,30 +638,36 @@ export default function AdminHelpPage() {
           </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <span className="text-[11px] font-black text-red-500 block mb-1">Below 5.0 - Needs Attention</span>
+              <span className="text-[11px] font-black text-red-500 block mb-1.5 uppercase tracking-wide">
+                Below 5.0 - Needs Attention
+              </span>
               <textarea
-                rows={2}
+                rows={5}
                 value={helpConfig.below5Text}
                 onChange={(e) => setHelpConfig({ ...helpConfig, below5Text: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500 leading-relaxed"
+                className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
               />
             </div>
             <div>
-              <span className="text-[11px] font-black text-amber-500 block mb-1">5.0 to 7.0 - Developing</span>
+              <span className="text-[11px] font-black text-amber-500 block mb-1.5 uppercase tracking-wide">
+                5.0 to 7.0 - Developing
+              </span>
               <textarea
-                rows={2}
+                rows={5}
                 value={helpConfig.between5And7Text}
                 onChange={(e) => setHelpConfig({ ...helpConfig, between5And7Text: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500 leading-relaxed"
+                className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
               />
             </div>
             <div>
-              <span className="text-[11px] font-black text-emerald-500 block mb-1">7.0 and Above - Strong</span>
+              <span className="text-[11px] font-black text-emerald-500 block mb-1.5 uppercase tracking-wide">
+                7.0 and Above - Strong
+              </span>
               <textarea
-                rows={2}
+                rows={5}
                 value={helpConfig.above7Text}
                 onChange={(e) => setHelpConfig({ ...helpConfig, above7Text: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500 leading-relaxed"
+                className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
               />
             </div>
           </div>
