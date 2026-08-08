@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, RotateCcw, Loader2, Eye, FileText, TrendingUp } from "lucide-react";
+import { Save, RotateCcw, Loader2, Eye, FileText, TrendingUp, HelpCircle, Info, Sliders } from "lucide-react";
 import { useAdminToast } from "../layout";
 
 interface ReportConfig {
@@ -21,6 +21,24 @@ const DEFAULT_REPORT_CONFIG: ReportConfig = {
   strengthWeaknessWording: "Full 7-Parameter Spectrum Analysis:",
   scoreFormatNote: "All scores normalized to 10-point CPI scale (e.g. 7.7 / 10)"
 };
+
+interface HelpItem {
+  parameter: string;
+  explanation: string;
+  rangeHigh: string;
+  rangeAvg: string;
+  rangeLow: string;
+}
+
+const DEFAULT_HELP: HelpItem[] = [
+  { parameter: "Technical Execution", explanation: "Refers to how biomechanically sound and repeatable a player's fundamental techniques are.", rangeHigh: "Scores 8.0-10.0: Flawless technique, balanced weight distribution, precise bat path.", rangeAvg: "Scores 5.0-7.9: Solid core technique with occasional mechanical flaws under pressure.", rangeLow: "Scores 1.0-4.9: Significant technical breakdowns requiring fundamental rework." },
+  { parameter: "Skill Level", explanation: "Refers to stroke repertoire, bowling variations, and fielding dexterity.", rangeHigh: "Scores 8.0-10.0: Masterful control over all shot/bowling variations.", rangeAvg: "Scores 5.0-7.9: Good standard skillset with limited advanced variations.", rangeLow: "Scores 1.0-4.9: Restricted skill set with execution difficulties." },
+  { parameter: "Game Plan", explanation: "Tactical comprehension of match scenarios, field settings, and match pace.", rangeHigh: "Scores 8.0-10.0: Elite tactical execution and situational awareness.", rangeAvg: "Scores 5.0-7.9: Understands strategy but occasionally deviates under stress.", rangeLow: "Scores 1.0-4.9: Poor situational decisions and strategy execution." },
+  { parameter: "Preparation", explanation: "Professionalism in warmup, mental readiness, and physical prep.", rangeHigh: "Scores 8.0-10.0: Meticulous professional warmup and mental visualization.", rangeAvg: "Scores 5.0-7.9: Standard preparation routine lacking deep focus.", rangeLow: "Scores 1.0-4.9: Casual or rushed preparation leading to slow starts." },
+  { parameter: "Intensity", explanation: "Physical energy, sprinting between wickets, and fielding commitment.", rangeHigh: "Scores 8.0-10.0: Relentless high energy and total physical effort.", rangeAvg: "Scores 5.0-7.9: Inconsistent energy output across match phases.", rangeLow: "Scores 1.0-4.9: Passive body language and low physical intensity." },
+  { parameter: "Focus", explanation: "Concentration maintenance and ball-by-ball cognitive reset.", rangeHigh: "Scores 8.0-10.0: Laser concentration and instant mental reset.", rangeAvg: "Scores 5.0-7.9: Solid focus with occasional middle-session lapses.", rangeLow: "Scores 1.0-4.9: Easily distracted, carrying errors from ball to ball." },
+  { parameter: "Resilience", explanation: "Mental toughness under pressure and bounce-back capacity.", rangeHigh: "Scores 8.0-10.0: Thrives in high-pressure crunch situations.", rangeAvg: "Scores 5.0-7.9: Competent response to setback with occasional hesitation.", rangeLow: "Scores 1.0-4.9: Folds quickly when match pressure escalates." }
+];
 
 interface MockParamScore {
   name: string;
@@ -43,6 +61,8 @@ export default function AdminReportsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [reportConfig, setReportConfig] = useState<ReportConfig>(DEFAULT_REPORT_CONFIG);
+  const [helpConfig, setHelpConfig] = useState<HelpItem[]>(DEFAULT_HELP);
+  const [selectedParamIndex, setSelectedParamIndex] = useState<number>(0);
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
   const [previewTab, setPreviewTab] = useState<"editor" | "preview">("preview");
 
@@ -63,11 +83,17 @@ export default function AdminReportsPage() {
         if (data.reportsJson) {
           try {
             const parsed = JSON.parse(data.reportsJson);
-            if (parsed && typeof parsed === "object") {
-              setReportConfig(parsed);
-            }
+            if (parsed && typeof parsed === "object") setReportConfig(parsed);
           } catch (e) {
             console.error("Error parsing reportsJson", e);
+          }
+        }
+        if (data.helpJson) {
+          try {
+            const parsedHelp = JSON.parse(data.helpJson);
+            if (Array.isArray(parsedHelp) && parsedHelp.length > 0) setHelpConfig(parsedHelp);
+          } catch (e) {
+            console.error("Error parsing helpJson", e);
           }
         }
       }
@@ -78,6 +104,12 @@ export default function AdminReportsPage() {
     }
   };
 
+  const handleHelpChange = (field: keyof HelpItem, value: string) => {
+    setHelpConfig((prev) =>
+      prev.map((item, idx) => (idx === selectedParamIndex ? { ...item, [field]: value } : item))
+    );
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -85,8 +117,9 @@ export default function AdminReportsPage() {
       const updatedPayload = {
         ...fullConfigRaw,
         reportsJson: JSON.stringify(reportConfig),
+        helpJson: JSON.stringify(helpConfig),
         changeLogsJson: JSON.stringify([
-          { time: new Date().toISOString(), section: "Reports Management", action: "Updated report templates & 7-parameter preview layout", user: "cpi@admin.com" }
+          { time: new Date().toISOString(), section: "Reports Management", action: "Updated report templates & Help & Information guides", user: "cpi@admin.com" }
         ])
       };
 
@@ -99,9 +132,9 @@ export default function AdminReportsPage() {
         body: JSON.stringify(updatedPayload)
       });
 
-      if (!res.ok) throw new Error("Failed to save report configuration");
+      if (!res.ok) throw new Error("Failed to save configuration");
 
-      showToast("Report generator content saved successfully!", "success");
+      showToast("Report templates and Help & Information content saved successfully!", "success");
     } catch (err: any) {
       showToast(err.message || "Save failed", "error");
     } finally {
@@ -110,6 +143,7 @@ export default function AdminReportsPage() {
   };
 
   const sortedScores = [...MOCK_PLAYER_SCORES].sort((a, b) => b.score - a.score);
+  const activeHelp = helpConfig[selectedParamIndex] || DEFAULT_HELP[0];
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -123,7 +157,7 @@ export default function AdminReportsPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1 font-medium">
-            Edit report headings, section titles, wording, and view real-time live preview of the 7-parameter ranked player report.
+            Edit report headings, section titles, wording, Help & Information content, and view real-time live preview.
           </p>
         </div>
 
@@ -163,13 +197,18 @@ export default function AdminReportsPage() {
       {/* Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Editor */}
-        <div className={`lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6 ${previewTab === "preview" ? "hidden lg:block" : ""}`}>
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest">Report Wording Editor</h2>
-            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-mono font-bold">Template Config</span>
-          </div>
-
+        <div className={`lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-8 ${previewTab === "preview" ? "hidden lg:block" : ""}`}>
+          
+          {/* SECTION A: Report Wording Editor */}
           <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-orange-600" />
+                <span>1. Report Template Wording Editor</span>
+              </h2>
+              <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-mono font-bold">Template Config</span>
+            </div>
+
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Report Main Heading
@@ -229,17 +268,94 @@ export default function AdminReportsPage() {
                 className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 focus:bg-white"
               />
             </div>
+          </div>
 
-            <div className="pt-3 border-t border-slate-100 flex justify-end">
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-xl shadow-md shadow-orange-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50 uppercase cursor-pointer"
-              >
-                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                <span>Save Report Settings</span>
-              </button>
+          {/* SECTION B: Help & Information Content Editor */}
+          <div className="space-y-4 pt-4 border-t border-slate-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-1.5">
+                <HelpCircle className="w-4 h-4 text-sky-600" />
+                <span>2. Help & Information Content Editor</span>
+              </h2>
+              <span className="px-2 py-0.5 rounded bg-sky-50 text-sky-700 text-[10px] font-bold">7 Parameters Info</span>
             </div>
+
+            {/* Select parameter */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Select Parameter Help Guide
+              </label>
+              <select
+                value={selectedParamIndex}
+                onChange={(e) => setSelectedParamIndex(Number(e.target.value))}
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-sky-500"
+              >
+                {helpConfig.map((item, idx) => (
+                  <option key={idx} value={idx}>
+                    {idx + 1}. {item.parameter}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                {activeHelp.parameter} — Explanation Text
+              </label>
+              <textarea
+                rows={2}
+                value={activeHelp.explanation}
+                onChange={(e) => handleHelpChange("explanation", e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-sky-500 leading-relaxed"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                High Score Information (8.0 - 10.0)
+              </label>
+              <textarea
+                rows={2}
+                value={activeHelp.rangeHigh}
+                onChange={(e) => handleHelpChange("rangeHigh", e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-sky-500 leading-relaxed"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Average Score Information (5.0 - 7.9)
+              </label>
+              <textarea
+                rows={2}
+                value={activeHelp.rangeAvg}
+                onChange={(e) => handleHelpChange("rangeAvg", e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-sky-500 leading-relaxed"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Low Score Information (1.0 - 4.9)
+              </label>
+              <textarea
+                rows={2}
+                value={activeHelp.rangeLow}
+                onChange={(e) => handleHelpChange("rangeLow", e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-sky-500 leading-relaxed"
+              />
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex justify-end">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black rounded-xl shadow-md shadow-orange-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50 uppercase cursor-pointer"
+            >
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              <span>Save Report & Help Settings</span>
+            </button>
           </div>
         </div>
 
