@@ -26,6 +26,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         // Protected: Only API endpoints (except auth) require JWT
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         // Public: Everything else is frontend (HTML, JS, CSS, pages)
                         .anyRequest().permitAll()
