@@ -29,7 +29,8 @@ export default function LoginPage() {
           headers: { Authorization: `Bearer ${response.data.token}` }
         });
         
-        if (profileRes.data.role === "ADMIN") {
+        const userEmail = (profileRes.data.email || "").toLowerCase();
+        if (profileRes.data.role === "ADMIN" && (userEmail === "cpi@admin.com" || userEmail === "cpicoach@cpi.com")) {
           localStorage.setItem("cpi_admin_token", response.data.token);
           localStorage.setItem("userRole", "admin");
           if (profileRes.data.name) {

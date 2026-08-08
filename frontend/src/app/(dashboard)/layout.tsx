@@ -83,7 +83,8 @@ export default function DashboardLayout({
 
     api.get("/profile")
       .then((res) => {
-        if (res.data.role === "ADMIN") {
+        const userEmail = (res.data.email || "").toLowerCase();
+        if (res.data.role === "ADMIN" && (userEmail === "cpi@admin.com" || userEmail === "cpicoach@cpi.com")) {
           localStorage.setItem("cpi_admin_token", token);
           router.push("/admin/dashboard");
           return;

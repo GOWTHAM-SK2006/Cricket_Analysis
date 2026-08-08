@@ -75,7 +75,7 @@ public class AuthService {
                     .name(request.getName().trim())
                     .email(request.getEmail().trim().toLowerCase())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ADMIN)
+                    .role(Role.USER)
                     .build();
             repository.save(user);
 

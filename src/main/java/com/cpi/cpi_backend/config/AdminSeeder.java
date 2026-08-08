@@ -60,6 +60,18 @@ public class AdminSeeder implements CommandLineRunner {
             coachRepository.save(admin);
             log.info("CPI Master Admin user password synchronized for: {}", adminEmail);
         }
+
+        // Ensure ONLY cpi@admin.com is Role.ADMIN; all other coaches must be Role.USER
+        var allCoaches = coachRepository.findAll();
+        for (Coach c : allCoaches) {
+            if (!adminEmail.equalsIgnoreCase(c.getEmail()) && !"cpicoach@cpi.com".equalsIgnoreCase(c.getEmail())) {
+                if (c.getRole() == Role.ADMIN) {
+                    c.setRole(Role.USER);
+                    coachRepository.save(c);
+                    log.info("Reset coach {} role to Role.USER", c.getEmail());
+                }
+            }
+        }
     }
 
     private void seedDefaultConfig() {
