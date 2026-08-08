@@ -71,9 +71,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = () => {
     localStorage.removeItem("cpi_admin_token");
+    localStorage.removeItem("token");
     localStorage.removeItem("jwt_token");
+    localStorage.removeItem("userRole");
+    sessionStorage.clear();
     showToast("Logged out from CPI Master Admin Console", "info");
-    router.push("/admin/login");
+    router.push("/login");
   };
 
   if (isLoginPage) {
