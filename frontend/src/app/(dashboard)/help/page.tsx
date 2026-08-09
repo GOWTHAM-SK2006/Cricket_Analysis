@@ -19,6 +19,7 @@ interface CoachPlanItem {
   highPoints: ActionPoint[];
   highSummary: string;
   lowPoints: ActionPoint[];
+  lowSummary?: string;
   coachSummary: {
     overview: string;
     high: string;
@@ -39,7 +40,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Encourage self-correction", detail: "Help the player recognise when something feels wrong and make simple adjustments themselves." },
       { title: "Monitor transfer", detail: "Check that the same technical quality shown in practice is being carried into matches." }
     ],
-    highSummary: "A high score shows that the player has a reliable technique that is standing up to the demands of practice and competition. The next step is to strengthen it under even greater pressure.",
+    highSummary: "A high score shows the player has a strong, reliable technical base that holds up under pressure. The focus now is to protect the basics, keep raising the standard, and continue testing the technique in more demanding cricket situations.",
     lowPoints: [
       { title: "Identify the main problem", detail: "Find the technical issue that is having the greatest effect on performance." },
       { title: "Keep the correction simple", detail: "Work on one clear adjustment rather than trying to change everything at once." },
@@ -47,6 +48,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Recreate the problem in practice", detail: "Use drills and scenarios that mirror where the technique is breaking down in matches." },
       { title: "Track the improvement", detail: "Look for whether the correction becomes more consistent in practice and then transfers into competition." }
     ],
+    lowSummary: "A low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.",
     coachSummary: {
       overview: "The Technical Execution Index helps the coach understand whether the player's technique is reliable enough to perform in both practice and matches.",
       high: "protect, challenge and refine.",
@@ -73,6 +75,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Match the challenge to the player", detail: "Avoid asking for skills that are beyond their current level of development." },
       { title: "Track the progress", detail: "Look for improvement in practice first, then whether that improvement transfers into matches." }
     ],
+    lowSummary: "A low score shows that the player needs to develop their core skill set and build greater execution consistency under pressure. The focus now is to identify skill gaps, rebuild fundamentals, and test skills in demanding cricket situations.",
     coachSummary: {
       overview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
       high: "challenge, expand and apply.",
@@ -99,6 +102,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Teach adjustment", detail: "Help the player recognise when conditions, opposition or the match situation require a different approach." },
       { title: "Review the decisions", detail: "Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind." }
     ],
+    lowSummary: "A low score shows that the player needs clearer role understanding and tactical direction. The focus now is to simplify decision-making, establish clear match objectives, and test adaptability under pressure.",
     coachSummary: {
       overview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
       high: "confirm, challenge and adapt.",
@@ -125,6 +129,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Build responsibility gradually", detail: "Give the player age-appropriate ownership instead of letting others do everything for them." },
       { title: "Review the impact", detail: "Show how poor preparation may have affected the quality of practice or match performance." }
     ],
+    lowSummary: "A low score shows that the player needs consistent pre-match and pre-session preparation habits. The focus now is to establish structured routines, build personal accountability, and arrive ready for competition.",
     coachSummary: {
       overview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
       high: "reinforce, own and maintain.",
@@ -151,6 +156,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Increase involvement", detail: "Use competitive drills and clearer roles to keep the player engaged." },
       { title: "Review the response", detail: "Check whether the player's energy improves when the challenge becomes more meaningful." }
     ],
+    lowSummary: "A low score shows that the player needs higher competitive energy and focus during practice and matches. The focus now is to set clear targets, build effort habits, and maintain intensity throughout sessions.",
     coachSummary: {
       overview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
       high: "channel, challenge and sustain.",
@@ -177,6 +183,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Create shorter challenges", detail: "Break practice into smaller, purposeful blocks." },
       { title: "Review the pattern", detail: "Look for when focus drops and what tends to trigger it." }
     ],
+    lowSummary: "A low score shows that the player experiences concentration lapses during demanding periods. The focus now is to shorten focus tasks, introduce mental reset triggers, and sustain attention ball by ball.",
     coachSummary: {
       overview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
       high: "reinforce, challenge and sustain.",
@@ -203,6 +210,7 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Simulate low-stakes pressure", detail: "Build confidence gradually through controlled pressure scenarios in practice." },
       { title: "Celebrate bounce-back effort", detail: "Reward positive body language and recovery efforts after setbacks." }
     ],
+    lowSummary: "A low score shows that the player struggles to bounce back quickly from errors under pressure. The focus now is to build emotional control, practice recovery routines, and strengthen mental toughness.",
     coachSummary: {
       overview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
       high: "anchor, challenge and lead.",
@@ -264,6 +272,7 @@ export default function HelpPage() {
                         detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || "")
                       }))
                     : fallback.lowPoints,
+                  lowSummary: String(item?.lowSummary || item?.rangeLow || fallback.lowSummary || ""),
                   coachSummary: {
                     overview: String(item?.coachSummary?.overview || fallback.coachSummary.overview),
                     high: String(item?.coachSummary?.high || fallback.coachSummary.high),
@@ -296,6 +305,7 @@ export default function HelpPage() {
   const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints : [];
   const activePoints = scoreTab === "high" ? safeHighPoints : safeLowPoints;
   const safeHighSummary = currentPlan?.highSummary || "";
+  const safeLowSummary = currentPlan?.lowSummary || "";
   const safeCoachSummary = currentPlan?.coachSummary || {
     overview: "Overview of parameter performance.",
     high: "protect and refine.",
@@ -416,6 +426,11 @@ export default function HelpPage() {
             {scoreTab === "high" && safeHighSummary && (
               <div className="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 text-xs font-semibold text-emerald-950 leading-relaxed italic">
                 {safeHighSummary}
+              </div>
+            )}
+            {scoreTab === "low" && safeLowSummary && (
+              <div className="bg-rose-50/80 p-3.5 rounded-2xl border border-rose-200 text-xs font-semibold text-rose-950 leading-relaxed italic">
+                {safeLowSummary}
               </div>
             )}
           </div>
