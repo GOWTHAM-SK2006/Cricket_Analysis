@@ -18,11 +18,14 @@ interface CoachPlanItem {
   description: string;
   highPoints: ActionPoint[];
   highSummary: string;
+  mediumPoints?: ActionPoint[];
+  mediumSummary?: string;
   lowPoints: ActionPoint[];
   lowSummary?: string;
   coachSummary: {
     overview: string;
     high: string;
+    medium?: string;
     low: string;
     goal: string;
   };
@@ -41,6 +44,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Monitor transfer", detail: "Check that the same technical quality shown in practice is being carried into matches." }
     ],
     highSummary: "A high score shows the player has a strong, reliable technical base that holds up under pressure. The focus now is to protect the basics, keep raising the standard, and continue testing the technique in more demanding cricket situations.",
+    mediumPoints: [
+      { title: "Refine core mechanics", detail: "Identify minor technical flaws that emerge when pace, spin or pressure increases." },
+      { title: "Build consistency", detail: "Focus on repeating sound technique across longer practice sets and multi-over spells." },
+      { title: "Controlled pressure nets", detail: "Expose technique to moderate match-scenario drills with clear performance targets." },
+      { title: "Strengthen contact point", detail: "Work on precise bat-face alignment and timing under varying delivery lengths." },
+      { title: "Track transfer to matches", detail: "Ensure technical stability held in practice carries smoothly into match play." }
+    ],
+    mediumSummary: "A medium score shows the player has a functional technical foundation but requires greater consistency under pressure. The focus now is to refine core mechanics, eliminate minor breakdowns, and build repeatable technique.",
     lowPoints: [
       { title: "Identify the main problem", detail: "Find the technical issue that is having the greatest effect on performance." },
       { title: "Keep the correction simple", detail: "Work on one clear adjustment rather than trying to change everything at once." },
@@ -52,6 +63,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Technical Execution Index helps the coach understand whether the player's technique is reliable enough to perform in both practice and matches.",
       high: "protect, challenge and refine.",
+      medium: "refine, stabilize and test under moderate pressure.",
       low: "identify, simplify and rebuild.",
       goal: "develop a technique the player can trust and repeat when the game places it under pressure."
     }
@@ -68,6 +80,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Monitor transfer", detail: "Check that skills performed successfully in practice are also being used effectively in matches." }
     ],
     highSummary: "A high score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.",
+    mediumPoints: [
+      { title: "Consolidate core skills", detail: "Ensure primary batting strokes or bowling variations are reliable in standard match conditions." },
+      { title: "Introduce variation depth", detail: "Gradually add secondary shots or subtle bowling variations to expand the player's options." },
+      { title: "Improve execution speed", detail: "Practice executing skills quicker under reduced reaction time." },
+      { title: "Scenario application", detail: "Apply skills within specific field settings and match situation targets." },
+      { title: "Monitor skill stability", detail: "Evaluate whether skills remain effective when fatigue sets in." }
+    ],
+    mediumSummary: "A medium score shows the player possesses a solid basic skill set but needs greater execution variety and adaptability under match pressure. The focus now is to consolidate core skills and expand match options.",
     lowPoints: [
       { title: "Identify the gap", detail: "Establish which important skills are missing, inconsistent or limiting performance." },
       { title: "Prioritise the basics", detail: "Focus on the most important skills for the player's role before adding greater complexity." },
@@ -79,6 +99,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
       high: "challenge, expand and apply.",
+      medium: "consolidate, expand and execute.",
       low: "identify, build and repeat.",
       goal: "develop the right skills, then make sure the player can use them when the game demands them."
     }
@@ -95,6 +116,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Monitor adaptability", detail: "Check that the player can stick to a good plan but also recognise when it needs to change." }
     ],
     highSummary: "A high score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.",
+    mediumPoints: [
+      { title: "Clarify role objectives", detail: "Ensure the player understands their specific role requirements for different match phases." },
+      { title: "Improve tactical awareness", detail: "Discuss field placements, bowler matchups, and run-rate management." },
+      { title: "Practice plan adjustments", detail: "Rehearse shifting strategies when early wickets fall or bowling plans change." },
+      { title: "Encourage situational thinking", detail: "Ask the player to explain their tactical decisions during practice scenarios." },
+      { title: "Review match execution", detail: "Evaluate how well the player adhered to the agreed game plan during competition." }
+    ],
+    mediumSummary: "A medium score shows the player understands their game plan but occasionally struggles to adapt when match situations shift. The focus now is to sharpen role clarity, improve tactical adjustments, and build situational awareness.",
     lowPoints: [
       { title: "Establish whether there is a plan", detail: "Ask the player what they were trying to do and listen for clarity or uncertainty." },
       { title: "Simplify the thinking", detail: "Give the player one or two clear objectives for their role." },
@@ -106,6 +135,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
       high: "confirm, challenge and adapt.",
+      medium: "sharpen, adapt and execute.",
       low: "clarify, simplify and rehearse.",
       goal: "every player should know what they are trying to do, why they are doing it and when the game requires them to change."
     }
@@ -122,6 +152,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Monitor consistency", detail: "Make sure preparation standards remain high for every practice and match." }
     ],
     highSummary: "A high score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.",
+    mediumPoints: [
+      { title: "Standardize pre-session routines", detail: "Ensure physical warm-up, equipment check, and mental prep are completed consistently." },
+      { title: "Enhance role visualization", detail: "Spend 5 minutes visualizing key match scenarios before taking the field." },
+      { title: "Optimize hydration and recovery", detail: "Maintain proper nutrition and hydration habits leading up to match day." },
+      { title: "Build match readiness", detail: "Arrive early enough to settle mentally and transition into high focus." },
+      { title: "Track preparation impact", detail: "Observe how structured prep directly improves early session involvement." }
+    ],
+    mediumSummary: "A medium score shows the player follows standard preparation habits but can improve consistency and mental readiness before matches. The focus now is to refine pre-session routines and build personal ownership.",
     lowPoints: [
       { title: "Identify what is missing", detail: "Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?" },
       { title: "Set clear expectations", detail: "Make sure the player knows what ready should look like." },
@@ -133,6 +171,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
       high: "reinforce, own and maintain.",
+      medium: "standardize, visualize and own.",
       low: "clarify, organise and improve.",
       goal: "arrive ready, so performance has the best possible chance to follow."
     }
@@ -149,6 +188,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Encourage positive influence", detail: "Use the player's energy to lift teammates and team standards." }
     ],
     highSummary: "A high score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.",
+    mediumPoints: [
+      { title: "Sustain effort levels", detail: "Maintain consistent physical energy and focus throughout all drill sets and overs." },
+      { title: "Set session targets", detail: "Use clear sprint benchmarks and competitive targets during practice." },
+      { title: "Active fielding engagement", detail: "Stay alert, communicate clearly, and attack the ball in field positions." },
+      { title: "Control competitive drive", detail: "Channel energy into purposeful effort without rushing or losing discipline." },
+      { title: "Monitor energy drops", detail: "Identify and correct mid-session intensity lulls." }
+    ],
+    mediumSummary: "A medium score shows the player brings good energy but experiences periodic intensity lulls during long sessions or matches. The focus now is to sustain competitive effort and maintain active engagement.",
     lowPoints: [
       { title: "Identify the reason", detail: "Is the player tired, distracted, bored, low on confidence or unclear about the task?" },
       { title: "Clarify the standard", detail: "Explain what good intensity should look like in movement, effort and involvement." },
@@ -160,6 +207,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
       high: "channel, challenge and sustain.",
+      medium: "sustain, target and engage.",
       low: "identify, engage and rebuild.",
       goal: "bring the right energy, with the right purpose, for the demands of the moment."
     }
@@ -176,6 +224,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Monitor consistency", detail: "Check whether the player can stay focused when tired, frustrated or under pressure." }
     ],
     highSummary: "A high score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.",
+    mediumPoints: [
+      { title: "Strengthen ball-by-ball reset", detail: "Use a consistent breathing or physical trigger to refocus between deliveries." },
+      { title: "Extend concentration sets", detail: "Gradually increase the duration of continuous high-focus practice drills." },
+      { title: "Filter out distractions", detail: "Practice maintaining concentration despite external noise, fatigue or umpire decisions." },
+      { title: "Single-point focus", detail: "Isolate one primary focal point during each attempt or set." },
+      { title: "Track focus duration", detail: "Identify specific triggers that cause concentration to wander and apply quick resets." }
+    ],
+    mediumSummary: "A medium score shows the player has solid concentration with occasional focus lapses during prolonged play. The focus now is to strengthen ball-by-ball reset routines and build mental stamina.",
     lowPoints: [
       { title: "Identify the cause", detail: "Is the player distracted, tired, anxious, bored or unclear about what matters?" },
       { title: "Simplify the task", detail: "Give one clear focus point rather than too many instructions." },
@@ -187,6 +243,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
       high: "reinforce, challenge and sustain.",
+      medium: "reset, focus and sustain.",
       low: "simplify, reset and rebuild.",
       goal: "stay present, reset quickly and give the next ball your full attention."
     }
@@ -203,6 +260,14 @@ const coachPlanData: CoachPlanItem[] = [
       { title: "Track response consistency", detail: "Check that resilience remains high across consecutive difficult matches." }
     ],
     highSummary: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
+    mediumPoints: [
+      { title: "Bounce back faster from errors", detail: "Minimize emotional dwell time after a bad shot, dropped catch, or boundary." },
+      { title: "Maintain positive body language", detail: "Keep upright posture and confident body language regardless of match situation." },
+      { title: "Embrace challenging overs", detail: "Volunteer for high-pressure match situations to build mental toughness." },
+      { title: "Process feedback constructively", detail: "Use mid-match coaching cues to adjust immediately without losing confidence." },
+      { title: "Evaluate setback responses", detail: "Review how effectively the player recovered during match crunch moments." }
+    ],
+    mediumSummary: "A medium score shows the player handles standard match pressure reasonably well but can bounce back faster from unexpected setbacks. The focus now is to strengthen post-error recovery routines and build composure.",
     lowPoints: [
       { title: "Identify error triggers", detail: "Pinpoint whether dropped catches, early wickets, or umpire calls trigger emotional drops." },
       { title: "Implement 5-second reset", detail: "Teach a quick physical reset routine (breath, body language) post-error." },
@@ -214,6 +279,7 @@ const coachPlanData: CoachPlanItem[] = [
     coachSummary: {
       overview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
       high: "anchor, challenge and lead.",
+      medium: "compose, recover and push.",
       low: "identify, reset and rebuild.",
       goal: "develop unshakeable mental toughness under competitive pressure."
     }
@@ -222,7 +288,7 @@ const coachPlanData: CoachPlanItem[] = [
 
 export default function HelpPage() {
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
-  const [scoreTab, setScoreTab] = useState<"high" | "low">("high");
+  const [scoreTab, setScoreTab] = useState<"high" | "medium" | "low">("high");
   const [plans, setPlans] = useState<CoachPlanItem[]>(coachPlanData);
   const [ppiDesc, setPpiDesc] = useState<string>(
     "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation."
@@ -266,6 +332,13 @@ export default function HelpPage() {
                       }))
                     : fallback.highPoints,
                   highSummary: String(item?.highSummary || item?.rangeHigh || fallback.highSummary),
+                  mediumPoints: Array.isArray(item?.mediumPoints) && item.mediumPoints.length > 0
+                    ? item.mediumPoints.map((pt: any, pIdx: number) => ({
+                        title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Action Point"),
+                        detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || "")
+                      }))
+                    : fallback.mediumPoints,
+                  mediumSummary: String(item?.mediumSummary || fallback.mediumSummary || ""),
                   lowPoints: Array.isArray(item?.lowPoints) && item.lowPoints.length > 0
                     ? item.lowPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Action Point"),
@@ -276,6 +349,7 @@ export default function HelpPage() {
                   coachSummary: {
                     overview: String(item?.coachSummary?.overview || fallback.coachSummary.overview),
                     high: String(item?.coachSummary?.high || fallback.coachSummary.high),
+                    medium: String(item?.coachSummary?.medium || fallback.coachSummary.medium || "refine and stabilize"),
                     low: String(item?.coachSummary?.low || fallback.coachSummary.low),
                     goal: String(item?.coachSummary?.goal || fallback.coachSummary.goal)
                   }
@@ -302,13 +376,16 @@ export default function HelpPage() {
   const safeName = currentPlan?.name || "Parameter";
   const safeDescription = currentPlan?.description || "";
   const safeHighPoints = Array.isArray(currentPlan?.highPoints) ? currentPlan.highPoints : [];
+  const safeMediumPoints = Array.isArray(currentPlan?.mediumPoints) ? currentPlan.mediumPoints : [];
   const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints : [];
-  const activePoints = scoreTab === "high" ? safeHighPoints : safeLowPoints;
+  const activePoints = scoreTab === "high" ? safeHighPoints : scoreTab === "medium" ? safeMediumPoints : safeLowPoints;
   const safeHighSummary = currentPlan?.highSummary || "";
+  const safeMediumSummary = currentPlan?.mediumSummary || "";
   const safeLowSummary = currentPlan?.lowSummary || "";
   const safeCoachSummary = currentPlan?.coachSummary || {
     overview: "Overview of parameter performance.",
     high: "protect and refine.",
+    medium: "refine and stabilize.",
     low: "simplify and rebuild.",
     goal: "develop consistent performance under pressure."
   };
@@ -377,11 +454,11 @@ export default function HelpPage() {
             </p>
           </div>
 
-          {/* High vs Low Score Action Toggle */}
-          <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1.5">
+          {/* High vs Medium vs Low Score Action Toggle */}
+          <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1 sm:gap-1.5">
             <button
               onClick={() => setScoreTab("high")}
-              className={`flex-1 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
                 scoreTab === "high"
                   ? "bg-emerald-500 text-white shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
@@ -390,8 +467,18 @@ export default function HelpPage() {
               IF SCORE IS HIGH (&gt;7)
             </button>
             <button
+              onClick={() => setScoreTab("medium")}
+              className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
+                scoreTab === "medium"
+                  ? "bg-amber-500 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              IF SCORE IS MEDIUM (5 TO 7)
+            </button>
+            <button
               onClick={() => setScoreTab("low")}
-              className={`flex-1 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
                 scoreTab === "low"
                   ? "bg-rose-500 text-white shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
@@ -404,13 +491,15 @@ export default function HelpPage() {
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `High ${safeName} Score Action Points:` : `Low ${safeName} Score Action Points:`}
+              {scoreTab === "high" ? `High ${safeName} Score Action Points:` : scoreTab === "medium" ? `Medium ${safeName} Score Action Points:` : `Low ${safeName} Score Action Points:`}
             </span>
             <div className="space-y-2">
               {activePoints.map((pt, i) => (
                 <div key={i} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-3 items-start text-xs">
                   <span className={`w-5 h-5 rounded-full flex items-center justify-center font-mono font-black text-[10px] shrink-0 mt-0.5 ${
-                    scoreTab === "high" ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-rose-100 text-rose-800 border border-rose-300"
+                    scoreTab === "high" ? "bg-emerald-100 text-emerald-800 border border-emerald-300" :
+                    scoreTab === "medium" ? "bg-amber-100 text-amber-800 border border-amber-300" :
+                    "bg-rose-100 text-rose-800 border border-rose-300"
                   }`}>
                     {i + 1}
                   </span>
@@ -422,10 +511,15 @@ export default function HelpPage() {
               ))}
             </div>
 
-            {/* High/Low Summary Banner */}
+            {/* High/Medium/Low Summary Banner */}
             {scoreTab === "high" && safeHighSummary && (
               <div className="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 text-xs font-semibold text-emerald-950 leading-relaxed italic">
                 {safeHighSummary}
+              </div>
+            )}
+            {scoreTab === "medium" && safeMediumSummary && (
+              <div className="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200 text-xs font-semibold text-amber-950 leading-relaxed italic">
+                {safeMediumSummary}
               </div>
             )}
             {scoreTab === "low" && safeLowSummary && (
@@ -445,6 +539,7 @@ export default function HelpPage() {
             </p>
             <div className="pt-2 border-t border-slate-800 space-y-1.5">
               <p><span className="text-emerald-400 font-bold uppercase">High score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.high}</span></p>
+              <p><span className="text-amber-400 font-bold uppercase">Medium score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.medium || "refine and stabilize."}</span></p>
               <p><span className="text-rose-400 font-bold uppercase">Low score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.low}</span></p>
               <p className="pt-1 text-orange-300 font-bold"><span className="uppercase text-orange-400">The goal:</span> {safeCoachSummary.goal}</p>
             </div>

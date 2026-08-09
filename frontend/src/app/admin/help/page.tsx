@@ -243,7 +243,7 @@ export default function AdminHelpPage() {
   const [saving, setSaving] = useState(false);
   const [helpConfig, setHelpConfig] = useState<FullHelpConfig>(DEFAULT_FULL_HELP);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
-  const [scoreTab, setScoreTab] = useState<"high" | "low">("high");
+  const [scoreTab, setScoreTab] = useState<"high" | "medium" | "low">("high");
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
 
   useEffect(() => {
@@ -299,18 +299,18 @@ export default function AdminHelpPage() {
     setHelpConfig({ ...helpConfig, coachPlanData: updatedList });
   };
 
-  const updateActionPoint = (tab: "high" | "low", index: number, field: "title" | "detail", val: string) => {
+  const updateActionPoint = (tab: "high" | "medium" | "low", index: number, field: "title" | "detail", val: string) => {
     const updatedList = [...helpConfig.coachPlanData];
     const plan = { ...updatedList[selectedPlanIndex] };
-    const pointsKey = tab === "high" ? "highPoints" : "lowPoints";
-    const points = [...plan[pointsKey]];
+    const pointsKey = tab === "high" ? "highPoints" : tab === "medium" ? "mediumPoints" : "lowPoints";
+    const points = [...(plan[pointsKey] || [])];
     points[index] = { ...points[index], [field]: val };
     plan[pointsKey] = points;
     updatedList[selectedPlanIndex] = plan;
     setHelpConfig({ ...helpConfig, coachPlanData: updatedList });
   };
 
-  const updateCoachSummaryField = (field: "overview" | "high" | "low" | "goal", val: string) => {
+  const updateCoachSummaryField = (field: "overview" | "high" | "medium" | "low" | "goal", val: string) => {
     const updatedList = [...helpConfig.coachPlanData];
     const plan = { ...updatedList[selectedPlanIndex] };
     plan.coachSummary = { ...plan.coachSummary, [field]: val };
@@ -454,13 +454,13 @@ export default function AdminHelpPage() {
             />
           </div>
 
-          {/* 2. High vs Low Score Action Points Toggle */}
+          {/* 2. High vs Medium vs Low Score Action Points Toggle */}
           <div className="space-y-4 pt-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
-                2. 5-Point Action Plans ({scoreTab === "high" ? "High Score >7" : "Low Score <5"})
+                2. 5-Point Action Plans ({scoreTab === "high" ? "High Score >7" : scoreTab === "medium" ? "Medium Score 5 to 7" : "Low Score <5"})
               </label>
-              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 gap-1">
                 <button
                   onClick={() => setScoreTab("high")}
                   className={`px-3 py-1 rounded-lg text-xs font-black uppercase transition-all ${
@@ -468,6 +468,14 @@ export default function AdminHelpPage() {
                   }`}
                 >
                   If Score is High (&gt;7)
+                </button>
+                <button
+                  onClick={() => setScoreTab("medium")}
+                  className={`px-3 py-1 rounded-lg text-xs font-black uppercase transition-all ${
+                    scoreTab === "medium" ? "bg-amber-500 text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  If Score is Medium (5 to 7)
                 </button>
                 <button
                   onClick={() => setScoreTab("low")}
@@ -482,11 +490,13 @@ export default function AdminHelpPage() {
 
             {/* 5 Action Points */}
             <div className="space-y-3">
-              {(scoreTab === "high" ? currentPlan.highPoints : currentPlan.lowPoints).map((pt, i) => (
+              {(scoreTab === "high" ? (currentPlan.highPoints || []) : scoreTab === "medium" ? (currentPlan.mediumPoints || []) : (currentPlan.lowPoints || [])).map((pt, i) => (
                 <div key={i} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                   <div className="flex items-center gap-2">
                     <span className={`w-5 h-5 rounded-full text-[10px] font-black flex items-center justify-center ${
-                      scoreTab === "high" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                      scoreTab === "high" ? "bg-emerald-100 text-emerald-800" :
+                      scoreTab === "medium" ? "bg-amber-100 text-amber-800" :
+                      "bg-rose-100 text-rose-800"
                     }`}>
                       {i + 1}
                     </span>
@@ -523,6 +533,20 @@ export default function AdminHelpPage() {
                 />
               </div>
             )}
+            {/* Medium Summary Banner text */}
+            {scoreTab === "medium" && (
+              <div>
+                <label className="block text-xs font-bold text-amber-800 uppercase tracking-wider mb-1.5">
+                  Medium Score Amber Summary Banner Text
+                </label>
+                <textarea
+                  rows={2}
+                  value={currentPlan.mediumSummary || ""}
+                  onChange={(e) => updateCurrentPlanField("mediumSummary", e.target.value)}
+                  className="w-full bg-amber-50/80 border border-amber-300 rounded-xl p-3 text-xs font-semibold text-amber-950 leading-relaxed italic focus:outline-none"
+                />
+              </div>
+            )}
             {/* Low Summary Banner text */}
             {scoreTab === "low" && (
               <div>
@@ -554,13 +578,22 @@ export default function AdminHelpPage() {
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs font-medium text-slate-100 focus:outline-none focus:border-orange-500 leading-relaxed"
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1">High Score Directive</span>
                   <input
                     type="text"
                     value={currentPlan.coachSummary.high}
                     onChange={(e) => updateCoachSummaryField("high", e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-100 focus:outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest block mb-1">Medium Score Directive</span>
+                  <input
+                    type="text"
+                    value={currentPlan.coachSummary.medium || "refine and stabilize."}
+                    onChange={(e) => updateCoachSummaryField("medium", e.target.value)}
                     className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-100 focus:outline-none focus:border-orange-500"
                   />
                 </div>
