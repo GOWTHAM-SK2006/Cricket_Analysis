@@ -9,14 +9,16 @@ interface AssessmentLogItem {
   player: string;
   type: "Practice" | "Match";
   coach: string;
-  organization: string;
   score: string;
   date: string;
 }
 
 const DEFAULT_ASSESSMENTS: AssessmentLogItem[] = [
-  { id: 101, player: "Rohan Sharma", type: "Practice", coach: "Daryll Cullinan", organization: "CPI Cricket Academy", score: "8.2 / 10", date: "2026-08-08" },
-  { id: 103, player: "Player A", type: "Practice", coach: "Gowtham SK", organization: "CPI Cricket Academy", score: "8.4 / 10", date: "2026-08-06" }
+  { id: 101, player: "Rohan Sharma", type: "Practice", coach: "Daryll Cullinan", score: "8.2 / 10", date: "2026-08-08" },
+  { id: 102, player: "Ankit Patel", type: "Match", coach: "Daryll Cullinan", score: "7.9 / 10", date: "2026-08-07" },
+  { id: 103, player: "Player A", type: "Practice", coach: "Gowtham SK", score: "8.4 / 10", date: "2026-08-06" },
+  { id: 104, player: "Siddharth Verma", type: "Match", coach: "Daryll Cullinan", score: "8.1 / 10", date: "2026-08-05" },
+  { id: 105, player: "Vikram Singh", type: "Practice", coach: "Gowtham SK", score: "7.8 / 10", date: "2026-08-04" }
 ];
 
 export default function AdminAssessmentsPage() {
@@ -40,13 +42,11 @@ export default function AdminAssessmentsPage() {
       if (res.ok) {
         const data = await res.json();
         if (data.recentLogs && Array.isArray(data.recentLogs)) {
-          // Format
           const mapped = data.recentLogs.map((item: any) => ({
             id: item.id,
             player: item.player,
             type: item.type,
             coach: item.coach,
-            organization: "CPI Academy",
             score: item.cpi,
             date: item.date
           }));
@@ -63,8 +63,7 @@ export default function AdminAssessmentsPage() {
   const filteredLogs = logs.filter((log) => {
     const matchesSearch =
       log.player.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.coach.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.organization.toLowerCase().includes(searchQuery.toLowerCase());
+      log.coach.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === "All" || log.type === typeFilter;
     return matchesSearch && matchesType;
   });
@@ -81,7 +80,7 @@ export default function AdminAssessmentsPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Global audit stream of all practice grades and match assessments submitted by coaches across all organizations.
+            Global audit stream of all practice grades and match assessments submitted by coaches.
           </p>
         </div>
       </div>
@@ -94,7 +93,7 @@ export default function AdminAssessmentsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by player, coach, or organization..."
+            placeholder="Search by player or coach name..."
             className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-10 pr-4 text-xs font-medium focus:outline-none focus:border-orange-500 focus:bg-white"
           />
         </div>
