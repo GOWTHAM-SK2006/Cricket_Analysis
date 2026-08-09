@@ -25,7 +25,9 @@ import {
   CheckCircle2,
   AlertCircle,
   ShieldAlert,
-  ChevronRight
+  ShieldAlert,
+  ChevronRight,
+  Scale
 } from "lucide-react";
 
 // Toast Notification Context
@@ -83,6 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Assessments Log", path: "/admin/assessments", icon: ClipboardList },
     { name: "Platform Analytics", path: "/admin/analytics", icon: BarChart3 },
     { name: "Content Management", path: "/admin/content", icon: FileText },
+    { name: "Terms & Conditions", path: "/admin/terms", icon: Scale },
     { name: "Help & Information", path: "/admin/help", icon: HelpCircle },
     { name: "CPI Framework", path: "/admin/cpi-framework", icon: Sliders },
     { name: "AI Management", path: "/admin/ai", icon: Bot },

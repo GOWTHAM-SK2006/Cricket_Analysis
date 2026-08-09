@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Settings, Save, Lock, ShieldCheck, Download, Loader2, KeyRound } from "lucide-react";
+import { Settings, Save, Lock, ShieldCheck, Download, Loader2, KeyRound, Scale, Edit3 } from "lucide-react";
+import Link from "next/link";
 import { useAdminToast } from "../layout";
 
 interface PlatformSettings {
@@ -210,11 +211,59 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
+      {/* Terms & Conditions Governance */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+          <div>
+            <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+              <Scale className="w-4 h-4 text-orange-600" />
+              <span>2. Terms & Conditions Governance</span>
+            </h2>
+            <p className="text-[11px] text-slate-500 mt-1 font-medium">
+              Manage live terms, policies, section content, and URL routes for the platform legal agreements.
+            </p>
+          </div>
+          <Link
+            href="/admin/terms"
+            className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-extrabold rounded-xl shadow-md shadow-orange-600/30 transition-all uppercase cursor-pointer shrink-0"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Open Terms & Conditions Editor</span>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+              Terms & Conditions Path / URL
+            </label>
+            <input
+              type="text"
+              value={settings.termsUrl || "/terms"}
+              onChange={(e) => setSettings({ ...settings, termsUrl: e.target.value })}
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-orange-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+              Privacy Policy URL
+            </label>
+            <input
+              type="text"
+              value={settings.privacyUrl || "/privacy"}
+              onChange={(e) => setSettings({ ...settings, privacyUrl: e.target.value })}
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-orange-500"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Admin Password Security Form */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
         <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest border-b border-slate-100 pb-3 flex items-center gap-2">
           <KeyRound className="w-4 h-4 text-orange-600" />
-          <span>2. Master Administrator Password Security</span>
+          <span>3. Master Administrator Password Security</span>
         </h2>
 
         <form onSubmit={handleUpdatePassword} className="space-y-4 max-w-md">
