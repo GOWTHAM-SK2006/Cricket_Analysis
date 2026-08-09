@@ -17,10 +17,7 @@ interface CoachItem {
 
 const DEFAULT_COACHES: CoachItem[] = [
   { id: 1, name: "Daryll Cullinan", email: "daryll@cpicoach.com", organization: "CPI Cricket Academy", playersCount: 42, assessmentsCount: 438, status: "Active", joinedDate: "2025-01-10" },
-  { id: 2, name: "Gowtham SK", email: "gowtham@cpicoach.com", organization: "CPI Cricket Academy", playersCount: 38, assessmentsCount: 390, status: "Active", joinedDate: "2025-01-15" },
-  { id: 3, name: "Rajesh Kumar", email: "rajesh@nationalhub.org", organization: "National High Performance Center", playersCount: 54, assessmentsCount: 520, status: "Active", joinedDate: "2025-02-05" },
-  { id: 4, name: "Vikram Singh", email: "vikram@apexcricket.com", organization: "Apex Cricket Institute", playersCount: 29, assessmentsCount: 210, status: "Active", joinedDate: "2025-03-01" },
-  { id: 5, name: "Shane Watson", email: "shane@melbournecricket.au", organization: "Melbourne Elite Cricket School", playersCount: 45, assessmentsCount: 412, status: "Active", joinedDate: "2025-04-10" }
+  { id: 2, name: "Gowtham SK", email: "gowtham@cpicoach.com", organization: "CPI Cricket Academy", playersCount: 38, assessmentsCount: 390, status: "Active", joinedDate: "2025-01-15" }
 ];
 
 export default function AdminCoachesPage() {

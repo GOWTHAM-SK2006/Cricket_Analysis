@@ -16,10 +16,7 @@ interface AssessmentLogItem {
 
 const DEFAULT_ASSESSMENTS: AssessmentLogItem[] = [
   { id: 101, player: "Rohan Sharma", type: "Practice", coach: "Daryll Cullinan", organization: "CPI Cricket Academy", score: "8.2 / 10", date: "2026-08-08" },
-  { id: 102, player: "Ankit Patel", type: "Match", coach: "Rajesh Kumar", organization: "National High Performance Center", score: "8.7 / 10", date: "2026-08-07" },
-  { id: 103, player: "Player A", type: "Practice", coach: "Gowtham SK", organization: "CPI Cricket Academy", score: "8.4 / 10", date: "2026-08-06" },
-  { id: 104, player: "David Warner Jr.", type: "Match", coach: "Shane Watson", organization: "Melbourne Elite Cricket School", score: "8.1 / 10", date: "2026-08-05" },
-  { id: 105, player: "Siddharth Verma", type: "Practice", coach: "Vikram Singh", organization: "Apex Cricket Institute", score: "7.5 / 10", date: "2026-08-04" }
+  { id: 103, player: "Player A", type: "Practice", coach: "Gowtham SK", organization: "CPI Cricket Academy", score: "8.4 / 10", date: "2026-08-06" }
 ];
 
 export default function AdminAssessmentsPage() {

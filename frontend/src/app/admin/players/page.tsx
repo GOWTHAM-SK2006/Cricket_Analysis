@@ -18,10 +18,7 @@ interface GlobalPlayerItem {
 
 const DEFAULT_GLOBAL_PLAYERS: GlobalPlayerItem[] = [
   { id: 1, name: "Player A", organization: "CPI Cricket Academy", coachName: "Daryll Cullinan", cpi: "8.4 / 10", ppi: "8.1 / 10", mpi: "8.7 / 10", lastAssessment: "2 days ago", status: "Active" },
-  { id: 2, name: "Rohan Sharma", organization: "CPI Cricket Academy", coachName: "Gowtham SK", cpi: "7.9 / 10", ppi: "8.0 / 10", mpi: "7.8 / 10", lastAssessment: "1 day ago", status: "Active" },
-  { id: 3, name: "Ankit Patel", organization: "National High Performance Center", coachName: "Rajesh Kumar", cpi: "8.8 / 10", ppi: "9.0 / 10", mpi: "8.6 / 10", lastAssessment: "Just now", status: "Active" },
-  { id: 4, name: "David Warner Jr.", organization: "Melbourne Elite Cricket School", coachName: "Shane Watson", cpi: "8.2 / 10", ppi: "8.3 / 10", mpi: "8.1 / 10", lastAssessment: "4 days ago", status: "Active" },
-  { id: 5, name: "Siddharth Verma", organization: "Apex Cricket Institute", coachName: "Vikram Singh", cpi: "7.5 / 10", ppi: "7.6 / 10", mpi: "7.4 / 10", lastAssessment: "1 week ago", status: "Active" }
+  { id: 2, name: "Rohan Sharma", organization: "CPI Cricket Academy", coachName: "Gowtham SK", cpi: "7.9 / 10", ppi: "8.0 / 10", mpi: "7.8 / 10", lastAssessment: "1 day ago", status: "Active" }
 ];
 
 export default function AdminGlobalPlayersPage() {

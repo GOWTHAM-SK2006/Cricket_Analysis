@@ -70,14 +70,14 @@ public class MasterAdminController {
         long totalAssessments = practiceCount + matchCount;
 
         Map<String, Object> metrics = new LinkedHashMap<>();
-        metrics.put("totalOrganizations", 12); // CPI Academy, National Center, etc.
-        metrics.put("totalCoaches", totalCoaches > 0 ? totalCoaches : 48);
-        metrics.put("totalPlayers", totalPlayers > 0 ? totalPlayers : 624);
-        metrics.put("totalAssessments", totalAssessments > 0 ? totalAssessments : 4821);
+        metrics.put("totalOrganizations", 1); // CPI Cricket Academy
+        metrics.put("totalCoaches", totalCoaches > 0 ? totalCoaches : 3);
+        metrics.put("totalPlayers", totalPlayers > 0 ? totalPlayers : 11);
+        metrics.put("totalAssessments", totalAssessments > 0 ? totalAssessments : 1240);
         metrics.put("activeCoaches", Math.max(1, totalCoaches));
         metrics.put("activePlayers", Math.max(1, totalPlayers));
-        metrics.put("practiceAssessments", practiceCount > 0 ? practiceCount : 2910);
-        metrics.put("matchAssessments", matchCount > 0 ? matchCount : 1911);
+        metrics.put("practiceAssessments", practiceCount > 0 ? practiceCount : 720);
+        metrics.put("matchAssessments", matchCount > 0 ? matchCount : 520);
         metrics.put("lastUpdatedAt", getConfigOrDefault().getLastUpdatedAt());
 
         return ResponseEntity.ok(metrics);
@@ -92,37 +92,15 @@ public class MasterAdminController {
         org1.put("id", 1);
         org1.put("name", "CPI Cricket Academy");
         org1.put("location", "Chennai, India");
-        org1.put("coachesCount", coachRepository.count() > 0 ? coachRepository.count() : 8);
-        org1.put("playersCount", playerRepository.count() > 0 ? playerRepository.count() : 124);
-        org1.put("assessmentsCount", 1240);
+        org1.put("coachesCount", coachRepository.count() > 0 ? coachRepository.count() : 3);
+        org1.put("playersCount", playerRepository.count() > 0 ? playerRepository.count() : 11);
+        org1.put("assessmentsCount", practiceAssessmentRepository.count() + matchAssessmentRepository.count() > 0 
+                ? practiceAssessmentRepository.count() + matchAssessmentRepository.count() 
+                : 1240);
         org1.put("status", "Active");
         org1.put("createdDate", "2025-01-15");
         org1.put("lastActive", "Just now");
         orgs.add(org1);
-
-        Map<String, Object> org2 = new LinkedHashMap<>();
-        org2.put("id", 2);
-        org2.put("name", "National High Performance Center");
-        org2.put("location", "Bengaluru, India");
-        org2.put("coachesCount", 14);
-        org2.put("playersCount", 198);
-        org2.put("assessmentsCount", 1850);
-        org2.put("status", "Active");
-        org2.put("createdDate", "2025-02-01");
-        org2.put("lastActive", "2 hours ago");
-        orgs.add(org2);
-
-        Map<String, Object> org3 = new LinkedHashMap<>();
-        org3.put("id", 3);
-        org3.put("name", "Apex Cricket Institute");
-        org3.put("location", "Mumbai, India");
-        org3.put("coachesCount", 6);
-        org3.put("playersCount", 85);
-        org3.put("assessmentsCount", 620);
-        org3.put("status", "Active");
-        org3.put("createdDate", "2025-03-10");
-        org3.put("lastActive", "1 day ago");
-        orgs.add(org3);
 
         return ResponseEntity.ok(orgs);
     }
@@ -232,8 +210,7 @@ public class MasterAdminController {
             Map.of("month", "Apr", "coaches", 48, "players", 624, "assessments", 4821)
         ));
         res.put("topOrganizations", List.of(
-            Map.of("name", "CPI Academy", "assessments", 1240),
-            Map.of("name", "National High Performance", "assessments", 1850)
+            Map.of("name", "CPI Cricket Academy", "assessments", 1240)
         ));
         return ResponseEntity.ok(res);
     }

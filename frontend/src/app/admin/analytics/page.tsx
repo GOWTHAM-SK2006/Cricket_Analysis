@@ -16,10 +16,7 @@ export default function AdminAnalyticsPage() {
   ];
 
   const topActiveOrgs = [
-    { name: "National High Performance Center", location: "Bengaluru", logs: 1850, share: "38.4%" },
-    { name: "CPI Cricket Academy", location: "Chennai", logs: 1240, share: "25.7%" },
-    { name: "Melbourne Elite Cricket School", location: "Melbourne", logs: 910, share: "18.8%" },
-    { name: "Apex Cricket Institute", location: "Mumbai", logs: 620, share: "12.8%" },
+    { name: "CPI Cricket Academy", location: "Chennai", logs: 1240, share: "100.0%" }
   ];
 
   return (

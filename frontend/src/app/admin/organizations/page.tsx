@@ -17,11 +17,7 @@ interface OrganizationItem {
 }
 
 const DEFAULT_ORGS: OrganizationItem[] = [
-  { id: 1, name: "CPI Cricket Academy", location: "Chennai, India", coachesCount: 8, playersCount: 124, assessmentsCount: 1240, status: "Active", createdDate: "2025-01-15", lastActive: "Just now" },
-  { id: 2, name: "National High Performance Center", location: "Bengaluru, India", coachesCount: 14, playersCount: 198, assessmentsCount: 1850, status: "Active", createdDate: "2025-02-01", lastActive: "2 hours ago" },
-  { id: 3, name: "Apex Cricket Institute", location: "Mumbai, India", coachesCount: 6, playersCount: 85, assessmentsCount: 620, status: "Active", createdDate: "2025-03-10", lastActive: "1 day ago" },
-  { id: 4, name: "Southern Regional Development Hub", location: "Hyderabad, India", coachesCount: 5, playersCount: 72, assessmentsCount: 480, status: "Active", createdDate: "2025-04-05", lastActive: "3 days ago" },
-  { id: 5, name: "Melbourne Elite Cricket School", location: "Melbourne, Australia", coachesCount: 9, playersCount: 110, assessmentsCount: 910, status: "Active", createdDate: "2025-05-12", lastActive: "5 hours ago" }
+  { id: 1, name: "CPI Cricket Academy", location: "Chennai, India", coachesCount: 3, playersCount: 11, assessmentsCount: 1240, status: "Active", createdDate: "2025-01-15", lastActive: "Just now" }
 ];
 
 export default function AdminOrganizationsPage() {
