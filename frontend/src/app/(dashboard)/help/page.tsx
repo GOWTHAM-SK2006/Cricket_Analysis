@@ -496,9 +496,9 @@ export default function HelpPage() {
               {safeCoachSummary.overview}
             </p>
             <div className="pt-2 border-t border-slate-800 space-y-1.5">
-              <p><span className="text-emerald-400 font-bold uppercase">High score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.high}</span></p>
-              <p><span className="text-amber-400 font-bold uppercase">Medium score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.medium || "refine and stabilize."}</span></p>
-              <p><span className="text-rose-400 font-bold uppercase">Low score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.low}</span></p>
+              <p><span className="text-emerald-400 font-bold uppercase">Elite Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.high}</span></p>
+              <p><span className="text-amber-400 font-bold uppercase">Developing Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.medium || "refine and stabilize."}</span></p>
+              <p><span className="text-rose-400 font-bold uppercase">Priority Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.low}</span></p>
               <p className="pt-1 text-orange-300 font-bold"><span className="uppercase text-orange-400">The goal:</span> {safeCoachSummary.goal}</p>
             </div>
           </div>

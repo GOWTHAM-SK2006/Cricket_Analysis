@@ -601,7 +601,7 @@ export default function AdminHelpPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1">High Score Directive</span>
+                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1">Elite Score Directive</span>
                   <input
                     type="text"
                     value={currentPlan.coachSummary.high}
@@ -610,7 +610,7 @@ export default function AdminHelpPage() {
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest block mb-1">Medium Score Directive</span>
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest block mb-1">Developing Score Directive</span>
                   <input
                     type="text"
                     value={currentPlan.coachSummary.medium || "refine and stabilize."}
@@ -619,7 +619,7 @@ export default function AdminHelpPage() {
                   />
                 </div>
                 <div>
-                  <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Low Score Directive</span>
+                  <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest block mb-1">Priority Score Directive</span>
                   <input
                     type="text"
                     value={currentPlan.coachSummary.low}
