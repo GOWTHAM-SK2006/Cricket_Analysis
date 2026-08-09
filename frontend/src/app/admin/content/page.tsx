@@ -192,7 +192,7 @@ export default function AdminContentManagementPage() {
       }
     } catch (err) {
       showToast("Could not load system content configuration", "error");
-    } fontally {
+    } finally {
       setLoading(false);
     }
   };
