@@ -337,9 +337,9 @@ export default function HelpPage() {
   const safeMediumPoints = Array.isArray(currentPlan?.mediumPoints) ? currentPlan.mediumPoints : [];
   const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints : [];
   const activePoints = scoreTab === "high" ? safeHighPoints : scoreTab === "medium" ? safeMediumPoints : safeLowPoints;
-  const safeHighSummary = currentPlan?.highSummary || "";
-  const safeMediumSummary = currentPlan?.mediumSummary || "";
-  const safeLowSummary = currentPlan?.lowSummary || "";
+  const safeHighSummary = currentPlan?.highSummary || coachPlanData[selectedPlanIndex]?.highSummary || "";
+  const safeMediumSummary = currentPlan?.mediumSummary || coachPlanData[selectedPlanIndex]?.mediumSummary || coachPlanData[0]?.mediumSummary || "";
+  const safeLowSummary = currentPlan?.lowSummary || coachPlanData[selectedPlanIndex]?.lowSummary || "";
   const safeCoachSummary = currentPlan?.coachSummary || {
     overview: "Overview of parameter performance.",
     high: "protect and refine.",
