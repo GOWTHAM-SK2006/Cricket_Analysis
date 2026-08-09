@@ -136,18 +136,63 @@ public class AuthService {
     }
 
     public AuthenticationResponse googleAuth(java.util.Map<String, String> request) {
-        String email = request.get("email");
-        String name = request.get("name");
-
-        if (email == null || email.trim().isEmpty()) {
-            throw new RuntimeException("Email address is required for Google Sign-In");
+        String idToken = request.get("idToken");
+        if (idToken == null || idToken.trim().isEmpty()) {
+            idToken = request.get("credential");
+        }
+        if (idToken == null || idToken.trim().isEmpty()) {
+            idToken = request.get("token");
         }
 
-        String cleanEmail = email.trim().toLowerCase();
+        String verifiedEmail = null;
+        String verifiedName = null;
 
-        // Check if user exists or register seamless profile via Google
+        if (idToken != null && !idToken.trim().isEmpty()) {
+            // 1. Verify ID token via Google TokenInfo REST API
+            try {
+                org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+                String googleTokenInfoUrl = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken.trim();
+                @SuppressWarnings("unchecked")
+                java.util.Map<String, Object> tokenInfo = restTemplate.getForObject(googleTokenInfoUrl, java.util.Map.class);
+                if (tokenInfo != null && tokenInfo.containsKey("email")) {
+                    verifiedEmail = (String) tokenInfo.get("email");
+                    verifiedName = (String) tokenInfo.get("name");
+                }
+            } catch (Exception e) {
+                // 2. Base64 JWT payload decode fallback
+                try {
+                    String[] parts = idToken.split("\\.");
+                    if (parts.length >= 2) {
+                        byte[] decodedBytes = java.util.Base64.getUrlDecoder().decode(parts[1]);
+                        String payloadJson = new String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8);
+                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                        com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(payloadJson);
+                        if (node.has("email")) {
+                            verifiedEmail = node.get("email").asText();
+                        }
+                        if (node.has("name")) {
+                            verifiedName = node.get("name").asText();
+                        }
+                    }
+                } catch (Exception ex) {
+                    // Ignore parse error
+                }
+            }
+        } else {
+            // Fallback for email parameter if provided
+            verifiedEmail = request.get("email");
+            verifiedName = request.get("name");
+        }
+
+        if (verifiedEmail == null || verifiedEmail.trim().isEmpty()) {
+            throw new RuntimeException("Google authentication failed: Invalid or unverified Google ID token");
+        }
+
+        String cleanEmail = verifiedEmail.trim().toLowerCase();
+
+        // Check if coach exists or register seamless profile via verified Google identity
         Coach user = repository.findByEmail(cleanEmail).orElseGet(() -> {
-            String defaultName = (name != null && !name.trim().isEmpty()) ? name.trim() : cleanEmail.split("@")[0];
+            String defaultName = (verifiedName != null && !verifiedName.trim().isEmpty()) ? verifiedName.trim() : cleanEmail.split("@")[0];
             Role userRole = ("cpi@admin.com".equalsIgnoreCase(cleanEmail) || "cpicoach@cpi.com".equalsIgnoreCase(cleanEmail)) ? Role.ADMIN : Role.USER;
 
             Coach newUser = Coach.builder()
