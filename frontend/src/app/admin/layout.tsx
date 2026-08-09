@@ -185,18 +185,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               />
             </div>
 
-            {/* Header Right Status */}
-            <div className="flex items-center gap-4">
-              <div className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Spring Boot Backend Connected</span>
-              </div>
-              <div className="h-4 w-px bg-slate-200" />
-              <div className="text-right">
-                <p className="text-xs font-black text-slate-900">CPI SaaS Platform Console</p>
-                <p className="text-[10px] text-slate-400 font-bold">Version 2.5 Enterprise</p>
-              </div>
-            </div>
           </header>
 
           {/* Scrollable Page Body */}
