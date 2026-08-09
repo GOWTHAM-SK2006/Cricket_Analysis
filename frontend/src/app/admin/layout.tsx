@@ -25,7 +25,6 @@ import {
   CheckCircle2,
   AlertCircle,
   ShieldAlert,
-  ShieldAlert,
   ChevronRight,
   Scale
 } from "lucide-react";
