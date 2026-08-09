@@ -78,7 +78,6 @@ export default function MasterAdminDashboardPage() {
   };
 
   const kpis = [
-    { title: "Total Organizations", value: metrics.totalOrganizations || 12, sub: "12 Academies & Centers", icon: Building2, color: "text-orange-600", bg: "bg-orange-50 border-orange-100" },
     { title: "Total Coaches", value: metrics.totalCoaches || 48, sub: `${metrics.activeCoaches || 46} Active Coaches`, icon: Users2, color: "text-sky-600", bg: "bg-sky-50 border-sky-100" },
     { title: "Total Players", value: metrics.totalPlayers || 624, sub: `${metrics.activePlayers || 610} Active Profiles`, icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-100" },
     { title: "Total Assessments", value: (metrics.totalAssessments || 4821).toLocaleString(), sub: "Practice + Match Records", icon: ClipboardList, color: "text-purple-600", bg: "bg-purple-50 border-purple-100" },
@@ -87,11 +86,10 @@ export default function MasterAdminDashboardPage() {
   ];
 
   const adminModules = [
-    { title: "Organizations", desc: "Manage academies, clubs, regional centers & statuses", path: "/admin/organizations", icon: Building2, badge: "12 Orgs" },
-    { title: "Coaches", desc: "Monitor coach accounts, active status & assigned players", path: "/admin/coaches", icon: Users2, badge: "48 Coaches" },
-    { title: "Global Players", desc: "Platform-wide player directory, CPI, PPI & MPI metrics", path: "/admin/players", icon: UserCheck, badge: "624 Players" },
-    { title: "Assessments Log", desc: "Global assessment records with organization & coach filters", path: "/admin/assessments", icon: ClipboardList, badge: "4,821 Logs" },
-    { title: "Platform Analytics", desc: "Usage curves, organization growth & coach engagement", path: "/admin/analytics", icon: BarChart3, badge: "Live Analytics" },
+    { title: "Coaches", desc: "Monitor coach accounts, active status & assigned players", path: "/admin/coaches", icon: Users2, badge: "Active Coaches" },
+    { title: "Global Players", desc: "Platform-wide player directory, CPI, PPI & MPI metrics", path: "/admin/players", icon: UserCheck, badge: "Player Roster" },
+    { title: "Assessments Log", desc: "Global assessment records & performance filters", path: "/admin/assessments", icon: ClipboardList, badge: "Assessment Logs" },
+    { title: "Platform Analytics", desc: "Usage curves, performance metrics & coach engagement", path: "/admin/analytics", icon: BarChart3, badge: "Live Analytics" },
     { title: "CPI Framework", desc: "Manage the 7 core CPI parameters, rating rules & guidance", path: "/admin/cpi-framework", icon: Sliders, badge: "7 Parameters" },
     { title: "AI Management", desc: "Configure AI instructions, coaching tone & recommendation rules", path: "/admin/ai", icon: Bot, badge: "Active Directives" },
     { title: "Reports Manager", desc: "Report wording, templates & Section 3 Strongest→Weakest preview", path: "/admin/reports", icon: FileText, badge: "Live Preview" },
@@ -100,7 +98,7 @@ export default function MasterAdminDashboardPage() {
   const auditLogs = [
     { time: "Just now", section: "Master Admin Console", action: "Master Admin session established", user: "cpi@admin.com" },
     { time: "10 mins ago", section: "System Content Config", action: "Database parameters & AI directives synchronized", user: "CPI System" },
-    { time: "1 hour ago", section: "Organizations", action: "CPI Cricket Academy activity verified", user: "cpi@admin.com" }
+    { time: "1 hour ago", section: "System Settings", action: "Platform configuration updated", user: "cpi@admin.com" }
   ];
 
   return (
@@ -115,7 +113,7 @@ export default function MasterAdminDashboardPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 font-medium">
-            Centralized platform health, organization metrics, global player analytics, and content governance.
+            Centralized platform health, coach & player analytics, and content governance.
           </p>
         </div>
 

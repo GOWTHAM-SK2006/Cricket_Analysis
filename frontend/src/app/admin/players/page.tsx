@@ -82,7 +82,7 @@ export default function AdminGlobalPlayersPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by player name, coach, or organization..."
+            placeholder="Search by player name or coach..."
             className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-10 pr-4 text-xs font-medium focus:outline-none focus:border-orange-500 focus:bg-white"
           />
         </div>
@@ -95,7 +95,6 @@ export default function AdminGlobalPlayersPage() {
             <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-extrabold border-b border-slate-200">
               <tr>
                 <th className="px-5 py-3.5">Player Name</th>
-                <th className="px-5 py-3.5">Organization</th>
                 <th className="px-5 py-3.5">Assigned Coach</th>
                 <th className="px-5 py-3.5">Overall CPI</th>
                 <th className="px-5 py-3.5">Practice PPI</th>
@@ -119,7 +118,6 @@ export default function AdminGlobalPlayersPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-slate-800 font-bold">{p.organization}</td>
                   <td className="px-5 py-4 text-slate-600 font-semibold">{p.coachName}</td>
                   <td className="px-5 py-4 font-black text-orange-600 bg-orange-50/50 rounded-lg">{p.cpi}</td>
                   <td className="px-5 py-4 font-black text-slate-900">{p.ppi}</td>

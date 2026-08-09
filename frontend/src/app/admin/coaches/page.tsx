@@ -108,7 +108,6 @@ export default function AdminCoachesPage() {
               <tr>
                 <th className="px-5 py-3.5">Coach Name</th>
                 <th className="px-5 py-3.5">Email Contact</th>
-                <th className="px-5 py-3.5">Organization</th>
                 <th className="px-5 py-3.5">Managed Players</th>
                 <th className="px-5 py-3.5">Assessments Logged</th>
                 <th className="px-5 py-3.5">Joined Date</th>
@@ -131,7 +130,6 @@ export default function AdminCoachesPage() {
                     </div>
                   </td>
                   <td className="px-5 py-4 text-slate-600 font-semibold">{c.email}</td>
-                  <td className="px-5 py-4 text-slate-800 font-bold">{c.organization}</td>
                   <td className="px-5 py-4 text-slate-900 font-extrabold">{c.playersCount} Players</td>
                   <td className="px-5 py-4 text-slate-900 font-extrabold">{c.assessmentsCount} Logs</td>
                   <td className="px-5 py-4 text-slate-500">{c.joinedDate}</td>

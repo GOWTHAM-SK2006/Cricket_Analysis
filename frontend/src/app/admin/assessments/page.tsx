@@ -124,7 +124,6 @@ export default function AdminAssessmentsPage() {
                 <th className="px-5 py-3.5">Player</th>
                 <th className="px-5 py-3.5">Assessment Type</th>
                 <th className="px-5 py-3.5">Submitting Coach</th>
-                <th className="px-5 py-3.5">Organization</th>
                 <th className="px-5 py-3.5">Assessed Score</th>
                 <th className="px-5 py-3.5">Log Date</th>
                 <th className="px-5 py-3.5 text-right">Actions</th>
@@ -148,7 +147,6 @@ export default function AdminAssessmentsPage() {
                     </span>
                   </td>
                   <td className="px-5 py-4 text-slate-800 font-semibold">{log.coach}</td>
-                  <td className="px-5 py-4 text-slate-600">{log.organization}</td>
                   <td className="px-5 py-4 font-black text-orange-600 bg-orange-50/50 rounded-lg">{log.score}</td>
                   <td className="px-5 py-4 text-slate-500">{log.date}</td>
                   <td className="px-5 py-4 text-right">

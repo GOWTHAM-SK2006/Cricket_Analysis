@@ -31,7 +31,7 @@ export default function AdminAnalyticsPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Track macro platform trends, active user growth, organization adoption, and longitudinal evaluation volume.
+            Track macro platform trends, active coach & player growth, and longitudinal evaluation volume.
           </p>
         </div>
 
@@ -54,9 +54,9 @@ export default function AdminAnalyticsPage() {
       {/* Analytics KPI Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Organization Growth</span>
+          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Platform Activity Growth</span>
           <p className="text-2xl font-black text-slate-900">+200% YoY</p>
-          <p className="text-[11px] text-emerald-600 font-bold mt-1">12 Active Academies</p>
+          <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Longitudinal Tracking</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
