@@ -3078,10 +3078,6 @@ export default function PlayersPage() {
               </button>
             </div>
 
-            <p className="text-xs text-slate-600 font-semibold leading-relaxed">
-              Select <span className="font-extrabold text-slate-900">From Date</span> and <span className="font-extrabold text-slate-900">To Date</span>. The report will calculate average CPI, PPI, MPI, and 7 performance parameters exclusively for assessments within this date range.
-            </p>
-
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-black tracking-wider text-slate-700 uppercase block">FROM DATE</label>
