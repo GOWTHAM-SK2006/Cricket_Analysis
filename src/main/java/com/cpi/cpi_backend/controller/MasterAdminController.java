@@ -193,10 +193,14 @@ public class MasterAdminController {
         for (PracticeAssessment pa : pas) {
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("id", pa.getId());
-            item.put("player", pa.getPlayer() != null ? pa.getPlayer().getName() : ("Player #" + pa.getPlayerId()));
+            String playerName = "Player";
+            if (pa.getPlayer() != null) {
+                playerName = pa.getPlayer().getName() != null ? pa.getPlayer().getName() : ("Player #" + pa.getPlayer().getId());
+            }
+            item.put("player", playerName);
             item.put("type", "Practice");
             item.put("coach", pa.getCoach() != null ? pa.getCoach().getName() : "Daryll Cullinan");
-            double score = pa.getOverallPpi() != null ? pa.getOverallPpi() : 8.2;
+            double score = pa.getPpiScore() != null ? pa.getPpiScore() : 8.2;
             item.put("cpi", String.format(Locale.US, "%.1f / 10", score > 10 ? score / 10.0 : score));
             item.put("date", pa.getCreatedAt() != null ? pa.getCreatedAt().toLocalDate().toString() : "2026-08-08");
             logsList.add(item);
@@ -206,7 +210,11 @@ public class MasterAdminController {
         for (MatchAssessment ma : mas) {
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("id", 1000 + ma.getId());
-            item.put("player", ma.getPlayer() != null ? ma.getPlayer().getName() : ("Player #" + ma.getPlayerId()));
+            String playerName = "Player";
+            if (ma.getPlayer() != null) {
+                playerName = ma.getPlayer().getName() != null ? ma.getPlayer().getName() : ("Player #" + ma.getPlayer().getId());
+            }
+            item.put("player", playerName);
             item.put("type", "Match");
             item.put("coach", ma.getCoach() != null ? ma.getCoach().getName() : "Daryll Cullinan");
             double score = ma.getMpiScore() != null ? ma.getMpiScore() : 8.0;
