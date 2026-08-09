@@ -9,10 +9,10 @@ export default function AdminAnalyticsPage() {
   const [timeframe, setTimeframe] = useState<"Daily" | "Weekly" | "Monthly" | "Yearly">("Monthly");
 
   const growthData = [
-    { period: "Jan 2026", orgs: 4, coaches: 12, players: 140, assessments: 650 },
-    { period: "Feb 2026", orgs: 7, coaches: 24, players: 290, assessments: 1400 },
-    { period: "Mar 2026", orgs: 9, coaches: 38, players: 450, assessments: 2800 },
-    { period: "Apr 2026", orgs: 12, coaches: 48, players: 624, assessments: 4821 },
+    { period: "Jan 2026", coaches: 1, players: 3, assessments: 150 },
+    { period: "Feb 2026", coaches: 2, players: 6, assessments: 450 },
+    { period: "Mar 2026", coaches: 3, players: 9, assessments: 850 },
+    { period: "Apr 2026", coaches: 3, players: 11, assessments: 1240 },
   ];
 
   const topActiveOrgs = [
@@ -55,26 +55,26 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Platform Activity Growth</span>
-          <p className="text-2xl font-black text-slate-900">+200% YoY</p>
+          <p className="text-2xl font-black text-slate-900">+100% Active</p>
           <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Longitudinal Tracking</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Coach Engagement Rate</span>
-          <p className="text-2xl font-black text-slate-900">95.8% Active</p>
-          <p className="text-[11px] text-emerald-600 font-bold mt-1">46 of 48 Active Weekly</p>
+          <p className="text-2xl font-black text-slate-900">100% Active</p>
+          <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Coaches Weekly</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Player Profile Growth</span>
-          <p className="text-2xl font-black text-slate-900">624 Profiles</p>
-          <p className="text-[11px] text-emerald-600 font-bold mt-1">+174 Profiles this month</p>
+          <p className="text-2xl font-black text-slate-900">11 Profiles</p>
+          <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Players Managed</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Practice vs Match Ratio</span>
-          <p className="text-2xl font-black text-orange-600">60% / 40%</p>
-          <p className="text-[11px] text-slate-500 font-semibold mt-1">2,910 Practice / 1,911 Match</p>
+          <p className="text-2xl font-black text-orange-600">58% / 42%</p>
+          <p className="text-[11px] text-slate-500 font-semibold mt-1">720 Practice / 520 Match</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ export default function AdminAnalyticsPage() {
                 <div>
                   <p className="font-extrabold text-xs text-slate-900">{d.period}</p>
                   <p className="text-[10px] text-slate-500 font-semibold">
-                    {d.orgs} Orgs • {d.coaches} Coaches • {d.players} Players
+                    {d.coaches} Coaches • {d.players} Players
                   </p>
                 </div>
                 <div className="text-right">

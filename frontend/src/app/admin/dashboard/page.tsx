@@ -27,14 +27,13 @@ export default function MasterAdminDashboardPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState<any>({
-    totalOrganizations: 12,
-    totalCoaches: 48,
-    totalPlayers: 624,
-    totalAssessments: 4821,
-    activeCoaches: 46,
-    activePlayers: 610,
-    practiceAssessments: 2910,
-    matchAssessments: 1911,
+    totalCoaches: 3,
+    totalPlayers: 11,
+    totalAssessments: 1240,
+    activeCoaches: 3,
+    activePlayers: 11,
+    practiceAssessments: 720,
+    matchAssessments: 520,
     lastUpdatedAt: new Date().toISOString()
   });
 
@@ -77,18 +76,26 @@ export default function MasterAdminDashboardPage() {
     }
   };
 
+  const totalAss = (metrics.totalAssessments && metrics.totalAssessments > 0)
+    ? metrics.totalAssessments 
+    : ((metrics.practiceAssessments || 720) + (metrics.matchAssessments || 520));
+  const practiceVal = metrics.practiceAssessments ?? 720;
+  const matchVal = metrics.matchAssessments ?? 520;
+  const practicePct = totalAss > 0 ? ((practiceVal / totalAss) * 100).toFixed(1) : "58.1";
+  const matchPct = totalAss > 0 ? ((matchVal / totalAss) * 100).toFixed(1) : "41.9";
+
   const kpis = [
-    { title: "Total Coaches", value: metrics.totalCoaches || 48, sub: `${metrics.activeCoaches || 46} Active Coaches`, icon: Users2, color: "text-sky-600", bg: "bg-sky-50 border-sky-100" },
-    { title: "Total Players", value: metrics.totalPlayers || 624, sub: `${metrics.activePlayers || 610} Active Profiles`, icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-100" },
-    { title: "Total Assessments", value: (metrics.totalAssessments || 4821).toLocaleString(), sub: "Practice + Match Records", icon: ClipboardList, color: "text-purple-600", bg: "bg-purple-50 border-purple-100" },
-    { title: "Practice Assessments", value: (metrics.practiceAssessments || 2910).toLocaleString(), sub: "60.3% of Total Volume", icon: BarChart3, color: "text-teal-600", bg: "bg-teal-50 border-teal-100" },
-    { title: "Match Assessments", value: (metrics.matchAssessments || 1911).toLocaleString(), sub: "39.7% of Total Volume", icon: TrendingUp, color: "text-indigo-600", bg: "bg-indigo-50 border-indigo-100" }
+    { title: "Total Coaches", value: metrics.totalCoaches ?? 3, sub: `${metrics.activeCoaches ?? 3} Active Coaches`, icon: Users2, color: "text-sky-600", bg: "bg-sky-50 border-sky-100" },
+    { title: "Total Players", value: metrics.totalPlayers ?? 11, sub: `${metrics.activePlayers ?? 11} Active Profiles`, icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-100" },
+    { title: "Total Assessments", value: (totalAss).toLocaleString(), sub: "Practice + Match Records", icon: ClipboardList, color: "text-purple-600", bg: "bg-purple-50 border-purple-100" },
+    { title: "Practice Assessments", value: (practiceVal).toLocaleString(), sub: `${practicePct}% of Total Volume`, icon: BarChart3, color: "text-teal-600", bg: "bg-teal-50 border-teal-100" },
+    { title: "Match Assessments", value: (matchVal).toLocaleString(), sub: `${matchPct}% of Total Volume`, icon: TrendingUp, color: "text-indigo-600", bg: "bg-indigo-50 border-indigo-100" }
   ];
 
   const adminModules = [
-    { title: "Coaches", desc: "Monitor coach accounts, active status & assigned players", path: "/admin/coaches", icon: Users2, badge: "Active Coaches" },
-    { title: "Global Players", desc: "Platform-wide player directory, CPI, PPI & MPI metrics", path: "/admin/players", icon: UserCheck, badge: "Player Roster" },
-    { title: "Assessments Log", desc: "Global assessment records & performance filters", path: "/admin/assessments", icon: ClipboardList, badge: "Assessment Logs" },
+    { title: "Coaches", desc: "Monitor coach accounts, active status & assigned players", path: "/admin/coaches", icon: Users2, badge: `${metrics.totalCoaches ?? 3} Coaches` },
+    { title: "Global Players", desc: "Platform-wide player directory, CPI, PPI & MPI metrics", path: "/admin/players", icon: UserCheck, badge: `${metrics.totalPlayers ?? 11} Players` },
+    { title: "Assessments Log", desc: "Global assessment records & performance filters", path: "/admin/assessments", icon: ClipboardList, badge: `${(totalAss).toLocaleString()} Logs` },
     { title: "Platform Analytics", desc: "Usage curves, performance metrics & coach engagement", path: "/admin/analytics", icon: BarChart3, badge: "Live Analytics" },
     { title: "CPI Framework", desc: "Manage the 7 core CPI parameters, rating rules & guidance", path: "/admin/cpi-framework", icon: Sliders, badge: "7 Parameters" },
     { title: "AI Management", desc: "Configure AI instructions, coaching tone & recommendation rules", path: "/admin/ai", icon: Bot, badge: "Active Directives" },
