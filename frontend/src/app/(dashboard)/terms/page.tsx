@@ -111,7 +111,10 @@ export default function TermsPage() {
   useEffect(() => {
     async function loadTermsConfig() {
       try {
-        const res = await fetch("/api/public/config");
+        const res = await fetch(`/api/public/config?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" }
+        });
         if (res.ok) {
           const data = await res.json();
           if (data && data.termsJson && typeof data.termsJson === "string") {
