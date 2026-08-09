@@ -1,8 +1,6 @@
 package com.cpi.cpi_backend.controller;
 
-import com.cpi.cpi_backend.entity.Coach;
-import com.cpi.cpi_backend.entity.CpiContentConfig;
-import com.cpi.cpi_backend.entity.Player;
+import com.cpi.cpi_backend.entity.*;
 import com.cpi.cpi_backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
