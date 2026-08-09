@@ -37,27 +37,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Technical Execution",
     description: "Technical Execution measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
     highPoints: [
-      { title: "Confirm what is working", detail: "Help the player understand which parts of their technique are allowing them to perform consistently." },
-      { title: "Protect the basics", detail: "Avoid unnecessary changes when the player has a method that is working." },
-      { title: "Increase the challenge", detail: "Test the technique against greater speed, pressure, fatigue and more difficult cricket situations." },
-      { title: "Encourage self-correction", detail: "Help the player recognise when something feels wrong and make simple adjustments themselves." },
-      { title: "Monitor transfer", detail: "Check that the same technical quality shown in practice is being carried into matches." }
+      { title: "PRESSURE TEST IT", detail: "Add pace, spin, fatigue, and tougher match scenarios in practice." },
+      { title: "PROTECT THE BASICS", detail: "Maintain and reinforce strong fundamentals, avoiding unnecessary changes." },
+      { title: "OWN THE CORRECTION", detail: "Encourage the player to recognise and self-correct technical drift." }
     ],
     highSummary: "A high score shows the player has a strong, reliable technical base that holds up under pressure. The focus now is to protect the basics, keep raising the standard, and continue testing the technique in more demanding cricket situations.",
     mediumPoints: [
-      { title: "Refine core mechanics", detail: "Identify minor technical flaws that emerge when pace, spin or pressure increases." },
-      { title: "Build consistency", detail: "Focus on repeating sound technique across longer practice sets and multi-over spells." },
-      { title: "Controlled pressure nets", detail: "Expose technique to moderate match-scenario drills with clear performance targets." },
-      { title: "Strengthen contact point", detail: "Work on precise bat-face alignment and timing under varying delivery lengths." },
-      { title: "Track transfer to matches", detail: "Ensure technical stability held in practice carries smoothly into match play." }
+      { title: "REFINE CORE MECHANICS", detail: "Fix minor technical breakdowns that appear when pace or pressure rises." },
+      { title: "BUILD CONSISTENCY", detail: "Repeat sound technique across longer practice sets and multi-over spells." },
+      { title: "CONTROLLED PRESSURE NETS", detail: "Expose technique to moderate match drills with clear execution targets." }
     ],
     mediumSummary: "A medium score shows the player has a functional technical foundation but requires greater consistency under pressure. The focus now is to refine core mechanics, eliminate minor breakdowns, and build repeatable technique.",
     lowPoints: [
-      { title: "Identify the main problem", detail: "Find the technical issue that is having the greatest effect on performance." },
-      { title: "Keep the correction simple", detail: "Work on one clear adjustment rather than trying to change everything at once." },
-      { title: "Return to the basics", detail: "Slow the skill down and rebuild the movement before increasing the difficulty." },
-      { title: "Recreate the problem in practice", detail: "Use drills and scenarios that mirror where the technique is breaking down in matches." },
-      { title: "Track the improvement", detail: "Look for whether the correction becomes more consistent in practice and then transfers into competition." }
+      { title: "IDENTIFY MAIN ISSUE", detail: "Find the single technical breakdown having the greatest effect on performance." },
+      { title: "KEEP CORRECTION SIMPLE", detail: "Work on one clear technical cue rather than changing multiple things." },
+      { title: "RETURN TO BASICS", detail: "Slow down the movement in drill work before increasing execution speed." }
     ],
     lowSummary: "A low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.",
     coachSummary: {
@@ -73,27 +67,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Skill Level",
     description: "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches. It is not simply about how many skills they have. It is about how well they can use those skills as the level of difficulty, pressure and competition increases.",
     highPoints: [
-      { title: "Identify the strengths", detail: "Understand which skills the player performs consistently and confidently." },
-      { title: "Increase the difficulty", detail: "Challenge the player with greater speed, variation, pressure and more demanding situations." },
-      { title: "Expand the skill set", detail: "Introduce new skills that complement what the player already does well." },
-      { title: "Encourage smart use of skills", detail: "Help the player understand when and where each skill is most effective." },
-      { title: "Monitor transfer", detail: "Check that skills performed successfully in practice are also being used effectively in matches." }
+      { title: "EXPAND SKILL VARIETY", detail: "Add secondary options and subtle variations that complement main strengths." },
+      { title: "INCREASE EXECUTION SPEED", detail: "Challenge execution under reduced reaction time and changing conditions." },
+      { title: "MONITOR MATCH TRANSFER", detail: "Ensure high-level skills practiced in nets translate directly into matches." }
     ],
     highSummary: "A high score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.",
     mediumPoints: [
-      { title: "Consolidate core skills", detail: "Ensure primary batting strokes or bowling variations are reliable in standard match conditions." },
-      { title: "Introduce variation depth", detail: "Gradually add secondary shots or subtle bowling variations to expand the player's options." },
-      { title: "Improve execution speed", detail: "Practice executing skills quicker under reduced reaction time." },
-      { title: "Scenario application", detail: "Apply skills within specific field settings and match situation targets." },
-      { title: "Monitor skill stability", detail: "Evaluate whether skills remain effective when fatigue sets in." }
+      { title: "CONSOLIDATE CORE SKILLS", detail: "Ensure primary batting strokes or bowling deliveries are 100% reliable." },
+      { title: "SCENARIO APPLICATION", detail: "Apply skills within specific field settings and match situation targets." },
+      { title: "BUILD EXECUTION DEPTH", detail: "Develop consistent control across different pitch types and lengths." }
     ],
     mediumSummary: "A medium score shows the player possesses a solid basic skill set but needs greater execution variety and adaptability under match pressure. The focus now is to consolidate core skills and expand match options.",
     lowPoints: [
-      { title: "Identify the gap", detail: "Establish which important skills are missing, inconsistent or limiting performance." },
-      { title: "Prioritise the basics", detail: "Focus on the most important skills for the player's role before adding greater complexity." },
-      { title: "Build through repetition", detail: "Give the player enough quality practice to develop confidence and consistency." },
-      { title: "Match the challenge to the player", detail: "Avoid asking for skills that are beyond their current level of development." },
-      { title: "Track the progress", detail: "Look for improvement in practice first, then whether that improvement transfers into matches." }
+      { title: "IDENTIFY SKILL GAP", detail: "Pinpoint missing or inconsistent fundamentals limiting match contribution." },
+      { title: "REPETITION & QUALITY", detail: "Build confidence and muscle memory through high-quality basic repetitions." },
+      { title: "MATCH DEMAND TO LEVEL", detail: "Focus on mastering basic skill execution before attempting complex variations." }
     ],
     lowSummary: "A low score shows that the player needs to develop their core skill set and build greater execution consistency under pressure. The focus now is to identify skill gaps, rebuild fundamentals, and test skills in demanding cricket situations.",
     coachSummary: {
@@ -109,27 +97,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Game Plan",
     description: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. The key question for the coach is simple: does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes.",
     highPoints: [
-      { title: "Confirm the thinking", detail: "Ask the player what their plan was and why they chose it." },
-      { title: "Reinforce role clarity", detail: "Make sure the player understands what their role requires in different situations." },
-      { title: "Increase the challenge", detail: "Use changing practice and match scenarios that force the player to think and adjust." },
-      { title: "Encourage independence", detail: "Allow the player to make tactical decisions without constant instruction." },
-      { title: "Monitor adaptability", detail: "Check that the player can stick to a good plan but also recognise when it needs to change." }
+      { title: "CHALLENGE FLEXIBILITY", detail: "Expose the player to rapidly changing match situations requiring tactical shifts." },
+      { title: "REINFORCE ROLE MASTERY", detail: "Deepen understanding of phase-specific responsibilities in team tactics." },
+      { title: "ENCOURAGE INDEPENDENCE", detail: "Empower the player to make smart tactical choices on the field without instruction." }
     ],
     highSummary: "A high score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.",
     mediumPoints: [
-      { title: "Clarify role objectives", detail: "Ensure the player understands their specific role requirements for different match phases." },
-      { title: "Improve tactical awareness", detail: "Discuss field placements, bowler matchups, and run-rate management." },
-      { title: "Practice plan adjustments", detail: "Rehearse shifting strategies when early wickets fall or bowling plans change." },
-      { title: "Encourage situational thinking", detail: "Ask the player to explain their tactical decisions during practice scenarios." },
-      { title: "Review match execution", detail: "Evaluate how well the player adhered to the agreed game plan during competition." }
+      { title: "CLARIFY MATCH ROLE", detail: "Define clear tactical objectives for their specific role in the team." },
+      { title: "IMPROVE MATCHUP AWARENESS", detail: "Study field placements, bowler/batter matchups, and scoring options." },
+      { title: "PRACTICE IN-GAME SHIFTS", detail: "Rehearse adjusting plans when early wickets fall or match conditions change." }
     ],
     mediumSummary: "A medium score shows the player understands their game plan but occasionally struggles to adapt when match situations shift. The focus now is to sharpen role clarity, improve tactical adjustments, and build situational awareness.",
     lowPoints: [
-      { title: "Establish whether there is a plan", detail: "Ask the player what they were trying to do and listen for clarity or uncertainty." },
-      { title: "Simplify the thinking", detail: "Give the player one or two clear objectives for their role." },
-      { title: "Connect practice to matches", detail: "Create scenarios that require the player to practise the same plans they will need in competition." },
-      { title: "Teach adjustment", detail: "Help the player recognise when conditions, opposition or the match situation require a different approach." },
-      { title: "Review the decisions", detail: "Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind." }
+      { title: "SIMPLIFY THE PLAN", detail: "Give the player one simple, actionable objective to focus on." },
+      { title: "CONNECT DRILLS TO MATCHES", detail: "Run practice scenarios that mirror exact match situations they will face." },
+      { title: "REVIEW DECISION MAKING", detail: "Discuss post-play whether decisions matched the plan or were reactive." }
     ],
     lowSummary: "A low score shows that the player needs clearer role understanding and tactical direction. The focus now is to simplify decision-making, establish clear match objectives, and test adaptability under pressure.",
     coachSummary: {
@@ -145,27 +127,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Preparation",
     description: "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches. The key question is: does the player arrive ready to make the most of the session or game? Good preparation gives performance a better chance before the first ball is even bowled.",
     highPoints: [
-      { title: "Confirm the routine", detail: "Identify the habits that help the player arrive organised, focused and ready." },
-      { title: "Build ownership", detail: "Encourage the player to take responsibility for equipment, warm-up, hydration and personal goals." },
-      { title: "Connect preparation to performance", detail: "Help them see how good preparation improves confidence, concentration and execution." },
-      { title: "Prepare for different demands", detail: "Teach the player to adjust for travel, weather, pitch conditions, aggressive opposition, questionable umpires and different roles." },
-      { title: "Monitor consistency", detail: "Make sure preparation standards remain high for every practice and match." }
+      { title: "AUTOMATE ROUTINES", detail: "Make pre-session warm-ups, hydration, and goal setting completely automatic." },
+      { title: "PREPARE FOR EXTREMES", detail: "Plan ahead for adverse weather, slow pitches, travels, and tough umpires." },
+      { title: "BUILD PLAYER OWNERSHIP", detail: "Ensure the player takes full personal charge of equipment and readiness." }
     ],
     highSummary: "A high score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.",
     mediumPoints: [
-      { title: "Standardize pre-session routines", detail: "Ensure physical warm-up, equipment check, and mental prep are completed consistently." },
-      { title: "Enhance role visualization", detail: "Spend 5 minutes visualizing key match scenarios before taking the field." },
-      { title: "Optimize hydration and recovery", detail: "Maintain proper nutrition and hydration habits leading up to match day." },
-      { title: "Build match readiness", detail: "Arrive early enough to settle mentally and transition into high focus." },
-      { title: "Track preparation impact", detail: "Observe how structured prep directly improves early session involvement." }
+      { title: "STANDARDIZE ROUTINES", detail: "Follow a consistent physical warm-up, kit check, and mental prep routine." },
+      { title: "VISUALIZE MATCH ROLES", detail: "Spend 5 minutes before play mentally rehearsing key match scenarios." },
+      { title: "ARRIVE MATCH READY", detail: "Settle mentally and complete all preparation before stepping onto the field." }
     ],
     mediumSummary: "A medium score shows the player follows standard preparation habits but can improve consistency and mental readiness before matches. The focus now is to refine pre-session routines and build personal ownership.",
     lowPoints: [
-      { title: "Identify what is missing", detail: "Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?" },
-      { title: "Set clear expectations", detail: "Make sure the player knows what ready should look like." },
-      { title: "Create a simple checklist", detail: "Keep equipment, hydration, warm-up and role preparation easy to follow." },
-      { title: "Build responsibility gradually", detail: "Give the player age-appropriate ownership instead of letting others do everything for them." },
-      { title: "Review the impact", detail: "Show how poor preparation may have affected the quality of practice or match performance." }
+      { title: "IDENTIFY PREP GAPS", detail: "Fix disorganization, rushed arrivals, or lack of focus before sessions." },
+      { title: "USE A SIMPLE CHECKLIST", detail: "Create an easy equipment, hydration, and warm-up checklist to follow." },
+      { title: "SET CLEAR EXPECTATIONS", detail: "Establish what proper pre-session and pre-match readiness looks like." }
     ],
     lowSummary: "A low score shows that the player needs consistent pre-match and pre-session preparation habits. The focus now is to establish structured routines, build personal accountability, and arrive ready for competition.",
     coachSummary: {
@@ -181,27 +157,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Intensity",
     description: "Intensity measures the energy, purpose and competitive intent a player brings to both practice and matches. It's not about being loud or overactive. The key question is: does the player look fully engaged and ready to compete in the moment? Good intensity should support skill, decision making and team performance.",
     highPoints: [
-      { title: "Confirm what is working", detail: "Identify the habits that help the player stay switched on and competitive." },
-      { title: "Channel the energy", detail: "Make sure intensity remains controlled and does not become rushed or reckless." },
-      { title: "Increase the challenge", detail: "Use tougher drills and match situations at practice that demand sustained effort." },
-      { title: "Protect skill quality", detail: "Check that technique and decision making remain strong as intensity rises." },
-      { title: "Encourage positive influence", detail: "Use the player's energy to lift teammates and team standards." }
+      { title: "CHANNEL ENERGY POSITIVELY", detail: "Keep competitive drive high while maintaining tactical discipline." },
+      { title: "LIFT SQUAD STANDARDS", detail: "Use competitive energy to inspire and raise standards for teammates." },
+      { title: "SUSTAIN IN HIGH FATIGUE", detail: "Maintain explosive effort and sharp movement during long spells and innings." }
     ],
     highSummary: "A high score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.",
     mediumPoints: [
-      { title: "Sustain effort levels", detail: "Maintain consistent physical energy and focus throughout all drill sets and overs." },
-      { title: "Set session targets", detail: "Use clear sprint benchmarks and competitive targets during practice." },
-      { title: "Active fielding engagement", detail: "Stay alert, communicate clearly, and attack the ball in field positions." },
-      { title: "Control competitive drive", detail: "Channel energy into purposeful effort without rushing or losing discipline." },
-      { title: "Monitor energy drops", detail: "Identify and correct mid-session intensity lulls." }
+      { title: "SUSTAIN CONSISTENT EFFORT", detail: "Eliminate energy lulls between overs or drill sets." },
+      { title: "SET SESSION BENCHMARKS", detail: "Use clear physical and target benchmarks to maintain urgency in nets." },
+      { title: "ACTIVE FIELDING EFFORT", detail: "Attack the ball in the field, communicate loudly, and stay alert." }
     ],
     mediumSummary: "A medium score shows the player brings good energy but experiences periodic intensity lulls during long sessions or matches. The focus now is to sustain competitive effort and maintain active engagement.",
     lowPoints: [
-      { title: "Identify the reason", detail: "Is the player tired, distracted, bored, low on confidence or unclear about the task?" },
-      { title: "Clarify the standard", detail: "Explain what good intensity should look like in movement, effort and involvement." },
-      { title: "Set short targets", detail: "Give the player immediate goals to create urgency and focus." },
-      { title: "Increase involvement", detail: "Use competitive drills and clearer roles to keep the player engaged." },
-      { title: "Review the response", detail: "Check whether the player's energy improves when the challenge becomes more meaningful." }
+      { title: "FIND THE ENERGY TRIGGER", detail: "Determine if low intensity stems from fatigue, boredom, or unclear goals." },
+      { title: "SET SHORT TARGETS", detail: "Break practice into short 5-minute competitive challenges." },
+      { title: "INCREASE INVOLVEMENT", detail: "Use active, high-touch drills to keep the player physically engaged." }
     ],
     lowSummary: "A low score shows that the player needs higher competitive energy and focus during practice and matches. The focus now is to set clear targets, build effort habits, and maintain intensity throughout sessions.",
     coachSummary: {
@@ -217,27 +187,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Focus",
     description: "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches. The key question is: does the player stay engaged with what matters, or does their concentration drift when pressure, fatigue or distractions increase?",
     highPoints: [
-      { title: "Confirm the routine", detail: "Identify what helps the player stay present, mentally switched on and preserving their concentration energy." },
-      { title: "Increase the challenge", detail: "Use longer, more demanding drills and match scenarios in practice that test concentration." },
-      { title: "Reinforce reset habits", detail: "Encourage simple routines between balls, overs or repetitions." },
-      { title: "Protect calm thinking", detail: "Make sure strong focus does not become tension or overthinking." },
-      { title: "Monitor consistency", detail: "Check whether the player can stay focused when tired, frustrated or under pressure." }
+      { title: "REINFORCE RESET ROUTINE", detail: "Maintain a quick physical/breath reset between balls to conserve focus." },
+      { title: "EXTEND CONCENTRATION SPANS", detail: "Test mental stamina with longer, unbroken practice scenarios." },
+      { title: "STAY CALM UNDER PRESSURE", detail: "Ensure intense focus remains relaxed and free from overthinking." }
     ],
     highSummary: "A high score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.",
     mediumPoints: [
-      { title: "Strengthen ball-by-ball reset", detail: "Use a consistent breathing or physical trigger to refocus between deliveries." },
-      { title: "Extend concentration sets", detail: "Gradually increase the duration of continuous high-focus practice drills." },
-      { title: "Filter out distractions", detail: "Practice maintaining concentration despite external noise, fatigue or umpire decisions." },
-      { title: "Single-point focus", detail: "Isolate one primary focal point during each attempt or set." },
-      { title: "Track focus duration", detail: "Identify specific triggers that cause concentration to wander and apply quick resets." }
+      { title: "BALL-BY-BALL RECONFINEMENT", detail: "Use a focal trigger to lock in complete attention before every delivery." },
+      { title: "FILTER DISTRACTIONS", detail: "Practice staying switched on despite noise, fatigue, or bad decisions." },
+      { title: "TRACK FOCUS DURATIONS", detail: "Notice when concentration drifts and trigger an instant mental reset." }
     ],
     mediumSummary: "A medium score shows the player has solid concentration with occasional focus lapses during prolonged play. The focus now is to strengthen ball-by-ball reset routines and build mental stamina.",
     lowPoints: [
-      { title: "Identify the cause", detail: "Is the player distracted, tired, anxious, bored or unclear about what matters?" },
-      { title: "Simplify the task", detail: "Give one clear focus point rather than too many instructions." },
-      { title: "Teach a reset", detail: "Use a simple routine to help the player reconnect after mistakes or distractions." },
-      { title: "Create shorter challenges", detail: "Break practice into smaller, purposeful blocks." },
-      { title: "Review the pattern", detail: "Look for when focus drops and what tends to trigger it." }
+      { title: "SIMPLIFY FOCAL POINTS", detail: "Focus on just one key cue instead of trying to process multiple inputs." },
+      { title: "TEACH 5-SECOND RESET", detail: "Use a simple physical trigger to reset after a mistake or distraction." },
+      { title: "SHORTER DRILL BLOCKS", detail: "Practice in brief 3-minute sets to build concentration step-by-step." }
     ],
     lowSummary: "A low score shows that the player experiences concentration lapses during demanding periods. The focus now is to shorten focus tasks, introduce mental reset triggers, and sustain attention ball by ball.",
     coachSummary: {
@@ -253,27 +217,21 @@ const coachPlanData: CoachPlanItem[] = [
     name: "Resilience",
     description: "Resilience measures how well a player responds to adversity, pressure, mistakes and setbacks in both practice and matches. The key question is: does the player maintain effort, focus and body language when things go wrong, or do they fold under pressure?",
     highPoints: [
-      { title: "Confirm the mindset", detail: "Acknowledge the player's mental toughness and ability to handle high-pressure crunch overs." },
-      { title: "Expose to extreme scenarios", detail: "Test resilience in net drills with high consequence for wickets lost." },
-      { title: "Develop squad leadership", detail: "Position the player to guide teammates through tough match phases." },
-      { title: "Maintain emotional control", detail: "Ensure competitive drive does not spill over into frustration." },
-      { title: "Track response consistency", detail: "Check that resilience remains high across consecutive difficult matches." }
+      { title: "ANCHOR CRUNCH MOMENTS", detail: "Step up to bowl tough overs or bat during difficult collapse phases." },
+      { title: "LEAD SQUAD RECOVERY", detail: "Guide teammates calmly when match momentum swings against the team." },
+      { title: "EXPOSE TO HARD DRILLS", detail: "Train in high-consequence drills where mistakes carry realistic penalty." }
     ],
     highSummary: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
     mediumPoints: [
-      { title: "Bounce back faster from errors", detail: "Minimize emotional dwell time after a bad shot, dropped catch, or boundary." },
-      { title: "Maintain positive body language", detail: "Keep upright posture and confident body language regardless of match situation." },
-      { title: "Embrace challenging overs", detail: "Volunteer for high-pressure match situations to build mental toughness." },
-      { title: "Process feedback constructively", detail: "Use mid-match coaching cues to adjust immediately without losing confidence." },
-      { title: "Evaluate setback responses", detail: "Review how effectively the player recovered during match crunch moments." }
+      { title: "BOUNCE BACK QUICKER", detail: "Cut down emotional dwell time after a boundary, drop, or bad shot." },
+      { title: "MAINTAIN POSITIVE POSTURE", detail: "Keep strong, upright body language regardless of match score." },
+      { title: "ACCEPT COACHING CUES", detail: "Process mid-game advice constructively without losing self-belief." }
     ],
     mediumSummary: "A medium score shows the player handles standard match pressure reasonably well but can bounce back faster from unexpected setbacks. The focus now is to strengthen post-error recovery routines and build composure.",
     lowPoints: [
-      { title: "Identify error triggers", detail: "Pinpoint whether dropped catches, early wickets, or umpire calls trigger emotional drops." },
-      { title: "Implement 5-second reset", detail: "Teach a quick physical reset routine (breath, body language) post-error." },
-      { title: "Separate identity from outcome", detail: "Remind the player that one mistake does not define their skill level." },
-      { title: "Simulate low-stakes pressure", detail: "Build confidence gradually through controlled pressure scenarios in practice." },
-      { title: "Celebrate bounce-back effort", detail: "Reward positive body language and recovery efforts after setbacks." }
+      { title: "SEPARATE SELF FROM ERROR", detail: "Learn that one mistake does not define overall ability or value." },
+      { title: "POST-ERROR RESET ROUTINE", detail: "Take a deep breath and physically reset posture immediately post-mistake." },
+      { title: "BUILD CONFIDENCE GRADUALLY", detail: "Practice recovery in low-stakes scenarios to build emotional composure." }
     ],
     lowSummary: "A low score shows that the player struggles to bounce back quickly from errors under pressure. The focus now is to build emotional control, practice recovery routines, and strengthen mental toughness.",
     coachSummary: {
