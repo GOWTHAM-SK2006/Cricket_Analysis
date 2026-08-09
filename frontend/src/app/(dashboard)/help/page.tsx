@@ -284,25 +284,25 @@ export default function HelpPage() {
                   name: String(item?.name || item?.parameter || fallback.name),
                   description: String(item?.description || item?.explanation || fallback.description),
                   highPoints: Array.isArray(item?.highPoints) && item.highPoints.length > 0
-                    ? item.highPoints.map((pt: any, pIdx: number) => ({
+                    ? item.highPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.highPoints[pIdx]?.title || "Action Point"),
                         detail: String(pt?.detail || fallback.highPoints[pIdx]?.detail || "")
                       }))
-                    : fallback.highPoints,
+                    : fallback.highPoints.slice(0, 3),
                   highSummary: String(item?.highSummary || item?.rangeHigh || fallback.highSummary),
                   mediumPoints: Array.isArray(item?.mediumPoints) && item.mediumPoints.length > 0
-                    ? item.mediumPoints.map((pt: any, pIdx: number) => ({
+                    ? item.mediumPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Action Point"),
                         detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || "")
                       }))
-                    : fallback.mediumPoints,
+                    : fallback.mediumPoints.slice(0, 3),
                   mediumSummary: String(item?.mediumSummary || fallback.mediumSummary || ""),
                   lowPoints: Array.isArray(item?.lowPoints) && item.lowPoints.length > 0
-                    ? item.lowPoints.map((pt: any, pIdx: number) => ({
+                    ? item.lowPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Action Point"),
                         detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || "")
                       }))
-                    : fallback.lowPoints,
+                    : fallback.lowPoints.slice(0, 3),
                   lowSummary: String(item?.lowSummary || item?.rangeLow || fallback.lowSummary || ""),
                   coachSummary: {
                     overview: String(item?.coachSummary?.overview || fallback.coachSummary.overview),
@@ -333,10 +333,10 @@ export default function HelpPage() {
   const currentPlan = plans[selectedPlanIndex] || plans[0] || coachPlanData[0];
   const safeName = currentPlan?.name || "Parameter";
   const safeDescription = currentPlan?.description || "";
-  const safeHighPoints = Array.isArray(currentPlan?.highPoints) ? currentPlan.highPoints : [];
-  const safeMediumPoints = Array.isArray(currentPlan?.mediumPoints) ? currentPlan.mediumPoints : [];
-  const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints : [];
-  const activePoints = scoreTab === "high" ? safeHighPoints : scoreTab === "medium" ? safeMediumPoints : safeLowPoints;
+  const safeHighPoints = Array.isArray(currentPlan?.highPoints) ? currentPlan.highPoints.slice(0, 3) : [];
+  const safeMediumPoints = Array.isArray(currentPlan?.mediumPoints) ? currentPlan.mediumPoints.slice(0, 3) : [];
+  const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints.slice(0, 3) : [];
+  const activePoints = (scoreTab === "high" ? safeHighPoints : scoreTab === "medium" ? safeMediumPoints : safeLowPoints).slice(0, 3);
   const safeHighSummary = currentPlan?.highSummary || coachPlanData[selectedPlanIndex]?.highSummary || "";
   const safeMediumSummary = currentPlan?.mediumSummary || coachPlanData[selectedPlanIndex]?.mediumSummary || coachPlanData[0]?.mediumSummary || "";
   const safeLowSummary = currentPlan?.lowSummary || coachPlanData[selectedPlanIndex]?.lowSummary || "";

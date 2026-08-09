@@ -297,9 +297,9 @@ export default function AdminHelpPage() {
                   id: item.id || defPlan.id,
                   name: item.name || defPlan.name,
                   description: item.description || defPlan.description,
-                  highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints : defPlan.highPoints,
-                  mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints : defPlan.mediumPoints,
-                  lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints : defPlan.lowPoints,
+                  highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints.slice(0, 3) : defPlan.highPoints.slice(0, 3),
+                  mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints.slice(0, 3) : defPlan.mediumPoints.slice(0, 3),
+                  lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints.slice(0, 3) : defPlan.lowPoints.slice(0, 3),
                   highSummary: item.highSummary || defPlan.highSummary,
                   mediumSummary: item.mediumSummary || defPlan.mediumSummary,
                   lowSummary: item.lowSummary || defPlan.lowSummary,
@@ -545,7 +545,7 @@ export default function AdminHelpPage() {
                 : scoreTab === "medium"
                 ? (currentPlan.mediumPoints || defaultFallbackPlan.mediumPoints || [])
                 : (currentPlan.lowPoints || defaultFallbackPlan.lowPoints)
-              ).map((pt, i) => (
+              ).slice(0, 3).map((pt, i) => (
                 <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5 shadow-xs">
                   <div className="flex items-center gap-2.5">
                     <span className={`w-6 h-6 rounded-full text-xs font-black flex items-center justify-center shrink-0 ${
