@@ -46,6 +46,9 @@ public class CpiContentConfig {
     @Column(columnDefinition = "TEXT")
     private String settingsJson;
 
+    @Column(columnDefinition = "TEXT")
+    private String termsJson;
+
     private LocalDateTime lastUpdatedAt;
 
     @Column(columnDefinition = "TEXT")

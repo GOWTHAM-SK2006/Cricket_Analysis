@@ -152,6 +152,79 @@ public class AdminSeeder implements CommandLineRunner {
                 }
                 """;
 
+            String defaultTerms = """
+                {
+                  "title": "TERMS & CONDITIONS",
+                  "subtitle": "LEGAL AGREEMENTS",
+                  "introText": "Welcome to the Cricket Performance Index (CPI). These Terms and Conditions govern your access and use of the CPI platform, services, and related applications. By registering or using our platform, you agree to comply with these terms.",
+                  "lastUpdated": "July 2026",
+                  "sections": [
+                    {
+                      "id": "1",
+                      "number": "1.",
+                      "title": "PLATFORM SERVICES",
+                      "category": "SCOPE AND USAGE",
+                      "icon": "Shield",
+                      "description": "CPI provides coaching staff, academies, and players with performance tracking tools, rating systems (PPI and MPI), and data visualization.",
+                      "bullets": [
+                        "The platform is provided \\"as is\\" and as an athletic performance assessment aid.",
+                        "We reserve the right to modify, suspend, or discontinue any feature at any time."
+                      ]
+                    },
+                    {
+                      "id": "2",
+                      "number": "2.",
+                      "title": "ACCOUNTS & REGISTRATION",
+                      "category": "ACCESS REQUIREMENTS",
+                      "icon": "UserCheck",
+                      "description": "To use CPI, users must register an account by providing accurate and complete registration details.",
+                      "bullets": [
+                        "You are responsible for keeping your login credentials confidential.",
+                        "Accounts cannot be shared or transferred to other individuals without permission.",
+                        "Coaching credentials must be verified and approved by the academy administrator."
+                      ]
+                    },
+                    {
+                      "id": "3",
+                      "number": "3.",
+                      "title": "PRIVACY & PERFORMANCE DATA",
+                      "category": "INFORMATION & PRIVACY",
+                      "icon": "Lock",
+                      "description": "By using the platform, you agree to let CPI process athletic performance metrics, coaching feedback, and training logs.",
+                      "bullets": [
+                        "Coaches can view and grade individual players' practice and match metrics.",
+                        "Administrators may generate reports summarizing collective or individual progress.",
+                        "Performance logs are secured and not shared with unauthorized third parties."
+                      ]
+                    },
+                    {
+                      "id": "4",
+                      "number": "4.",
+                      "title": "CODE OF CONDUCT",
+                      "category": "FAIR PLAY & RESPECT",
+                      "icon": "FileText",
+                      "description": "Users must maintain professional and respectful behavior. Fair play and integrity are central values of the CPI platform.",
+                      "bullets": [
+                        "Inputting false metrics or spamming reviews is strictly prohibited.",
+                        "Abusive behavior or harassment toward other players or staff will lead to account suspension."
+                      ]
+                    },
+                    {
+                      "id": "5",
+                      "number": "5.",
+                      "title": "LIABILITY & DISCLAIMERS",
+                      "category": "LIMIT OF RESPONSIBILITY",
+                      "icon": "HelpCircle",
+                      "description": "CPI ratings are subjective coaching assessments designed solely to support developmental training.",
+                      "bullets": [
+                        "Ratings do not guarantee selection for official league matches or professional contracts.",
+                        "We are not responsible for any physical injury incurred during training, practice, or match situations."
+                      ]
+                    }
+                  ]
+                }
+                """;
+
             CpiContentConfig defaultConfig = CpiContentConfig.builder()
                     .configKey("MAIN_CONFIG")
                     .parametersJson(defaultParameters)
@@ -161,6 +234,7 @@ public class AdminSeeder implements CommandLineRunner {
                     .aiCoachJson(defaultAiCoach)
                     .reportsJson(defaultReports)
                     .settingsJson(defaultSettings)
+                    .termsJson(defaultTerms)
                     .lastUpdatedAt(LocalDateTime.now())
                     .changeLogsJson("[]")
                     .versionsJson("[]")

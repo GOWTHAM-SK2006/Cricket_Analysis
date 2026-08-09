@@ -50,6 +50,7 @@ public class MasterAdminController {
         if (request.getReportsJson() != null) existing.setReportsJson(request.getReportsJson());
         if (request.getContentJson() != null) existing.setContentJson(request.getContentJson());
         if (request.getSettingsJson() != null) existing.setSettingsJson(request.getSettingsJson());
+        if (request.getTermsJson() != null) existing.setTermsJson(request.getTermsJson());
         if (request.getChangeLogsJson() != null) existing.setChangeLogsJson(request.getChangeLogsJson());
         if (request.getVersionsJson() != null) existing.setVersionsJson(request.getVersionsJson());
 
