@@ -15,15 +15,31 @@ export default function SignupPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
+    confirmPassword: ""
   });
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
+    if (!formData.name.trim()) {
+      setError("Please enter your name.");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Please enter your email address.");
+      return;
+    }
+
     if (formData.password.length < 8) {
       setError("Password must be at least 8 characters.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match. Please verify your password.");
       return;
     }
 
@@ -33,13 +49,7 @@ export default function SignupPage() {
       const payload = {
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
-        password: formData.password,
-        createOrganization: true,
-        organizationName: `${formData.name.trim()}'s Academy`,
-        organizationType: "Academy",
-        sport: "Cricket",
-        country: "India",
-        city: "Default"
+        password: formData.password
       };
 
       const response = await api.post("/auth/signup", payload);
@@ -49,10 +59,12 @@ export default function SignupPage() {
         sessionStorage.clear();
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userRole", "coach");
+        if (formData.name.trim()) {
+          localStorage.setItem("userName", formData.name.trim());
+        }
         router.push("/dashboard");
       }
     } catch (err: any) {
-      // Extract the most useful error message from the backend response
       const backendMsg =
         err.response?.data?.message ||
         err.response?.data?.error ||
@@ -96,12 +108,12 @@ export default function SignupPage() {
               priority
             />
           </div>
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-1 uppercase">CREATE ACCOUNT</h1>
+          <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-1 uppercase">COACH SIGN UP</h1>
           <p className="text-slate-500 text-lg font-bold">Join Cricket Performance Index</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSignup} className="space-y-6">
+        <form onSubmit={handleSignup} className="space-y-5">
           {error && (
             <div className="bg-red-50 border-2 border-red-200 text-red-600 p-4 rounded-2xl text-sm font-bold text-center uppercase tracking-wide">
               {error}
@@ -109,7 +121,7 @@ export default function SignupPage() {
           )}
 
           <div className="space-y-2 text-left">
-            <label className="text-xs font-black tracking-widest text-slate-500 block uppercase">FULL NAME</label>
+            <label className="text-xs font-black tracking-widest text-slate-500 block uppercase">COACH NAME</label>
             <input
               type="text"
               name="name"
@@ -117,7 +129,7 @@ export default function SignupPage() {
               onChange={handleInputChange}
               required
               className="w-full bg-white border-2 border-slate-200 rounded-2xl px-4 py-4 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 transition-all shadow-sm"
-              placeholder="Enter full name"
+              placeholder="Enter coach name"
             />
           </div>
 
@@ -147,10 +159,23 @@ export default function SignupPage() {
             />
           </div>
 
+          <div className="space-y-2 text-left">
+            <label className="text-xs font-black tracking-widest text-slate-500 block uppercase">CONFIRM PASSWORD</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              required
+              className="w-full bg-white border-2 border-slate-200 rounded-2xl px-4 py-4 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 transition-all shadow-sm"
+              placeholder="Confirm password"
+            />
+          </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-4.5 text-lg font-black tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-orange-500/20 active:scale-[0.98]"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-4.5 text-lg font-black tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-orange-500/20 active:scale-[0.98] mt-2"
           >
             {loading ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "REGISTER"}
           </button>
@@ -168,9 +193,8 @@ export default function SignupPage() {
       </div>
 
       <div className="text-center text-xs text-slate-400 font-bold uppercase tracking-widest py-4">
-        Mobile Sunlight Optimized • Simple UX
+        Mobile Sunlight Optimized • Individual Coach Access
       </div>
     </div>
   );
 }
-

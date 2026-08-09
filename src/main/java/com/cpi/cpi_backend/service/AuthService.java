@@ -36,11 +36,10 @@ public class AuthService {
             throw new RuntimeException("An account with this email address already exists");
         }
 
-        if (!request.isCreateOrganization()) {
+        boolean isPlayerRegistration = request.getInvitationCode() != null && !request.getInvitationCode().trim().isEmpty();
+
+        if (isPlayerRegistration) {
             // ── PLAYER REGISTRATION ──
-            if (request.getInvitationCode() == null || request.getInvitationCode().trim().isEmpty()) {
-                throw new RuntimeException("Invitation code is required for player registration");
-            }
 
             var player = playerRepository.findByInvitationCode(request.getInvitationCode().trim())
                     .orElseThrow(() -> new RuntimeException("Invalid invitation code"));
