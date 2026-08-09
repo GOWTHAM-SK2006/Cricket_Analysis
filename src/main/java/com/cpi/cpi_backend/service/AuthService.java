@@ -188,16 +188,16 @@ public class AuthService {
             throw new RuntimeException("Google authentication failed: Invalid or unverified Google ID token");
         }
 
-        String cleanEmail = verifiedEmail.trim().toLowerCase();
+        final String targetEmail = verifiedEmail.trim().toLowerCase();
+        final String targetName = (verifiedName != null && !verifiedName.trim().isEmpty()) ? verifiedName.trim() : targetEmail.split("@")[0];
 
         // Check if coach exists or register seamless profile via verified Google identity
-        Coach user = repository.findByEmail(cleanEmail).orElseGet(() -> {
-            String defaultName = (verifiedName != null && !verifiedName.trim().isEmpty()) ? verifiedName.trim() : cleanEmail.split("@")[0];
-            Role userRole = ("cpi@admin.com".equalsIgnoreCase(cleanEmail) || "cpicoach@cpi.com".equalsIgnoreCase(cleanEmail)) ? Role.ADMIN : Role.USER;
+        Coach user = repository.findByEmail(targetEmail).orElseGet(() -> {
+            Role userRole = ("cpi@admin.com".equalsIgnoreCase(targetEmail) || "cpicoach@cpi.com".equalsIgnoreCase(targetEmail)) ? Role.ADMIN : Role.USER;
 
             Coach newUser = Coach.builder()
-                    .name(defaultName)
-                    .email(cleanEmail)
+                    .name(targetName)
+                    .email(targetEmail)
                     .password(passwordEncoder.encode("GOOGLE_OAUTH_" + System.currentTimeMillis()))
                     .role(userRole)
                     .build();
