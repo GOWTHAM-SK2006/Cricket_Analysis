@@ -45,6 +45,10 @@ const coachingRecommendations: Record<string, { title: string; detail: string }>
     title: "Develop Core Skill Level & Match Readiness",
     detail: "The player's overall skill level requires focused development to meet competitive demands. Start by protecting what already works — do not make unnecessary technical changes after a strong drill or isolated success. Instead, increase the challenge by testing the player's skills under greater speed, fatigue, match pressure and unpredictability. Develop the player's self-awareness by asking them to explain why their method works and what they feel when performing well. Monitor whether the same quality transfers from practice to competitive situations. Where skills are lacking, prioritise one correction at a time with a clear coaching cue. Simplify drills by reducing speed or complexity until the movement is performed correctly, then rebuild through quality repetition. Progress gradually from controlled environments to realistic, pressure-based practice that mirrors match scenarios the player will face."
   },
+  "Skill Level": {
+    title: "Develop Core Skill Level & Match Readiness",
+    detail: "The player's overall skill level requires focused development to meet competitive demands. Start by protecting what already works — do not make unnecessary technical changes after a strong drill or isolated success. Instead, increase the challenge by testing the player's skills under greater speed, fatigue, match pressure and unpredictability. Develop the player's self-awareness by asking them to explain why their method works and what they feel when performing well. Monitor whether the same quality transfers from practice to competitive situations. Where skills are lacking, prioritise one correction at a time with a clear coaching cue. Simplify drills by reducing speed or complexity until the movement is performed correctly, then rebuild through quality repetition. Progress gradually from controlled environments to realistic, pressure-based practice that mirrors match scenarios the player will face."
+  },
   "Intensity": {
     title: "Elevate Practice & Match Intensity",
     detail: "This player's intensity levels suggest they are not yet bringing the competitive energy and purpose required to improve and perform under pressure. First identify the root cause — whether the low intensity stems from fatigue, poor health, low confidence, boredom, unclear expectations or a lack of motivation. Clarify exactly what good intensity looks like in movement, effort, communication and response between repetitions. Create short, measurable targets within sessions that give the player an immediate purpose and something to compete against. Use competitive drills with clear roles and regular feedback to keep the player mentally and physically engaged. Channel energy into controlled, purposeful effort rather than rushed or reckless activity. Monitor sustainability — the player must maintain intensity throughout the session without burning out or losing discipline. The goal is the right intensity, for the right task, maintained for the right length of time."
@@ -52,6 +56,14 @@ const coachingRecommendations: Record<string, { title: string; detail: string }>
   "Concentration": {
     title: "Build Sustained Concentration & Mental Presence",
     detail: "The player's concentration score indicates difficulty remaining mentally present and connected to the task throughout sessions and matches. Start by identifying the root cause — whether the lapses come from fatigue, boredom, anxiety, unclear instructions, external distractions or poor mental habits. Shorten the focus period by breaking sessions into smaller tasks with one clear objective and an immediate review point. Teach a simple reset routine the player can use after every attempt, mistake or interruption: step away, breathe, refocus on the next ball. Increase active involvement through questions, targets and specific responsibilities to prevent passive participation. Track the pattern of when concentration drops, what triggers it and how quickly the player reconnects. Introduce changing targets, tactical problems and match-related decisions that demand sustained awareness. The goal is not uninterrupted concentration — it is the ability to recognise when focus has drifted, reset quickly and return attention to the next important action."
+  },
+  "Focus": {
+    title: "Build Sustained Concentration & Mental Presence",
+    detail: "The player's concentration score indicates difficulty remaining mentally present and connected to the task throughout sessions and matches. Start by identifying the root cause — whether the lapses come from fatigue, boredom, anxiety, unclear instructions, external distractions or poor mental habits. Shorten the focus period by breaking sessions into smaller tasks with one clear objective and an immediate review point. Teach a simple reset routine the player can use after every attempt, mistake or interruption: step away, breathe, refocus on the next ball. Increase active involvement through questions, targets and specific responsibilities to prevent passive participation. Track the pattern of when concentration drops, what triggers it and how quickly the player reconnects. Introduce changing targets, tactical problems and match-related decisions that demand sustained awareness. The goal is not uninterrupted concentration — it is the ability to recognise when focus has drifted, reset quickly and return attention to the next important action."
+  },
+  "Game Plan": {
+    title: "Clarify Game Plan & Tactical Execution",
+    detail: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. Does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes. Establish whether there is a plan: ask what the player was trying to do and listen for clarity. Simplify the thinking by giving one or two clear objectives for their role. Connect practice to matches through scenarios that require practising match plans, and teach adjustment when conditions, opposition or match situations change."
   },
   "Decision Making": {
     title: "Sharpen In-Game Decision Making",
@@ -88,6 +100,10 @@ const coachingRecommendations: Record<string, { title: string; detail: string }>
   "Emotional Control": {
     title: "Develop Emotional Regulation & Composure",
     detail: "This player struggles to manage frustration, excitement, anxiety or disappointment during competitive play, which directly impacts their decision making and execution. Begin by identifying the specific triggers — whether the player reacts most strongly to mistakes, dismissal, dropped chances, poor deliveries, criticism, sledging or umpiring decisions. Teach a simple reset response: step away from the crease or mark, take a controlled breath, name the emotion internally and refocus attention on the next ball. Set clear behavioural boundaries — anger, dissent, blaming teammates and damaging equipment are unacceptable responses regardless of the situation. Review incidents privately, focusing on the behaviour, its impact on the team and a better response next time. Practise pressure deliberately by recreating difficult scenarios so the player can rehearse remaining calm and making effective decisions under emotional load. Do not label the player as emotional or difficult — young cricketers often need structured support to understand what they feel and how to respond constructively. The goal is not to remove emotion from cricket — it is to ensure that emotion provides energy without taking away judgement, discipline or control."
+  },
+  "Resilience": {
+    title: "Strengthen Resilience & Bounce-Back Capacity",
+    detail: "Resilience measures how well a player responds to pressure, mistakes, disappointment and setbacks during a match. Separate the moment from the player: help them understand that one poor delivery or error does not define their ability. Teach a simple reset process for releasing the previous moment and reconnecting with the next task. Recreate pressure scenarios safely in practice so the player rehearses remaining composed under stress. Focus on how quickly and effectively the player returns to the contest. The goal is to recover quickly enough so the next ball is not controlled by the last one."
   }
 };
 
@@ -152,52 +168,36 @@ const computeFocusAreasForPlayer = (
       .map(([name, data]) => ({ name, avg: data.sum / data.count }))
       .sort((a, b) => a.avg - b.avg);
 
-    const weakest3 = sortedMetrics
+    const weakest5 = sortedMetrics
       .filter(m => coachingRecommendations[m.name])
-      .slice(0, 3);
+      .slice(0, 5);
 
-    focusAreas = weakest3.map(m => ({
+    focusAreas = weakest5.map(m => ({
       title: `${coachingRecommendations[m.name].title} (Avg: ${m.avg.toFixed(1)}/10)`,
       detail: coachingRecommendations[m.name].detail
     }));
   }
 
-  if (focusAreas.length === 0) {
-    const playerRole = player.role ? player.role.toLowerCase() : "";
-    if (playerRole.includes("bowler")) {
-      focusAreas = [
-        coachingRecommendations["Technical Execution"],
-        coachingRecommendations["Concentration"],
-        coachingRecommendations["Adaptability"]
-      ];
-    } else if (playerRole.includes("batsman") || playerRole.includes("batter")) {
-      focusAreas = [
-        coachingRecommendations["Technical Execution"],
-        coachingRecommendations["Decision Making"],
-        coachingRecommendations["Concentration"]
-      ];
-    } else if (playerRole.includes("all-rounder") || playerRole.includes("all rounder")) {
-      focusAreas = [
-        coachingRecommendations["Game Awareness"],
-        coachingRecommendations["Adaptability"],
-        coachingRecommendations["Intensity"]
-      ];
-    } else if (playerRole.includes("wicketkeeper") || playerRole.includes("keeper")) {
-      focusAreas = [
-        coachingRecommendations["Concentration"],
-        coachingRecommendations["Preparation"],
-        coachingRecommendations["Discipline"]
-      ];
-    } else {
-      focusAreas = [
-        coachingRecommendations["Technical Execution"],
-        coachingRecommendations["Concentration"],
-        coachingRecommendations["Preparation"]
-      ];
+  if (focusAreas.length < 5) {
+    const defaultPool = [
+      coachingRecommendations["Technical Execution"],
+      coachingRecommendations["Focus"],
+      coachingRecommendations["Preparation"],
+      coachingRecommendations["Intensity"],
+      coachingRecommendations["Game Plan"],
+      coachingRecommendations["Skill Level"],
+      coachingRecommendations["Resilience"]
+    ].filter(Boolean);
+
+    for (const item of defaultPool) {
+      if (focusAreas.length >= 5) break;
+      if (!focusAreas.some(f => f.title === item.title || f.detail === item.detail)) {
+        focusAreas.push(item);
+      }
     }
   }
 
-  return focusAreas;
+  return focusAreas.slice(0, 5);
 };
 
 const loadHighResLogo = (): Promise<string> => {
@@ -588,21 +588,40 @@ const generatePlayerPdfReport = async (
   doc.setTextColor(15, 23, 42);
   doc.text("5. AI COACH RECOMMENDATIONS", 14, y);
 
-  y += 6;
+  y += 5.5;
   if (focusAreas && focusAreas.length > 0) {
     focusAreas.forEach((f, idx) => {
-      doc.setFontSize(9);
+      // Check for page overflow within recommendations
+      if (y > pageHeight - 35) {
+        addFooter(doc.internal.getNumberOfPages());
+        doc.addPage();
+
+        doc.setFillColor(15, 23, 42);
+        doc.rect(0, 0, pageWidth, 14, "F");
+        doc.setFillColor(249, 115, 22);
+        doc.rect(0, 13, pageWidth, 1, "F");
+        if (logoDataUrl) {
+          try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+        }
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.setTextColor(255, 255, 255);
+        doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
+        y = 22;
+      }
+
+      doc.setFontSize(8.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(249, 115, 22);
       doc.text(`${idx + 1}. ${f.title}`, 16, y);
-      y += 4.5;
+      y += 4;
 
-      doc.setFontSize(8);
+      doc.setFontSize(7.5);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(51, 65, 85);
       const lines = doc.splitTextToSize(f.detail, pageWidth - 32);
       doc.text(lines, 20, y);
-      y += lines.length * 4 + 3.5;
+      y += lines.length * 3.4 + 2.5;
     });
   } else {
     doc.setFontSize(8.5);
@@ -612,7 +631,25 @@ const generatePlayerPdfReport = async (
     y += 8;
   }
 
-  y += 6;
+  y += 4;
+
+  if (y > pageHeight - 60) {
+    addFooter(doc.internal.getNumberOfPages());
+    doc.addPage();
+
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, pageWidth, 14, "F");
+    doc.setFillColor(249, 115, 22);
+    doc.rect(0, 13, pageWidth, 1, "F");
+    if (logoDataUrl) {
+      try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
+    y = 22;
+  }
 
   // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
   doc.setFontSize(10.5);
@@ -722,7 +759,7 @@ const generatePlayerPdfReport = async (
     });
   }
 
-  addFooter(2);
+  addFooter(doc.internal.getNumberOfPages());
 
   doc.save(`${player.name.replace(/\s+/g, "_")}_Performance_Report.pdf`);
 };
