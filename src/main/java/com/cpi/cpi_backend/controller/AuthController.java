@@ -38,6 +38,19 @@ public class AuthController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<?> googleAuth(
+            @RequestBody java.util.Map<String, String> request
+    ) {
+        try {
+            return ResponseEntity.ok(service.googleAuth(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(400)
+                    .body(java.util.Map.of("message", e.getMessage()));
+        }
+    }
+
     @org.springframework.web.bind.annotation.GetMapping("/validate-code")
     public ResponseEntity<java.util.Map<String, Object>> validateCode(
             @org.springframework.web.bind.annotation.RequestParam String code

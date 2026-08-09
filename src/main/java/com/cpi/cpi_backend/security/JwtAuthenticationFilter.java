@@ -38,8 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // Bypass JWT parsing for public endpoints completely
-        if (requestURI.equals("/api/auth/signup") || requestURI.equals("/api/auth/login") ||
-            requestURI.equals("/api/auth/validate-code") ||
+        if (requestURI.startsWith("/api/auth/") ||
             requestURI.equals("/signup") || requestURI.equals("/login") ||
             requestURI.startsWith("/_next/") || requestURI.startsWith("/static/") ||
             requestURI.equals("/favicon.ico") || requestURI.equals("/")) {

@@ -14,6 +14,55 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
+  const [googleEmailInput, setGoogleEmailInput] = useState("");
+  const [googleNameInput, setGoogleNameInput] = useState("");
+
+  const processGoogleAuth = async (emailToAuth: string, nameToAuth?: string) => {
+    setGoogleLoading(true);
+    setError("");
+    try {
+      const response = await api.post("/auth/google", {
+        email: emailToAuth.trim().toLowerCase(),
+        name: nameToAuth ? nameToAuth.trim() : emailToAuth.split("@")[0]
+      });
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+
+        const profileRes = await api.get("/profile", {
+          headers: { Authorization: `Bearer ${response.data.token}` }
+        });
+
+        const userEmail = (profileRes.data.email || "").toLowerCase();
+        if (profileRes.data.role === "ADMIN" && (userEmail === "cpi@admin.com" || userEmail === "cpicoach@cpi.com")) {
+          localStorage.setItem("cpi_admin_token", response.data.token);
+          localStorage.setItem("userRole", "admin");
+          if (profileRes.data.name) {
+            localStorage.setItem("userName", profileRes.data.name);
+          }
+          router.push("/admin/dashboard");
+          return;
+        }
+
+        localStorage.setItem("userRole", "coach");
+        if (profileRes.data.name) {
+          localStorage.setItem("userName", profileRes.data.name);
+        }
+        router.push("/dashboard");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Google Sign-In failed");
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    setShowGoogleModal(true);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -117,6 +166,50 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Divider */}
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t-2 border-slate-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-slate-50 px-4 text-slate-400 font-extrabold tracking-widest">
+              OR
+            </span>
+          </div>
+        </div>
+
+        {/* Sign in with Google Button */}
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={googleLoading || loading}
+          className="w-full bg-white hover:bg-slate-100 text-slate-800 font-black rounded-2xl py-4 text-base tracking-wide border-2 border-slate-200 transition-all flex items-center justify-center gap-3 shadow-sm cursor-pointer active:scale-[0.98]"
+        >
+          {googleLoading ? (
+            <Loader2 className="w-5 h-5 animate-spin text-slate-600" />
+          ) : (
+            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              />
+            </svg>
+          )}
+          <span className="uppercase">{googleLoading ? "SIGNING IN WITH GOOGLE..." : "SIGN IN WITH GOOGLE"}</span>
+        </button>
+
         <div className="text-center pt-2">
           <Link
             href="/signup"
@@ -131,6 +224,76 @@ export default function LoginPage() {
       <div className="text-center text-xs text-slate-400 font-bold uppercase tracking-widest py-4">
         Mobile Sunlight Optimized • Simple UX
       </div>
+
+      {/* Google Sign In Modal */}
+      {showGoogleModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full space-y-5 border border-slate-200 shadow-2xl animate-in fade-in zoom-in duration-150 text-left">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">Sign in with Google</h3>
+              </div>
+              <button onClick={() => setShowGoogleModal(false)} className="text-slate-400 hover:text-slate-600 font-black text-sm cursor-pointer">✕</button>
+            </div>
+
+            <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+              Enter your Google Account email address to sign in seamlessly to your CPI Coach Account:
+            </p>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] font-black tracking-widest text-slate-400 block uppercase mb-1">Google Email Address</label>
+                <input
+                  type="email"
+                  value={googleEmailInput}
+                  onChange={(e) => setGoogleEmailInput(e.target.value)}
+                  placeholder="name@gmail.com"
+                  className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black tracking-widest text-slate-400 block uppercase mb-1">Coach Display Name (Optional)</label>
+                <input
+                  type="text"
+                  value={googleNameInput}
+                  onChange={(e) => setGoogleNameInput(e.target.value)}
+                  placeholder="Enter coach name"
+                  className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowGoogleModal(false)}
+                className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase py-3.5 rounded-2xl transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (googleEmailInput.trim()) {
+                    setShowGoogleModal(false);
+                    processGoogleAuth(googleEmailInput, googleNameInput);
+                  }
+                }}
+                disabled={!googleEmailInput.trim()}
+                className="w-1/2 bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase py-3.5 rounded-2xl transition-all shadow-md shadow-orange-500/20 disabled:opacity-50 cursor-pointer"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

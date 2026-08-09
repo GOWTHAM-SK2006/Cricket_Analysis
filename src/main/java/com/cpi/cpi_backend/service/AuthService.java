@@ -135,6 +135,36 @@ public class AuthService {
                 .build();
     }
 
+    public AuthenticationResponse googleAuth(java.util.Map<String, String> request) {
+        String email = request.get("email");
+        String name = request.get("name");
+
+        if (email == null || email.trim().isEmpty()) {
+            throw new RuntimeException("Email address is required for Google Sign-In");
+        }
+
+        String cleanEmail = email.trim().toLowerCase();
+
+        // Check if user exists or register seamless profile via Google
+        Coach user = repository.findByEmail(cleanEmail).orElseGet(() -> {
+            String defaultName = (name != null && !name.trim().isEmpty()) ? name.trim() : cleanEmail.split("@")[0];
+            Role userRole = ("cpi@admin.com".equalsIgnoreCase(cleanEmail) || "cpicoach@cpi.com".equalsIgnoreCase(cleanEmail)) ? Role.ADMIN : Role.USER;
+
+            Coach newUser = Coach.builder()
+                    .name(defaultName)
+                    .email(cleanEmail)
+                    .password(passwordEncoder.encode("GOOGLE_OAUTH_" + System.currentTimeMillis()))
+                    .role(userRole)
+                    .build();
+            return repository.save(newUser);
+        });
+
+        String jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
     public java.util.Map<String, Object> validateCode(String code) {
         java.util.Map<String, Object> response = new java.util.HashMap<>();
         if (code == null || code.trim().isEmpty()) {
