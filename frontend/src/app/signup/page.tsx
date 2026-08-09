@@ -13,7 +13,9 @@ declare global {
   }
 }
 
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+  "615869393937-9ib5l28morbhm0blc9a72a2si34h1mqp.apps.googleusercontent.com";
 const isGoogleConfigured = Boolean(
   GOOGLE_CLIENT_ID && !GOOGLE_CLIENT_ID.includes("102938475612")
 );
