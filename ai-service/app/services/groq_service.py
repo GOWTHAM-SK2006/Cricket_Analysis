@@ -7,19 +7,28 @@ from app.utils.logger import logger
 
 class GroqService:
     def __init__(self):
-        self.base_url = "https://openrouter.ai/api/v1/chat/completions"
+        pass
 
     def _get_api_key(self) -> str:
-        key = settings.OPENROUTER_API_KEY or settings.GROQ_API_KEY
+        key = settings.GROQ_API_KEY or settings.OPENROUTER_API_KEY
         if not key or key.startswith("YOUR_"):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="OpenRouter API Key is not configured. Please set OPENROUTER_API_KEY in your environment/settings."
+                detail="Groq API Key is not configured. Please set GROQ_API_KEY in environment/settings."
             )
         return key
 
+    def _get_base_url(self) -> str:
+        key = self._get_api_key()
+        if key.startswith("gsk_"):
+            return "https://api.groq.com/openai/v1/chat/completions"
+        return "https://openrouter.ai/api/v1/chat/completions"
+
     def _get_model(self) -> str:
-        return settings.OPENROUTER_MODEL or settings.GROQ_MODEL or "nvidia/nemotron-3-ultra-550b-a55b:free"
+        key = self._get_api_key()
+        if key.startswith("gsk_"):
+            return settings.GROQ_MODEL or "llama-3.3-70b-versatile"
+        return settings.OPENROUTER_MODEL or settings.GROQ_MODEL or "llama-3.3-70b-versatile"
 
     async def generate_chat_completion(
         self,
@@ -29,6 +38,7 @@ class GroqService:
     ) -> str:
         """Send chat messages to Groq API via OpenAI-compatible REST endpoint."""
         api_key = self._get_api_key()
+        url = self._get_base_url()
         model = self._get_model()
 
         headers = {
@@ -46,7 +56,7 @@ class GroqService:
         try:
             logger.info(f"Calling Groq API model: {model}")
             async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
-                response = await client.post(self.base_url, headers=headers, json=payload)
+                response = await client.post(url, headers=headers, json=payload)
                 response.raise_for_status()
                 data = response.json()
 
@@ -91,6 +101,7 @@ class GroqService:
     ) -> Dict[str, Any]:
         """Request structured JSON object from Groq API."""
         api_key = self._get_api_key()
+        url = self._get_base_url()
         model = self._get_model()
 
         headers = {
@@ -117,7 +128,7 @@ class GroqService:
         try:
             logger.info(f"Calling Groq API model {model} for structured JSON...")
             async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
-                response = await client.post(self.base_url, headers=headers, json=payload)
+                response = await client.post(url, headers=headers, json=payload)
                 response.raise_for_status()
                 data = response.json()
 
