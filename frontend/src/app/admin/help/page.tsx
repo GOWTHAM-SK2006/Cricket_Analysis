@@ -15,17 +15,21 @@ interface CoachPlanItem {
   description: string;
   highPoints: ActionPoint[];
   highSummary: string;
+  mediumPoints?: ActionPoint[];
+  mediumSummary?: string;
   lowPoints: ActionPoint[];
   lowSummary?: string;
   coachSummary: {
     overview: string;
     high: string;
+    medium?: string;
     low: string;
     goal: string;
   };
 }
 
 interface FullHelpConfig {
+  welcomeText?: string;
   coachPlanData: CoachPlanItem[];
   ppiDescription: string;
   mpiDescription: string;
@@ -248,7 +252,10 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
   }
 ];
 
+const DEFAULT_WELCOME_TEXT = "Welcome to the Cricket Performance Index (CPI) platform. This guide explains how our index works, how to interpret scores on an out-of-10 scale, and provides the complete Coach’s Plan of Action for player development.";
+
 const DEFAULT_FULL_HELP: FullHelpConfig = {
+  welcomeText: DEFAULT_WELCOME_TEXT,
   coachPlanData: DEFAULT_COACH_PLAN_DATA,
   ppiDescription: "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.",
   mpiDescription: "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.",
@@ -298,7 +305,7 @@ export default function AdminHelpPage() {
                   name: item.name || defPlan.name,
                   description: item.description || defPlan.description,
                   highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints.slice(0, 3) : defPlan.highPoints.slice(0, 3),
-                  mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints.slice(0, 3) : defPlan.mediumPoints.slice(0, 3),
+                  mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints.slice(0, 3) : defPlan.mediumPoints?.slice(0, 3) || [],
                   lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints.slice(0, 3) : defPlan.lowPoints.slice(0, 3),
                   highSummary: item.highSummary || defPlan.highSummary,
                   mediumSummary: item.mediumSummary || defPlan.mediumSummary,
@@ -314,6 +321,7 @@ export default function AdminHelpPage() {
               });
 
               setHelpConfig({
+                welcomeText: parsed.welcomeText || DEFAULT_FULL_HELP.welcomeText,
                 coachPlanData: sanitizedPlans,
                 ppiDescription: parsed.ppiDescription || DEFAULT_FULL_HELP.ppiDescription,
                 mpiDescription: parsed.mpiDescription || DEFAULT_FULL_HELP.mpiDescription,
@@ -350,10 +358,10 @@ export default function AdminHelpPage() {
   const updateActionPoint = (tab: "high" | "medium" | "low", index: number, field: "title" | "detail", val: string) => {
     const updatedList = [...helpConfig.coachPlanData];
     const plan = { ...updatedList[selectedPlanIndex] };
-    const pointsKey = tab === "high" ? "highPoints" : tab === "medium" ? "mediumPoints" : "lowPoints";
-    const points = [...(plan[pointsKey] || defaultFallbackPlan[pointsKey] || [])];
+    const pointsKey = (tab === "high" ? "highPoints" : tab === "medium" ? "mediumPoints" : "lowPoints") as keyof Pick<CoachPlanItem, "highPoints" | "mediumPoints" | "lowPoints">;
+    const points = [...((plan[pointsKey] as ActionPoint[] | undefined) || (defaultFallbackPlan[pointsKey] as ActionPoint[] | undefined) || [])];
     points[index] = { ...points[index], [field]: val };
-    plan[pointsKey] = points;
+    (plan as any)[pointsKey] = points;
     updatedList[selectedPlanIndex] = plan;
     setHelpConfig({ ...helpConfig, coachPlanData: updatedList });
   };
@@ -691,14 +699,28 @@ export default function AdminHelpPage() {
         </div>
       </div>
 
-      {/* Global Help Sections (PPI, MPI, CPI & Score Interpretation) */}
+      {/* Global Help Sections (Welcome Content, PPI, MPI, CPI & Score Interpretation) */}
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-6">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-1.5">
             <Layers className="w-4 h-4 text-orange-600" />
-            <span>4. Index Descriptions & Score Interpretation Texts</span>
+            <span>4. Welcome Banner, Index Descriptions & Score Interpretation Texts</span>
           </h2>
           <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase">Global Card Texts</span>
+        </div>
+
+        {/* Welcome & Overview Intro Banner Text */}
+        <div className="space-y-1.5 pb-4 border-b border-slate-100">
+          <label className="block text-xs font-black text-slate-800 uppercase tracking-wider flex items-center justify-between">
+            <span>Welcome & Overview Intro Text (Top Banner on /help)</span>
+            <span className="text-[10px] text-orange-500 font-bold uppercase">Main Help Header Text</span>
+          </label>
+          <textarea
+            rows={3}
+            value={helpConfig.welcomeText || DEFAULT_WELCOME_TEXT}
+            onChange={(e) => setHelpConfig({ ...helpConfig, welcomeText: e.target.value })}
+            className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

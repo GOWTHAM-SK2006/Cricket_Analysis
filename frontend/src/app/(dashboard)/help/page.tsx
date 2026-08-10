@@ -248,6 +248,9 @@ export default function HelpPage() {
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [scoreTab, setScoreTab] = useState<"high" | "medium" | "low">("high");
   const [plans, setPlans] = useState<CoachPlanItem[]>(coachPlanData);
+  const [welcomeText, setWelcomeText] = useState<string>(
+    "Welcome to the Cricket Performance Index (CPI) platform. This guide explains how our index works, how to interpret scores on an out-of-10 scale, and provides the complete Coach’s Plan of Action for player development."
+  );
   const [ppiDesc, setPpiDesc] = useState<string>(
     "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation."
   );
@@ -295,7 +298,7 @@ export default function HelpPage() {
                         title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Action Point"),
                         detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || "")
                       }))
-                    : fallback.mediumPoints.slice(0, 3),
+                    : fallback.mediumPoints?.slice(0, 3) || [],
                   mediumSummary: String(item?.mediumSummary || fallback.mediumSummary || ""),
                   lowPoints: Array.isArray(item?.lowPoints) && item.lowPoints.length > 0
                     ? item.lowPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
@@ -315,6 +318,7 @@ export default function HelpPage() {
               });
               setPlans(sanitized);
             }
+            if (typeof parsed.welcomeText === "string") setWelcomeText(parsed.welcomeText);
             if (typeof parsed.ppiDescription === "string") setPpiDesc(parsed.ppiDescription);
             if (typeof parsed.mpiDescription === "string") setMpiDesc(parsed.mpiDescription);
             if (typeof parsed.cpiDescription === "string") setCpiDesc(parsed.cpiDescription);
@@ -360,7 +364,7 @@ export default function HelpPage() {
       {/* Intro Card */}
       <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3 shadow-xs">
         <p className="text-sm font-bold text-slate-900 leading-relaxed">
-          Welcome to the Cricket Performance Index (CPI) platform. This guide explains how our index works, how to interpret scores on an out-of-10 scale, and provides the complete Coach’s Plan of Action for player development.
+          {welcomeText}
         </p>
       </div>
 
