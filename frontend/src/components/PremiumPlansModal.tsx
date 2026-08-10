@@ -63,7 +63,7 @@ export default function PremiumPlansModal({ isOpen, onClose }: PremiumPlansModal
               Upgrade Your Coaching Superpowers
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
-              Unlock advanced player telemetry, AI coaching insights, unlimited squad reports, and custom academy synchronization.
+              Unlock advanced performance analytics, AI coaching insights, unlimited squad reports, and custom academy synchronization.
             </p>
           </div>
 
@@ -309,10 +309,6 @@ export default function PremiumPlansModal({ isOpen, onClose }: PremiumPlansModal
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-amber-400 shrink-0 stroke-[3]" />
                     <span>White-Label Academy PDF Reports</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-amber-400 shrink-0 stroke-[3]" />
-                    <span>Video Telemetry Integration</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-amber-400 shrink-0 stroke-[3]" />
