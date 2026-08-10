@@ -27,6 +27,28 @@ export default function AdminAiPage() {
   const [aiConfig, setAiConfig] = useState<AiCoachConfig>(DEFAULT_AI_COACH);
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
 
+  const parseAiConfig = (jsonStr: any): AiCoachConfig | null => {
+    if (!jsonStr) return null;
+    try {
+      let parsed = typeof jsonStr === "string" ? JSON.parse(jsonStr) : jsonStr;
+      if (typeof parsed === "string") {
+        parsed = JSON.parse(parsed);
+      }
+      if (parsed && typeof parsed === "object") {
+        return {
+          systemInstructions: parsed.systemInstructions ?? DEFAULT_AI_COACH.systemInstructions,
+          coachingTone: parsed.coachingTone ?? DEFAULT_AI_COACH.coachingTone,
+          responseGuidance: parsed.responseGuidance ?? DEFAULT_AI_COACH.responseGuidance,
+          recommendationBehaviour: parsed.recommendationBehaviour ?? DEFAULT_AI_COACH.recommendationBehaviour,
+          parameterAnalysisInstructions: parsed.parameterAnalysisInstructions ?? DEFAULT_AI_COACH.parameterAnalysisInstructions,
+        };
+      }
+    } catch (e) {
+      console.error("Error parsing aiCoachJson", e);
+    }
+    return null;
+  };
+
   useEffect(() => {
     fetchAiConfig();
   }, []);
@@ -34,7 +56,7 @@ export default function AdminAiPage() {
   const fetchAiConfig = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
       const res = await fetch("/api/admin/config", {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -42,13 +64,9 @@ export default function AdminAiPage() {
         const data = await res.json();
         setFullConfigRaw(data);
         if (data.aiCoachJson) {
-          try {
-            const parsed = JSON.parse(data.aiCoachJson);
-            if (parsed && typeof parsed === "object") {
-              setAiConfig(parsed);
-            }
-          } catch (e) {
-            console.error("Error parsing aiCoachJson", e);
+          const parsed = parseAiConfig(data.aiCoachJson);
+          if (parsed) {
+            setAiConfig(parsed);
           }
         }
       }
@@ -62,7 +80,7 @@ export default function AdminAiPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
       const updatedPayload = {
         ...fullConfigRaw,
         aiCoachJson: JSON.stringify(aiConfig),
@@ -80,7 +98,24 @@ export default function AdminAiPage() {
         body: JSON.stringify(updatedPayload)
       });
 
-      if (!res.ok) throw new Error("Failed to save AI configuration");
+      if (!res.ok) {
+        const errText = await res.text();
+        let msg = "Failed to save AI configuration";
+        try {
+          const errJson = JSON.parse(errText);
+          if (errJson.message) msg = errJson.message;
+        } catch (e) {}
+        throw new Error(msg);
+      }
+
+      const data = await res.json();
+      setFullConfigRaw(data);
+      if (data.aiCoachJson) {
+        const parsed = parseAiConfig(data.aiCoachJson);
+        if (parsed) {
+          setAiConfig(parsed);
+        }
+      }
 
       showToast("AI Management settings updated successfully!", "success");
     } catch (err: any) {
@@ -108,6 +143,7 @@ export default function AdminAiPage() {
 
         <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={() => setAiConfig(DEFAULT_AI_COACH)}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
           >
@@ -115,6 +151,7 @@ export default function AdminAiPage() {
             <span>Reset Defaults</span>
           </button>
           <button
+            type="button"
             onClick={handleSave}
             disabled={saving}
             className="flex items-center gap-2 px-5 py-2 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-xl shadow-md shadow-orange-600/30 transition-all disabled:opacity-50 uppercase cursor-pointer"
@@ -211,6 +248,7 @@ export default function AdminAiPage() {
             Directives guide real-time AI responses generated for player reports.
           </span>
           <button
+            type="button"
             onClick={handleSave}
             disabled={saving}
             className="flex items-center gap-2 px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-xl shadow-md shadow-orange-600/30 transition-all disabled:opacity-50 uppercase cursor-pointer"
