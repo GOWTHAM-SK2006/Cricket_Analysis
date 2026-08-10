@@ -1827,9 +1827,9 @@ export default function PlayersPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4 text-lg font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-xl py-4 text-lg font-black tracking-wider uppercase transition-all shadow-lg shadow-orange-500/20 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "SAVE PLAYER"}
+                  {saving ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "SAVE PLAYER"}
                 </button>
               </form>
             </div>
