@@ -13,18 +13,12 @@ interface AssessmentLogItem {
   date: string;
 }
 
-const DEFAULT_ASSESSMENTS: AssessmentLogItem[] = [
-  { id: 101, player: "Rohan Sharma", type: "Practice", coach: "Daryll Cullinan", score: "8.2 / 10", date: "2026-08-08" },
-  { id: 102, player: "Ankit Patel", type: "Match", coach: "Daryll Cullinan", score: "7.9 / 10", date: "2026-08-07" },
-  { id: 103, player: "Player A", type: "Practice", coach: "Gowtham SK", score: "8.4 / 10", date: "2026-08-06" },
-  { id: 104, player: "Siddharth Verma", type: "Match", coach: "Daryll Cullinan", score: "8.1 / 10", date: "2026-08-05" },
-  { id: 105, player: "Vikram Singh", type: "Practice", coach: "Gowtham SK", score: "7.8 / 10", date: "2026-08-04" }
-];
+const DEFAULT_ASSESSMENTS: AssessmentLogItem[] = [];
 
 export default function AdminAssessmentsPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
-  const [logs, setLogs] = useState<AssessmentLogItem[]>(DEFAULT_ASSESSMENTS);
+  const [logs, setLogs] = useState<AssessmentLogItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<"All" | "Practice" | "Match">("All");
 

@@ -1,23 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Users2, Building2, UserCheck, Calendar, CheckCircle2 } from "lucide-react";
 import { useAdminToast } from "../layout";
+
+interface GrowthDataItem {
+  period: string;
+  coaches: number;
+  players: number;
+  assessments: number;
+}
+
+interface TopOrgItem {
+  name: string;
+  location: string;
+  logs: number;
+  share: string;
+}
 
 export default function AdminAnalyticsPage() {
   const { showToast } = useAdminToast();
   const [timeframe, setTimeframe] = useState<"Daily" | "Weekly" | "Monthly" | "Yearly">("Monthly");
+  const [loading, setLoading] = useState(true);
 
-  const growthData = [
-    { period: "Jan 2026", coaches: 1, players: 3, assessments: 150 },
-    { period: "Feb 2026", coaches: 2, players: 6, assessments: 450 },
-    { period: "Mar 2026", coaches: 3, players: 9, assessments: 850 },
-    { period: "Apr 2026", coaches: 3, players: 11, assessments: 1240 },
-  ];
+  const [analytics, setAnalytics] = useState({
+    totalCoaches: 0,
+    totalPlayers: 0,
+    practiceCount: 0,
+    matchCount: 0,
+    totalAssessments: 0,
+    practicePct: 0,
+    matchPct: 0,
+    growthData: [] as GrowthDataItem[],
+    topOrganizations: [] as TopOrgItem[]
+  });
 
-  const topActiveOrgs = [
-    { name: "CPI Cricket Academy", location: "Chennai", logs: 1240, share: "100.0%" }
-  ];
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  const fetchAnalytics = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const res = await fetch("/api/admin/analytics", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAnalytics({
+          totalCoaches: data.totalCoaches ?? 0,
+          totalPlayers: data.totalPlayers ?? 0,
+          practiceCount: data.practiceCount ?? 0,
+          matchCount: data.matchCount ?? 0,
+          totalAssessments: data.totalAssessments ?? 0,
+          practicePct: data.practicePct ?? 0,
+          matchPct: data.matchPct ?? 0,
+          growthData: data.growthData && Array.isArray(data.growthData) ? data.growthData : [],
+          topOrganizations: data.topOrganizations && Array.isArray(data.topOrganizations) ? data.topOrganizations : []
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching analytics", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -55,26 +103,30 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Platform Activity Growth</span>
-          <p className="text-2xl font-black text-slate-900">+100% Active</p>
+          <p className="text-2xl font-black text-slate-900">{analytics.totalAssessments > 0 ? "+100% Active" : "0% Active"}</p>
           <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Longitudinal Tracking</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Coach Engagement Rate</span>
-          <p className="text-2xl font-black text-slate-900">100% Active</p>
-          <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Coaches Weekly</p>
+          <p className="text-2xl font-black text-slate-900">{analytics.totalCoaches > 0 ? "100% Active" : "0% Active"}</p>
+          <p className="text-[11px] text-emerald-600 font-bold mt-1">{analytics.totalCoaches} Active Coaches</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Player Profile Growth</span>
-          <p className="text-2xl font-black text-slate-900">11 Profiles</p>
+          <p className="text-2xl font-black text-slate-900">{analytics.totalPlayers} Profiles</p>
           <p className="text-[11px] text-emerald-600 font-bold mt-1">Active Players Managed</p>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Practice vs Match Ratio</span>
-          <p className="text-2xl font-black text-orange-600">58% / 42%</p>
-          <p className="text-[11px] text-slate-500 font-semibold mt-1">720 Practice / 520 Match</p>
+          <p className="text-2xl font-black text-orange-600">
+            {analytics.totalAssessments > 0 ? `${analytics.practicePct}% / ${analytics.matchPct}%` : "0% / 0%"}
+          </p>
+          <p className="text-[11px] text-slate-500 font-semibold mt-1">
+            {analytics.practiceCount} Practice / {analytics.matchCount} Match
+          </p>
         </div>
       </div>
 
@@ -88,20 +140,26 @@ export default function AdminAnalyticsPage() {
           </div>
 
           <div className="space-y-3">
-            {growthData.map((d, idx) => (
-              <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-                <div>
-                  <p className="font-extrabold text-xs text-slate-900">{d.period}</p>
-                  <p className="text-[10px] text-slate-500 font-semibold">
-                    {d.coaches} Coaches • {d.players} Players
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-black text-orange-600">{d.assessments.toLocaleString()} Logs</p>
-                  <p className="text-[10px] text-emerald-600 font-bold">+{(idx + 1) * 35}% volume</p>
-                </div>
+            {analytics.growthData.length === 0 ? (
+              <div className="p-4 text-center text-xs text-slate-400 font-medium">
+                {loading ? "Loading growth metrics..." : "No growth metrics available."}
               </div>
-            ))}
+            ) : (
+              analytics.growthData.map((d, idx) => (
+                <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div>
+                    <p className="font-extrabold text-xs text-slate-900">{d.period}</p>
+                    <p className="text-[10px] text-slate-500 font-semibold">
+                      {d.coaches} Coaches • {d.players} Players
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-black text-orange-600">{d.assessments.toLocaleString()} Logs</p>
+                    <p className="text-[10px] text-emerald-600 font-bold">Live Data</p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -113,23 +171,29 @@ export default function AdminAnalyticsPage() {
           </div>
 
           <div className="space-y-3">
-            {topActiveOrgs.map((org, idx) => (
-              <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-md bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                    #{idx + 1}
-                  </span>
-                  <div>
-                    <p className="font-bold text-xs text-slate-900">{org.name}</p>
-                    <p className="text-[10px] text-slate-500 font-semibold">{org.location}</p>
+            {analytics.topOrganizations.length === 0 ? (
+              <div className="p-4 text-center text-xs text-slate-400 font-medium">
+                {loading ? "Loading organizations..." : "No organization metrics available."}
+              </div>
+            ) : (
+              analytics.topOrganizations.map((org, idx) => (
+                <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 rounded-md bg-slate-900 text-white font-black text-xs flex items-center justify-center">
+                      #{idx + 1}
+                    </span>
+                    <div>
+                      <p className="font-bold text-xs text-slate-900">{org.name}</p>
+                      <p className="text-[10px] text-slate-500 font-semibold">{org.location}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-black text-slate-900">{org.logs} Logs</p>
+                    <span className="text-[10px] text-orange-600 font-bold">{org.share} share</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs font-black text-slate-900">{org.logs} Logs</p>
-                  <span className="text-[10px] text-orange-600 font-bold">{org.share} share</span>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

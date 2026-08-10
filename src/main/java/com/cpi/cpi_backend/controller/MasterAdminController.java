@@ -216,15 +216,43 @@ public class MasterAdminController {
     @GetMapping("/admin/analytics")
     public ResponseEntity<Map<String, Object>> getAnalytics() {
         Map<String, Object> res = new LinkedHashMap<>();
-        res.put("monthlyGrowth", List.of(
-            Map.of("month", "Jan", "coaches", 12, "players", 140, "assessments", 650),
-            Map.of("month", "Feb", "coaches", 24, "players", 290, "assessments", 1400),
-            Map.of("month", "Mar", "coaches", 38, "players", 450, "assessments", 2800),
-            Map.of("month", "Apr", "coaches", 48, "players", 624, "assessments", 4821)
-        ));
-        res.put("topOrganizations", List.of(
-            Map.of("name", "CPI Cricket Academy", "assessments", 1240)
-        ));
+
+        long totalCoaches = coachRepository.count();
+        long totalPlayers = playerRepository.count();
+        long practiceCount = practiceAssessmentRepository.count();
+        long matchCount = matchAssessmentRepository.count();
+        long totalAssessments = practiceCount + matchCount;
+
+        long practicePct = totalAssessments > 0 ? Math.round((double) practiceCount / totalAssessments * 100) : 0;
+        long matchPct = totalAssessments > 0 ? (100 - practicePct) : 0;
+
+        res.put("totalCoaches", totalCoaches);
+        res.put("totalPlayers", totalPlayers);
+        res.put("practiceCount", practiceCount);
+        res.put("matchCount", matchCount);
+        res.put("totalAssessments", totalAssessments);
+        res.put("practicePct", practicePct);
+        res.put("matchPct", matchPct);
+
+        List<Map<String, Object>> growthData = new ArrayList<>();
+        Map<String, Object> p1 = new LinkedHashMap<>();
+        p1.put("period", "Current Platform Status");
+        p1.put("coaches", totalCoaches);
+        p1.put("players", totalPlayers);
+        p1.put("assessments", totalAssessments);
+        growthData.add(p1);
+
+        res.put("growthData", growthData);
+
+        List<Map<String, Object>> topOrgs = new ArrayList<>();
+        Map<String, Object> org1 = new LinkedHashMap<>();
+        org1.put("name", "CPI Cricket Academy");
+        org1.put("location", "Chennai");
+        org1.put("logs", totalAssessments);
+        org1.put("share", totalAssessments > 0 ? "100.0%" : "0.0%");
+        topOrgs.add(org1);
+
+        res.put("topOrganizations", topOrgs);
         return ResponseEntity.ok(res);
     }
 
