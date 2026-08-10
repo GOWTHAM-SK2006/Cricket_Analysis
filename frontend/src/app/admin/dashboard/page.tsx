@@ -27,13 +27,13 @@ export default function MasterAdminDashboardPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState<any>({
-    totalCoaches: 3,
-    totalPlayers: 11,
-    totalAssessments: 1240,
-    activeCoaches: 3,
-    activePlayers: 11,
-    practiceAssessments: 720,
-    matchAssessments: 520,
+    totalCoaches: 0,
+    totalPlayers: 0,
+    totalAssessments: 0,
+    activeCoaches: 0,
+    activePlayers: 0,
+    practiceAssessments: 0,
+    matchAssessments: 0,
     lastUpdatedAt: new Date().toISOString()
   });
 

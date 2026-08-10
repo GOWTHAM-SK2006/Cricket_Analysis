@@ -15,15 +15,12 @@ interface CoachItem {
   joinedDate: string;
 }
 
-const DEFAULT_COACHES: CoachItem[] = [
-  { id: 1, name: "Daryll Cullinan", email: "daryll@cpicoach.com", organization: "CPI Cricket Academy", playersCount: 42, assessmentsCount: 438, status: "Active", joinedDate: "2025-01-10" },
-  { id: 2, name: "Gowtham SK", email: "gowtham@cpicoach.com", organization: "CPI Cricket Academy", playersCount: 38, assessmentsCount: 390, status: "Active", joinedDate: "2025-01-15" }
-];
+const DEFAULT_COACHES: CoachItem[] = [];
 
 export default function AdminCoachesPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
-  const [coaches, setCoaches] = useState<CoachItem[]>(DEFAULT_COACHES);
+  const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -39,7 +36,7 @@ export default function AdminCoachesPage() {
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setCoaches(data);
         }
       }
@@ -116,57 +113,65 @@ export default function AdminCoachesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
-              {filteredCoaches.map((c) => (
-                <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="px-5 py-4 font-bold text-slate-900">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-800 text-slate-200 flex items-center justify-center font-bold text-xs">
-                        {c.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="font-extrabold text-slate-900">{c.name}</p>
-                        <p className="text-[10px] text-slate-400">Coach ID: CCH-00{c.id}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 text-slate-600 font-semibold">{c.email}</td>
-                  <td className="px-5 py-4 text-slate-900 font-extrabold">{c.playersCount} Players</td>
-                  <td className="px-5 py-4 text-slate-900 font-extrabold">{c.assessmentsCount} Logs</td>
-                  <td className="px-5 py-4 text-slate-500">{c.joinedDate}</td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
-                        c.status === "Active"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : "bg-rose-50 text-rose-700 border-rose-200"
-                      }`}
-                    >
-                      {c.status === "Active" ? <CheckCircle2 className="w-3 h-3 text-emerald-600" /> : <XCircle className="w-3 h-3 text-rose-600" />}
-                      {c.status}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => showToast(`Viewing profile for ${c.name}`, "info")}
-                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-slate-500" /> View
-                      </button>
-                      <button
-                        onClick={() => toggleStatus(c.id)}
-                        className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all border ${
-                          c.status === "Active"
-                            ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
-                            : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                        }`}
-                      >
-                        {c.status === "Active" ? "Deactivate" : "Activate"}
-                      </button>
-                    </div>
+              {filteredCoaches.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-5 py-8 text-center text-slate-400 font-medium">
+                    {loading ? "Loading coaches directory..." : "No coaches found."}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredCoaches.map((c) => (
+                  <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-5 py-4 font-bold text-slate-900">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-800 text-slate-200 flex items-center justify-center font-bold text-xs">
+                          {c.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-extrabold text-slate-900">{c.name}</p>
+                          <p className="text-[10px] text-slate-400">Coach ID: CCH-00{c.id}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-slate-600 font-semibold">{c.email}</td>
+                    <td className="px-5 py-4 text-slate-900 font-extrabold">{c.playersCount} Players</td>
+                    <td className="px-5 py-4 text-slate-900 font-extrabold">{c.assessmentsCount} Logs</td>
+                    <td className="px-5 py-4 text-slate-500">{c.joinedDate}</td>
+                    <td className="px-5 py-4">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
+                          c.status === "Active"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-rose-50 text-rose-700 border-rose-200"
+                        }`}
+                      >
+                        {c.status === "Active" ? <CheckCircle2 className="w-3 h-3 text-emerald-600" /> : <XCircle className="w-3 h-3 text-rose-600" />}
+                        {c.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => showToast(`Viewing profile for ${c.name}`, "info")}
+                          className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-slate-500" /> View
+                        </button>
+                        <button
+                          onClick={() => toggleStatus(c.id)}
+                          className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all border ${
+                            c.status === "Active"
+                              ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+                              : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                          }`}
+                        >
+                          {c.status === "Active" ? "Deactivate" : "Activate"}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
