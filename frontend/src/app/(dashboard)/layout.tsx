@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { api } from "@/lib/api";
-import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle, Bell, Trophy } from "lucide-react";
+import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle, Bell, Trophy, Crown } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import OnboardingTour from "./OnboardingTour";
+import PremiumPlansModal from "@/components/PremiumPlansModal";
 
 export default function DashboardLayout({
   children,
@@ -23,6 +24,7 @@ export default function DashboardLayout({
   const [userName, setUserName] = useState("");
   const [showTour, setShowTour] = useState(false);
   const [tourPage, setTourPage] = useState<"dashboard" | "players">("dashboard");
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   useEffect(() => {
     if (!role) return;
@@ -188,8 +190,18 @@ export default function DashboardLayout({
           </div>
         </Link>
 
-        {/* Right Side: Notification Bell + Profile Avatar */}
-        <div className="flex items-center gap-4">
+        {/* Right Side: PREMIUM Button + Notification Bell + Profile Avatar */}
+        <div className="flex items-center gap-2.5 sm:gap-3.5">
+          <button
+            onClick={() => setShowPremiumModal(true)}
+            id="premium-plans-header-btn"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black text-[10px] sm:text-[11px] tracking-wider uppercase shadow-md shadow-orange-500/20 hover:scale-[1.03] active:scale-95 transition-all cursor-pointer border border-orange-400/50"
+            title="View Premium Plans"
+          >
+            <Crown className="w-3.5 h-3.5 fill-black stroke-black shrink-0" />
+            <span className="font-black">PREMIUM</span>
+          </button>
+
           <button className="relative text-slate-500 hover:text-orange-600 transition-colors cursor-pointer p-1">
             <Bell className="w-5.5 h-5.5 stroke-[2]" />
             <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-[9px] font-black text-white flex items-center justify-center border-2 border-white">3</span>
@@ -235,6 +247,12 @@ export default function DashboardLayout({
       {showTour && role && (
         <OnboardingTour role={role} page={tourPage} onFinish={() => setShowTour(false)} />
       )}
+
+      {/* Premium Plans Modal */}
+      <PremiumPlansModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+      />
     </div>
   );
 }
