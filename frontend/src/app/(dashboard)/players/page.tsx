@@ -9,6 +9,7 @@ import {
   Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
+import CricketLoader from "@/components/CricketLoader";
 import jsPDF from "jspdf";
 
 interface Player {
@@ -1837,10 +1838,7 @@ export default function PlayersPage() {
 
           {/* Player Cards list */}
           {loading ? (
-            <div className="flex flex-col items-center py-20 gap-3">
-              <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-              <p className="text-zinc-500 font-bold uppercase tracking-wider text-xs">Loading Squad...</p>
-            </div>
+            <CricketLoader message="Loading Squad..." />
           ) : sortedPlayers.length === 0 ? (
             <div className="text-center py-16 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-slate-200 rounded-3xl">
               No players found
@@ -1907,10 +1905,7 @@ export default function PlayersPage() {
 
       {/* ------------------ VIEW: PLAYER PROFILE LOADING ------------------ */}
       {view === "profile" && !selectedPlayer && (
-        <div className="flex flex-col items-center py-40 gap-3">
-          <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-          <p className="text-zinc-500 font-bold uppercase tracking-wider text-xs">Loading Profile...</p>
-        </div>
+        <CricketLoader message="Loading Profile..." />
       )}
 
       {/* ------------------ VIEW: PLAYER PROFILE ------------------ */}

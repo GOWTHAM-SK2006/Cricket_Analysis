@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Trophy, Target, Flame, Zap, ChevronRight, Users, TrendingUp, TrendingDown, BarChart2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import CricketLoader from "@/components/CricketLoader";
 
 interface Player {
   id: number;
@@ -62,18 +63,7 @@ export default function LeaderboardPage() {
   const sortedPlayers = [...players].sort((a, b) => getPlayerScores(b)[metricTab] - getPlayerScores(a)[metricTab]);
 
   if (loading) {
-    return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
-        <div className="relative w-10 h-10">
-          <div className="absolute inset-0 rounded-full border-2 border-orange-100"></div>
-          <div className="absolute inset-0 rounded-full border-2 border-t-orange-500 animate-spin"></div>
-          <div className="absolute inset-1.5 rounded-full bg-orange-50 flex items-center justify-center">
-            <Trophy className="w-3.5 h-3.5 text-orange-500" />
-          </div>
-        </div>
-        <p className="text-slate-400 font-extrabold uppercase tracking-[0.15em] text-[9px]">Loading Rankings...</p>
-      </div>
-    );
+    return <CricketLoader message="Loading Rankings..." subtext="Leaderboard Rankings" />;
   }
 
   const topThree = sortedPlayers.slice(0, 3);

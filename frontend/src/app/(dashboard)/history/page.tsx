@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Loader2, Clipboard, ShieldCheck, ChevronRight, X, FileText } from "lucide-react";
+import CricketLoader from "@/components/CricketLoader";
 
 interface Player {
   id: number;
@@ -96,12 +97,7 @@ export default function HistoryPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-        <p className="text-zinc-500 font-bold uppercase tracking-wider text-xs">Loading History...</p>
-      </div>
-    );
+    return <CricketLoader message="Loading History..." />;
   }
 
   if (players.length === 0) {
@@ -186,9 +182,7 @@ export default function HistoryPage() {
 
           {/* Detailed Lists */}
           {historyLoading ? (
-            <div className="flex justify-center py-10">
-              <Loader2 className="w-7 h-7 text-orange-500 animate-spin" />
-            </div>
+            <CricketLoader size="sm" message="Fetching Logs..." />
           ) : (
             <div className="space-y-6">
               

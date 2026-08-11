@@ -23,6 +23,7 @@ import {
   Star
 } from "lucide-react";
 import { motion } from "framer-motion";
+import CricketLoader from "@/components/CricketLoader";
 import Image from "next/image";
 import AIChatModal from "@/components/AIChatModal";
 
@@ -288,14 +289,7 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-        <p className="text-zinc-550 font-bold uppercase tracking-wider text-xs">
-          Loading Coach Assistant...
-        </p>
-      </div>
-    );
+    return <CricketLoader message="Loading Coach Assistant..." />;
   }
 
   return (

@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import OnboardingTour from "./OnboardingTour";
 import PremiumPlansModal from "@/components/PremiumPlansModal";
+import CricketLoader from "@/components/CricketLoader";
 
 export default function DashboardLayout({
   children,
@@ -118,14 +119,7 @@ export default function DashboardLayout({
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-5">
-        <div className="relative w-20 h-24">
-          <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain animate-pulse" priority />
-        </div>
-        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <CricketLoader fullScreen message="Loading Dashboard..." subtext="Cricket Performance Index" />;
   }
 
   // Bypasses Coach Pending Approval screen for Players

@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Loader2, LogOut, User, Sun, Moon, HelpCircle, FileText, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import CricketLoader from "@/components/CricketLoader";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -49,12 +50,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-        <p className="text-zinc-500 font-bold uppercase tracking-wider text-xs">Loading Profile...</p>
-      </div>
-    );
+    return <CricketLoader message="Loading Profile..." />;
   }
 
   return (
