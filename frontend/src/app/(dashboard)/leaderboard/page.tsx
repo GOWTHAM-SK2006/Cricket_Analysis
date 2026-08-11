@@ -83,7 +83,7 @@ export default function LeaderboardPage() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="space-y-4 pb-12 max-w-md sm:max-w-lg mx-auto px-2 select-none"
+      className="space-y-4 pb-12 max-w-xl sm:max-w-2xl mx-auto px-2 sm:px-4 select-none"
     >
       {/* ── COMPACT HERO HEADER ── */}
       <div className="text-center pt-1 space-y-1.5">
