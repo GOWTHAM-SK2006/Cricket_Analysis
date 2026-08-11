@@ -266,23 +266,31 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
     
     // Previous user prompt check
     const prevMsg = idx > 0 ? chatMessages[idx - 1] : null;
-    const prevUserText = prevMsg && prevMsg.sender === "user" ? prevMsg.text.toLowerCase() : "";
+    const prevUserText = prevMsg && prevMsg.sender === "user" ? prevMsg.text.toLowerCase().trim() : "";
+
+    // Ignore greetings, thank yous, and acknowledgments
+    const isGreetingOrThanks =
+      prevUserText.includes("thank") ||
+      prevUserText === "hi" ||
+      prevUserText === "hello" ||
+      prevUserText === "hey" ||
+      prevUserText === "ok" ||
+      prevUserText === "okay";
+
+    if (isGreetingOrThanks) return false;
 
     const userAskedReport =
       prevUserText.includes("report") ||
-      prevUserText.includes("generate") ||
-      prevUserText.includes("pdf") ||
-      prevUserText.includes("dhoni") ||
-      prevUserText.includes("virat") ||
-      prevUserText.includes("player");
+      prevUserText.includes("generate report") ||
+      prevUserText.includes("pdf report") ||
+      prevUserText.includes("download report");
 
-    const botIsReport =
-      textLower.includes("report") ||
-      textLower.includes("overview") ||
-      textLower.includes("performance indices") ||
-      textLower.includes("cpi:");
+    const botIsFormalReport =
+      textLower.includes("player report:") ||
+      textLower.includes("performance report:") ||
+      (textLower.includes("overview") && textLower.includes("performance indices"));
 
-    return userAskedReport || botIsReport;
+    return userAskedReport || botIsFormalReport;
   };
 
   if (!isOpen) return null;
