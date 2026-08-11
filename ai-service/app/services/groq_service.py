@@ -5,13 +5,12 @@ from fastapi import HTTPException, status
 from app.config import settings
 from app.utils.logger import logger
 
-# Currently available free OpenRouter models (verified working, ordered by speed)
+# Free OpenRouter models that return clean content (NOT reasoning-only models)
 OPENROUTER_FAST_MODELS = [
-    "openrouter/free",
-    "openai/gpt-oss-20b:free",
     "google/gemma-4-26b-a4b-it:free",
-    "nvidia/nemotron-nano-9b-v2:free",
-    "nvidia/nemotron-3-nano-30b-a3b:free",
+    "google/gemma-4-31b-it:free",
+    "poolside/laguna-xs-2.1:free",
+    "inclusionai/ling-3.0-tiny:free",
 ]
 
 # Reusable HTTP client with connection pooling for speed
@@ -27,18 +26,15 @@ def _get_client() -> httpx.AsyncClient:
     return _http_client
 
 def _extract_reply(choices: list) -> str:
-    """Extract reply text from OpenRouter response, handling both content and reasoning fields."""
+    """Extract ONLY the content field from OpenRouter response. Never return reasoning/thinking."""
     if not choices or len(choices) == 0:
         return ""
     message = choices[0].get("message", {})
-    # Primary: check content field
     content = message.get("content")
-    if content and content.strip():
+    if content and isinstance(content, str) and content.strip():
         return content.strip()
-    # Fallback: some reasoning models put text in reasoning field with content=null
-    reasoning = message.get("reasoning")
-    if reasoning and isinstance(reasoning, str) and reasoning.strip():
-        return reasoning.strip()
+    # content is null/empty — this model only returned reasoning (internal thinking).
+    # Do NOT return reasoning. Return empty so we try the next model.
     return ""
 
 class GroqService:
@@ -97,6 +93,8 @@ class GroqService:
                 if reply:
                     logger.info(f"OpenRouter {model} responded successfully")
                     return reply
+                else:
+                    logger.warning(f"OpenRouter {model} returned empty content (reasoning-only model). Skipping...")
             except Exception as e:
                 logger.warning(f"OpenRouter {model} failed: {e}")
                 last_error = e
