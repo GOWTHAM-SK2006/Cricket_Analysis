@@ -10,11 +10,11 @@ class GroqService:
         pass
 
     def _get_api_key(self) -> str:
-        key = settings.GROQ_API_KEY or settings.OPENROUTER_API_KEY
+        key = settings.OPENROUTER_API_KEY or settings.GROQ_API_KEY
         if not key or key.startswith("YOUR_"):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Groq API Key is not configured. Please set GROQ_API_KEY in environment/settings."
+                detail="AI API Key is not configured. Please set OPENROUTER_API_KEY or GROQ_API_KEY in environment/settings."
             )
         return key
 
