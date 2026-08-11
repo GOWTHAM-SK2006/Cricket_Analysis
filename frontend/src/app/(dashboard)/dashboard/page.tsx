@@ -302,15 +302,15 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="text-left relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-white border border-orange-200/80 shadow-sm p-5 sm:p-6 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/30 dark:border-slate-800"
+        className="text-left relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-slate-50/80 to-orange-50/30 border border-slate-200/80 shadow-sm p-5 sm:p-6 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/20 dark:border-slate-800"
       >
-        {/* Ambient Orange Glow */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-orange-500/15 via-amber-500/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+        {/* Subtle Ambient Glow */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col gap-3">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase mb-1.5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase mb-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
                 WELCOME BACK COACH
               </div>
@@ -321,7 +321,7 @@ export default function DashboardPage() {
             </div>
             
             {/* Top Right Live Analytics Pill */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-orange-200/60 dark:border-slate-700/80 shadow-2xs backdrop-blur-md">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs backdrop-blur-md">
               <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
               <span className="text-[9.5px] font-black tracking-widest text-slate-700 dark:text-slate-300 uppercase">
                 CPI HOBBY
@@ -358,31 +358,31 @@ export default function DashboardPage() {
           {/* Card 1: Total Players */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -2, borderColor: "rgba(59, 130, 246, 0.4)" }}
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.3)" }}
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Total Players</span>
-              <div className="w-7 h-7 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                <Users className="w-3.5 h-3.5 text-blue-600" />
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <Users className="w-3.5 h-3.5 text-orange-500" />
               </div>
             </div>
             <span className="text-2xl font-black text-slate-900 block leading-none">{stats?.totalPlayers || 0}</span>
           </motion.div>
           
-          {/* Card 2: Average CPI (Featured Brand Hero Card) */}
+          {/* Card 2: Average CPI */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.5)" }}
-            className="bg-gradient-to-br from-orange-500/10 via-orange-500/5 to-white border border-orange-300/80 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.4)" }}
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-extrabold text-orange-700 uppercase tracking-wider block">Average CPI</span>
-              <div className="w-7 h-7 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-xs">
-                <BarChart3 className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average CPI</span>
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
               </div>
             </div>
-            <span className="text-2xl font-black text-orange-600 block leading-none">
+            <span className="text-2xl font-black text-orange-500 block leading-none">
               {stats?.avgCpi ? formatScoreValue(stats.avgCpi) : "N/A"}
             </span>
           </motion.div>
@@ -390,13 +390,13 @@ export default function DashboardPage() {
           {/* Card 3: Average PPI */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -2, borderColor: "rgba(16, 185, 129, 0.4)" }}
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.3)" }}
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average PPI</span>
-              <div className="w-7 h-7 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
               </div>
             </div>
             <span className="text-2xl font-black text-slate-900 block leading-none">
@@ -407,13 +407,13 @@ export default function DashboardPage() {
           {/* Card 4: Average MPI */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -2, borderColor: "rgba(245, 158, 11, 0.4)" }}
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.3)" }}
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average MPI</span>
-              <div className="w-7 h-7 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                <Trophy className="w-3.5 h-3.5 text-amber-600" />
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <Trophy className="w-3.5 h-3.5 text-orange-500" />
               </div>
             </div>
             <span className="text-2xl font-black text-slate-900 block leading-none">
@@ -441,7 +441,7 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?selfAssess=true")}
-              className="w-full h-12 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-xs transition-all duration-200"
+              className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-xs transition-all duration-200"
             >
               <span className="flex items-center gap-2.5">
                 <Clipboard className="w-4 h-4" />
@@ -479,29 +479,29 @@ export default function DashboardPage() {
             QUICK ACTIONS
           </h3>
           <div className="space-y-2.5">
-            {/* Action 1: Start Practice Assessment (Vibrant Primary Orange Gradient) */}
+            {/* Action 1: Start Practice Assessment */}
             <motion.button
               whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?action=practice")}
-              className="w-full h-12 bg-gradient-to-r from-orange-500 via-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-sm shadow-orange-500/20 transition-all duration-200"
+              className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-xs transition-all duration-200"
             >
               <span className="flex items-center gap-2.5">
                 <Target className="w-4 h-4" />
                 Start Practice Assessment
               </span>
-              <ChevronRight className="w-4 h-4 opacity-90" />
+              <ChevronRight className="w-4 h-4 opacity-80" />
             </motion.button>
 
-            {/* Action 2: Start Match Assessment (Handsome Dark Navy Secondary Accent) */}
+            {/* Action 2: Start Match Assessment */}
             <motion.button
               whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?action=match")}
-              className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between shadow-2xs cursor-pointer uppercase tracking-wider transition-all duration-200"
+              className="w-full h-12 bg-white hover:bg-slate-50 text-slate-800 rounded-xl px-4 text-sm font-extrabold flex items-center justify-between border border-slate-200/90 shadow-2xs cursor-pointer uppercase tracking-wider transition-all duration-200"
             >
               <span className="flex items-center gap-2.5">
-                <Activity className="w-4 h-4 text-orange-400" />
+                <Activity className="w-4 h-4 text-orange-500" />
                 Start Match Assessment
               </span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -513,7 +513,7 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?add=true")}
-              className="w-full h-11 bg-white hover:bg-slate-50 text-slate-800 rounded-xl px-4 text-xs font-extrabold flex items-center justify-center gap-2 border border-slate-300/80 cursor-pointer uppercase tracking-wider transition-all duration-200"
+              className="w-full h-11 bg-white hover:bg-slate-50 text-slate-700 rounded-xl px-4 text-xs font-extrabold flex items-center justify-center gap-2 border border-slate-200/80 cursor-pointer uppercase tracking-wider transition-all duration-200"
             >
               <Plus className="w-4 h-4 text-orange-500 stroke-[2.5]" />
               Add Player
@@ -571,52 +571,52 @@ export default function DashboardPage() {
           {/* 3 Category Cards: BEST, AVG, LOW */}
           <div className="grid grid-cols-3 gap-2.5">
             {/* BEST: Above 7 CPI */}
-            <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-3 text-center space-y-1">
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 font-extrabold text-[9px] uppercase tracking-wider">
+            <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 font-extrabold text-[9px] uppercase tracking-wider">
                 <span className="w-1 h-1 rounded-full bg-emerald-500" />
                 BEST
               </div>
-              <span className="text-[10px] font-bold text-emerald-700 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
                 &gt; 7 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {bestCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-emerald-800/70 block uppercase">
+              <span className="text-[9px] font-bold text-slate-400 block uppercase">
                 {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
             {/* AVG: 5 to 7 CPI */}
-            <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 text-center space-y-1">
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 font-extrabold text-[9px] uppercase tracking-wider">
+            <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 font-extrabold text-[9px] uppercase tracking-wider">
                 <span className="w-1 h-1 rounded-full bg-amber-500" />
                 AVG
               </div>
-              <span className="text-[10px] font-bold text-amber-700 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
                 5 - 7 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {avgCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-amber-800/70 block uppercase">
+              <span className="text-[9px] font-bold text-slate-400 block uppercase">
                 {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
             {/* LOW: Below 5 CPI */}
-            <div className="bg-rose-50/60 border border-rose-200/80 rounded-xl p-3 text-center space-y-1">
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-700 font-extrabold text-[9px] uppercase tracking-wider">
+            <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-700 font-extrabold text-[9px] uppercase tracking-wider">
                 <span className="w-1 h-1 rounded-full bg-rose-500" />
                 LOW
               </div>
-              <span className="text-[10px] font-bold text-rose-700 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
                 &lt; 5 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {lowCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-rose-800/70 block uppercase">
+              <span className="text-[9px] font-bold text-slate-400 block uppercase">
                 {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
