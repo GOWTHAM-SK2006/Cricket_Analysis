@@ -299,45 +299,44 @@ export default function DashboardPage() {
       
       {/* 1. WELCOME SECTION */}
       <motion.div 
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-left relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50/90 to-orange-50/40 border border-slate-200/80 shadow-xl shadow-slate-200/50 p-6 sm:p-7 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/20 dark:border-slate-800"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="text-left relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-slate-50/80 to-orange-50/30 border border-slate-200/80 shadow-sm p-5 sm:p-6 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/20 dark:border-slate-800"
       >
-        {/* Ambient Orange Glow Effect */}
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br from-orange-500/15 via-amber-500/10 to-transparent rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-36 h-36 bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:12px_12px] opacity-[0.08] pointer-events-none" />
+        {/* Subtle Ambient Glow */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col justify-between gap-4">
-          <div className="flex items-start justify-between gap-4">
+        <div className="relative z-10 flex flex-col gap-3">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-extrabold text-[10px] tracking-widest uppercase mb-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase mb-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
                 WELCOME BACK COACH
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none flex items-center gap-2">
                 {coachName || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "COACH"}
                 <span className="text-orange-500">⚡</span>
               </h1>
             </div>
             
             {/* Top Right Live Analytics Pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-sm backdrop-blur-md">
-              <ShieldCheck className="w-4 h-4 text-orange-500" />
-              <span className="text-[10px] font-black tracking-widest text-slate-700 dark:text-slate-300 uppercase">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs backdrop-blur-md">
+              <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
+              <span className="text-[9.5px] font-black tracking-widest text-slate-700 dark:text-slate-300 uppercase">
                 CPI HOBBY
               </span>
             </div>
           </div>
 
           {/* Bottom Info Row */}
-          <div className="pt-3 mt-1 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="uppercase tracking-wider text-[10px] font-bold text-slate-600 dark:text-slate-400">Analytics Engine Ready</span>
+          <div className="pt-2.5 mt-0.5 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="uppercase tracking-wider font-bold text-slate-600 dark:text-slate-400">Analytics Engine Active</span>
             </div>
-            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-extrabold uppercase text-[10px] tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-extrabold uppercase tracking-wider">
+              <Sparkles className="w-3 h-3" />
               <span>CPI INDEX</span>
             </div>
           </div>
@@ -345,41 +344,45 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* 2. TODAY'S SNAPSHOT */}
-      <div id="tour-snapshot" className="space-y-3">
-        <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-orange-500" />
+      <div id="tour-snapshot" className="space-y-2.5">
+        <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5 flex items-center gap-1.5">
+          <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
           TODAY'S SNAPSHOT
         </h3>
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 gap-4"
+          className="grid grid-cols-2 gap-3"
         >
           {/* Card 1: Total Players */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
-            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.3)" }}
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
-            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
-              <Users className="w-5 h-5 text-orange-500" />
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Total Players</span>
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <Users className="w-3.5 h-3.5 text-orange-500" />
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Total Players</span>
-            <span className="text-3.5xl font-black text-slate-900 block leading-none">{stats?.totalPlayers || 0}</span>
+            <span className="text-2xl font-black text-slate-900 block leading-none">{stats?.totalPlayers || 0}</span>
           </motion.div>
           
           {/* Card 2: Average CPI */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.4)", boxShadow: "0 10px 30px -10px rgba(249,115,22,0.1)" }}
-            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.4)" }}
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
-            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-orange-500" />
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average CPI</span>
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Average CPI</span>
-            <span className="text-3.5xl font-black text-orange-500 block leading-none">
+            <span className="text-2xl font-black text-orange-500 block leading-none">
               {stats?.avgCpi ? formatScoreValue(stats.avgCpi) : "N/A"}
             </span>
           </motion.div>
@@ -387,14 +390,16 @@ export default function DashboardPage() {
           {/* Card 3: Average PPI */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
-            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.3)" }}
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
-            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-orange-500" />
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average PPI</span>
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Average PPI</span>
-            <span className="text-3.5xl font-black text-slate-900 block leading-none">
+            <span className="text-2xl font-black text-slate-900 block leading-none">
               {stats?.avgPpi ? formatScoreValue(stats.avgPpi) : "N/A"}
             </span>
           </motion.div>
@@ -402,14 +407,16 @@ export default function DashboardPage() {
           {/* Card 4: Average MPI */}
           <motion.div 
             variants={itemVariants}
-            whileHover={{ y: -4, scale: 1.02, borderColor: "rgba(249, 115, 22, 0.2)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
-            className="bg-white border border-slate-200 rounded-3xl p-5 text-left space-y-2 relative overflow-hidden transition-all duration-300 group shadow-md"
+            whileHover={{ y: -2, borderColor: "rgba(249, 115, 22, 0.3)" }}
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
-            <div className="absolute top-3 right-3 w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-orange-500" />
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average MPI</span>
+              <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <Trophy className="w-3.5 h-3.5 text-orange-500" />
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Average MPI</span>
-            <span className="text-3.5xl font-black text-slate-900 block leading-none">
+            <span className="text-2xl font-black text-slate-900 block leading-none">
               {stats?.avgMpi ? formatScoreValue(stats.avgMpi) : "N/A"}
             </span>
           </motion.div>
@@ -422,137 +429,121 @@ export default function DashboardPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="space-y-8"
+          className="space-y-6"
         >
           
           {/* SELF ASSESSMENT */}
-          <motion.div id="tour-self-assessment" variants={itemVariants} className="space-y-3">
-            <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1">
+          <motion.div id="tour-self-assessment" variants={itemVariants} className="space-y-2.5">
+            <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5">
               SELF ASSESSMENT
             </h3>
             <motion.button
-              whileHover={{ scale: 1.01, translateY: -2, boxShadow: "0 10px 25px -5px rgba(249, 115, 22, 0.4)" }}
+              whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?selfAssess=true")}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-black rounded-2.5xl py-4.5 px-5 text-base font-black flex items-center justify-between border border-orange-400 cursor-pointer uppercase tracking-tight transition-all duration-200"
+              className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-xs transition-all duration-200"
             >
-              <span className="flex items-center gap-3">
-                <Clipboard className="w-5.5 h-5.5 stroke-[3] animate-pulse" />
+              <span className="flex items-center gap-2.5">
+                <Clipboard className="w-4 h-4" />
                 Start Self Assessment
               </span>
-              <motion.div
-                animate={{ x: [0, 4, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              >
-                <ChevronRight className="w-5.5 h-5.5 stroke-[3]" />
-              </motion.div>
+              <ChevronRight className="w-4 h-4 opacity-80" />
             </motion.button>
           </motion.div>
 
           {/* LATEST COACH FEEDBACK */}
-          <motion.div id="tour-coach-feedback" variants={itemVariants} className="space-y-3">
-            <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase flex items-center gap-2 pl-1">
+          <motion.div id="tour-coach-feedback" variants={itemVariants} className="space-y-2.5">
+            <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase flex items-center gap-1.5 pl-0.5">
               <MessageSquare className="w-3.5 h-3.5 text-orange-500" />
               LATEST COACH FEEDBACK
             </h3>
-            <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-lg">
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-3 shadow-2xs">
               {coachFeedback.length > 0 ? (
                 coachFeedback.map((feedbackStr, idx) => (
-                  <div key={idx} className="border-l-2 border-orange-500 pl-4 py-1 text-sm text-slate-700 font-semibold leading-relaxed italic relative">
-                    <span className="absolute -left-2.5 top-0 text-3xl text-orange-500/20 font-serif leading-none">"</span>
+                  <div key={idx} className="border-l-2 border-orange-500 pl-3 py-1 text-xs text-slate-700 font-semibold leading-relaxed italic relative">
                     {feedbackStr}
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 font-semibold italic text-center py-2">
+                <p className="text-xs text-slate-500 font-medium italic text-center py-1">
                   No feedback recorded yet.
                 </p>
               )}
             </div>
           </motion.div>
-
-
-          
         </motion.div>
       ) : (
-        <div id="tour-quick-actions" className="space-y-3">
-          <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1 flex items-center gap-2">
-            <Zap className="w-4 h-4 text-orange-500" />
+        <div id="tour-quick-actions" className="space-y-2.5">
+          <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5 flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-orange-500" />
             QUICK ACTIONS
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-2.5">
+            {/* Action 1: Start Practice Assessment */}
             <motion.button
-              whileHover={{ scale: 1.01, translateY: -2, boxShadow: "0 10px 25px -5px rgba(249, 115, 22, 0.4)" }}
+              whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?action=practice")}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-black rounded-2.5xl py-4.5 px-5 text-base font-black flex items-center justify-between border border-orange-400 cursor-pointer uppercase tracking-tight transition-all duration-200"
+              className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-4 text-sm font-extrabold flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-xs transition-all duration-200"
             >
-              <span className="flex items-center gap-3">
-                <Target className="w-5.5 h-5.5 stroke-[3] animate-pulse" />
+              <span className="flex items-center gap-2.5">
+                <Target className="w-4 h-4" />
                 Start Practice Assessment
               </span>
-              <motion.div
-                animate={{ x: [0, 4, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              >
-                <ChevronRight className="w-5.5 h-5.5 stroke-[3]" />
-              </motion.div>
+              <ChevronRight className="w-4 h-4 opacity-80" />
             </motion.button>
 
+            {/* Action 2: Start Match Assessment */}
             <motion.button
-              whileHover={{ scale: 1.01, translateY: -2, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)" }}
+              whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?action=match")}
-              className="w-full bg-white hover:bg-slate-50 text-slate-900 rounded-2.5xl py-4.5 px-5 text-base font-black flex items-center justify-between border border-slate-300 cursor-pointer uppercase tracking-tight transition-all duration-200"
+              className="w-full h-12 bg-white hover:bg-slate-50 text-slate-800 rounded-xl px-4 text-sm font-extrabold flex items-center justify-between border border-slate-200/90 shadow-2xs cursor-pointer uppercase tracking-wider transition-all duration-200"
             >
-              <span className="flex items-center gap-3">
-                <Activity className="w-5.5 h-5.5 stroke-[2] text-orange-500" />
+              <span className="flex items-center gap-2.5">
+                <Activity className="w-4 h-4 text-orange-500" />
                 Start Match Assessment
               </span>
-              <motion.div
-                animate={{ x: [0, 4, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              >
-                <ChevronRight className="w-5.5 h-5.5 stroke-[2] text-orange-500" />
-              </motion.div>
+              <ChevronRight className="w-4 h-4 text-slate-400" />
             </motion.button>
 
+            {/* Action 3: Add Player */}
             <motion.button
               id="tour-add-player"
-              whileHover={{ scale: 1.01, translateY: -1, borderColor: "rgba(249, 115, 22, 0.4)" }}
+              whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?add=true")}
-              className="w-full bg-white border border-slate-300 hover:border-orange-300 text-slate-900 rounded-2.5xl py-4 px-5 text-sm font-black flex items-center justify-center gap-2 cursor-pointer uppercase transition-all duration-200"
+              className="w-full h-11 bg-white hover:bg-slate-50 text-slate-700 rounded-xl px-4 text-xs font-extrabold flex items-center justify-center gap-2 border border-slate-200/80 cursor-pointer uppercase tracking-wider transition-all duration-200"
             >
-              <Plus className="w-4.5 h-4.5 stroke-[3] text-orange-500" />
+              <Plus className="w-4 h-4 text-orange-500 stroke-[2.5]" />
               Add Player
             </motion.button>
           </div>
         </div>
       )}
 
-      {/* PERFORMANCE CHART (BEST / AVG / LOW) */}
+      {/* 4. PERFORMANCE CHART (BEST / AVG / LOW) */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="space-y-3 pt-2 text-left"
+        className="space-y-2.5 text-left"
       >
-        <h3 className="text-xs font-black tracking-widest text-slate-800 uppercase pl-1 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-orange-500" />
+        <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5 flex items-center gap-1.5">
+          <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
           PERFORMANCE CHART
         </h3>
 
-        <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-5 shadow-lg">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs">
           {/* Distribution Overview Bar */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center text-xs font-black uppercase tracking-wider text-slate-700">
+            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider text-slate-600">
               <span>CPI DISTRIBUTION</span>
-              <span className="text-slate-400 font-mono text-[11px]">{players.length} TOTAL PLAYERS</span>
+              <span className="text-slate-400 font-mono">{players.length} TOTAL PLAYERS</span>
             </div>
 
             {/* Segmented Progress Bar */}
-            <div className="h-4 bg-slate-100 rounded-full overflow-hidden flex p-0.5 border border-slate-200">
+            <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex p-0.5 border border-slate-200/80">
               {players.length > 0 ? (
                 <>
                   <div
@@ -562,12 +553,12 @@ export default function DashboardPage() {
                   />
                   <div
                     style={{ width: `${(avgCategoryPlayers.length / players.length) * 100}%` }}
-                    className="bg-yellow-400 h-full transition-all duration-500"
+                    className="bg-amber-400 h-full transition-all duration-500"
                     title={`Average: ${avgCategoryPlayers.length}`}
                   />
                   <div
                     style={{ width: `${(lowCategoryPlayers.length / players.length) * 100}%` }}
-                    className="bg-red-500 h-full rounded-r-full transition-all duration-500"
+                    className="bg-rose-500 h-full rounded-r-full transition-all duration-500"
                     title={`Low: ${lowCategoryPlayers.length}`}
                   />
                 </>
@@ -577,57 +568,59 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 3 Category Cards: BEST (Green), AVG (Yellow), LOW (Red) */}
-          <div className="grid grid-cols-3 gap-3">
-            {/* BEST: Above 7 CPI - GREEN */}
-            <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
-              <div className="flex items-center justify-center gap-1 text-emerald-800">
-                <span className="text-[11px] font-black uppercase tracking-wider">BEST</span>
+          {/* 3 Category Cards: BEST, AVG, LOW */}
+          <div className="grid grid-cols-3 gap-2.5">
+            {/* BEST: Above 7 CPI */}
+            <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 font-extrabold text-[9px] uppercase tracking-wider">
+                <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                BEST
               </div>
-              <span className="text-xs font-black text-emerald-700 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
                 &gt; 7 CPI
               </span>
-              <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
+              <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {bestCategoryPlayers.length}
               </p>
-              <span className="text-[9.5px] font-extrabold text-emerald-800 block uppercase">
+              <span className="text-[9px] font-bold text-slate-400 block uppercase">
                 {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
-            {/* AVG: 5 to 7 CPI - YELLOW */}
-            <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
-              <div className="flex items-center justify-center gap-1 text-yellow-900">
-                <span className="text-[11px] font-black uppercase tracking-wider">AVG</span>
+            {/* AVG: 5 to 7 CPI */}
+            <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 font-extrabold text-[9px] uppercase tracking-wider">
+                <span className="w-1 h-1 rounded-full bg-amber-500" />
+                AVG
               </div>
-              <span className="text-xs font-black text-yellow-800 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
                 5 - 7 CPI
               </span>
-              <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
+              <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {avgCategoryPlayers.length}
               </p>
-              <span className="text-[9.5px] font-extrabold text-yellow-900 block uppercase">
+              <span className="text-[9px] font-bold text-slate-400 block uppercase">
                 {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
-            {/* LOW: Below 5 CPI - RED */}
-            <div className="bg-red-50 border-2 border-red-500 rounded-2.5xl p-3.5 text-center space-y-1 shadow-xs">
-              <div className="flex items-center justify-center gap-1 text-red-800">
-                <span className="text-[11px] font-black uppercase tracking-wider">LOW</span>
+            {/* LOW: Below 5 CPI */}
+            <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-700 font-extrabold text-[9px] uppercase tracking-wider">
+                <span className="w-1 h-1 rounded-full bg-rose-500" />
+                LOW
               </div>
-              <span className="text-xs font-black text-red-700 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
                 &lt; 5 CPI
               </span>
-              <p className="text-2xl font-black text-slate-900 font-mono pt-0.5">
+              <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {lowCategoryPlayers.length}
               </p>
-              <span className="text-[9.5px] font-extrabold text-red-800 block uppercase">
+              <span className="text-[9px] font-bold text-slate-400 block uppercase">
                 {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
           </div>
-
         </div>
       </motion.div>
 
