@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import AIChatModal from "@/components/AIChatModal";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -82,51 +83,6 @@ export default function DashboardPage() {
 
   // Chatbot modal state
   const [showChatModal, setShowChatModal] = useState(false);
-  const [chatInput, setChatInput] = useState("");
-  const [isSending, setIsSending] = useState(false);
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: "user" | "bot"; text: string }>>([
-    {
-      sender: "bot",
-      text: "Hello! I am your AI Cricket Coach. How can I assist you with player performance, practice drills, or match strategies today?"
-    }
-  ]);
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim() || isSending) return;
-
-    const userText = chatInput.trim();
-    setChatInput("");
-    setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
-    setIsSending(true);
-
-    try {
-      const res = await api.post("/ai/chat", {
-        sessionId: "dash_session_user",
-        userRole: role === "player" ? "PLAYER" : "COACH",
-        message: userText
-      });
-
-      if (res && res.data && res.data.reply) {
-        setChatMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
-      } else if (res && res.data && res.data.message) {
-        setChatMessages((prev) => [...prev, { sender: "bot", text: res.data.message }]);
-      } else {
-        setChatMessages((prev) => [
-          ...prev,
-          { sender: "bot", text: "AI Service is temporarily unavailable." }
-        ]);
-      }
-    } catch (err: any) {
-      const errorMsg = err?.response?.data?.message || err?.response?.data?.reply || "AI Service is temporarily unavailable.";
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: errorMsg }
-      ]);
-    } finally {
-      setIsSending(false);
-    }
-  };
 
   const coachMpi = (stats?.recentAssessments || []).filter(a => a.assessmentType === "MATCH").slice(0, 5);
   const coachPpi = (stats?.recentAssessments || []).filter(a => a.assessmentType === "PRACTICE").slice(0, 5);
@@ -653,230 +609,30 @@ export default function DashboardPage() {
 
 
       {/* Floating AI Chatbot Button & Modal */}
-      <div className="fixed bottom-28 right-6 z-50">
+      <div className="fixed bottom-28 right-6 z-40">
         <motion.button
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setShowChatModal(!showChatModal)}
-          className="w-14 h-14 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-black shadow-2xl flex items-center justify-center cursor-pointer border-2 border-orange-300 active:scale-95 transition-all"
+          onClick={() => setShowChatModal(true)}
+          className="relative group w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500 via-amber-500 to-orange-400 text-slate-950 shadow-xl shadow-orange-500/25 flex items-center justify-center cursor-pointer border-2 border-orange-300/60 active:scale-95 transition-all"
           title="Ask AI Cricket Coach"
         >
-          <Bot className="w-7 h-7 stroke-[2.5]" />
+          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500 border-2 border-white"></span>
+          </span>
+          <Bot className="w-7 h-7 stroke-[2.4]" />
         </motion.button>
       </div>
 
-      {/* AI Chatbot Overlay Modal */}
-      {showChatModal && (
-        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border-2 border-slate-200 rounded-3xl w-full max-w-lg h-[600px] flex flex-col overflow-hidden shadow-2xl">
-            {/* Modal Header */}
-            <div className="p-4 bg-white border-b border-slate-200 flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-500">
-                  <Bot className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">AI CRICKET COACH</h3>
-                  <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Powered by OpenRouter AI</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowChatModal(false)}
-                className="text-slate-400 hover:text-slate-700 p-1"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Chat Messages Body */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-3">
-              {chatMessages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[85%] p-3.5 rounded-2xl text-xs leading-relaxed font-medium ${
-                      msg.sender === "user"
-                        ? "bg-orange-500 text-black font-bold rounded-tr-none"
-                        : "bg-slate-100 border border-slate-200 text-slate-800 rounded-tl-none w-full"
-                    }`}
-                  >
-                    {msg.sender === "user" ? msg.text : parseMarkdown(msg.text)}
-                  </div>
-                </div>
-              ))}
-              {isSending && (
-                <div className="flex justify-start">
-                  <div className="bg-slate-100 border border-slate-200 text-slate-500 p-3 rounded-2xl text-xs flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                    <span>Analyzing performance & coach guidelines...</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Chat Input Bar */}
-            <form onSubmit={handleSendMessage} className="p-3 bg-slate-50 border-t border-slate-200 flex gap-2">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Ask about batting, bowling, drills..."
-                className="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-500"
-              />
-              <button
-                type="submit"
-                disabled={isSending || !chatInput.trim()}
-                className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-black px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer"
-              >
-                Send
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* AI Chatbot Overlay Modal Component */}
+      <AIChatModal
+        isOpen={showChatModal}
+        onClose={() => setShowChatModal(false)}
+        userRole={role}
+      />
 
     </div>
   );
 }
-
-// Premium structured Markdown parser helper for bot responses
-const parseMarkdown = (text: string): React.ReactNode => {
-  if (!text) return "";
-  const lines = text.split("\n");
-  let inList = false;
-  const elements: React.ReactNode[] = [];
-  
-  // Basic bold regex: **text**
-  const boldRegex = /\*\*(.*?)\*\*/g;
-  
-  const renderText = (txt: string): React.ReactNode => {
-    const parts: React.ReactNode[] = [];
-    let lastIndex = 0;
-    let match;
-    boldRegex.lastIndex = 0;
-    while ((match = boldRegex.exec(txt)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(txt.substring(lastIndex, match.index));
-      }
-      parts.push(
-        <strong key={match.index} className="font-extrabold text-orange-500">
-          {match[1]}
-        </strong>
-      );
-      lastIndex = boldRegex.lastIndex;
-    }
-    if (lastIndex < txt.length) {
-      parts.push(txt.substring(lastIndex));
-    }
-    return parts.length > 0 ? <>{parts}</> : txt;
-  };
-
-  let listItems: React.ReactNode[] = [];
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) {
-      if (inList) {
-        elements.push(
-          <ul key={`list-${i}`} className="list-disc pl-5 my-2 space-y-1 text-zinc-300">
-            {listItems}
-          </ul>
-        );
-        listItems = [];
-        inList = false;
-      }
-      continue;
-    }
-    
-    // Bullet list: starts with "* " or "- "
-    if (line.startsWith("* ") || line.startsWith("- ")) {
-      inList = true;
-      const content = line.substring(2);
-      listItems.push(
-        <li key={`li-${i}`} className="text-slate-700">
-          {renderText(content)}
-        </li>
-      );
-    } else {
-      if (inList) {
-        elements.push(
-          <ul key={`list-${i}`} className="list-disc pl-5 my-2 space-y-1 text-slate-700">
-            {listItems}
-          </ul>
-        );
-        listItems = [];
-        inList = false;
-      }
-      
-      // Table check
-      if (line.startsWith("|") && line.endsWith("|")) {
-        const tableRows: string[] = [];
-        while (i < lines.length && lines[i].trim().startsWith("|") && lines[i].trim().endsWith("|")) {
-          tableRows.push(lines[i].trim());
-          i++;
-        }
-        i--; // Adjust index
-        
-        if (tableRows.length > 0) {
-          const parsedRows = tableRows.map(row => 
-            row.split("|")
-              .map(cell => cell.trim())
-              .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1)
-          );
-          
-          // Check if second row is separator like |---|---|
-          const hasSeparator = parsedRows.length > 1 && parsedRows[1].every(cell => cell.startsWith("-") || cell.includes("---"));
-          const headerRow = parsedRows[0];
-          const dataRows = parsedRows.slice(hasSeparator ? 2 : 1);
-          
-          elements.push(
-            <div key={`table-${i}`} className="overflow-x-auto my-3 border border-slate-200 rounded-xl">
-              <table className="min-w-full divide-y divide-slate-200 text-[11px]">
-                <thead className="bg-slate-100">
-                  <tr>
-                    {headerRow.map((cell, idx) => (
-                      <th key={idx} className="px-3 py-2 text-left font-black text-slate-900 uppercase tracking-wider border-r border-slate-200 last:border-r-0">
-                        {renderText(cell)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
-                  {dataRows.map((row, rIdx) => (
-                    <tr key={rIdx} className="hover:bg-slate-50">
-                      {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="px-3 py-2 text-slate-700 border-r border-slate-100 last:border-r-0">
-                          {renderText(cell)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          );
-        }
-      } else {
-        // Normal paragraph
-        elements.push(
-          <p key={`p-${i}`} className="my-1 leading-relaxed">
-            {renderText(line)}
-          </p>
-        );
-      }
-    }
-  }
-  
-  if (inList) {
-    elements.push(
-      <ul key="list-end" className="list-disc pl-5 my-2 space-y-1 text-slate-700">
-        {listItems}
-      </ul>
-    );
-  }
-  
-  return <div className="space-y-1.5">{elements}</div>;
-};
 
