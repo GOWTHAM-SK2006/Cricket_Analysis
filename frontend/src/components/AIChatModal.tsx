@@ -262,35 +262,33 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
 
   const isReportMessage = (msg: Message, idx: number) => {
     if (msg.sender !== "bot") return false;
-    const textLower = msg.text.toLowerCase();
     
     // Previous user prompt check
     const prevMsg = idx > 0 ? chatMessages[idx - 1] : null;
-    const prevUserText = prevMsg && prevMsg.sender === "user" ? prevMsg.text.toLowerCase().trim() : "";
+    if (!prevMsg || prevMsg.sender !== "user") return false;
 
-    // Ignore greetings, thank yous, and acknowledgments
-    const isGreetingOrThanks =
-      prevUserText.includes("thank") ||
-      prevUserText === "hi" ||
-      prevUserText === "hello" ||
-      prevUserText === "hey" ||
-      prevUserText === "ok" ||
-      prevUserText === "okay";
+    const userText = prevMsg.text.toLowerCase().trim();
 
-    if (isGreetingOrThanks) return false;
+    // Check if user explicitly typed greetings or general conversation
+    const isGreetingOrGeneral =
+      userText.includes("thank") ||
+      userText.includes("good morning") ||
+      userText.includes("good afternoon") ||
+      userText.includes("good evening") ||
+      userText === "hi" ||
+      userText === "hello" ||
+      userText === "hey" ||
+      userText === "ok" ||
+      userText === "okay";
 
+    if (isGreetingOrGeneral) return false;
+
+    // Show PDF button ONLY when the user explicitly asked for a report or PDF
     const userAskedReport =
-      prevUserText.includes("report") ||
-      prevUserText.includes("generate report") ||
-      prevUserText.includes("pdf report") ||
-      prevUserText.includes("download report");
+      userText.includes("report") ||
+      userText.includes("pdf");
 
-    const botIsFormalReport =
-      textLower.includes("player report:") ||
-      textLower.includes("performance report:") ||
-      (textLower.includes("overview") && textLower.includes("performance indices"));
-
-    return userAskedReport || botIsFormalReport;
+    return userAskedReport;
   };
 
   if (!isOpen) return null;
