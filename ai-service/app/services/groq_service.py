@@ -5,12 +5,13 @@ from fastapi import HTTPException, status
 from app.config import settings
 from app.utils.logger import logger
 
-# Fastest free OpenRouter models (ordered by speed - fastest first)
+# Currently available free OpenRouter models (verified working, ordered by speed)
 OPENROUTER_FAST_MODELS = [
-    "google/gemini-2.0-flash-lite-001:free",
-    "meta-llama/llama-3.1-8b-instruct:free",
-    "mistralai/mistral-7b-instruct:free",
-    "qwen/qwen-2.5-coder-32b-instruct:free",
+    "openrouter/free",
+    "openai/gpt-oss-20b:free",
+    "google/gemma-4-26b-a4b-it:free",
+    "nvidia/nemotron-nano-9b-v2:free",
+    "nvidia/nemotron-3-nano-30b-a3b:free",
 ]
 
 # Reusable HTTP client with connection pooling for speed
@@ -20,10 +21,25 @@ def _get_client() -> httpx.AsyncClient:
     global _http_client
     if _http_client is None or _http_client.is_closed:
         _http_client = httpx.AsyncClient(
-            timeout=httpx.Timeout(10.0, connect=3.0),
+            timeout=httpx.Timeout(15.0, connect=3.0),
             limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
         )
     return _http_client
+
+def _extract_reply(choices: list) -> str:
+    """Extract reply text from OpenRouter response, handling both content and reasoning fields."""
+    if not choices or len(choices) == 0:
+        return ""
+    message = choices[0].get("message", {})
+    # Primary: check content field
+    content = message.get("content")
+    if content and content.strip():
+        return content.strip()
+    # Fallback: some reasoning models put text in reasoning field with content=null
+    reasoning = message.get("reasoning")
+    if reasoning and isinstance(reasoning, str) and reasoning.strip():
+        return reasoning.strip()
+    return ""
 
 class GroqService:
     def __init__(self):
@@ -60,7 +76,7 @@ class GroqService:
 
         models_to_try = list(OPENROUTER_FAST_MODELS)
         configured = settings.OPENROUTER_MODEL
-        if configured and configured not in models_to_try and configured != "openrouter/auto":
+        if configured and configured not in models_to_try:
             models_to_try.insert(0, configured)
 
         last_error = None
@@ -77,11 +93,10 @@ class GroqService:
                 response.raise_for_status()
                 data = response.json()
 
-                choices = data.get("choices", [])
-                if choices and len(choices) > 0:
-                    reply = choices[0].get("message", {}).get("content", "")
-                    if reply and reply.strip():
-                        return reply.strip()
+                reply = _extract_reply(data.get("choices", []))
+                if reply:
+                    logger.info(f"OpenRouter {model} responded successfully")
+                    return reply
             except Exception as e:
                 logger.warning(f"OpenRouter {model} failed: {e}")
                 last_error = e
@@ -126,11 +141,9 @@ class GroqService:
                 response.raise_for_status()
                 data = response.json()
 
-                choices = data.get("choices", [])
-                if choices and len(choices) > 0:
-                    text_content = choices[0].get("message", {}).get("content", "")
-                    if text_content:
-                        return json.loads(text_content)
+                reply = _extract_reply(data.get("choices", []))
+                if reply:
+                    return json.loads(reply)
             except Exception as e:
                 logger.warning(f"OpenRouter JSON {model} failed: {e}")
                 last_error = e
