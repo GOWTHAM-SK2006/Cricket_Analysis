@@ -14,7 +14,9 @@ import {
   TrendingUp,
   User,
   Activity,
-  Zap
+  Zap,
+  Download,
+  FileText
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "@/lib/api";
@@ -34,16 +36,17 @@ interface AIChatModalProps {
 
 const QUICK_SUGGESTIONS = [
   { label: "📊 Low to High CPI", prompt: "please give all players from low to high" },
+  { label: "📄 Generate Report", prompt: "generate report for player dhoni for last 2 days" },
   { label: "⭐ Top Performers", prompt: "Show top performing players by CPI score" },
   { label: "⚠️ Needs Attention", prompt: "Which players need attention right now?" },
   { label: "🏏 Practice Drills", prompt: "Suggest top practice drills for improvement" },
-  { label: "📈 Match Strategies", prompt: "What are key match strategies for our team?" },
 ];
 
 export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalProps) {
   const [chatInput, setChatInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>([
     {
       id: "init-1",
@@ -137,6 +140,151 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleDownloadPDF = async (msgId: string, msgText: string) => {
+    setDownloadingId(msgId);
+    try {
+      const jsPDF = (await import("jspdf")).default;
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      const lines = msgText.split("\n").map(l => l.trim()).filter(Boolean);
+      let title = "Player Performance Report";
+      if (lines.length > 0) {
+        const cleanFirstLine = lines[0].replace(/\*\*/g, "");
+        if (cleanFirstLine.toLowerCase().includes("report")) {
+          title = cleanFirstLine;
+        }
+      }
+
+      // Header Banner (Dark Slate with Orange Accent)
+      doc.setFillColor(15, 23, 42); // Slate 900
+      doc.rect(0, 0, pageWidth, 24, "F");
+
+      doc.setFillColor(249, 115, 22); // Orange 500 Stripe
+      doc.rect(0, 23, pageWidth, 1.5, "F");
+
+      // Title & Subtitle
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(255, 255, 255);
+      doc.text("CRICKET PERFORMANCE INDEX (CPI)", 14, 11);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(203, 213, 225);
+      doc.text("Official AI Generated Player Analytics & Performance Report", 14, 18);
+
+      // Date
+      const dateStr = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      doc.setFontSize(8);
+      doc.text(`Generated: ${dateStr}`, pageWidth - 14, 15, { align: "right" });
+
+      let y = 34;
+
+      // Report Header Pill
+      doc.setFillColor(255, 247, 237); // Orange 50
+      doc.roundedRect(14, y - 6, pageWidth - 28, 14, 2, 2, "F");
+      doc.setDrawColor(254, 215, 170); // Orange 200
+      doc.roundedRect(14, y - 6, pageWidth - 28, 14, 2, 2, "S");
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(194, 65, 12); // Orange 700
+      doc.text(title.toUpperCase(), 20, y + 3);
+      y += 18;
+
+      doc.setFontSize(9.5);
+
+      lines.forEach((line) => {
+        if (y > pageHeight - 20) {
+          doc.addPage();
+          y = 20;
+        }
+
+        const cleanLine = line.replace(/\*\*/g, "");
+
+        if ((line.startsWith("**") && line.endsWith("**") && line.length < 50) || (cleanLine.endsWith(":") && cleanLine.length < 35)) {
+          y += 2;
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11);
+          doc.setTextColor(234, 88, 12);
+          doc.text(cleanLine, 14, y);
+          y += 6;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9.5);
+          doc.setTextColor(30, 41, 59);
+        } else if (cleanLine.startsWith("- ") || cleanLine.startsWith("* ")) {
+          const bulletText = cleanLine.substring(2);
+          const wrapped = doc.splitTextToSize(bulletText, pageWidth - 32);
+
+          doc.setFillColor(249, 115, 22);
+          doc.circle(17, y - 1.5, 1, "F");
+
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(30, 41, 59);
+          doc.text(wrapped, 21, y);
+          y += wrapped.length * 5 + 2;
+        } else {
+          const wrapped = doc.splitTextToSize(cleanLine, pageWidth - 28);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(30, 41, 59);
+          doc.text(wrapped, 14, y);
+          y += wrapped.length * 5 + 2;
+        }
+      });
+
+      // Footer Page Numbering
+      const totalPages = (doc as any).internal.getNumberOfPages();
+      for (let p = 1; p <= totalPages; p++) {
+        doc.setPage(p);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text("Cricket Performance Index (CPI) • Confidential Player Report", 14, pageHeight - 8);
+        doc.text(`Page ${p} of ${totalPages}`, pageWidth - 14, pageHeight - 8, { align: "right" });
+      }
+
+      const filename = `${title.toLowerCase().replace(/[^a-z0-9]/g, "_")}.pdf`;
+      doc.save(filename);
+    } catch (err) {
+      console.error("PDF generation error:", err);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  const isReportMessage = (msg: Message, idx: number) => {
+    if (msg.sender !== "bot") return false;
+    const textLower = msg.text.toLowerCase();
+    
+    // Previous user prompt check
+    const prevMsg = idx > 0 ? chatMessages[idx - 1] : null;
+    const prevUserText = prevMsg && prevMsg.sender === "user" ? prevMsg.text.toLowerCase() : "";
+
+    const userAskedReport =
+      prevUserText.includes("report") ||
+      prevUserText.includes("generate") ||
+      prevUserText.includes("pdf") ||
+      prevUserText.includes("dhoni") ||
+      prevUserText.includes("virat") ||
+      prevUserText.includes("player");
+
+    const botIsReport =
+      textLower.includes("report") ||
+      textLower.includes("overview") ||
+      textLower.includes("performance indices") ||
+      textLower.includes("cpi:");
+
+    return userAskedReport || botIsReport;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -214,47 +362,74 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
 
           {/* Messages Container */}
           <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/30">
-            {chatMessages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex gap-2.5 ${msg.sender === "user" ? "justify-end" : "justify-start"} group`}
-              >
-                {msg.sender === "bot" && (
-                  <div className="w-7 h-7 rounded-xl bg-orange-100 border border-orange-200 text-orange-600 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                    <Bot className="w-4 h-4 stroke-[2.2]" />
-                  </div>
-                )}
+            {chatMessages.map((msg, idx) => {
+              const isReport = isReportMessage(msg, idx);
+              return (
+                <div
+                  key={msg.id}
+                  className={`flex gap-2.5 ${msg.sender === "user" ? "justify-end" : "justify-start"} group`}
+                >
+                  {msg.sender === "bot" && (
+                    <div className="w-7 h-7 rounded-xl bg-orange-100 border border-orange-200 text-orange-600 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <Bot className="w-4 h-4 stroke-[2.2]" />
+                    </div>
+                  )}
 
-                <div className={`relative max-w-[85%] ${msg.sender === "user" ? "items-end" : "items-start"}`}>
-                  <div
-                    className={`p-3.5 text-xs leading-relaxed font-medium rounded-2xl shadow-xs transition-all ${
-                      msg.sender === "user"
-                        ? "bg-gradient-to-r from-orange-500 to-amber-600 text-slate-950 font-bold rounded-tr-xs border border-orange-400/40 shadow-orange-500/15"
-                        : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs w-full"
-                    }`}
-                  >
-                    {msg.sender === "user" ? (
-                      <p className="whitespace-pre-wrap">{msg.text}</p>
-                    ) : (
-                      parseBotMarkdown(msg.text)
-                    )}
-                  </div>
+                  <div className={`relative max-w-[85%] ${msg.sender === "user" ? "items-end" : "items-start"}`}>
+                    <div
+                      className={`p-3.5 text-xs leading-relaxed font-medium rounded-2xl shadow-xs transition-all ${
+                        msg.sender === "user"
+                          ? "bg-gradient-to-r from-orange-500 to-amber-600 text-slate-950 font-bold rounded-tr-xs border border-orange-400/40 shadow-orange-500/15"
+                          : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs w-full"
+                      }`}
+                    >
+                      {msg.sender === "user" ? (
+                        <p className="whitespace-pre-wrap">{msg.text}</p>
+                      ) : (
+                        <>
+                          {parseBotMarkdown(msg.text)}
 
-                  <div className={`flex items-center gap-2 mt-1 px-1 text-[10px] text-slate-400 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-                    <span>{msg.timestamp}</span>
-                    {msg.sender === "bot" && (
-                      <button
-                        onClick={() => handleCopyText(msg.id, msg.text)}
-                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity p-0.5 cursor-pointer"
-                        title="Copy message"
-                      >
-                        {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
-                      </button>
-                    )}
+                          {/* DOWNLOAD PDF BUTTON */}
+                          {isReport && (
+                            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+                                <FileText className="w-4 h-4 text-orange-500 shrink-0" />
+                                <span>Player PDF Report Ready</span>
+                              </div>
+                              <button
+                                onClick={() => handleDownloadPDF(msg.id, msg.text)}
+                                disabled={downloadingId === msg.id}
+                                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-md shadow-orange-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                              >
+                                {downloadingId === msg.id ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+                                )}
+                                <span>Download PDF</span>
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    <div className={`flex items-center gap-2 mt-1 px-1 text-[10px] text-slate-400 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+                      <span>{msg.timestamp}</span>
+                      {msg.sender === "bot" && (
+                        <button
+                          onClick={() => handleCopyText(msg.id, msg.text)}
+                          className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-orange-500 transition-opacity p-0.5 cursor-pointer"
+                          title="Copy message"
+                        >
+                          {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {isSending && (
               <div className="flex justify-start gap-2.5">
