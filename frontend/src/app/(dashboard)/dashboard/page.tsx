@@ -20,7 +20,9 @@ import {
   TrendingUp,
   Trophy,
   Users,
-  Star
+  Star,
+  ShieldCheck,
+  Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CricketLoader from "@/components/CricketLoader";
@@ -300,16 +302,47 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-left relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xl min-h-[140px] flex items-center"
+        className="text-left relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50/90 to-orange-50/40 border border-slate-200/80 shadow-xl shadow-slate-200/50 p-6 sm:p-7 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/20 dark:border-slate-800"
       >
-        <div className="relative z-10 p-6 sm:px-8 w-full">
-          <h2 className="text-[11px] font-bold tracking-widest text-orange-500 uppercase mb-1 drop-shadow-md">
-            WELCOME BACK COACH
-          </h2>
-          <h1 className="text-4xl sm:text-5xl font-black text-slate-900 uppercase tracking-tight leading-none flex items-center gap-2 drop-shadow-lg">
-            {coachName || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "COACH"}
-            <span className="inline-block text-orange-600/80 drop-shadow-md">⚡</span>
-          </h1>
+        {/* Ambient Orange Glow Effect */}
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br from-orange-500/15 via-amber-500/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-36 h-36 bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:12px_12px] opacity-[0.08] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col justify-between gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-extrabold text-[10px] tracking-widest uppercase mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                WELCOME BACK COACH
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none flex items-center gap-2.5">
+                {coachName || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "COACH"}
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30 text-sm">
+                  ⚡
+                </span>
+              </h1>
+            </div>
+            
+            {/* Top Right Live Analytics Pill */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-sm backdrop-blur-md">
+              <ShieldCheck className="w-4 h-4 text-orange-500" />
+              <span className="text-[10px] font-black tracking-widest text-slate-700 dark:text-slate-300 uppercase">
+                CPI PRO
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom Info Row */}
+          <div className="pt-3 mt-1 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="uppercase tracking-wider text-[10px] font-bold text-slate-600 dark:text-slate-400">Analytics Engine Ready</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-extrabold uppercase text-[10px] tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>CPI INDEX</span>
+            </div>
+          </div>
         </div>
       </motion.div>
 
