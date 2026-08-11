@@ -5,30 +5,31 @@ from fastapi import HTTPException, status
 from app.config import settings
 from app.utils.logger import logger
 
+# List of working OpenRouter models to try in sequence for maximum reliability
+FALLBACK_OPENROUTER_MODELS = [
+    settings.OPENROUTER_MODEL,
+    "google/gemini-2.0-flash-lite-001:free",
+    "meta-llama/llama-3.1-8b-instruct:free",
+    "qwen/qwen-2.5-coder-32b-instruct:free",
+    "deepseek/deepseek-r1:free",
+    "meta-llama/llama-3.3-70b-instruct"
+]
+
 class GroqService:
     def __init__(self):
         pass
 
     def _get_api_key(self) -> str:
-        key = settings.OPENROUTER_API_KEY or settings.GROQ_API_KEY
+        key = settings.OPENROUTER_API_KEY
         if not key or key.startswith("YOUR_"):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="AI API Key is not configured. Please set OPENROUTER_API_KEY or GROQ_API_KEY in environment/settings."
+                detail="OpenRouter API Key is not configured. Please set OPENROUTER_API_KEY in environment/settings."
             )
         return key
 
     def _get_base_url(self) -> str:
-        key = self._get_api_key()
-        if key.startswith("gsk_"):
-            return "https://api.groq.com/openai/v1/chat/completions"
         return "https://openrouter.ai/api/v1/chat/completions"
-
-    def _get_model(self) -> str:
-        key = self._get_api_key()
-        if key.startswith("gsk_"):
-            return settings.GROQ_MODEL or "llama-3.3-70b-versatile"
-        return settings.OPENROUTER_MODEL or settings.GROQ_MODEL or "llama-3.3-70b-versatile"
 
     async def generate_chat_completion(
         self,
@@ -36,80 +37,71 @@ class GroqService:
         temperature: float = 0.1,
         max_tokens: int = 1000
     ) -> str:
-        """Send chat messages to Groq API via OpenAI-compatible REST endpoint."""
+        """Send chat messages to OpenRouter API with automatic model fallbacks."""
         api_key = self._get_api_key()
         url = self._get_base_url()
-        model = self._get_model()
 
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "HTTP-Referer": "http://localhost:3000",
+            "X-Title": "CPI Cricket Analytics"
         }
 
-        payload = {
-            "model": model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens
-        }
+        models_to_try = []
+        for m in FALLBACK_OPENROUTER_MODELS:
+            if m and m not in models_to_try:
+                models_to_try.append(m)
 
-        try:
-            logger.info(f"Calling Groq API model: {model}")
-            async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
-                response = await client.post(url, headers=headers, json=payload)
-                response.raise_for_status()
-                data = response.json()
+        last_error = None
 
-            choices = data.get("choices", [])
-            if choices and len(choices) > 0:
-                reply = choices[0].get("message", {}).get("content", "")
-                return reply.strip() or "I'm sorry, I couldn't generate a response."
+        for model in models_to_try:
+            payload = {
+                "model": model,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens
+            }
 
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail="Empty completion response received from Groq API provider."
-            )
+            try:
+                logger.info(f"Calling OpenRouter API model: {model}")
+                async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
+                    response = await client.post(url, headers=headers, json=payload)
+                    response.raise_for_status()
+                    data = response.json()
 
-        except httpx.TimeoutException:
-            logger.error("Groq API request timed out.")
-            raise HTTPException(
-                status_code=status.HTTP_504_GATEWAY_TIMEOUT,
-                detail="AI Service request timed out. Please try again."
-            )
-        except httpx.HTTPStatusError as err:
-            logger.error(f"Groq API HTTP Error: {err.response.status_code} - {err.response.text}")
-            if err.response.status_code == 429:
-                raise HTTPException(
-                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                    detail="Groq API rate limit exceeded. Please try again later."
-                )
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Groq API Error: {err.response.text}"
-            )
-        except Exception as e:
-            logger.error(f"Groq Request Failure: {str(e)}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Groq AI Service Error: {str(e)}"
-            )
+                choices = data.get("choices", [])
+                if choices and len(choices) > 0:
+                    reply = choices[0].get("message", {}).get("content", "")
+                    if reply and reply.strip():
+                        return reply.strip()
+
+            except Exception as e:
+                logger.warning(f"OpenRouter model {model} failed: {str(e)}. Trying fallback model...")
+                last_error = e
+
+        logger.error(f"All OpenRouter models failed. Last error: {str(last_error)}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"OpenRouter API Error: {str(last_error)}"
+        )
 
     async def generate_structured_json(
         self,
         messages: List[Dict[str, str]],
         temperature: float = 0.1
     ) -> Dict[str, Any]:
-        """Request structured JSON object from Groq API."""
+        """Request structured JSON object from OpenRouter API."""
         api_key = self._get_api_key()
         url = self._get_base_url()
-        model = self._get_model()
 
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "HTTP-Referer": "http://localhost:3000",
+            "X-Title": "CPI Cricket Analytics"
         }
 
-        # For json_object format, the system message or user message must contain the word "JSON"
         adjusted_messages = list(messages)
         has_json_instruction = any("json" in msg.get("content", "").lower() for msg in adjusted_messages)
         if not has_json_instruction:
@@ -118,41 +110,42 @@ class GroqService:
                 "content": "You must output a valid JSON object."
             })
 
-        payload = {
-            "model": model,
-            "messages": adjusted_messages,
-            "temperature": temperature,
-            "response_format": {"type": "json_object"}
-        }
+        models_to_try = []
+        for m in FALLBACK_OPENROUTER_MODELS:
+            if m and m not in models_to_try:
+                models_to_try.append(m)
 
-        try:
-            logger.info(f"Calling Groq API model {model} for structured JSON...")
-            async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
-                response = await client.post(url, headers=headers, json=payload)
-                response.raise_for_status()
-                data = response.json()
+        last_error = None
 
-            choices = data.get("choices", [])
-            if choices and len(choices) > 0:
-                text_content = choices[0].get("message", {}).get("content", "")
-                return json.loads(text_content)
+        for model in models_to_try:
+            payload = {
+                "model": model,
+                "messages": adjusted_messages,
+                "temperature": temperature,
+                "response_format": {"type": "json_object"}
+            }
 
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail="Empty response received from Groq API provider."
-            )
+            try:
+                logger.info(f"Calling OpenRouter API model {model} for structured JSON...")
+                async with httpx.AsyncClient(timeout=settings.REQUEST_TIMEOUT) as client:
+                    response = await client.post(url, headers=headers, json=payload)
+                    response.raise_for_status()
+                    data = response.json()
 
-        except json.JSONDecodeError as err:
-            logger.error(f"JSON parsing error from Groq response: {str(err)}")
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail="Failed to parse structured JSON from Groq AI provider."
-            )
-        except Exception as e:
-            logger.error(f"Groq JSON Request Failure: {str(e)}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Groq Recommendation Error: {str(e)}"
-            )
+                choices = data.get("choices", [])
+                if choices and len(choices) > 0:
+                    text_content = choices[0].get("message", {}).get("content", "")
+                    if text_content:
+                        return json.loads(text_content)
+
+            except Exception as e:
+                logger.warning(f"OpenRouter JSON model {model} failed: {str(e)}. Trying fallback model...")
+                last_error = e
+
+        logger.error(f"OpenRouter JSON generation failed across models. Error: {str(last_error)}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"OpenRouter Structured JSON Error: {str(last_error)}"
+        )
 
 groq_service = GroqService()
