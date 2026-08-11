@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     OPENROUTER_API_KEY: str = ""
     OPENROUTER_MODEL: str = "google/gemini-2.0-flash-lite-001:free"
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "google/gemini-2.0-flash-lite-001:free"
     APP_ENV: str = "development"
     LOG_LEVEL: str = "INFO"
     HOST: str = "0.0.0.0"

@@ -14,6 +14,6 @@ async def health_check():
         "status": "healthy",
         "service": settings.APP_NAME,
         "environment": settings.APP_ENV,
-        "model": settings.GROQ_MODEL,
+        "model": settings.OPENROUTER_MODEL,
         "timestamp": datetime.utcnow().isoformat() + "Z"
     }
