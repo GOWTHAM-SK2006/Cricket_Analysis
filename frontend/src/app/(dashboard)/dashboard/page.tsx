@@ -315,11 +315,9 @@ export default function DashboardPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
                 WELCOME BACK COACH
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none flex items-center gap-2.5">
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none flex items-center gap-2">
                 {coachName || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "COACH"}
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30 text-sm">
-                  ⚡
-                </span>
+                <span className="text-orange-500">⚡</span>
               </h1>
             </div>
             
@@ -327,7 +325,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-sm backdrop-blur-md">
               <ShieldCheck className="w-4 h-4 text-orange-500" />
               <span className="text-[10px] font-black tracking-widest text-slate-700 dark:text-slate-300 uppercase">
-                CPI PRO
+                CPI HOBBY
               </span>
             </div>
           </div>
