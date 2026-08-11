@@ -4,6 +4,13 @@ from app.schemas.chat_response import ChatResponse
 from app.services.groq_service import groq_service
 from app.utils.helpers import load_prompt_file, format_player_context
 from app.utils.logger import logger
+import re
+
+# Keywords that indicate the user needs deep coaching/plan-of-action analysis
+DEEP_ANALYSIS_KEYWORDS = re.compile(
+    r'\b(plan of action|recommend|recommendation|improve|weakness|strength|analyze|analysis|report|performance|training|drill|focus area|coaching|develop|strategy|assessment)\b',
+    re.IGNORECASE
+)
 
 class ChatService:
     def __init__(self):
@@ -18,20 +25,37 @@ class ChatService:
             return self.player_prompt
         return self.coach_prompt
 
+    def _needs_deep_analysis(self, message: str) -> bool:
+        """Check if the user message requires the heavy coach plan of action context."""
+        if not message:
+            return False
+        return bool(DEEP_ANALYSIS_KEYWORDS.search(message))
+
     async def process_chat(self, request: ChatRequest) -> ChatResponse:
         session_id = request.sessionId
+        user_message = request.message or ""
+        needs_plan = self._needs_deep_analysis(user_message)
         
-        # Initialize session history if new
+        # Build system prompt — only inject heavy plan-of-action when actually needed
         if session_id not in self.sessions:
             role_prompt = self._get_role_prompt(request.userRole)
+            if needs_plan:
+                system_content = f"{self.system_prompt}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"
+            else:
+                system_content = f"{self.system_prompt}\n\n{role_prompt}"
             initial_messages = [
-                {"role": "system", "content": f"{self.system_prompt}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"}
+                {"role": "system", "content": system_content}
             ]
             self.sessions[session_id] = initial_messages
+        else:
+            # If this message needs the plan but session was started without it, inject it now
+            if needs_plan and "COACH PLAN OF ACTION" not in self.sessions[session_id][0]["content"]:
+                role_prompt = self._get_role_prompt(request.userRole)
+                self.sessions[session_id][0]["content"] = f"{self.system_prompt}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"
 
         messages = list(self.sessions[session_id])
         
-        # Inject player context into system or latest message if provided
+        # Inject player context into user message if provided
         if request.context:
             context_str = format_player_context(request.context.model_dump())
             user_message_content = f"{context_str}\n\nUser Question: {request.message}"
@@ -45,8 +69,11 @@ class ChatService:
             system_msg = messages[0]
             messages = [system_msg] + messages[-10:]
 
-        logger.info(f"Processing chat session {session_id} for role {request.userRole} via Groq API")
-        reply_text = await groq_service.generate_chat_completion(messages=messages)
+        # Use lower max_tokens for simple queries, higher for analysis
+        max_tokens = 800 if needs_plan else 400
+
+        logger.info(f"Processing chat session {session_id} for role {request.userRole} via OpenRouter API (deep_analysis={needs_plan}, max_tokens={max_tokens})")
+        reply_text = await groq_service.generate_chat_completion(messages=messages, max_tokens=max_tokens)
 
         # Update in-memory session history
         self.sessions[session_id].append({"role": "user", "content": request.message})
