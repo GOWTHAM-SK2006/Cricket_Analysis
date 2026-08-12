@@ -329,6 +329,12 @@ export default function AdminHelpPage() {
           ? parsed.coachPlanData
           : (Array.isArray(parsed.coachPlan) ? parsed.coachPlan : null);
 
+        const isOldPts = (pts: any[]) => {
+          if (!Array.isArray(pts) || pts.length !== 5) return true;
+          const t = String(pts[0]?.title || "").toUpperCase();
+          return t.includes("PRESSURE") || t.includes("IDENTIFY") || t.includes("REFINE") || t.includes("EXPAND") || t.includes("CONSOLIDATE") || t.includes("AUTOMATE") || t.includes("CHANNEL");
+        };
+
         const sanitizedPlans = DEFAULT_COACH_PLAN_DATA.map((defPlan, idx) => {
           const item = (rawData && rawData[idx]) ? rawData[idx] : {};
           return {
@@ -337,9 +343,9 @@ export default function AdminHelpPage() {
             id: item.id || defPlan.id,
             name: item.name || defPlan.name,
             description: item.description || defPlan.description,
-            highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints.slice(0, 3) : defPlan.highPoints.slice(0, 3),
-            mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints.slice(0, 3) : (defPlan.mediumPoints?.slice(0, 3) || []),
-            lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints.slice(0, 3) : defPlan.lowPoints.slice(0, 3),
+            highPoints: !isOldPts(item.highPoints) ? item.highPoints : defPlan.highPoints,
+            mediumPoints: !isOldPts(item.mediumPoints) ? item.mediumPoints : (defPlan.mediumPoints || []),
+            lowPoints: !isOldPts(item.lowPoints) ? item.lowPoints : defPlan.lowPoints,
             highSummary: item.highSummary || defPlan.highSummary,
             mediumSummary: item.mediumSummary || defPlan.mediumSummary,
             lowSummary: item.lowSummary || defPlan.lowSummary,

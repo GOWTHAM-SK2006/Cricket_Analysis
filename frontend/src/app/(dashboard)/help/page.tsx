@@ -327,25 +327,31 @@ export default function HelpPage() {
             if (Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0) {
               const sanitized = parsed.coachPlanData.map((item: any, i: number) => {
                 const fallback = coachPlanData[i] || coachPlanData[0];
+                const isOldPts = (pts: any[]) => {
+                  if (!Array.isArray(pts) || pts.length !== 5) return true;
+                  const t = String(pts[0]?.title || "").toUpperCase();
+                  return t.includes("PRESSURE") || t.includes("IDENTIFY") || t.includes("REFINE") || t.includes("EXPAND") || t.includes("CONSOLIDATE") || t.includes("AUTOMATE") || t.includes("CHANNEL");
+                };
+
                 return {
                   id: String(item?.id || fallback.id),
                   name: String(item?.name || item?.parameter || fallback.name),
                   description: String(item?.description || item?.explanation || fallback.description),
-                  highPoints: Array.isArray(item?.highPoints) && item.highPoints.length > 0
+                  highPoints: !isOldPts(item?.highPoints)
                     ? item.highPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.highPoints[pIdx]?.title || "Benchmark Point"),
                         detail: String(pt?.detail || fallback.highPoints[pIdx]?.detail || "")
                       }))
                     : fallback.highPoints,
                   highSummary: String(item?.highSummary || item?.rangeHigh || fallback.highSummary),
-                  mediumPoints: Array.isArray(item?.mediumPoints) && item.mediumPoints.length > 0
+                  mediumPoints: !isOldPts(item?.mediumPoints)
                     ? item.mediumPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Benchmark Point"),
                         detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || "")
                       }))
                     : fallback.mediumPoints || [],
                   mediumSummary: String(item?.mediumSummary || fallback.mediumSummary || ""),
-                  lowPoints: Array.isArray(item?.lowPoints) && item.lowPoints.length > 0
+                  lowPoints: !isOldPts(item?.lowPoints)
                     ? item.lowPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Benchmark Point"),
                         detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || "")
@@ -503,7 +509,7 @@ export default function HelpPage() {
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `High ${safeName} Score Action Points:` : scoreTab === "medium" ? `Medium ${safeName} Score Action Points:` : `Low ${safeName} Score Action Points:`}
+              {scoreTab === "high" ? `${safeName} Benchmarks (7–10 — Elite):` : scoreTab === "medium" ? `${safeName} Benchmarks (5–7 — Developing):` : `${safeName} Benchmarks (0–5 — Needs Attention):`}
             </span>
             <div className="space-y-2">
               {activePoints.map((pt, i) => (

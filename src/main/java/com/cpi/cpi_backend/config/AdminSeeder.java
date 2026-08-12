@@ -75,8 +75,7 @@ public class AdminSeeder implements CommandLineRunner {
     }
 
     private void seedDefaultConfig() {
-        if (configRepository.findById("MAIN_CONFIG").isEmpty()) {
-            String defaultParameters = """
+        String defaultParameters = """
                 [
                   {"id": 1, "name": "Technical Execution", "description": "Assessment of biomechanical efficiency, shot technique, and mechanical consistency.", "ratingDescription": "Evaluates footwork, bat path, body balance, and follow-through quality.", "guidance": "Observe head position at impact and balance through shot completion.", "instructions": "Rate from 1-10 based on mechanical perfection and repeatability under pressure.", "recommendation": "Focus on high-volume mirror drills and video review to eliminate technical leaks."},
                   {"id": 2, "name": "Skill Level", "description": "Raw capability, stroke versatility, bowling variations, and positional adaptability.", "ratingDescription": "Evaluates range of shots, control over spin/seam variations, and fielding range.", "guidance": "Assess execution accuracy when trying advanced variations in match scenarios.", "instructions": "Evaluate execution rate across different line and length variations.", "recommendation": "Expand repertoire by practicing non-dominant strokes and specialized variations."},
@@ -353,6 +352,17 @@ public class AdminSeeder implements CommandLineRunner {
                   "above7Text": "Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player."
                 }
                 """;
+
+            var existingConfigOpt = configRepository.findById("MAIN_CONFIG");
+            if (existingConfigOpt.isPresent()) {
+                CpiContentConfig existing = existingConfigOpt.get();
+                if (existing.getHelpJson() != null && (existing.getHelpJson().contains("PRESSURE TEST IT") || existing.getHelpJson().contains("IDENTIFY MAIN ISSUE"))) {
+                    log.info("Upgrading existing MAIN_CONFIG helpJson to new 5-point assessment benchmarks...");
+                    existing.setHelpJson(defaultHelp);
+                    configRepository.save(existing);
+                }
+                return;
+            }
 
             String defaultInstructions = """
                 {
