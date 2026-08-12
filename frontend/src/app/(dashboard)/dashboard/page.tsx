@@ -282,12 +282,12 @@ export default function DashboardPage() {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const formatScoreValue = (val: number) => {
-    if (!val || val === 0) return "N/A";
+  const formatScoreValue = (val: number | null | undefined, showMax: boolean = false) => {
+    if (val === null || val === undefined || val === 0) return "N/A";
     let num = typeof val === "number" ? val : parseFloat(val as any);
     if (isNaN(num) || num <= 0) return "N/A";
-    if (num > 10) num = num / 10;
-    return (Math.round(num * 10) / 10).toFixed(1);
+    const score100 = num <= 10 ? Math.round(num * 10) : Math.round(num);
+    return showMax ? `${score100}/100` : `${score100}`;
   };
 
   if (loading) {
@@ -377,7 +377,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average CPI</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">AVERAGE CPI /100</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -394,7 +394,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average PPI</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">AVERAGE PPI /100</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -411,7 +411,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Average MPI</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">AVERAGE MPI /100</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <Trophy className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -570,14 +570,14 @@ export default function DashboardPage() {
 
           {/* 3 Category Cards: BEST, AVG, LOW */}
           <div className="grid grid-cols-3 gap-2.5">
-            {/* BEST: Above 7 CPI */}
+            {/* BEST: Above 70 CPI */}
             <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
               <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 font-extrabold text-[9px] uppercase tracking-wider">
                 <span className="w-1 h-1 rounded-full bg-emerald-500" />
                 BEST
               </div>
               <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
-                &gt; 7 CPI
+                &gt; 70 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {bestCategoryPlayers.length}
@@ -587,14 +587,14 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            {/* AVG: 5 to 7 CPI */}
+            {/* AVG: 50 to 70 CPI */}
             <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
               <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 font-extrabold text-[9px] uppercase tracking-wider">
                 <span className="w-1 h-1 rounded-full bg-amber-500" />
                 AVG
               </div>
               <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
-                5 - 7 CPI
+                50 - 70 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {avgCategoryPlayers.length}
@@ -604,14 +604,14 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            {/* LOW: Below 5 CPI */}
+            {/* LOW: Below 50 CPI */}
             <div className="bg-slate-50/70 border border-slate-200/70 rounded-xl p-3 text-center space-y-1">
               <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-700 font-extrabold text-[9px] uppercase tracking-wider">
                 <span className="w-1 h-1 rounded-full bg-rose-500" />
                 LOW
               </div>
               <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
-                &lt; 5 CPI
+                &lt; 50 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {lowCategoryPlayers.length}

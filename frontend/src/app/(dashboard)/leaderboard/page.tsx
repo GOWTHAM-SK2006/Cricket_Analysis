@@ -19,8 +19,7 @@ const formatScore = (val: number | null | undefined): number => {
   if (val === null || val === undefined || val === 0) return 0;
   let num = typeof val === "number" ? val : parseFloat(val as any);
   if (isNaN(num) || num <= 0) return 0;
-  if (num > 10) num = num / 10;
-  return Math.round(num * 10) / 10;
+  return num <= 10 ? Math.round(num * 10) : Math.round(num);
 };
 
 const getRoleEmoji = (roleStr: string) => {
@@ -54,7 +53,7 @@ export default function LeaderboardPage() {
     const ppi = formatScore(p.ppiScore);
     const mpi = formatScore(p.mpiScore);
     let cpi = 0;
-    if (ppi > 0 && mpi > 0) cpi = Math.round((ppi * 0.4 + mpi * 0.6) * 10) / 10;
+    if (ppi > 0 && mpi > 0) cpi = Math.round(ppi * 0.4 + mpi * 0.6);
     else if (ppi > 0) cpi = ppi;
     else if (mpi > 0) cpi = mpi;
     return { cpi, ppi, mpi };
@@ -70,12 +69,12 @@ export default function LeaderboardPage() {
   const totalPlayers = sortedPlayers.length;
   const avgCpi = totalPlayers > 0 ? Math.round(sortedPlayers.reduce((acc, p) => acc + getPlayerScores(p).cpi, 0) / totalPlayers) : 0;
   const highestCpi = sortedPlayers.length > 0 ? getPlayerScores(sortedPlayers[0]).cpi : 0;
-  const maxScore = sortedPlayers.length > 0 ? Math.max(...sortedPlayers.map(p => getPlayerScores(p)[metricTab])) : 10;
+  const maxScore = sortedPlayers.length > 0 ? Math.max(...sortedPlayers.map(p => getPlayerScores(p)[metricTab])) : 100;
 
   const tabs = [
-    { id: "cpi", label: "CPI Index", icon: Zap },
-    { id: "ppi", label: "PPI Index", icon: Target },
-    { id: "mpi", label: "MPI Index", icon: Flame },
+    { id: "cpi", label: "CPI /100", icon: Zap },
+    { id: "ppi", label: "PPI /100", icon: Target },
+    { id: "mpi", label: "MPI /100", icon: Flame },
   ];
 
   return (

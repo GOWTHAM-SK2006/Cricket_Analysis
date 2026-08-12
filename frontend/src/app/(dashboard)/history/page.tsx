@@ -13,12 +13,12 @@ interface Player {
   mpiScore: number | null;
 }
 
-const formatScoreValue = (val: number | null | undefined) => {
+const formatScoreValue = (val: number | null | undefined, showMax: boolean = false) => {
   if (val === null || val === undefined || val === 0) return "N/A";
   let num = typeof val === "number" ? val : parseFloat(val as any);
   if (isNaN(num) || num <= 0) return "N/A";
-  if (num > 10) num = num / 10;
-  return (Math.round(num * 10) / 10).toFixed(1);
+  const score100 = num <= 10 ? Math.round(num * 10) : Math.round(num);
+  return showMax ? `${score100}/100` : `${score100}`;
 };
 
 export default function HistoryPage() {

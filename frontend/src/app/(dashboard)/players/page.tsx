@@ -30,12 +30,12 @@ interface Player {
   };
 }
 
-const formatScoreValue = (val: number | null | undefined) => {
+const formatScoreValue = (val: number | null | undefined, showMax: boolean = false) => {
   if (val === null || val === undefined || val === 0) return "N/A";
   let num = typeof val === "number" ? val : parseFloat(val as any);
   if (isNaN(num) || num <= 0) return "N/A";
-  if (num > 10) num = num / 10;
-  return (Math.round(num * 10) / 10).toFixed(1);
+  const score100 = num <= 10 ? Math.round(num * 10) : Math.round(num);
+  return showMax ? `${score100}/100` : `${score100}`;
 };
 
 interface CoachParameterSection {
@@ -773,19 +773,26 @@ const generatePlayerPdfReport = async (
 
   y += 6;
 
-  const cpiNum = currentCpi ? parseFloat(formatScoreValue(currentCpi)) : 0;
-  const ppiNum = currentPpi ? parseFloat(formatScoreValue(currentPpi)) : 0;
-  const mpiNum = currentMpi ? parseFloat(formatScoreValue(currentMpi)) : 0;
+  const to100 = (val: number | null | undefined): number => {
+    if (val === null || val === undefined || val === 0) return 0;
+    let num = typeof val === "number" ? val : parseFloat(val as any);
+    if (isNaN(num) || num <= 0) return 0;
+    return num <= 10 ? Math.round(num * 10) : Math.round(num);
+  };
+
+  const cpiNum = to100(currentCpi);
+  const ppiNum = to100(currentPpi);
+  const mpiNum = to100(currentMpi);
 
   let ratingStr = "Needs Attention";
   let ratingColor = [239, 68, 68]; // Red
-  if (cpiNum >= 8.0) {
+  if (cpiNum >= 80) {
     ratingStr = "Excellent";
     ratingColor = [16, 185, 129]; // Green
-  } else if (cpiNum >= 7.0) {
+  } else if (cpiNum >= 70) {
     ratingStr = "High Potential";
     ratingColor = [249, 115, 22]; // Orange
-  } else if (cpiNum >= 5.0) {
+  } else if (cpiNum >= 50) {
     ratingStr = "Developing";
     ratingColor = [234, 179, 8]; // Yellow
   }
@@ -796,20 +803,20 @@ const generatePlayerPdfReport = async (
   doc.setFillColor(254, 243, 199);
   doc.setDrawColor(245, 158, 11);
   doc.roundedRect(14, y, boxWidth, 24, 3, 3, "FD");
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(180, 83, 9);
-  doc.text("CPI SCORE", 18, y + 7);
+  doc.text("CPI SCORE /100", 18, y + 7);
   doc.setFontSize(14);
-  doc.text(`${cpiNum}`, 18, y + 18);
+  doc.text(`${cpiNum || "N/A"}`, 18, y + 18);
 
   // PPI Box
   doc.setFillColor(241, 245, 249);
   doc.setDrawColor(203, 213, 225);
   doc.roundedRect(14 + boxWidth + 3, y, boxWidth, 24, 3, 3, "FD");
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setTextColor(71, 85, 105);
-  doc.text("PPI SCORE", 18 + boxWidth + 3, y + 7);
+  doc.text("PPI SCORE /100", 18 + boxWidth + 3, y + 7);
   doc.setFontSize(14);
   doc.setTextColor(15, 23, 42);
   doc.text(`${ppiNum || "N/A"}`, 18 + boxWidth + 3, y + 18);
@@ -818,9 +825,9 @@ const generatePlayerPdfReport = async (
   doc.setFillColor(241, 245, 249);
   doc.setDrawColor(203, 213, 225);
   doc.roundedRect(14 + (boxWidth + 3) * 2, y, boxWidth, 24, 3, 3, "FD");
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setTextColor(71, 85, 105);
-  doc.text("MPI SCORE", 18 + (boxWidth + 3) * 2, y + 7);
+  doc.text("MPI SCORE /100", 18 + (boxWidth + 3) * 2, y + 7);
   doc.setFontSize(14);
   doc.setTextColor(15, 23, 42);
   doc.text(`${mpiNum || "N/A"}`, 18 + (boxWidth + 3) * 2, y + 18);
@@ -2633,7 +2640,7 @@ export default function PlayersPage() {
               <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center pt-1">
                 <div className="bg-orange-500/10 border border-orange-500/30 px-1.5 py-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-orange-400 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    Current CPI
+                    CPI SCORE /100
                   </p>
                   <p className="text-xl sm:text-3xl font-extrabold text-orange-500 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentCpi)}
@@ -2641,7 +2648,7 @@ export default function PlayersPage() {
                 </div>
                 <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    Current PPI
+                    PPI SCORE /100
                   </p>
                   <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentPpi)}
@@ -2649,7 +2656,7 @@ export default function PlayersPage() {
                 </div>
                 <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    Current MPI
+                    MPI SCORE /100
                   </p>
                   <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentMpi)}
