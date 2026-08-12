@@ -1431,9 +1431,9 @@ export default function PlayersPage() {
   const [error, setError] = useState("");
 
   // Target Goals states
-  const [targetCpi, setTargetCpi] = useState<number>(8.5);
+  const [targetCpi, setTargetCpi] = useState<number>(85);
   const [targetGoal, setTargetGoal] = useState<string>("Improve core consistency");
-  const [tempTargetCpi, setTempTargetCpi] = useState<string>("8.5");
+  const [tempTargetCpi, setTempTargetCpi] = useState<string>("85");
   const [tempTargetGoal, setTempTargetGoal] = useState<string>("");
   const [isEditingTarget, setIsEditingTarget] = useState(false);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
@@ -1441,8 +1441,8 @@ export default function PlayersPage() {
   useEffect(() => {
     if (selectedPlayer) {
       const storedTarget = localStorage.getItem(`player_target_cpi_${selectedPlayer.id}`);
-      let val = storedTarget ? parseFloat(storedTarget) : 8.5;
-      if (val > 10) val = val / 10;
+      let val = storedTarget ? parseFloat(storedTarget) : 85;
+      if (val <= 10) val = Math.round(val * 10);
       setTargetCpi(val);
       setTempTargetCpi(val.toString());
 
@@ -2691,7 +2691,7 @@ export default function PlayersPage() {
                         onChange={(e) => setTempTargetCpi(e.target.value)}
                         className="bg-white border-2 border-slate-200 rounded-xl px-2 py-1.5 font-bold text-slate-900 text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
-                        {[7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0].map((v) => (
+                        {[70, 75, 80, 85, 90, 95, 100].map((v) => (
                           <option key={v} value={v.toString()}>{v}</option>
                         ))}
                       </select>
