@@ -542,7 +542,7 @@ export default function HelpPage() {
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `${safeName} Benchmarks (7–10 — Elite):` : scoreTab === "medium" ? `${safeName} Benchmarks (5–7 — Developing):` : `${safeName} Benchmarks (0–5 — Needs Attention):`}
+              {scoreTab === "high" ? `ELITE ${safeName.toUpperCase()} BENCHMARK:` : scoreTab === "medium" ? `DEVELOPING ${safeName.toUpperCase()} BENCHMARK:` : `LOW ${safeName.toUpperCase()} BENCHMARK:`}
             </span>
             <div className="space-y-2">
               {activePoints.map((pt, i) => (
