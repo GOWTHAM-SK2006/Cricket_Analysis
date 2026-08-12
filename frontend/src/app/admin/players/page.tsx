@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { UserCheck, Search, Filter, CheckCircle2, Eye, Award } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface GlobalPlayerItem {
   id: number;
@@ -16,15 +17,12 @@ interface GlobalPlayerItem {
   status: string;
 }
 
-const DEFAULT_GLOBAL_PLAYERS: GlobalPlayerItem[] = [
-  { id: 1, name: "Player A", organization: "CPI Cricket Academy", coachName: "Daryll Cullinan", cpi: "84 / 100", ppi: "81 / 100", mpi: "87 / 100", lastAssessment: "2 days ago", status: "Active" },
-  { id: 2, name: "Rohan Sharma", organization: "CPI Cricket Academy", coachName: "Gowtham SK", cpi: "79 / 100", ppi: "80 / 100", mpi: "78 / 100", lastAssessment: "1 day ago", status: "Active" }
-];
+const DEFAULT_GLOBAL_PLAYERS: GlobalPlayerItem[] = [];
 
 export default function AdminGlobalPlayersPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
-  const [players, setPlayers] = useState<GlobalPlayerItem[]>(DEFAULT_GLOBAL_PLAYERS);
+  const [players, setPlayers] = useState<GlobalPlayerItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -56,6 +54,10 @@ export default function AdminGlobalPlayersPage() {
     p.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.coachName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return <CricketLoader message="Loading Squad Directory..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Users2, Search, CheckCircle2, XCircle, Eye, ShieldCheck, Mail, Building2 } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface CoachItem {
   id: number;
@@ -65,6 +66,10 @@ export default function AdminCoachesPage() {
     c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.organization.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return <CricketLoader message="Loading Coach Directory..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

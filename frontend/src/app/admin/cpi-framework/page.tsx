@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Sliders, Save, RotateCcw, Loader2, Info, CheckCircle2 } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface ParameterItem {
   id: number;
@@ -158,6 +159,10 @@ export default function AdminCpiFrameworkPage() {
   };
 
   const activeParam = parameters.find((p) => p.id === activeParamId) || parameters[0];
+
+  if (loading) {
+    return <CricketLoader message="Loading CPI Framework..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

@@ -22,6 +22,7 @@ import {
   Bot
 } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 export default function MasterAdminDashboardPage() {
   const { showToast } = useAdminToast();
@@ -107,6 +108,10 @@ export default function MasterAdminDashboardPage() {
     { time: "10 mins ago", section: "System Content Config", action: "Database parameters & AI directives synchronized", user: "CPI System" },
     { time: "1 hour ago", section: "System Settings", action: "Platform configuration updated", user: "cpi@admin.com" }
   ];
+
+  if (loading) {
+    return <CricketLoader message="Loading Master Dashboard..." />;
+  }
 
   return (
     <div className="space-y-8">

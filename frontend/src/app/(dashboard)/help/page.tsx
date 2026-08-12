@@ -6,6 +6,7 @@ import {
   Target, Sparkles, Flame, CheckCircle2, AlertTriangle, BookOpen, Layers
 } from "lucide-react";
 import Link from "next/link";
+import CricketLoader from "@/components/CricketLoader";
 
 interface ActionPoint {
   title: string;
@@ -245,6 +246,7 @@ const coachPlanData: CoachPlanItem[] = [
 ];
 
 export default function HelpPage() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [scoreTab, setScoreTab] = useState<"high" | "medium" | "low">("high");
   const [plans, setPlans] = useState<CoachPlanItem[]>(coachPlanData);
@@ -273,6 +275,7 @@ export default function HelpPage() {
   useEffect(() => {
     async function loadConfig() {
       try {
+        setLoading(true);
         const res = await fetch("/api/public/config");
         if (!res.ok) return;
         const data = await res.json();
@@ -329,10 +332,16 @@ export default function HelpPage() {
         }
       } catch (err) {
         console.warn("Could not load dynamic help config, using local default:", err);
+      } finally {
+        setLoading(false);
       }
     }
     loadConfig();
   }, []);
+
+  if (loading) {
+    return <CricketLoader message="Loading Help & Information..." />;
+  }
 
   const currentPlan = plans[selectedPlanIndex] || plans[0] || coachPlanData[0];
   const safeName = currentPlan?.name || "Parameter";

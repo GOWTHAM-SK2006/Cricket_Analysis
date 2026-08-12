@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { ClipboardList, Search, Filter, CheckCircle2, Eye, ShieldCheck, Clipboard } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface AssessmentLogItem {
   id: number;
@@ -61,6 +62,10 @@ export default function AdminAssessmentsPage() {
     const matchesType = typeFilter === "All" || log.type === typeFilter;
     return matchesSearch && matchesType;
   });
+
+  if (loading) {
+    return <CricketLoader message="Loading Assessment Logs..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

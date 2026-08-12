@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Building2, Search, Filter, CheckCircle2, XCircle, Eye, SlidersHorizontal, Plus } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface OrganizationItem {
   id: number;
@@ -16,14 +17,12 @@ interface OrganizationItem {
   lastActive: string;
 }
 
-const DEFAULT_ORGS: OrganizationItem[] = [
-  { id: 1, name: "CPI Cricket Academy", location: "Chennai, India", coachesCount: 3, playersCount: 11, assessmentsCount: 1240, status: "Active", createdDate: "2025-01-15", lastActive: "Just now" }
-];
+const DEFAULT_ORGS: OrganizationItem[] = [];
 
 export default function AdminOrganizationsPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
-  const [orgs, setOrgs] = useState<OrganizationItem[]>(DEFAULT_ORGS);
+  const [orgs, setOrgs] = useState<OrganizationItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "Inactive">("All");
 
@@ -71,6 +70,10 @@ export default function AdminOrganizationsPage() {
     const matchesStatus = statusFilter === "All" || org.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  if (loading) {
+    return <CricketLoader message="Loading Organizations..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

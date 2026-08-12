@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Save, RotateCcw, Loader2, Eye, FileText, TrendingUp, HelpCircle, Info, Sliders } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface ReportConfig {
   heading: string;
@@ -187,6 +188,10 @@ export default function AdminReportsPage() {
 
   const sortedScores = [...MOCK_PLAYER_SCORES].sort((a, b) => b.score - a.score);
   const activeHelp = helpConfig[selectedParamIndex] || DEFAULT_HELP[0];
+
+  if (loading) {
+    return <CricketLoader message="Loading Report Governance..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

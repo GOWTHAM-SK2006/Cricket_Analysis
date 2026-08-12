@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { HelpCircle, Save, RotateCcw, Loader2, Info, BookOpen, Layers, CheckCircle2, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface ActionPoint {
   title: string;
@@ -425,6 +426,10 @@ export default function AdminHelpPage() {
       setSaving(false);
     }
   };
+
+  if (loading) {
+    return <CricketLoader message="Loading Coach Help Governance..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-16 text-left select-none">
