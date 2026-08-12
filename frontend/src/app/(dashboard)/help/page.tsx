@@ -447,7 +447,6 @@ export default function HelpPage() {
           </div>
           <div>
             <h3 className="text-base font-black text-slate-900 uppercase">HOW TO SCORE A PLAYER</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">PARAMETER DEVELOPMENT GUIDE & ACTION PLANS</p>
           </div>
         </div>
 
@@ -542,7 +541,7 @@ export default function HelpPage() {
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `ELITE ${safeName.toUpperCase()} BENCHMARK:` : scoreTab === "medium" ? `DEVELOPING ${safeName.toUpperCase()} BENCHMARK:` : `LOW ${safeName.toUpperCase()} BENCHMARK:`}
+              {scoreTab === "high" ? `ELITE ${safeName.toUpperCase()} BENCHMARKS:` : scoreTab === "medium" ? `DEVELOPING ${safeName.toUpperCase()} BENCHMARKS:` : `LOW ${safeName.toUpperCase()} BENCHMARKS:`}
             </span>
             <div className="space-y-2">
               {activePoints.map((pt, i) => (
