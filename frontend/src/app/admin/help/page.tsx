@@ -564,7 +564,7 @@ export default function AdminHelpPage() {
                 #{selectedPlanIndex + 1}
               </span>
               <div>
-                <h2 className="text-base font-black text-slate-900 uppercase tracking-tight">Coach's Plan of Action — {currentPlan.name}</h2>
+                <h2 className="text-base font-black text-slate-900 uppercase tracking-tight">How to Score a Player — {currentPlan.name}</h2>
                 <p className="text-xs text-slate-500 font-medium">Edit parameter overview, action points, and summary box</p>
               </div>
             </div>

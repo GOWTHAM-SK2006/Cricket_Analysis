@@ -434,7 +434,7 @@ export default function HelpPage() {
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">THE COACH’S PLAN OF ACTION</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase">HOW TO SCORE A PLAYER</h3>
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">PARAMETER DEVELOPMENT GUIDE & ACTION PLANS</p>
           </div>
         </div>
