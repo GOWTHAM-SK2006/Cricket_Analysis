@@ -33,7 +33,7 @@ export default function CricketLoader({
       {/* Loading Text & Bouncing Dots */}
       <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center gap-1">
-          <span className={`font-extrabold uppercase tracking-widest text-[11px] ${fullScreen ? "text-slate-800 dark:text-slate-100" : "text-slate-700 dark:text-slate-200"}`}>
+          <span className={`font-extrabold uppercase tracking-widest text-[11px] ${fullScreen ? "text-slate-800" : "text-slate-800"}`}>
             {message}
           </span>
           <span className="flex gap-0.5 ml-0.5">
