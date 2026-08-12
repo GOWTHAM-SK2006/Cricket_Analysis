@@ -419,10 +419,10 @@ export default function HelpPage() {
             FRAMEWORK & DEVELOPMENT GUIDE
           </span>
         </div>
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-          CPI FRAMEWORK & COACH’S PLAN
+        <h1 className="text-2xl font-black text-[#0f172a] uppercase tracking-tight">
+          CPI FRAMEWORK & COACH'S PLAN
         </h1>
-        <p className="text-xs text-slate-700 dark:text-slate-400 font-medium leading-relaxed">
+        <p className="text-xs text-slate-800 font-medium leading-relaxed">
           {welcomeText}
         </p>
       </div>
@@ -441,7 +441,7 @@ export default function HelpPage() {
 
         {/* Parameter Selector Tabs */}
         <div className="space-y-2">
-          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">
+          <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest block">
             SELECT INDEX PARAMETER:
           </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -479,7 +479,7 @@ export default function HelpPage() {
               className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
                 scoreTab === "high"
                   ? "bg-emerald-500 text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
+                  : "text-slate-800 hover:text-slate-900"
               }`}
             >
               IF SCORE IS (&gt;7)
@@ -489,7 +489,7 @@ export default function HelpPage() {
               className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
                 scoreTab === "medium"
                   ? "bg-amber-500 text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
+                  : "text-slate-800 hover:text-slate-900"
               }`}
             >
               IF SCORE IS (5 TO 7)
@@ -499,7 +499,7 @@ export default function HelpPage() {
               className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
                 scoreTab === "low"
                   ? "bg-rose-500 text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
+                  : "text-slate-800 hover:text-slate-900"
               }`}
             >
               IF SCORE IS (&lt;5)
