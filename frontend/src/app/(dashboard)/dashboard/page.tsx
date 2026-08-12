@@ -345,7 +345,7 @@ export default function DashboardPage() {
 
       {/* 2. TODAY'S SNAPSHOT */}
       <div id="tour-snapshot" className="space-y-2.5">
-        <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5 flex items-center gap-1.5">
+        <h3 className="text-[11px] font-black tracking-widest text-slate-900 uppercase pl-0.5 flex items-center gap-1.5">
           <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
           TODAY'S SNAPSHOT
         </h3>
@@ -362,7 +362,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Total Players</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">Total Players</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <Users className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -377,7 +377,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">AVERAGE CPI /100</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE CPI /100</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -394,7 +394,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">AVERAGE PPI /100</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE PPI /100</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -411,7 +411,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">AVERAGE MPI /100</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE MPI /100</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <Trophy className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -474,7 +474,7 @@ export default function DashboardPage() {
         </motion.div>
       ) : (
         <div id="tour-quick-actions" className="space-y-2.5">
-          <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5 flex items-center gap-1.5">
+          <h3 className="text-[11px] font-black tracking-widest text-slate-900 uppercase pl-0.5 flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-orange-500" />
             QUICK ACTIONS
           </h3>
@@ -513,7 +513,7 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.005, y: -1 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => router.push("/players?add=true")}
-              className="w-full h-11 bg-white hover:bg-slate-50 text-slate-700 rounded-xl px-4 text-xs font-extrabold flex items-center justify-center gap-2 border border-slate-200/80 cursor-pointer uppercase tracking-wider transition-all duration-200"
+              className="w-full h-11 bg-white hover:bg-slate-50 text-slate-900 rounded-xl px-4 text-xs font-extrabold flex items-center justify-center gap-2 border border-slate-200/80 cursor-pointer uppercase tracking-wider transition-all duration-200"
             >
               <Plus className="w-4 h-4 text-orange-500 stroke-[2.5]" />
               Add Player
@@ -529,7 +529,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.4 }}
         className="space-y-2.5 text-left"
       >
-        <h3 className="text-[11px] font-black tracking-widest text-slate-700 uppercase pl-0.5 flex items-center gap-1.5">
+        <h3 className="text-[11px] font-black tracking-widest text-slate-900 uppercase pl-0.5 flex items-center gap-1.5">
           <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
           PERFORMANCE CHART
         </h3>
@@ -537,9 +537,9 @@ export default function DashboardPage() {
         <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs">
           {/* Distribution Overview Bar */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider text-slate-600">
+            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider text-slate-800">
               <span>CPI DISTRIBUTION</span>
-              <span className="text-slate-400 font-mono">{players.length} TOTAL PLAYERS</span>
+              <span className="text-slate-600 font-mono">{players.length} TOTAL PLAYERS</span>
             </div>
 
             {/* Segmented Progress Bar */}
@@ -576,13 +576,13 @@ export default function DashboardPage() {
                 <span className="w-1 h-1 rounded-full bg-emerald-500" />
                 BEST
               </div>
-              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-600 block uppercase tracking-tight">
                 &gt; 70 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {bestCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-slate-400 block uppercase">
+              <span className="text-[9px] font-bold text-slate-600 block uppercase">
                 {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
@@ -593,13 +593,13 @@ export default function DashboardPage() {
                 <span className="w-1 h-1 rounded-full bg-amber-500" />
                 AVG
               </div>
-              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-600 block uppercase tracking-tight">
                 50 - 70 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {avgCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-slate-400 block uppercase">
+              <span className="text-[9px] font-bold text-slate-600 block uppercase">
                 {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
@@ -610,13 +610,13 @@ export default function DashboardPage() {
                 <span className="w-1 h-1 rounded-full bg-rose-500" />
                 LOW
               </div>
-              <span className="text-[10px] font-bold text-slate-500 block uppercase tracking-tight">
+              <span className="text-[10px] font-bold text-slate-600 block uppercase tracking-tight">
                 &lt; 50 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
                 {lowCategoryPlayers.length}
               </p>
-              <span className="text-[9px] font-bold text-slate-400 block uppercase">
+              <span className="text-[9px] font-bold text-slate-600 block uppercase">
                 {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
               </span>
             </div>
