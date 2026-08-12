@@ -37,168 +37,178 @@ const formatScoreValue = (val: number | null | undefined) => {
   return (Math.round(num * 10) / 10).toFixed(1);
 };
 
-const coachingRecommendations: Record<string, { title: string; detail: string }> = {
+interface CoachRecommendationTier {
+  title: string;
+  detail: string;
+}
+
+interface CoachParameterRecommendation {
+  high: CoachRecommendationTier;
+  avg: CoachRecommendationTier;
+  low: CoachRecommendationTier;
+}
+
+const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Technical Execution": {
-    title: "Strengthen Technical Execution Under Pressure",
-    detail: "This player's technical execution needs targeted improvement. The issue may not be a lack of ability — the skill may exist in practice but is not yet stable enough to survive match pressure. Begin by separating outcome from method: identify whether the player executed poorly or produced a poor result despite sound technique. Focus on finding the recurring fault rather than reacting to every individual mistake. Design future practice sessions that reproduce the type of delivery, bowler, match situation and pitch conditions that exposed the weakness. Provide one clear technical correction the player can understand and apply immediately. Use controlled drop-feed and throw-down drills to isolate correct bat-face angle, contact point and timing. Monitor consistency across 20+ repetitions before increasing pace or adding competitive pressure. The goal is not technical perfection — it is a technique the player can trust and execute when the match demands it."
-  },
-  "Skills Level": {
-    title: "Develop Core Skill Level & Match Readiness",
-    detail: "The player's overall skill level requires focused development to meet competitive demands. Start by protecting what already works — do not make unnecessary technical changes after a strong drill or isolated success. Instead, increase the challenge by testing the player's skills under greater speed, fatigue, match pressure and unpredictability. Develop the player's self-awareness by asking them to explain why their method works and what they feel when performing well. Monitor whether the same quality transfers from practice to competitive situations. Where skills are lacking, prioritise one correction at a time with a clear coaching cue. Simplify drills by reducing speed or complexity until the movement is performed correctly, then rebuild through quality repetition. Progress gradually from controlled environments to realistic, pressure-based practice that mirrors match scenarios the player will face."
+    high: {
+      title: "High Performance Directive — Protect, Challenge & Refine",
+      detail: "A high score shows that the player has a reliable technique that is standing up to the demands of practice and competition. The next step is to strengthen it under even greater pressure.\n• Confirm what is working: Help the player understand which parts of their technique are allowing them to perform consistently.\n• Protect the basics: Avoid unnecessary changes when the player has a method that is working.\n• Increase the challenge: Test the technique against greater speed, pressure, fatigue and more difficult cricket situations.\n• Encourage self-correction: Help the player recognise when something feels wrong and make simple adjustments themselves.\n• Monitor transfer: Check that the same technical quality shown in practice is being carried into matches.\nCoach Summary: protect, challenge and refine. Goal: develop a technique the player can trust and repeat when the game places it under pressure."
+    },
+    avg: {
+      title: "Developing Performance Directive — Refine Core Mechanics",
+      detail: "A medium score shows the player has a functional technical foundation but requires greater consistency under pressure. The focus now is to refine core mechanics, eliminate minor breakdowns, and build repeatable technique.\n• Refine Core Mechanics: Fix minor technical breakdowns that appear when pace or pressure rises.\n• Build Consistency: Repeat sound technique across longer practice sets and multi-over spells.\n• Controlled Pressure Nets: Expose technique to moderate match drills with clear execution targets.\nCoach Summary: refine, stabilize and test under moderate pressure."
+    },
+    low: {
+      title: "Priority Development Directive — Identify, Simplify & Rebuild",
+      detail: "A low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.\n• Identify the main problem: Find the technical issue that is having the greatest effect on performance.\n• Keep the correction simple: Work on one clear adjustment rather than trying to change everything at once.\n• Return to the basics: Slow the skill down and rebuild the movement before increasing the difficulty.\n• Recreate the problem in practice: Use drills and scenarios that mirror where the technique is breaking down in matches.\n• Track the improvement: Look for whether the correction becomes more consistent in practice and then transfers into competition.\nCoach Summary: identify, simplify and rebuild. Goal: develop a technique the player can trust and repeat when the game places it under pressure."
+    }
   },
   "Skill Level": {
-    title: "Develop Core Skill Level & Match Readiness",
-    detail: "The player's overall skill level requires focused development to meet competitive demands. Start by protecting what already works — do not make unnecessary technical changes after a strong drill or isolated success. Instead, increase the challenge by testing the player's skills under greater speed, fatigue, match pressure and unpredictability. Develop the player's self-awareness by asking them to explain why their method works and what they feel when performing well. Monitor whether the same quality transfers from practice to competitive situations. Where skills are lacking, prioritise one correction at a time with a clear coaching cue. Simplify drills by reducing speed or complexity until the movement is performed correctly, then rebuild through quality repetition. Progress gradually from controlled environments to realistic, pressure-based practice that mirrors match scenarios the player will face."
-  },
-  "Intensity": {
-    title: "Elevate Practice & Match Intensity",
-    detail: "This player's intensity levels suggest they are not yet bringing the competitive energy and purpose required to improve and perform under pressure. First identify the root cause — whether the low intensity stems from fatigue, poor health, low confidence, boredom, unclear expectations or a lack of motivation. Clarify exactly what good intensity looks like in movement, effort, communication and response between repetitions. Create short, measurable targets within sessions that give the player an immediate purpose and something to compete against. Use competitive drills with clear roles and regular feedback to keep the player mentally and physically engaged. Channel energy into controlled, purposeful effort rather than rushed or reckless activity. Monitor sustainability — the player must maintain intensity throughout the session without burning out or losing discipline. The goal is the right intensity, for the right task, maintained for the right length of time."
-  },
-  "Concentration": {
-    title: "Build Sustained Concentration & Mental Presence",
-    detail: "The player's concentration score indicates difficulty remaining mentally present and connected to the task throughout sessions and matches. Start by identifying the root cause — whether the lapses come from fatigue, boredom, anxiety, unclear instructions, external distractions or poor mental habits. Shorten the focus period by breaking sessions into smaller tasks with one clear objective and an immediate review point. Teach a simple reset routine the player can use after every attempt, mistake or interruption: step away, breathe, refocus on the next ball. Increase active involvement through questions, targets and specific responsibilities to prevent passive participation. Track the pattern of when concentration drops, what triggers it and how quickly the player reconnects. Introduce changing targets, tactical problems and match-related decisions that demand sustained awareness. The goal is not uninterrupted concentration — it is the ability to recognise when focus has drifted, reset quickly and return attention to the next important action."
-  },
-  "Focus": {
-    title: "Build Sustained Concentration & Mental Presence",
-    detail: "The player's concentration score indicates difficulty remaining mentally present and connected to the task throughout sessions and matches. Start by identifying the root cause — whether the lapses come from fatigue, boredom, anxiety, unclear instructions, external distractions or poor mental habits. Shorten the focus period by breaking sessions into smaller tasks with one clear objective and an immediate review point. Teach a simple reset routine the player can use after every attempt, mistake or interruption: step away, breathe, refocus on the next ball. Increase active involvement through questions, targets and specific responsibilities to prevent passive participation. Track the pattern of when concentration drops, what triggers it and how quickly the player reconnects. Introduce changing targets, tactical problems and match-related decisions that demand sustained awareness. The goal is not uninterrupted concentration — it is the ability to recognise when focus has drifted, reset quickly and return attention to the next important action."
+    high: {
+      title: "High Performance Directive — Challenge, Expand & Apply",
+      detail: "A high score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.\n• Identify the strengths: Understand which skills the player performs consistently and confidently.\n• Increase the difficulty: Challenge the player with greater speed, variation, pressure and more demanding situations.\n• Expand the skill set: Introduce new skills that complement what the player already does well.\n• Encourage smart use of skills: Help the player understand when and where each skill is most effective.\n• Monitor transfer: Check that skills performed successfully in practice are also being used effectively in matches.\nCoach Summary: challenge, expand and apply. Goal: develop the right skills, then make sure the player can use them when the game demands them."
+    },
+    avg: {
+      title: "Developing Performance Directive — Consolidate & Execute",
+      detail: "A medium score shows the player possesses a solid basic skill set but needs greater execution variety and adaptability under match pressure. The focus now is to consolidate core skills and expand match options.\n• Consolidate Core Skills: Ensure primary batting strokes or bowling deliveries are 100% reliable.\n• Scenario Application: Apply skills within specific field settings and match situation targets.\n• Build Execution Depth: Develop consistent control across different pitch types and lengths.\nCoach Summary: consolidate, expand and execute."
+    },
+    low: {
+      title: "Priority Development Directive — Identify, Build & Repeat",
+      detail: "A low score shows that the player needs to develop their core skill set and build greater execution consistency under pressure. The focus now is to identify skill gaps, rebuild fundamentals, and test skills in demanding cricket situations.\n• Identify the gap: Establish which important skills are missing, inconsistent or limiting performance.\n• Prioritise the basics: Focus on the most important skills for the player’s role before adding greater complexity.\n• Build through repetition: Give the player enough quality practice to develop confidence and consistency.\n• Match the challenge to the player: Avoid asking for skills that are beyond their current level of development.\n• Track the progress: Look for improvement in practice first, then whether that improvement transfers into matches.\nCoach Summary: identify, build and repeat. Goal: develop the right skills, then make sure the player can use them when the game demands them."
+    }
   },
   "Game Plan": {
-    title: "Clarify Game Plan & Tactical Execution",
-    detail: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. Does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes. Establish whether there is a plan: ask what the player was trying to do and listen for clarity. Simplify the thinking by giving one or two clear objectives for their role. Connect practice to matches through scenarios that require practising match plans, and teach adjustment when conditions, opposition or match situations change."
-  },
-  "Decision Making": {
-    title: "Sharpen In-Game Decision Making",
-    detail: "This player needs to improve their ability to make effective decisions under the pressure and time constraints of competitive cricket. Poor decision making may stem from unclear role understanding, limited game awareness, technical uncertainty or anxiety about consequences. Begin by clarifying the player's role in specific match situations — what decisions they should be making, when, and based on what information. Use scenario-based training that places the player in realistic situations requiring quick judgement: changing required rates, field adjustments, bowling plan shifts and batting partnerships under pressure. Encourage the player to verbalise their thinking process — 'What did you see? What options did you consider? Why did you choose that response?' Develop forward thinking by practising anticipation of the next delivery, possible field change or tactical adjustment. Provide immediate, specific feedback after each decision rather than waiting until the end of a session. The goal is confident, clear decision making grounded in match awareness and role clarity."
+    high: {
+      title: "High Performance Directive — Confirm, Challenge & Adapt",
+      detail: "A high score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.\n• Confirm the thinking: Ask the player what their plan was and why they chose it.\n• Reinforce role clarity: Make sure the player understands what their role requires in different situations.\n• Increase the challenge: Use changing practice and match scenarios that force the player to think and adjust.\n• Encourage independence: Allow the player to make tactical decisions without constant instruction.\n• Monitor adaptability: Check that the player can stick to a good plan but also recognise when it needs to change.\nCoach Summary: confirm, challenge and adapt. Goal: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+    },
+    avg: {
+      title: "Developing Performance Directive — Sharpen & Adapt",
+      detail: "A medium score shows the player understands their game plan but occasionally struggles to adapt when match situations shift. The focus now is to sharpen role clarity, improve tactical adjustments, and build situational awareness.\n• Clarify Match Role: Define clear tactical objectives for their specific role in the team.\n• Improve Matchup Awareness: Study field placements, bowler/batter matchups, and scoring options.\n• Practice In-Game Shifts: Rehearse adjusting plans when early wickets fall or match conditions change.\nCoach Summary: sharpen, adapt and execute."
+    },
+    low: {
+      title: "Priority Development Directive — Clarify, Simplify & Rehearse",
+      detail: "A low score shows that the player needs clearer role understanding and tactical direction. The focus now is to simplify decision-making, establish clear match objectives, and test adaptability under pressure.\n• Establish whether there is a plan: Ask the player what they were trying to do and listen for clarity or uncertainty.\n• Simplify the thinking: Give the player one or two clear objectives for their role.\n• Connect practice to matches: Create scenarios that require the player to practise the same plans they will need in competition.\n• Teach adjustment: Help the player recognise when conditions, opposition or the match situation require a different approach.\n• Review the decisions: Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind.\nCoach Summary: clarify, simplify and rehearse. Goal: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+    }
   },
   "Preparation": {
-    title: "Establish Consistent Pre-Match & Pre-Session Preparation",
-    detail: "This player's preparation habits are limiting their ability to arrive ready to compete and perform from the first ball. Identify whether the weakness lies in poor organisation, unclear expectations, tiredness, lack of support, low motivation or simple forgetfulness. Set clear standards for what the player must complete and understand before arriving at the ground and before play begins. Create a simple, repeatable preparation checklist covering equipment, clothing, nutrition, hydration, warm-up routine, personal role clarity and key match information. Rehearse match-day routines during practice sessions so they become familiar and automatic. Build accountability gradually — assign age-appropriate responsibility rather than allowing others to prepare everything for the player. Connect preparation directly to performance outcomes by reviewing how poor preparation affected confidence, concentration and early involvement. Develop match-day habits that can be repeated before every match, trial or important performance regardless of the occasion. The goal is not simply to arrive at the ground — it is to arrive ready physically, mentally and practically to make the session count."
+    high: {
+      title: "High Performance Directive — Reinforce, Own & Maintain",
+      detail: "A high score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.\n• Confirm the routine: Identify the habits that help the player arrive organised, focused and ready.\n• Build ownership: Encourage the player to take responsibility for equipment, warm-up, hydration and personal goals.\n• Connect preparation to performance: Help them see how good preparation improves confidence, concentration and execution.\n• Prepare for different demands: Teach the player to adjust for travel, weather, pitch conditions, aggressive opposition, questionable umpires and different roles.\n• Monitor consistency: Make sure preparation standards remain high for every practice and match.\nCoach Summary: reinforce, own and maintain. Goal: arrive ready, so performance has the best possible chance to follow."
+    },
+    avg: {
+      title: "Developing Performance Directive — Standardize & Own",
+      detail: "A medium score shows the player follows standard preparation habits but can improve consistency and mental readiness before matches. The focus now is to refine pre-session routines and build personal ownership.\n• Standardize Routines: Follow a consistent physical warm-up, kit check, and mental prep routine.\n• Visualize Match Roles: Spend 5 minutes before play mentally rehearsing key match scenarios.\n• Arrive Match Ready: Settle mentally and complete all preparation before stepping onto the field.\nCoach Summary: standardize, visualize and own."
+    },
+    low: {
+      title: "Priority Development Directive — Clarify, Organise & Improve",
+      detail: "A low score shows that the player needs consistent pre-match and pre-session preparation habits. The focus now is to establish structured routines, build personal accountability, and arrive ready for competition.\n• Identify what is missing: Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?\n• Set clear expectations: Make sure the player knows what ready should look like.\n• Create a simple checklist: Keep equipment, hydration, warm-up and role preparation easy to follow.\n• Build responsibility gradually: Give the player age-appropriate ownership instead of letting others do everything for them.\n• Review the impact: Show how poor preparation may have affected the quality of practice or match performance.\nCoach Summary: clarify, organise and improve. Goal: arrive ready, so performance has the best possible chance to follow."
+    }
   },
-  "Game Awareness": {
-    title: "Develop Tactical Game Awareness & Match Reading",
-    detail: "This player is not yet reading the wider match context effectively — they may be so focused on their own individual performance that they stop tracking the score, opposition plans, field changes and shifting momentum. Begin by identifying what the player consistently misses during matches and clarify which details matter most at different stages of the game. Use simple awareness questions regularly during practice: 'What's happening?', 'What might happen next?' and 'What does your role require right now?' Recreate match situations through scenario-based games that require players to respond to changing scores, conditions and tactical demands in real time. Review specific moments where the player became disconnected from the contest and discuss what information could have helped them respond differently. Develop forward thinking by encouraging anticipation of the next delivery, possible field change, bowling adjustment or batting response. The goal is not simply to watch the game — it is to recognise what is changing, understand what it means and respond before the opportunity has passed."
+  "Intensity": {
+    high: {
+      title: "High Performance Directive — Channel, Challenge & Sustain",
+      detail: "A high score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.\n• Confirm what is working: Identify the habits that help the player stay switched on and competitive.\n• Channel the energy: Make sure intensity remains controlled and does not become rushed or reckless.\n• Increase the challenge: Use tougher drills and match situations at practice that demand sustained effort.\n• Protect skill quality: Check that technique and decision making remain strong as intensity rises.\n• Encourage positive influence: Use the player’s energy to lift teammates and team standards.\nCoach Summary: channel, challenge and sustain. Goal: bring the right energy, with the right purpose, for the demands of the moment."
+    },
+    avg: {
+      title: "Developing Performance Directive — Sustain & Engage",
+      detail: "A medium score shows the player brings good energy but experiences periodic intensity lulls during long sessions or matches. The focus now is to sustain competitive effort and maintain active engagement.\n• Sustain Consistent Effort: Eliminate energy lulls between overs or drill sets.\n• Set Session Benchmarks: Use clear physical and target benchmarks to maintain urgency in nets.\n• Active Fielding Effort: Attack the ball in the field, communicate loudly, and stay alert.\nCoach Summary: sustain, target and engage."
+    },
+    low: {
+      title: "Priority Development Directive — Identify, Engage & Rebuild",
+      detail: "A low score shows that the player needs higher competitive energy and focus during practice and matches. The focus now is to set clear targets, build effort habits, and maintain intensity throughout sessions.\n• Identify the reason: Is the player tired, distracted, bored, low on confidence or unclear about the task?\n• Clarify the standard: Explain what good intensity should look like in movement, effort and involvement.\n• Set short targets: Give the player immediate goals to create urgency and focus.\n• Increase involvement: Use competitive drills and clearer roles to keep the player engaged.\n• Review the response: Check whether the player’s energy improves when the challenge becomes more meaningful.\nCoach Summary: identify, engage and rebuild. Goal: bring the right energy, with the right purpose, for the demands of the moment."
+    }
   },
-  "Adaptability": {
-    title: "Build Adaptability & Response to Changing Conditions",
-    detail: "This player struggles to adjust when conditions, instructions, roles or challenges change during play. The resistance may stem from confusion, anxiety, technical limitation, rigid thinking or fear of making mistakes. Start by explaining what has changed before asking the player to adjust their response — clarity reduces anxiety. Offer two or three practical solutions rather than overwhelming them with instructions. Introduce small, controlled variations gradually before progressing to more unpredictable and demanding scenarios. After each adaptation challenge, review what the player noticed, what they tried and what they would do differently next time. Develop independent thinking by asking the player what adjustment is required and why they have chosen a particular response. Test decision-making under pressure by introducing time limits, changing targets and competitive consequences. Protect the fundamentals throughout — ensure the player adapts without abandoning the technical and tactical basics that support reliable performance. The goal is not to change for the sake of change — it is to recognise what the situation demands and make the smallest effective adjustment."
-  },
-  "Discipline": {
-    title: "Strengthen Discipline & Behavioural Standards",
-    detail: "This player's discipline score suggests difficulty following instructions, maintaining standards and controlling behaviour consistently. Identify whether the cause is unclear expectations, boredom, frustration, immaturity, poor habits or problems outside cricket. Clarify exactly what acceptable behaviour looks like in practice and matches — punctuality, effort, self-control and respect for the environment. Set fair, consistent, age-appropriate consequences that correct behaviour without humiliating the player. Give the player ownership by asking them to reflect on the behaviour, its effect on teammates and what they will do differently. Monitor patterns to identify the situations, people or emotions that trigger poor discipline. Build responsibility gradually through leadership tasks, personal targets and greater ownership of their own development. Protect independent thinking — ensure discipline does not become fear, silence or an unwillingness to question and learn. The goal is not a player who behaves only when watched — it is a player who chooses the right standard because they understand its value to themselves and the team."
-  },
-  "Teamwork": {
-    title: "Improve Team Contribution & Collaborative Play",
-    detail: "This player is not yet contributing effectively to the collective performance of the team. The cause may be excessive focus on personal performance, unclear role understanding, frustration with teammates or lacking confidence. Clarify what effective teamwork looks like in partnerships, communication, fielding support and response to mistakes. Assign specific responsibilities such as communicating between overs with a partner, supporting a bowler during a difficult spell or maintaining fielding energy during quiet periods. Address any negative behaviour directly — challenge blaming, poor body language, selfish decision making or withdrawal from the contest. Help the player understand how their behaviour affects teammates, momentum and the team's ability to compete collectively. Encourage specific, useful match communication about the pitch, field changes, scoring options and bowling plans rather than empty noise. Build visible leadership through urgency in the field, positive body language, backing up every throw and encouraging composure under pressure. The goal is not simply to play in a team — it is to understand your role, support others and contribute to something greater than your own performance."
-  },
-  "Coachability": {
-    title: "Enhance Coachability & Openness to Feedback",
-    detail: "This player shows resistance to coaching feedback, which may stem from confusion, embarrassment, defensiveness, fear of failure or insufficient trust in the coaching relationship. Improve the delivery of feedback by making it clear, specific, age-appropriate and focused on behaviour or performance rather than personality. Limit instruction to one useful correction at a time and allow enough opportunity for the player to apply it before adding more. Invite participation by asking the player what they noticed, what they think went wrong and what solution they would try — this builds ownership of the learning process. Build trust gradually by recognising effort, improvement and honest questions so the player feels safe enough to learn from mistakes without fear of judgement. Deepen conversations by asking what the player understood, what they felt and how they intend to apply feedback in the next session. The goal is not a player who silently accepts every instruction — it is a player who listens carefully, thinks critically and turns useful feedback into meaningful improvement."
-  },
-  "Work Ethic": {
-    title: "Develop Consistent Work Ethic & Competitive Drive",
-    detail: "This player's work ethic needs strengthening to meet the demands of sustained improvement and competitive performance. Identify whether the issue stems from low motivation, unclear goals, fatigue, lack of purpose or insufficient challenge in training. Set clear, measurable expectations for effort, communication and involvement in every session — not just when the player feels motivated. Create short-term targets that provide immediate purpose and connect daily effort to longer-term development goals. Use competitive drills with clear consequences to build the habit of sustained application under pressure. Monitor whether the player's effort remains consistent across the full session, not just during drills they enjoy or when receiving individual attention. Encourage the player to take ownership of their development by setting personal goals, tracking their own progress and arriving at sessions with a clear plan of what they want to improve. Build accountability by reviewing effort patterns honestly and connecting work habits directly to match performance outcomes. The goal is a player who competes with purpose, maintains standards without supervision and understands that consistent work ethic is the foundation of all meaningful improvement."
-  },
-  "Emotional Control": {
-    title: "Develop Emotional Regulation & Composure",
-    detail: "This player struggles to manage frustration, excitement, anxiety or disappointment during competitive play, which directly impacts their decision making and execution. Begin by identifying the specific triggers — whether the player reacts most strongly to mistakes, dismissal, dropped chances, poor deliveries, criticism, sledging or umpiring decisions. Teach a simple reset response: step away from the crease or mark, take a controlled breath, name the emotion internally and refocus attention on the next ball. Set clear behavioural boundaries — anger, dissent, blaming teammates and damaging equipment are unacceptable responses regardless of the situation. Review incidents privately, focusing on the behaviour, its impact on the team and a better response next time. Practise pressure deliberately by recreating difficult scenarios so the player can rehearse remaining calm and making effective decisions under emotional load. Do not label the player as emotional or difficult — young cricketers often need structured support to understand what they feel and how to respond constructively. The goal is not to remove emotion from cricket — it is to ensure that emotion provides energy without taking away judgement, discipline or control."
+  "Focus": {
+    high: {
+      title: "High Performance Directive — Reinforce, Challenge & Sustain",
+      detail: "A high score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.\n• Confirm the routine: Identify what helps the player stay present, mentally switched on and preserving their concentration energy.\n• Increase the challenge: Use longer, more demanding drills and match scenarios in practice that test concentration.\n• Reinforce reset habits: Encourage simple routines between balls, overs or repetitions.\n• Protect calm thinking: Make sure strong focus does not become tension or overthinking.\n• Monitor consistency: Check whether the player can stay focused when tired, frustrated or under pressure.\nCoach Summary: reinforce, challenge and sustain. Goal: stay present, reset quickly and give the next ball your full attention."
+    },
+    avg: {
+      title: "Developing Performance Directive — Reset & Reconfinement",
+      detail: "A medium score shows the player has solid concentration with occasional focus lapses during prolonged play. The focus now is to strengthen ball-by-ball reset routines and build mental stamina.\n• Ball-by-Ball Reconfinement: Use a focal trigger to lock in complete attention before every delivery.\n• Filter Distractions: Practice staying switched on despite noise, fatigue, or bad decisions.\n• Track Focus Durations: Notice when concentration drifts and trigger an instant mental reset.\nCoach Summary: reset, focus and sustain."
+    },
+    low: {
+      title: "Priority Development Directive — Simplify, Reset & Rebuild",
+      detail: "A low score shows that the player experiences concentration lapses during demanding periods. The focus now is to shorten focus tasks, introduce mental reset triggers, and sustain attention ball by ball.\n• Identify the cause: Is the player distracted, tired, anxious, bored or unclear about what matters?\n• Simplify the task: Give one clear focus point rather than too many instructions.\n• Teach a reset: Use a simple routine to help the player reconnect after mistakes or distractions.\n• Create shorter challenges: Break practice into smaller, purposeful blocks.\n• Review the pattern: Look for when focus drops and what tends to trigger it.\nCoach Summary: simplify, reset and rebuild. Goal: stay present, reset quickly and give the next ball your full attention."
+    }
   },
   "Resilience": {
-    title: "Strengthen Resilience & Bounce-Back Capacity",
-    detail: "Resilience measures how well a player responds to pressure, mistakes, disappointment and setbacks during a match. Separate the moment from the player: help them understand that one poor delivery or error does not define their ability. Teach a simple reset process for releasing the previous moment and reconnecting with the next task. Recreate pressure scenarios safely in practice so the player rehearses remaining composed under stress. Focus on how quickly and effectively the player returns to the contest. The goal is to recover quickly enough so the next ball is not controlled by the last one."
+    high: {
+      title: "High Performance Directive — Reinforce, Challenge & Lead",
+      detail: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.\n• Confirm the response: Ask what the player did after a mistake, difficult period or disappointing outcome to regain control.\n• Reinforce the reset routine: Help the player maintain simple habits such as stepping away, breathing, refocusing and committing to the next ball.\n• Increase the challenge: Expose the player to demanding practice and training scenarios where momentum, pressure and emotions change quickly.\n• Develop leadership under pressure: Encourage the player to remain composed, communicate positively and help teammates recover from setbacks.\n• Monitor emotional control: Ensure resilience does not become emotional suppression, denial or pretending that disappointment does not matter.\nCoach Summary: reinforce, challenge and lead. Goal: unshakeable mental toughness under competitive pressure."
+    },
+    avg: {
+      title: "Developing Performance Directive — Compose & Recover",
+      detail: "A medium score shows the player handles standard match pressure reasonably well but can bounce back faster from unexpected setbacks. The focus now is to strengthen post-error recovery routines and build composure.\n• Bounce Back Quicker: Cut down emotional dwell time after a boundary, drop, or bad shot.\n• Maintain Positive Posture: Keep strong, upright body language regardless of match score.\n• Accept Coaching Cues: Process mid-game advice constructively without losing self-belief.\nCoach Summary: compose, recover and push."
+    },
+    low: {
+      title: "Priority Development Directive — Understand, Reset & Rebuild",
+      detail: "A low score shows that the player struggles to bounce back quickly from errors under pressure. The focus now is to build emotional control, practice recovery routines, and strengthen mental toughness.\n• Identify the trigger: Establish whether the player struggles most after mistakes, poor decisions, umpiring calls, criticism, failure or pressure from the match situation.\n• Separate the moment from the player: Help them understand that one poor ball, shot or fielding error does not define their ability or contribution.\n• Teach a simple reset: Give the player a repeatable process for releasing the previous moment and reconnecting with the next task.\n• Recreate pressure safely: Use competitive scenarios that allow the player to practise responding to mistakes and changing momentum.\n• Review the recovery: Focus not only on what went wrong, but how quickly and effectively the player returned to the contest.\nCoach Summary: understand, reset and rebuild. Goal: recover quickly enough that the next ball is not controlled by the last one."
+    }
   }
 };
+
+// Aliases for alternate key naming across historical backend records
+coachingRecommendations["Skills Level"] = coachingRecommendations["Skill Level"];
+coachingRecommendations["Concentration"] = coachingRecommendations["Focus"];
 
 const computeFocusAreasForPlayer = (
   player: Player,
   practiceHistory: any[],
   matchHistory: any[]
 ): { title: string; detail: string }[] => {
-  const metricSums: Record<string, { sum: number; count: number }> = {};
+  const paramDefs = [
+    { name: "Technical Execution", keys: ["technicalExecution"] },
+    { name: "Skill Level", keys: ["skillsLevel", "technique"] },
+    { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
+    { name: "Preparation", keys: ["preparation"] },
+    { name: "Intensity", keys: ["intensity"] },
+    { name: "Focus", keys: ["focus", "concentration"] },
+    { name: "Resilience", keys: ["resilience", "emotionalControl", "adaptability"] }
+  ];
 
-  const addMetric = (key: string, val: number | undefined | null) => {
-    if (val === undefined || val === null || val <= 0) return;
-    if (!metricSums[key]) {
-      metricSums[key] = { sum: 0, count: 0 };
+  const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])];
+
+  const rankedParams = paramDefs.map((p) => {
+    let scores: number[] = [];
+    allAssessments.forEach((s: any) => {
+      p.keys.forEach((k) => {
+        if (typeof s[k] === "number" && s[k] > 0) {
+          scores.push(s[k]);
+        }
+      });
+    });
+
+    let avg = 7.2;
+    if (scores.length > 0) {
+      avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      avg = Math.round(avg * 10) / 10;
+    } else if (player.ppiScore || player.mpiScore) {
+      const ppi = player.ppiScore || 0;
+      const mpi = player.mpiScore || 0;
+      avg = (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2 : (ppi > 0 ? ppi : mpi);
+      avg = Math.round(avg * 10) / 10;
     }
-    metricSums[key].sum += val;
-    metricSums[key].count += 1;
-  };
 
-  (practiceHistory || []).forEach((p: any) => {
-    addMetric("Technical Execution", p.technicalExecution);
-    addMetric("Skill Level", p.skillsLevel || p.technique);
-    addMetric("Game Plan", p.gamePlan || p.decisionMaking || p.gameAwareness);
-    addMetric("Preparation", p.preparation);
-    addMetric("Intensity", p.intensity);
-    addMetric("Focus", p.focus || p.concentration);
-    addMetric("Resilience", p.resilience || p.emotionalControl || p.adaptability);
-    addMetric("Concentration", p.concentration);
-    addMetric("Decision Making", p.decisionMaking);
-    addMetric("Game Awareness", p.gameAwareness);
-    addMetric("Adaptability", p.adaptability);
-    addMetric("Discipline", p.discipline);
-    addMetric("Teamwork", p.teamwork);
-    addMetric("Coachability", p.coachability);
-    addMetric("Work Ethic", p.workEthic);
-    addMetric("Emotional Control", p.emotionalControl);
+    const recEntry = coachingRecommendations[p.name];
+    let recTier = recEntry ? (avg >= 7.0 ? recEntry.high : avg <= 5.0 ? recEntry.low : recEntry.avg) : null;
+
+    return {
+      name: p.name,
+      avg,
+      title: recTier ? `${p.name} — ${recTier.title} (${avg.toFixed(1)}/10)` : `${p.name} (${avg.toFixed(1)}/10)`,
+      detail: recTier ? recTier.detail : "Maintain parameter execution consistency."
+    };
   });
 
-  (matchHistory || []).forEach((m: any) => {
-    addMetric("Technical Execution", m.technicalExecution);
-    addMetric("Skill Level", m.skillsLevel);
-    addMetric("Game Plan", m.gamePlan || m.decisionMaking || m.gameAwareness);
-    addMetric("Preparation", m.preparation);
-    addMetric("Intensity", m.intensity);
-    addMetric("Focus", m.focus || m.concentration);
-    addMetric("Resilience", m.resilience || m.emotionalControl || m.adaptability);
-    addMetric("Concentration", m.concentration);
-    addMetric("Decision Making", m.decisionMaking);
-    addMetric("Game Awareness", m.gameAwareness);
-    addMetric("Adaptability", m.adaptability);
-    addMetric("Discipline", m.discipline);
-    addMetric("Teamwork", m.teamwork);
-    addMetric("Coachability", m.coachability);
-    addMetric("Work Ethic", m.workEthic);
-    addMetric("Emotional Control", m.emotionalControl);
-  });
+  // Rank all 7 parameters from strongest (highest score) to weakest (lowest score)
+  rankedParams.sort((a, b) => b.avg - a.avg);
 
-  let focusAreas: { title: string; detail: string }[] = [];
-
-  if (Object.keys(metricSums).length > 0) {
-    const sortedMetrics = Object.entries(metricSums)
-      .map(([name, data]) => ({ name, avg: data.sum / data.count }))
-      .sort((a, b) => a.avg - b.avg);
-
-    const weakest5 = sortedMetrics
-      .filter(m => coachingRecommendations[m.name])
-      .slice(0, 5);
-
-    focusAreas = weakest5.map(m => ({
-      title: `${coachingRecommendations[m.name].title} (Avg: ${m.avg.toFixed(1)}/10)`,
-      detail: coachingRecommendations[m.name].detail
-    }));
-  }
-
-  if (focusAreas.length < 5) {
-    const defaultPool = [
-      coachingRecommendations["Technical Execution"],
-      coachingRecommendations["Focus"],
-      coachingRecommendations["Preparation"],
-      coachingRecommendations["Intensity"],
-      coachingRecommendations["Game Plan"],
-      coachingRecommendations["Skill Level"],
-      coachingRecommendations["Resilience"]
-    ].filter(Boolean);
-
-    for (const item of defaultPool) {
-      if (focusAreas.length >= 5) break;
-      if (!focusAreas.some(f => f.title === item.title || f.detail === item.detail)) {
-        focusAreas.push(item);
-      }
-    }
-  }
-
-  return focusAreas.slice(0, 5);
+  return rankedParams.map((p) => ({
+    title: p.title,
+    detail: p.detail
+  }));
 };
 
 const loadHighResLogo = (): Promise<string> => {
