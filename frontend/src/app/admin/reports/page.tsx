@@ -152,8 +152,10 @@ export default function AdminReportsPage() {
         helpItems: helpConfig
       };
 
+      const { helpJson, ...cleanConfigRaw } = fullConfigRaw;
+
       const updatedPayload = {
-        ...fullConfigRaw,
+        ...cleanConfigRaw,
         reportsJson: JSON.stringify(reportsPayloadObj),
         changeLogsJson: JSON.stringify([
           { time: new Date().toISOString(), section: "Reports Management", action: "Updated report templates & Help & Information guides", user: "cpi@admin.com" }
