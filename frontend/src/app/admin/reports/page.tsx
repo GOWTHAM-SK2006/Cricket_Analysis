@@ -66,6 +66,53 @@ export default function AdminReportsPage() {
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
   const [previewTab, setPreviewTab] = useState<"editor" | "preview">("preview");
 
+  const parseReportsConfig = (data: any) => {
+    let helpItemsParsed: HelpItem[] | null = null;
+
+    if (data.reportsJson) {
+      try {
+        let parsed = typeof data.reportsJson === "string" ? JSON.parse(data.reportsJson) : data.reportsJson;
+        if (typeof parsed === "string") {
+          parsed = JSON.parse(parsed);
+        }
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          setReportConfig({
+            heading: parsed.heading ?? DEFAULT_REPORT_CONFIG.heading,
+            subheading: parsed.subheading ?? DEFAULT_REPORT_CONFIG.subheading,
+            section3Title: parsed.section3Title ?? DEFAULT_REPORT_CONFIG.section3Title,
+            recommendationWording: parsed.recommendationWording ?? DEFAULT_REPORT_CONFIG.recommendationWording,
+            strengthWeaknessWording: parsed.strengthWeaknessWording ?? DEFAULT_REPORT_CONFIG.strengthWeaknessWording,
+            scoreFormatNote: parsed.scoreFormatNote ?? DEFAULT_REPORT_CONFIG.scoreFormatNote,
+          });
+
+          if (Array.isArray(parsed.helpItems) && parsed.helpItems.length > 0) {
+            helpItemsParsed = parsed.helpItems;
+          }
+        }
+      } catch (e) {
+        console.error("Error parsing reportsJson", e);
+      }
+    }
+
+    if (!helpItemsParsed && data.helpJson) {
+      try {
+        let parsedHelp = typeof data.helpJson === "string" ? JSON.parse(data.helpJson) : data.helpJson;
+        if (typeof parsedHelp === "string") {
+          parsedHelp = JSON.parse(parsedHelp);
+        }
+        if (Array.isArray(parsedHelp) && parsedHelp.length > 0) {
+          helpItemsParsed = parsedHelp;
+        }
+      } catch (e) {
+        console.error("Error parsing helpJson in reports page", e);
+      }
+    }
+
+    if (helpItemsParsed) {
+      setHelpConfig(helpItemsParsed);
+    }
+  };
+
   useEffect(() => {
     fetchReportConfig();
   }, []);
@@ -73,29 +120,14 @@ export default function AdminReportsPage() {
   const fetchReportConfig = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
       const res = await fetch("/api/admin/config", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
         setFullConfigRaw(data);
-        if (data.reportsJson) {
-          try {
-            const parsed = JSON.parse(data.reportsJson);
-            if (parsed && typeof parsed === "object") setReportConfig(parsed);
-          } catch (e) {
-            console.error("Error parsing reportsJson", e);
-          }
-        }
-        if (data.helpJson) {
-          try {
-            const parsedHelp = JSON.parse(data.helpJson);
-            if (Array.isArray(parsedHelp) && parsedHelp.length > 0) setHelpConfig(parsedHelp);
-          } catch (e) {
-            console.error("Error parsing helpJson", e);
-          }
-        }
+        parseReportsConfig(data);
       }
     } catch (err) {
       showToast("Could not load report configuration", "error");
@@ -113,11 +145,16 @@ export default function AdminReportsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
+      
+      const reportsPayloadObj = {
+        ...reportConfig,
+        helpItems: helpConfig
+      };
+
       const updatedPayload = {
         ...fullConfigRaw,
-        reportsJson: JSON.stringify(reportConfig),
-        helpJson: JSON.stringify(helpConfig),
+        reportsJson: JSON.stringify(reportsPayloadObj),
         changeLogsJson: JSON.stringify([
           { time: new Date().toISOString(), section: "Reports Management", action: "Updated report templates & Help & Information guides", user: "cpi@admin.com" }
         ])
@@ -133,6 +170,10 @@ export default function AdminReportsPage() {
       });
 
       if (!res.ok) throw new Error("Failed to save configuration");
+
+      const data = await res.json();
+      setFullConfigRaw(data);
+      parseReportsConfig(data);
 
       showToast("Report templates and Help & Information content saved successfully!", "success");
     } catch (err: any) {

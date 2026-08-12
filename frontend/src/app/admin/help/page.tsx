@@ -274,6 +274,59 @@ export default function AdminHelpPage() {
   const [scoreTab, setScoreTab] = useState<"high" | "medium" | "low">("high");
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
 
+  const parseHelpJson = (raw: any): FullHelpConfig | null => {
+    if (!raw) return null;
+    try {
+      let parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+      if (typeof parsed === "string") {
+        parsed = JSON.parse(parsed);
+      }
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        const rawData = Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0
+          ? parsed.coachPlanData
+          : (Array.isArray(parsed.coachPlan) ? parsed.coachPlan : null);
+
+        const sanitizedPlans = DEFAULT_COACH_PLAN_DATA.map((defPlan, idx) => {
+          const item = (rawData && rawData[idx]) ? rawData[idx] : {};
+          return {
+            ...defPlan,
+            ...item,
+            id: item.id || defPlan.id,
+            name: item.name || defPlan.name,
+            description: item.description || defPlan.description,
+            highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints.slice(0, 3) : defPlan.highPoints.slice(0, 3),
+            mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints.slice(0, 3) : (defPlan.mediumPoints?.slice(0, 3) || []),
+            lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints.slice(0, 3) : defPlan.lowPoints.slice(0, 3),
+            highSummary: item.highSummary || defPlan.highSummary,
+            mediumSummary: item.mediumSummary || defPlan.mediumSummary,
+            lowSummary: item.lowSummary || defPlan.lowSummary,
+            coachSummary: {
+              overview: item.coachSummary?.overview || defPlan.coachSummary.overview,
+              high: item.coachSummary?.high || defPlan.coachSummary.high,
+              medium: item.coachSummary?.medium || defPlan.coachSummary.medium,
+              low: item.coachSummary?.low || defPlan.coachSummary.low,
+              goal: item.coachSummary?.goal || defPlan.coachSummary.goal
+            }
+          };
+        });
+
+        return {
+          welcomeText: parsed.welcomeText ?? DEFAULT_FULL_HELP.welcomeText,
+          coachPlanData: sanitizedPlans,
+          ppiDescription: parsed.ppiDescription ?? DEFAULT_FULL_HELP.ppiDescription,
+          mpiDescription: parsed.mpiDescription ?? DEFAULT_FULL_HELP.mpiDescription,
+          cpiDescription: parsed.cpiDescription ?? DEFAULT_FULL_HELP.cpiDescription,
+          below5Text: parsed.below5Text ?? DEFAULT_FULL_HELP.below5Text,
+          between5And7Text: parsed.between5And7Text ?? DEFAULT_FULL_HELP.between5And7Text,
+          above7Text: parsed.above7Text ?? DEFAULT_FULL_HELP.above7Text,
+        };
+      }
+    } catch (e) {
+      console.error("Error parsing helpJson", e);
+    }
+    return null;
+  };
+
   useEffect(() => {
     fetchHelpConfig();
   }, []);
@@ -281,7 +334,7 @@ export default function AdminHelpPage() {
   const fetchHelpConfig = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
       const res = await fetch("/api/admin/config", {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -289,50 +342,9 @@ export default function AdminHelpPage() {
         const data = await res.json();
         setFullConfigRaw(data);
         if (data.helpJson) {
-          try {
-            const parsed = JSON.parse(data.helpJson);
-            if (parsed && typeof parsed === "object") {
-              const rawData = Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0
-                ? parsed.coachPlanData
-                : DEFAULT_COACH_PLAN_DATA;
-
-              const sanitizedPlans = DEFAULT_COACH_PLAN_DATA.map((defPlan, idx) => {
-                const item = rawData[idx] || {};
-                return {
-                  ...defPlan,
-                  ...item,
-                  id: item.id || defPlan.id,
-                  name: item.name || defPlan.name,
-                  description: item.description || defPlan.description,
-                  highPoints: Array.isArray(item.highPoints) && item.highPoints.length > 0 ? item.highPoints.slice(0, 3) : defPlan.highPoints.slice(0, 3),
-                  mediumPoints: Array.isArray(item.mediumPoints) && item.mediumPoints.length > 0 ? item.mediumPoints.slice(0, 3) : defPlan.mediumPoints?.slice(0, 3) || [],
-                  lowPoints: Array.isArray(item.lowPoints) && item.lowPoints.length > 0 ? item.lowPoints.slice(0, 3) : defPlan.lowPoints.slice(0, 3),
-                  highSummary: item.highSummary || defPlan.highSummary,
-                  mediumSummary: item.mediumSummary || defPlan.mediumSummary,
-                  lowSummary: item.lowSummary || defPlan.lowSummary,
-                  coachSummary: {
-                    overview: item.coachSummary?.overview || defPlan.coachSummary.overview,
-                    high: item.coachSummary?.high || defPlan.coachSummary.high,
-                    medium: item.coachSummary?.medium || defPlan.coachSummary.medium,
-                    low: item.coachSummary?.low || defPlan.coachSummary.low,
-                    goal: item.coachSummary?.goal || defPlan.coachSummary.goal
-                  }
-                };
-              });
-
-              setHelpConfig({
-                welcomeText: parsed.welcomeText || DEFAULT_FULL_HELP.welcomeText,
-                coachPlanData: sanitizedPlans,
-                ppiDescription: parsed.ppiDescription || DEFAULT_FULL_HELP.ppiDescription,
-                mpiDescription: parsed.mpiDescription || DEFAULT_FULL_HELP.mpiDescription,
-                cpiDescription: parsed.cpiDescription || DEFAULT_FULL_HELP.cpiDescription,
-                below5Text: parsed.below5Text || DEFAULT_FULL_HELP.below5Text,
-                between5And7Text: parsed.between5And7Text || DEFAULT_FULL_HELP.between5And7Text,
-                above7Text: parsed.above7Text || DEFAULT_FULL_HELP.above7Text,
-              });
-            }
-          } catch (e) {
-            console.error("Error parsing helpJson", e);
+          const parsed = parseHelpJson(data.helpJson);
+          if (parsed) {
+            setHelpConfig(parsed);
           }
         }
       }
@@ -377,7 +389,7 @@ export default function AdminHelpPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token");
+      const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
       const updatedPayload = {
         ...fullConfigRaw,
         helpJson: JSON.stringify(helpConfig),
@@ -396,6 +408,15 @@ export default function AdminHelpPage() {
       });
 
       if (!res.ok) throw new Error("Failed to save Help & Information configuration");
+
+      const data = await res.json();
+      setFullConfigRaw(data);
+      if (data.helpJson) {
+        const parsed = parseHelpJson(data.helpJson);
+        if (parsed) {
+          setHelpConfig(parsed);
+        }
+      }
 
       showToast("Coach Help & Information content saved and synchronized!", "success");
     } catch (err: any) {
