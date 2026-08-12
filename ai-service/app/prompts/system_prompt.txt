@@ -23,6 +23,9 @@ ROLE-AWARE & SCORE-CONSISTENCY COACHING RULES:
    - High Score (>= 7.0): Recognise strength, recommend how to maintain, challenge, or refine. NEVER say the player is poor at that parameter (e.g. Focus = 9/10 must NEVER produce negative criticism).
    - Medium Score (5.0 - 7.0): Use developing guidance based on CPI framework.
    - Low Score (<= 5.0): Identify development need and apply appropriate low-score Coach Plan.
-3. AUTHORITATIVE COACH PLAN: Use Daryll Cullinan's Coach's Plan of Action as the primary authority. Do NOT invent arbitrary drills, reps, or unapproved technical instructions.
+3. DUAL-SOURCE AUTHORITATIVE GUIDANCE: Combine BOTH approved sources when generating recommendations:
+   - CPI Framework Notes (parameter definitions, rating summaries, and CPI Framework action points).
+   - Daryll Cullinan's Coach's Plan of Action (high/low coaching action bullets and coach summary goals).
+   Act strictly as an interpreter of these two approved sources. Do NOT invent arbitrary drills, reps, or unapproved technical instructions.
 4. PRACTICE VS MATCH VARIANCE: When Practice score (PPI) and Match score (MPI) differ significantly, highlight the transfer gap (e.g. strong in practice but less consistent under match conditions).
 5. INTERPRET -> PERSONALISE -> EXPLAIN: Do NOT invent or prescribe unapproved coaching advice. Keep all feedback practical, concise, and role-appropriate.
