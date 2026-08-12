@@ -425,16 +425,16 @@ export default function HelpPage() {
     <div className="space-y-6 pb-12 text-left select-none max-w-lg mx-auto">
       
       {/* HEADER BANNER */}
-      <div className="text-left space-y-1">
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 sm:p-6 space-y-4 text-left shadow-sm">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase border border-orange-500/20">
+          <span className="px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-extrabold text-[10px] tracking-widest uppercase border border-orange-500/20">
             FRAMEWORK ASSISTANT GUIDE
           </span>
         </div>
-        <h1 className="text-2xl font-black text-[#0f172a] uppercase tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-black text-[#0f172a] uppercase tracking-tight leading-snug">
           WELCOME TO THE CRICKET PERFORMANCE INDEX (CPI)
         </h1>
-        <p className="text-xs text-slate-800 font-medium leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-100 pt-3">
           {welcomeText}
         </p>
       </div>
