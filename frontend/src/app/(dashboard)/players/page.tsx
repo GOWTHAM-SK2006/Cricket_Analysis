@@ -2925,7 +2925,7 @@ export default function PlayersPage() {
 
           <form onSubmit={handlePracticeSubmit} className="space-y-6">
             {[
-              { label: "TECHNICAL EXECUTION", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
+              { label: "TECHNIQUE", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
               { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
               { label: "GAME PLAN", key: "gamePlan", desc: "Tactical strategy, role clarity, and game plan execution" },
               { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
@@ -3032,7 +3032,7 @@ export default function PlayersPage() {
 
           <form onSubmit={handleMatchSubmit} className="space-y-6">
             {[
-              { label: "TECHNICAL EXECUTION", key: "technicalExecution", desc: "Fundamentals under pressure and match execution" },
+              { label: "TECHNIQUE", key: "technicalExecution", desc: "Fundamentals under pressure and match execution" },
               { label: "SKILL LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
               { label: "GAME PLAN", key: "gamePlan", desc: "Adherence to match plan, tactical discipline, and situational awareness" },
               { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" },
