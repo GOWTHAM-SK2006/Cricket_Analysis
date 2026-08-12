@@ -35,212 +35,254 @@ interface CoachPlanItem {
 const coachPlanData: CoachPlanItem[] = [
   {
     id: "technical_execution",
-    name: "Technical Execution",
-    description: "Technical Execution measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
+    name: "Technique",
+    description: "The Technique Index measures how strong a player's basic technique is during practice and matches.",
     highPoints: [
-      { title: "PRESSURE TEST IT", detail: "Add pace, spin, fatigue, and tougher match scenarios in practice." },
-      { title: "PROTECT THE BASICS", detail: "Maintain and reinforce strong fundamentals, avoiding unnecessary changes." },
-      { title: "OWN THE CORRECTION", detail: "Encourage the player to recognise and self-correct technical drift." }
+      { title: "Fundamentals Are Reliable", detail: "Fundamentals Are Reliable" },
+      { title: "Technique Holds Up", detail: "Technique Holds Up" },
+      { title: "Movement Is Consistent", detail: "Movement Is Consistent" },
+      { title: "Self-Correction Is Strong", detail: "Self-Correction Is Strong" },
+      { title: "Technique Enables Performance", detail: "Technique Enables Performance" }
     ],
-    highSummary: "A high score shows the player has a strong, reliable technical base that holds up under pressure. The focus now is to protect the basics, keep raising the standard, and continue testing the technique in more demanding cricket situations.",
+    highSummary: "An elite score (7–10) shows reliable fundamentals, consistent movement, and strong self-correction under pressure. Technique enables high-level performance.",
     mediumPoints: [
-      { title: "REFINE CORE MECHANICS", detail: "Fix minor technical breakdowns that appear when pace or pressure rises." },
-      { title: "BUILD CONSISTENCY", detail: "Repeat sound technique across longer practice sets and multi-over spells." },
-      { title: "CONTROLLED PRESSURE NETS", detail: "Expose technique to moderate match drills with clear execution targets." }
+      { title: "Basics Are Sound", detail: "Basics Are Sound" },
+      { title: "Execution Is Improving", detail: "Execution Is Improving" },
+      { title: "Pressure Causes Drift", detail: "Pressure Causes Drift" },
+      { title: "Gaps Are Specific", detail: "Gaps Are Specific" },
+      { title: "Transfer Is Good", detail: "Transfer Is Good" }
     ],
-    mediumSummary: "A medium score shows the player has a functional technical foundation but requires greater consistency under pressure. The focus now is to refine core mechanics, eliminate minor breakdowns, and build repeatable technique.",
+    mediumSummary: "A developing score (5–7) shows sound basics with execution improving, though pressure can cause drift. Focus on specific technical gaps and consistent match transfer.",
     lowPoints: [
-      { title: "IDENTIFY MAIN ISSUE", detail: "Find the single technical breakdown having the greatest effect on performance." },
-      { title: "KEEP CORRECTION SIMPLE", detail: "Work on one clear technical cue rather than changing multiple things." },
-      { title: "RETURN TO BASICS", detail: "Slow down the movement in drill work before increasing execution speed." }
+      { title: "Basics Break Down", detail: "Basics Break Down" },
+      { title: "Movement Lacks Control", detail: "Movement Lacks Control" },
+      { title: "Pressure Exposes Faults", detail: "Pressure Exposes Faults" },
+      { title: "Faults Keep Returning", detail: "Faults Keep Returning" },
+      { title: "Technique Limits Performance", detail: "Technique Limits Performance" }
     ],
-    lowSummary: "A low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.",
+    lowSummary: "A score needing attention (0–5) shows that basic technique breaks down under pressure and limits performance. Focus on controlled movement and fundamental mechanics.",
     coachSummary: {
-      overview: "The Technical Execution Index helps the coach understand whether the player's technique is reliable enough to perform in both practice and matches.",
-      high: "protect, challenge and refine.",
-      medium: "refine, stabilize and test under moderate pressure.",
-      low: "identify, simplify and rebuild.",
-      goal: "develop a technique the player can trust and repeat when the game places it under pressure."
+      overview: "The Technique Index measures how strong a player's basic technique is during practice and matches.",
+      high: "Fundamentals are reliable, technique holds up, and self-correction is strong.",
+      medium: "Basics are sound and execution is improving, but pressure can cause drift.",
+      low: "Basics break down under pressure, movement lacks control, and technique limits performance.",
+      goal: "Technique enables performance through reliable, consistent fundamentals under match pressure."
     }
   },
   {
     id: "skill_level",
     name: "Skill Level",
-    description: "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches. It is not simply about how many skills they have. It is about how well they can use those skills as the level of difficulty, pressure and competition increases.",
+    description: "The Skill Level Index measures the quality and range of a player's skills during practice and matches.",
     highPoints: [
-      { title: "EXPAND SKILL VARIETY", detail: "Add secondary options and subtle variations that complement main strengths." },
-      { title: "INCREASE EXECUTION SPEED", detail: "Challenge execution under reduced reaction time and changing conditions." },
-      { title: "MONITOR MATCH TRANSFER", detail: "Ensure high-level skills practiced in nets translate directly into matches." }
+      { title: "Broad Skill Set", detail: "Broad Skill Set" },
+      { title: "Skills Are Reliable", detail: "Skills Are Reliable" },
+      { title: "Skills Hold Under Pressure", detail: "Skills Hold Under Pressure" },
+      { title: "Skills Are Adaptable", detail: "Skills Are Adaptable" },
+      { title: "Advanced Development Is Possible", detail: "Advanced Development Is Possible" }
     ],
-    highSummary: "A high score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.",
+    highSummary: "An elite score (7–10) shows a broad, adaptable skill set that holds under pressure, enabling advanced development and game control.",
     mediumPoints: [
-      { title: "CONSOLIDATE CORE SKILLS", detail: "Ensure primary batting strokes or bowling deliveries are 100% reliable." },
-      { title: "SCENARIO APPLICATION", detail: "Apply skills within specific field settings and match situation targets." },
-      { title: "BUILD EXECUTION DEPTH", detail: "Develop consistent control across different pitch types and lengths." }
+      { title: "Good Core Skills", detail: "Good Core Skills" },
+      { title: "Attack and Defence Are Developing", detail: "Attack and Defence Are Developing" },
+      { title: "Range Needs Expanding", detail: "Range Needs Expanding" },
+      { title: "Application Is Inconsistent", detail: "Application Is Inconsistent" },
+      { title: "Adaptability Is Growing", detail: "Adaptability Is Growing" }
     ],
-    mediumSummary: "A medium score shows the player possesses a solid basic skill set but needs greater execution variety and adaptability under match pressure. The focus now is to consolidate core skills and expand match options.",
+    mediumSummary: "A developing score (5–7) shows good core skills with growing adaptability, but range needs expansion and application remains inconsistent.",
     lowPoints: [
-      { title: "IDENTIFY SKILL GAP", detail: "Pinpoint missing or inconsistent fundamentals limiting match contribution." },
-      { title: "REPETITION & QUALITY", detail: "Build confidence and muscle memory through high-quality basic repetitions." },
-      { title: "MATCH DEMAND TO LEVEL", detail: "Focus on mastering basic skill execution before attempting complex variations." }
+      { title: "Skill Set Is Limited", detail: "Skill Set Is Limited" },
+      { title: "Core Skills Are Unreliable", detail: "Core Skills Are Unreliable" },
+      { title: "Options Are Limited", detail: "Options Are Limited" },
+      { title: "Pressure Reduces Skill", detail: "Pressure Reduces Skill" },
+      { title: "Below Current Requirement", detail: "Below Current Requirement" }
     ],
-    lowSummary: "A low score shows that the player needs to develop their core skill set and build greater execution consistency under pressure. The focus now is to identify skill gaps, rebuild fundamentals, and test skills in demanding cricket situations.",
+    lowSummary: "A score needing attention (0–5) shows a limited skill set with unreliable core skills under pressure. Focus on core skill repetition and building options.",
     coachSummary: {
-      overview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
-      high: "challenge, expand and apply.",
-      medium: "consolidate, expand and execute.",
-      low: "identify, build and repeat.",
-      goal: "develop the right skills, then make sure the player can use them when the game demands them."
+      overview: "The Skill Level Index measures the quality and range of a player's skills during practice and matches.",
+      high: "Broad, reliable skill set that holds under pressure and adapts quickly.",
+      medium: "Good core skills with growing adaptability, but range needs expanding.",
+      low: "Skill set is limited, core skills are unreliable, and pressure reduces execution.",
+      goal: "Build a broad, versatile skill set that remains reliable under match pressure."
     }
   },
   {
     id: "gameplan",
     name: "Game Plan",
-    description: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. The key question for the coach is simple: does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes.",
+    description: "The Game Plan Index measures whether the player has a clear and effective plan to train, practice and compete.",
     highPoints: [
-      { title: "CHALLENGE FLEXIBILITY", detail: "Expose the player to rapidly changing match situations requiring tactical shifts." },
-      { title: "REINFORCE ROLE MASTERY", detail: "Deepen understanding of phase-specific responsibilities in team tactics." },
-      { title: "ENCOURAGE INDEPENDENCE", detail: "Empower the player to make smart tactical choices on the field without instruction." }
+      { title: "Clear Strategy and Purpose", detail: "Clear Strategy and Purpose" },
+      { title: "Plan Fits the Situation and Role", detail: "Plan Fits the Situation and Role" },
+      { title: "Stays Ahead of the Game", detail: "Stays Ahead of the Game" },
+      { title: "Adapts Quickly", detail: "Adapts Quickly" },
+      { title: "Thinks Independently", detail: "Thinks Independently" }
     ],
-    highSummary: "A high score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.",
+    highSummary: "An elite score (7–10) shows a clear strategy and purpose that fits every role and situation, allowing the player to stay ahead of the game.",
     mediumPoints: [
-      { title: "CLARIFY MATCH ROLE", detail: "Define clear tactical objectives for their specific role in the team." },
-      { title: "IMPROVE MATCHUP AWARENESS", detail: "Study field placements, bowler/batter matchups, and scoring options." },
-      { title: "PRACTICE IN-GAME SHIFTS", detail: "Rehearse adjusting plans when early wickets fall or match conditions change." }
+      { title: "Basic Plan Is Evident", detail: "Basic Plan Is Evident" },
+      { title: "Role Awareness Is Good", detail: "Role Awareness Is Good" },
+      { title: "Plan Works in Periods", detail: "Plan Works in Periods" },
+      { title: "Adjustment Can Be Slow", detail: "Adjustment Can Be Slow" },
+      { title: "Independent Thinking Is Growing", detail: "Independent Thinking Is Growing" }
     ],
-    mediumSummary: "A medium score shows the player understands their game plan but occasionally struggles to adapt when match situations shift. The focus now is to sharpen role clarity, improve tactical adjustments, and build situational awareness.",
+    mediumSummary: "A developing score (5–7) shows good role awareness and a basic plan that works in periods, though in-game tactical adjustments can be slow.",
     lowPoints: [
-      { title: "SIMPLIFY THE PLAN", detail: "Give the player one simple, actionable objective to focus on." },
-      { title: "CONNECT DRILLS TO MATCHES", detail: "Run practice scenarios that mirror exact match situations they will face." },
-      { title: "REVIEW DECISION MAKING", detail: "Discuss post-play whether decisions matched the plan or were reactive." }
+      { title: "No Clear Plan", detail: "No Clear Plan" },
+      { title: "Role Is Unclear", detail: "Role Is Unclear" },
+      { title: "Mostly Reactive", detail: "Mostly Reactive" },
+      { title: "Plan Does Not Fit Role", detail: "Plan Does Not Fit Role" },
+      { title: "Relies on Instruction", detail: "Relies on Instruction" }
     ],
-    lowSummary: "A low score shows that the player needs clearer role understanding and tactical direction. The focus now is to simplify decision-making, establish clear match objectives, and test adaptability under pressure.",
+    lowSummary: "A score needing attention (0–5) shows an unclear role and reactive play, relying heavily on coach instruction. Focus on defining a simple match strategy.",
     coachSummary: {
-      overview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
-      high: "confirm, challenge and adapt.",
-      medium: "sharpen, adapt and execute.",
-      low: "clarify, simplify and rehearse.",
-      goal: "every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+      overview: "The Game Plan Index measures whether the player has a clear and effective plan to train, practice and compete.",
+      high: "Clear strategy and purpose, stays ahead of the game, and adapts quickly.",
+      medium: "Basic plan is evident with good role awareness, but tactical adjustments can be slow.",
+      low: "No clear plan, role is unclear, mostly reactive, and relies heavily on instruction.",
+      goal: "Develop independent tactical thinking with a clear strategy that fits every game situation."
     }
   },
   {
     id: "preparation",
     name: "Preparation",
-    description: "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches. The key question is: does the player arrive ready to make the most of the session or game? Good preparation gives performance a better chance before the first ball is even bowled.",
+    description: "The Preparation Index measures how well the player prepares physically and mentally for practices and matches.",
     highPoints: [
-      { title: "AUTOMATE ROUTINES", detail: "Make pre-session warm-ups, hydration, and goal setting completely automatic." },
-      { title: "PREPARE FOR EXTREMES", detail: "Plan ahead for adverse weather, slow pitches, travels, and tough umpires." },
-      { title: "BUILD PLAYER OWNERSHIP", detail: "Ensure the player takes full personal charge of equipment and readiness." }
+      { title: "Preparation Is Consistent", detail: "Preparation Is Consistent" },
+      { title: "Physically Ready", detail: "Physically Ready" },
+      { title: "Mentally Ready", detail: "Mentally Ready" },
+      { title: "Tactically Prepared", detail: "Tactically Prepared" },
+      { title: "Player-Led", detail: "Player-Led" }
     ],
-    highSummary: "A high score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.",
+    highSummary: "An elite score (7–10) shows consistent, player-led physical, mental, and tactical preparation before every session and match.",
     mediumPoints: [
-      { title: "STANDARDIZE ROUTINES", detail: "Follow a consistent physical warm-up, kit check, and mental prep routine." },
-      { title: "VISUALIZE MATCH ROLES", detail: "Spend 5 minutes before play mentally rehearsing key match scenarios." },
-      { title: "ARRIVE MATCH READY", detail: "Settle mentally and complete all preparation before stepping onto the field." }
+      { title: "Basic Routine Exists", detail: "Basic Routine Exists" },
+      { title: "Usually Ready to Perform", detail: "Usually Ready to Perform" },
+      { title: "Some Tactical Preparation", detail: "Some Tactical Preparation" },
+      { title: "Detail Is Inconsistent", detail: "Detail Is Inconsistent" },
+      { title: "Ownership Is Growing", detail: "Ownership Is Growing" }
     ],
-    mediumSummary: "A medium score shows the player follows standard preparation habits but can improve consistency and mental readiness before matches. The focus now is to refine pre-session routines and build personal ownership.",
+    mediumSummary: "A developing score (5–7) shows a basic routine with growing player ownership, though attention to preparation detail remains inconsistent.",
     lowPoints: [
-      { title: "IDENTIFY PREP GAPS", detail: "Fix disorganization, rushed arrivals, or lack of focus before sessions." },
-      { title: "USE A SIMPLE CHECKLIST", detail: "Create an easy equipment, hydration, and warm-up checklist to follow." },
-      { title: "SET CLEAR EXPECTATIONS", detail: "Establish what proper pre-session and pre-match readiness looks like." }
+      { title: "Physical Readiness Is Poor", detail: "Physical Readiness Is Poor" },
+      { title: "Mental Readiness Is Low", detail: "Mental Readiness Is Low" },
+      { title: "Little Tactical Thought", detail: "Little Tactical Thought" },
+      { title: "Purpose Is Unclear", detail: "Purpose Is Unclear" },
+      { title: "Coach Dependent", detail: "Coach Dependent" }
     ],
-    lowSummary: "A low score shows that the player needs consistent pre-match and pre-session preparation habits. The focus now is to establish structured routines, build personal accountability, and arrive ready for competition.",
+    lowSummary: "A score needing attention (0–5) shows poor physical/mental readiness and lack of tactical thought prior to play. Focus on basic pre-session routines.",
     coachSummary: {
-      overview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
-      high: "reinforce, own and maintain.",
-      medium: "standardize, visualize and own.",
-      low: "clarify, organise and improve.",
-      goal: "arrive ready, so performance has the best possible chance to follow."
+      overview: "The Preparation Index measures how well the player prepares physically and mentally for practices and matches.",
+      high: "Consistent, player-led preparation; physically, mentally, and tactically ready.",
+      medium: "Basic routine exists and usually ready, with growing personal ownership.",
+      low: "Physical and mental readiness is poor, purpose is unclear, and coach dependent.",
+      goal: "Build player-led, consistent preparation routines for physical, mental, and tactical readiness."
     }
   },
   {
     id: "intensity",
     name: "Intensity",
-    description: "Intensity measures the energy, purpose and competitive intent a player brings to both practice and matches. It's not about being loud or overactive. The key question is: does the player look fully engaged and ready to compete in the moment? Good intensity should support skill, decision making and team performance.",
+    description: "The Intensity Index measures the mental focus and competitive intent the player brings to practices and matches.",
     highPoints: [
-      { title: "CHANNEL ENERGY POSITIVELY", detail: "Keep competitive drive high while maintaining tactical discipline." },
-      { title: "LIFT SQUAD STANDARDS", detail: "Use competitive energy to inspire and raise standards for teammates." },
-      { title: "SUSTAIN IN HIGH FATIGUE", detail: "Maintain explosive effort and sharp movement during long spells and innings." }
+      { title: "Intensity Is Consistent", detail: "Intensity Is Consistent" },
+      { title: "Work Rate Remains High", detail: "Work Rate Remains High" },
+      { title: "No Distracted", detail: "No Distracted" },
+      { title: "Pressure Raises Engagement", detail: "Pressure Raises Engagement" },
+      { title: "Self-Driven Standards", detail: "Self-Driven Standards" }
     ],
-    highSummary: "A high score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.",
+    highSummary: "An elite score (7–10) shows consistent intensity, high work rate, and self-driven standards where pressure raises competitive engagement.",
     mediumPoints: [
-      { title: "SUSTAIN CONSISTENT EFFORT", detail: "Eliminate energy lulls between overs or drill sets." },
-      { title: "SET SESSION BENCHMARKS", detail: "Use clear physical and target benchmarks to maintain urgency in nets." },
-      { title: "ACTIVE FIELDING EFFORT", detail: "Attack the ball in the field, communicate loudly, and stay alert." }
+      { title: "Generally Good Energy", detail: "Generally Good Energy" },
+      { title: "Standards Occasionally Drop", detail: "Standards Occasionally Drop" },
+      { title: "Fatigue Has an Effect", detail: "Fatigue Has an Effect" },
+      { title: "Responds to Reminders", detail: "Responds to Reminders" },
+      { title: "Consistency Is Growing", detail: "Consistency Is Growing" }
     ],
-    mediumSummary: "A medium score shows the player brings good energy but experiences periodic intensity lulls during long sessions or matches. The focus now is to sustain competitive effort and maintain active engagement.",
+    mediumSummary: "A developing score (5–7) shows good energy and growing consistency, though fatigue can affect standards and occasional reminders are needed.",
     lowPoints: [
-      { title: "FIND THE ENERGY TRIGGER", detail: "Determine if low intensity stems from fatigue, boredom, or unclear goals." },
-      { title: "SET SHORT TARGETS", detail: "Break practice into short 5-minute competitive challenges." },
-      { title: "INCREASE INVOLVEMENT", detail: "Use active, high-touch drills to keep the player physically engaged." }
+      { title: "Effort Is Inconsistent", detail: "Effort Is Inconsistent" },
+      { title: "Energy Drops Easily", detail: "Energy Drops Easily" },
+      { title: "Fatigue Reduces Standards", detail: "Fatigue Reduces Standards" },
+      { title: "Competitive Intent Is Limited", detail: "Competitive Intent Is Limited" },
+      { title: "Needs External Motivation", detail: "Needs External Motivation" }
     ],
-    lowSummary: "A low score shows that the player needs higher competitive energy and focus during practice and matches. The focus now is to set clear targets, build effort habits, and maintain intensity throughout sessions.",
+    lowSummary: "A score needing attention (0–5) shows inconsistent effort, energy drops, and limited competitive intent without external motivation.",
     coachSummary: {
-      overview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
-      high: "channel, challenge and sustain.",
-      medium: "sustain, target and engage.",
-      low: "identify, engage and rebuild.",
-      goal: "bring the right energy, with the right purpose, for the demands of the moment."
+      overview: "The Intensity Index measures the mental focus and competitive intent the player brings to practices and matches.",
+      high: "Consistent high work rate, focused without distraction, and self-driven standards under pressure.",
+      medium: "Generally good energy with growing consistency, responding well to coach reminders.",
+      low: "Inconsistent effort, energy drops easily under fatigue, requiring external motivation.",
+      goal: "Maintain self-driven competitive intent and high intensity throughout every session and match."
     }
   },
   {
     id: "focus",
     name: "Focus",
-    description: "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches. The key question is: does the player stay engaged with what matters, or does their concentration drift when pressure, fatigue or distractions increase?",
+    description: "The Focus Index measures the player’s ability to stay mentally present despite setbacks or distractions during practices and matches.",
     highPoints: [
-      { title: "REINFORCE RESET ROUTINE", detail: "Maintain a quick physical/breath reset between balls to conserve focus." },
-      { title: "EXTEND CONCENTRATION SPANS", detail: "Test mental stamina with longer, unbroken practice scenarios." },
-      { title: "STAY CALM UNDER PRESSURE", detail: "Ensure intense focus remains relaxed and free from overthinking." }
+      { title: "Present Ball by Ball", detail: "Present Ball by Ball" },
+      { title: "Resets Quickly", detail: "Resets Quickly" },
+      { title: "Filters Distractions", detail: "Filters Distractions" },
+      { title: "Focus Lasts", detail: "Focus Lasts" },
+      { title: "Self-Manages Attention", detail: "Self-Manages Attention" }
     ],
-    highSummary: "A high score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.",
+    highSummary: "An elite score (7–10) shows present ball-by-ball concentration, fast mental resets, and total filtering of external distractions.",
     mediumPoints: [
-      { title: "BALL-BY-BALL RECONFINEMENT", detail: "Use a focal trigger to lock in complete attention before every delivery." },
-      { title: "FILTER DISTRACTIONS", detail: "Practice staying switched on despite noise, fatigue, or bad decisions." },
-      { title: "TRACK FOCUS DURATIONS", detail: "Notice when concentration drifts and trigger an instant mental reset." }
+      { title: "Focus Is Generally Good", detail: "Focus Is Generally Good" },
+      { title: "Concentration Can Drift", detail: "Concentration Can Drift" },
+      { title: "Reset Takes Time", detail: "Reset Takes Time" },
+      { title: "Pressure Tests Attention", detail: "Pressure Tests Attention" },
+      { title: "Routines Are Developing", detail: "Routines Are Developing" }
     ],
-    mediumSummary: "A medium score shows the player has solid concentration with occasional focus lapses during prolonged play. The focus now is to strengthen ball-by-ball reset routines and build mental stamina.",
+    mediumSummary: "A developing score (5–7) shows generally good focus with developing reset routines, though concentration can drift under pressure.",
     lowPoints: [
-      { title: "SIMPLIFY FOCAL POINTS", detail: "Focus on just one key cue instead of trying to process multiple inputs." },
-      { title: "TEACH 5-SECOND RESET", detail: "Use a simple physical trigger to reset after a mistake or distraction." },
-      { title: "SHORTER DRILL BLOCKS", detail: "Practice in brief 3-minute sets to build concentration step-by-step." }
+      { title: "Attention Regularly Drifts", detail: "Attention Regularly Drifts" },
+      { title: "Previous Moments Carry Over", detail: "Previous Moments Carry Over" },
+      { title: "Reads Situation Poorly", detail: "Reads Situation Poorly" },
+      { title: "Distractions Take Over", detail: "Distractions Take Over" },
+      { title: "Needs Frequent Reminders", detail: "Needs Frequent Reminders" }
     ],
-    lowSummary: "A low score shows that the player experiences concentration lapses during demanding periods. The focus now is to shorten focus tasks, introduce mental reset triggers, and sustain attention ball by ball.",
+    lowSummary: "A score needing attention (0–5) shows regular attention drift, distraction, and carrying errors from previous balls.",
     coachSummary: {
-      overview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      high: "reinforce, challenge and sustain.",
-      medium: "reset, focus and sustain.",
-      low: "simplify, reset and rebuild.",
-      goal: "stay present, reset quickly and give the next ball your full attention."
+      overview: "The Focus Index measures the player’s ability to stay mentally present despite setbacks or distractions during practices and matches.",
+      high: "Present ball by ball, resets quickly, filters distractions, and self-manages attention.",
+      medium: "Generally good focus with developing routines, though reset after error takes time.",
+      low: "Attention regularly drifts, previous moments carry over, and distractions take over.",
+      goal: "Stay mentally present ball by ball, filter distractions, and reset instantly after every error."
     }
   },
   {
     id: "resilience",
     name: "Resilience",
-    description: "Resilience measures how well a player responds to adversity, pressure, mistakes and setbacks in both practice and matches. The key question is: does the player maintain effort, focus and body language when things go wrong, or do they fold under pressure?",
+    description: "The Resilience Index measures how well a player responds when things don't go their way during practices and matches.",
     highPoints: [
-      { title: "ANCHOR CRUNCH MOMENTS", detail: "Step up to bowl tough overs or bat during difficult collapse phases." },
-      { title: "LEAD SQUAD RECOVERY", detail: "Guide teammates calmly when match momentum swings against the team." },
-      { title: "EXPOSE TO HARD DRILLS", detail: "Train in high-consequence drills where mistakes carry realistic penalty." }
+      { title: "Responds Constructively", detail: "Responds Constructively" },
+      { title: "Composure Holds", detail: "Composure Holds" },
+      { title: "Confidence Remains Stable", detail: "Confidence Remains Stable" },
+      { title: "Next Moment Is Protected", detail: "Next Moment Is Protected" },
+      { title: "Recovers Independently", detail: "Recovers Independently" }
     ],
-    highSummary: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
+    highSummary: "An elite score (7–10) shows constructive response to adversity, holding composure and stable confidence while protecting the next moment independently.",
     mediumPoints: [
-      { title: "BOUNCE BACK QUICKER", detail: "Cut down emotional dwell time after a boundary, drop, or bad shot." },
-      { title: "MAINTAIN POSITIVE POSTURE", detail: "Keep strong, upright body language regardless of match score." },
-      { title: "ACCEPT COACHING CUES", detail: "Process mid-game advice constructively without losing self-belief." }
+      { title: "Usually Recovers", detail: "Usually Recovers" },
+      { title: "Temporary Drop-Off", detail: "Temporary Drop-Off" },
+      { title: "Reset Habits Are Emerging", detail: "Reset Habits Are Emerging" },
+      { title: "Certain Triggers Remain", detail: "Certain Triggers Remain" },
+      { title: "Returns to the Contest", detail: "Returns to the Contest" }
     ],
-    mediumSummary: "A medium score shows the player handles standard match pressure reasonably well but can bounce back faster from unexpected setbacks. The focus now is to strengthen post-error recovery routines and build composure.",
+    mediumSummary: "A developing score (5–7) shows the player usually recovers from setbacks with emerging reset habits, returning to the contest after temporary drop-offs.",
     lowPoints: [
-      { title: "SEPARATE SELF FROM ERROR", detail: "Learn that one mistake does not define overall ability or value." },
-      { title: "POST-ERROR RESET ROUTINE", detail: "Take a deep breath and physically reset posture immediately post-mistake." },
-      { title: "BUILD CONFIDENCE GRADUALLY", detail: "Practice recovery in low-stakes scenarios to build emotional composure." }
+      { title: "Setbacks Have a Visible Effect", detail: "Setbacks Have a Visible Effect" },
+      { title: "Confidence Drops", detail: "Confidence Drops" },
+      { title: "Mistakes Compound", detail: "Mistakes Compound" },
+      { title: "Recovery Is Slow", detail: "Recovery Is Slow" },
+      { title: "Needs External Support", detail: "Needs External Support" }
     ],
-    lowSummary: "A low score shows that the player struggles to bounce back quickly from errors under pressure. The focus now is to build emotional control, practice recovery routines, and strengthen mental toughness.",
+    lowSummary: "A score needing attention (0–5) shows visible emotional drop-off after setbacks, compounding errors, and slow recovery.",
     coachSummary: {
-      overview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
-      high: "anchor, challenge and lead.",
-      medium: "compose, recover and push.",
-      low: "identify, reset and rebuild.",
-      goal: "develop unshakeable mental toughness under competitive pressure."
+      overview: "The Resilience Index measures how well a player responds when things don't go their way during practices and matches.",
+      high: "Responds constructively, composure holds, confidence remains stable, and recovers independently.",
+      medium: "Usually recovers with emerging reset habits, returning to the contest after temporary drop-offs.",
+      low: "Setbacks have a visible effect, confidence drops, mistakes compound, and recovery is slow.",
+      goal: "Respond constructively to adversity, maintain emotional composure, and protect the next moment."
     }
   }
 ];
@@ -290,25 +332,25 @@ export default function HelpPage() {
                   name: String(item?.name || item?.parameter || fallback.name),
                   description: String(item?.description || item?.explanation || fallback.description),
                   highPoints: Array.isArray(item?.highPoints) && item.highPoints.length > 0
-                    ? item.highPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
-                        title: String(pt?.title || fallback.highPoints[pIdx]?.title || "Action Point"),
+                    ? item.highPoints.map((pt: any, pIdx: number) => ({
+                        title: String(pt?.title || fallback.highPoints[pIdx]?.title || "Benchmark Point"),
                         detail: String(pt?.detail || fallback.highPoints[pIdx]?.detail || "")
                       }))
-                    : fallback.highPoints.slice(0, 3),
+                    : fallback.highPoints,
                   highSummary: String(item?.highSummary || item?.rangeHigh || fallback.highSummary),
                   mediumPoints: Array.isArray(item?.mediumPoints) && item.mediumPoints.length > 0
-                    ? item.mediumPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
-                        title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Action Point"),
+                    ? item.mediumPoints.map((pt: any, pIdx: number) => ({
+                        title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Benchmark Point"),
                         detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || "")
                       }))
-                    : fallback.mediumPoints?.slice(0, 3) || [],
+                    : fallback.mediumPoints || [],
                   mediumSummary: String(item?.mediumSummary || fallback.mediumSummary || ""),
                   lowPoints: Array.isArray(item?.lowPoints) && item.lowPoints.length > 0
-                    ? item.lowPoints.slice(0, 3).map((pt: any, pIdx: number) => ({
-                        title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Action Point"),
+                    ? item.lowPoints.map((pt: any, pIdx: number) => ({
+                        title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Benchmark Point"),
                         detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || "")
                       }))
-                    : fallback.lowPoints.slice(0, 3),
+                    : fallback.lowPoints,
                   lowSummary: String(item?.lowSummary || item?.rangeLow || fallback.lowSummary || ""),
                   coachSummary: {
                     overview: String(item?.coachSummary?.overview || fallback.coachSummary.overview),
@@ -346,10 +388,10 @@ export default function HelpPage() {
   const currentPlan = plans[selectedPlanIndex] || plans[0] || coachPlanData[0];
   const safeName = currentPlan?.name || "Parameter";
   const safeDescription = currentPlan?.description || "";
-  const safeHighPoints = Array.isArray(currentPlan?.highPoints) ? currentPlan.highPoints.slice(0, 3) : [];
-  const safeMediumPoints = Array.isArray(currentPlan?.mediumPoints) ? currentPlan.mediumPoints.slice(0, 3) : [];
-  const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints.slice(0, 3) : [];
-  const activePoints = (scoreTab === "high" ? safeHighPoints : scoreTab === "medium" ? safeMediumPoints : safeLowPoints).slice(0, 3);
+  const safeHighPoints = Array.isArray(currentPlan?.highPoints) ? currentPlan.highPoints : [];
+  const safeMediumPoints = Array.isArray(currentPlan?.mediumPoints) ? currentPlan.mediumPoints : [];
+  const safeLowPoints = Array.isArray(currentPlan?.lowPoints) ? currentPlan.lowPoints : [];
+  const activePoints = (scoreTab === "high" ? safeHighPoints : scoreTab === "medium" ? safeMediumPoints : safeLowPoints).slice(0, 10);
   const safeHighSummary = currentPlan?.highSummary || coachPlanData[selectedPlanIndex]?.highSummary || "";
   const safeMediumSummary = currentPlan?.mediumSummary || coachPlanData[selectedPlanIndex]?.mediumSummary || coachPlanData[0]?.mediumSummary || "";
   const safeLowSummary = currentPlan?.lowSummary || coachPlanData[selectedPlanIndex]?.lowSummary || "";
@@ -357,46 +399,45 @@ export default function HelpPage() {
     overview: "Overview of parameter performance.",
     high: "protect and refine.",
     medium: "refine and stabilize.",
-    low: "simplify and rebuild.",
+    low: "identify and rebuild.",
     goal: "develop consistent performance under pressure."
   };
 
   return (
-    <div className="space-y-6 pb-12 select-none max-w-2xl mx-auto text-left">
+    <div className="space-y-6 pb-12 text-left select-none max-w-lg mx-auto">
       
-      {/* Title */}
-      <div className="space-y-2 text-center">
-        <h1 className="text-zinc-500 font-black tracking-widest text-xs uppercase">DOCUMENTATION</h1>
-        <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">HELP & INFORMATION</h2>
-      </div>
-
-      {/* Intro Card */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-3 shadow-xs">
-        <p className="text-sm font-bold text-slate-900 leading-relaxed">
+      {/* HEADER BANNER */}
+      <div className="text-left space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase border border-orange-500/20">
+            FRAMEWORK & DEVELOPMENT GUIDE
+          </span>
+        </div>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+          CPI FRAMEWORK & COACH’S PLAN
+        </h1>
+        <p className="text-xs text-slate-700 dark:text-slate-400 font-medium leading-relaxed">
           {welcomeText}
         </p>
       </div>
 
-      {/* ========================================== */}
-      {/* THE COACH’S PLAN OF ACTION - INTERACTIVE SECTION */}
-      {/* ========================================== */}
-      <div className="bg-white border-2 border-orange-500/40 rounded-3xl p-5 space-y-5 shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-3xl rounded-full pointer-events-none" />
-
-        {/* Section Header */}
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500 text-black flex items-center justify-center font-black">
-            <BookOpen className="w-5 h-5 stroke-[2.5]" />
+      {/* THE COACH’S PLAN OF ACTION */}
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-5">
+        <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
+          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
+            <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">THE COACH’S PLAN OF ACTION</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Parameter Development Guide & Action Plans</p>
+            <h3 className="text-base font-black text-slate-900 uppercase">THE COACH’S PLAN OF ACTION</h3>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">PARAMETER DEVELOPMENT GUIDE & ACTION PLANS</p>
           </div>
         </div>
 
-        {/* Parameter Selector Pills (Slider / Scrollable Tabs) */}
+        {/* Parameter Selector Tabs */}
         <div className="space-y-2">
-          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">Select Index Parameter:</span>
+          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">
+            SELECT INDEX PARAMETER:
+          </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             {plans.map((plan, idx) => (
               <button
@@ -476,7 +517,9 @@ export default function HelpPage() {
                   </span>
                   <div>
                     <span className="font-black text-slate-900 block uppercase">{pt.title}</span>
-                    <span className="font-medium text-slate-700 leading-relaxed">{pt.detail}</span>
+                    {pt.detail && pt.detail.trim().toLowerCase() !== pt.title.trim().toLowerCase() && (
+                      <span className="font-medium text-slate-700 leading-relaxed">{pt.detail}</span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -514,6 +557,27 @@ export default function HelpPage() {
               <p><span className="text-rose-400 font-bold uppercase">Priority Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.low}</span></p>
               <p className="pt-1 text-orange-300 font-bold"><span className="uppercase text-orange-400">The goal:</span> {safeCoachSummary.goal}</p>
             </div>
+          </div>
+
+          {/* BENCHMARK GUIDING PRINCIPLES SUMMARY */}
+          <div className="bg-orange-50/80 border border-orange-200 p-4 rounded-2.5xl space-y-2 text-xs">
+            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
+              SUMMARY GUIDING PRINCIPLES
+            </span>
+            <ul className="space-y-1.5 font-bold text-slate-900">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                Watch the pattern, not the moment
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                Score the evidence, not the impression
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                Have a clear reason what earned the score
+              </li>
+            </ul>
           </div>
         </div>
       </div>
