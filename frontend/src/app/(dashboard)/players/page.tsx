@@ -3113,6 +3113,19 @@ export default function PlayersPage() {
                     onClick={() => {
                       const end = new Date();
                       const start = new Date();
+                      start.setDate(end.getDate() - 7);
+                      setPdfFromDate(start.toISOString().split("T")[0]);
+                      setPdfToDate(end.toISOString().split("T")[0]);
+                    }}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
+                  >
+                    Last 7 Days
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const end = new Date();
+                      const start = new Date();
                       start.setDate(end.getDate() - 30);
                       setPdfFromDate(start.toISOString().split("T")[0]);
                       setPdfToDate(end.toISOString().split("T")[0]);
