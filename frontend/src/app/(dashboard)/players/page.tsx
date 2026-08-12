@@ -37,114 +37,226 @@ const formatScoreValue = (val: number | null | undefined) => {
   return (Math.round(num * 10) / 10).toFixed(1);
 };
 
-interface CoachRecommendationTier {
-  title: string;
-  detail: string;
+interface CoachParameterSection {
+  header: string;
+  bullets: string[];
+  explanation?: string;
+  summaryHeader: string;
+  summaryOverview: string;
+  highScoreStatement: string;
+  lowScoreStatement: string;
+  goalStatement: string;
 }
 
 interface CoachParameterRecommendation {
-  high: CoachRecommendationTier;
-  avg: CoachRecommendationTier;
-  low: CoachRecommendationTier;
+  description: string;
+  high: CoachParameterSection;
+  low: CoachParameterSection;
 }
 
 const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
-  "Technical Execution": {
+  "Focus": {
+    description: "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches. The key question is: does the player stay engaged with what matters, or does their concentration drift when pressure, fatigue or distractions increase?",
     high: {
-      title: "High Performance Directive — Protect, Challenge & Refine",
-      detail: "A high score shows that the player has a reliable technique that is standing up to the demands of practice and competition. The next step is to strengthen it under even greater pressure.\n• Confirm what is working: Help the player understand which parts of their technique are allowing them to perform consistently.\n• Protect the basics: Avoid unnecessary changes when the player has a method that is working.\n• Increase the challenge: Test the technique against greater speed, pressure, fatigue and more difficult cricket situations.\n• Encourage self-correction: Help the player recognise when something feels wrong and make simple adjustments themselves.\n• Monitor transfer: Check that the same technical quality shown in practice is being carried into matches.\nCoach Summary: protect, challenge and refine. Goal: develop a technique the player can trust and repeat when the game places it under pressure."
-    },
-    avg: {
-      title: "Developing Performance Directive — Refine Core Mechanics",
-      detail: "A medium score shows the player has a functional technical foundation but requires greater consistency under pressure. The focus now is to refine core mechanics, eliminate minor breakdowns, and build repeatable technique.\n• Refine Core Mechanics: Fix minor technical breakdowns that appear when pace or pressure rises.\n• Build Consistency: Repeat sound technique across longer practice sets and multi-over spells.\n• Controlled Pressure Nets: Expose technique to moderate match drills with clear execution targets.\nCoach Summary: refine, stabilize and test under moderate pressure."
+      header: "IF THE FOCUS SCORE IS HIGH",
+      bullets: [
+        "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.",
+        "Increase the challenge. Use longer, more demanding drills and match scenarios in practice that test concentration.",
+        "Reinforce reset habits. Encourage simple routines between balls, overs or repetitions.",
+        "Protect calm thinking. Make sure strong focus does not become tension or overthinking.",
+        "Monitor consistency. Check whether the player can stay focused when tired, frustrated or under pressure."
+      ],
+      explanation: "A high score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
+      highScoreStatement: "High score: reinforce, challenge and sustain.",
+      lowScoreStatement: "Low score: simplify, reset and rebuild.",
+      goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
     },
     low: {
-      title: "Priority Development Directive — Identify, Simplify & Rebuild",
-      detail: "A low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.\n• Identify the main problem: Find the technical issue that is having the greatest effect on performance.\n• Keep the correction simple: Work on one clear adjustment rather than trying to change everything at once.\n• Return to the basics: Slow the skill down and rebuild the movement before increasing the difficulty.\n• Recreate the problem in practice: Use drills and scenarios that mirror where the technique is breaking down in matches.\n• Track the improvement: Look for whether the correction becomes more consistent in practice and then transfers into competition.\nCoach Summary: identify, simplify and rebuild. Goal: develop a technique the player can trust and repeat when the game places it under pressure."
-    }
-  },
-  "Skill Level": {
-    high: {
-      title: "High Performance Directive — Challenge, Expand & Apply",
-      detail: "A high score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.\n• Identify the strengths: Understand which skills the player performs consistently and confidently.\n• Increase the difficulty: Challenge the player with greater speed, variation, pressure and more demanding situations.\n• Expand the skill set: Introduce new skills that complement what the player already does well.\n• Encourage smart use of skills: Help the player understand when and where each skill is most effective.\n• Monitor transfer: Check that skills performed successfully in practice are also being used effectively in matches.\nCoach Summary: challenge, expand and apply. Goal: develop the right skills, then make sure the player can use them when the game demands them."
-    },
-    avg: {
-      title: "Developing Performance Directive — Consolidate & Execute",
-      detail: "A medium score shows the player possesses a solid basic skill set but needs greater execution variety and adaptability under match pressure. The focus now is to consolidate core skills and expand match options.\n• Consolidate Core Skills: Ensure primary batting strokes or bowling deliveries are 100% reliable.\n• Scenario Application: Apply skills within specific field settings and match situation targets.\n• Build Execution Depth: Develop consistent control across different pitch types and lengths.\nCoach Summary: consolidate, expand and execute."
-    },
-    low: {
-      title: "Priority Development Directive — Identify, Build & Repeat",
-      detail: "A low score shows that the player needs to develop their core skill set and build greater execution consistency under pressure. The focus now is to identify skill gaps, rebuild fundamentals, and test skills in demanding cricket situations.\n• Identify the gap: Establish which important skills are missing, inconsistent or limiting performance.\n• Prioritise the basics: Focus on the most important skills for the player’s role before adding greater complexity.\n• Build through repetition: Give the player enough quality practice to develop confidence and consistency.\n• Match the challenge to the player: Avoid asking for skills that are beyond their current level of development.\n• Track the progress: Look for improvement in practice first, then whether that improvement transfers into matches.\nCoach Summary: identify, build and repeat. Goal: develop the right skills, then make sure the player can use them when the game demands them."
+      header: "IF THE FOCUS SCORE IS LOW",
+      bullets: [
+        "Identify the cause. Is the player distracted, tired, anxious, bored or unclear about what matters?",
+        "Simplify the task. Give one clear focus point rather than too many instructions.",
+        "Teach a reset. Use a simple routine to help the player reconnect after mistakes or distractions.",
+        "Create shorter challenges. Break practice into smaller, purposeful blocks.",
+        "Review the pattern. Look for when focus drops and what tends to trigger it."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
+      highScoreStatement: "High score: reinforce, challenge and sustain.",
+      lowScoreStatement: "Low score: simplify, reset and rebuild.",
+      goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
     }
   },
   "Game Plan": {
+    description: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. The key question for the coach is simple: does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes.",
     high: {
-      title: "High Performance Directive — Confirm, Challenge & Adapt",
-      detail: "A high score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.\n• Confirm the thinking: Ask the player what their plan was and why they chose it.\n• Reinforce role clarity: Make sure the player understands what their role requires in different situations.\n• Increase the challenge: Use changing practice and match scenarios that force the player to think and adjust.\n• Encourage independence: Allow the player to make tactical decisions without constant instruction.\n• Monitor adaptability: Check that the player can stick to a good plan but also recognise when it needs to change.\nCoach Summary: confirm, challenge and adapt. Goal: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
-    },
-    avg: {
-      title: "Developing Performance Directive — Sharpen & Adapt",
-      detail: "A medium score shows the player understands their game plan but occasionally struggles to adapt when match situations shift. The focus now is to sharpen role clarity, improve tactical adjustments, and build situational awareness.\n• Clarify Match Role: Define clear tactical objectives for their specific role in the team.\n• Improve Matchup Awareness: Study field placements, bowler/batter matchups, and scoring options.\n• Practice In-Game Shifts: Rehearse adjusting plans when early wickets fall or match conditions change.\nCoach Summary: sharpen, adapt and execute."
+      header: "IF THE GAME PLAN SCORE IS HIGH",
+      bullets: [
+        "Confirm the thinking. Ask the player what their plan was and why they chose it.",
+        "Reinforce role clarity. Make sure the player understands what their role requires in different situations.",
+        "Increase the challenge. Use changing practice and match scenarios that force the player to think and adjust.",
+        "Encourage independence. Allow the player to make tactical decisions without constant instruction.",
+        "Monitor adaptability. Check that the player can stick to a good plan but also recognise when it needs to change."
+      ],
+      explanation: "A high score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
+      highScoreStatement: "High score: confirm, challenge and adapt.",
+      lowScoreStatement: "Low score: clarify, simplify and rehearse.",
+      goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
     },
     low: {
-      title: "Priority Development Directive — Clarify, Simplify & Rehearse",
-      detail: "A low score shows that the player needs clearer role understanding and tactical direction. The focus now is to simplify decision-making, establish clear match objectives, and test adaptability under pressure.\n• Establish whether there is a plan: Ask the player what they were trying to do and listen for clarity or uncertainty.\n• Simplify the thinking: Give the player one or two clear objectives for their role.\n• Connect practice to matches: Create scenarios that require the player to practise the same plans they will need in competition.\n• Teach adjustment: Help the player recognise when conditions, opposition or the match situation require a different approach.\n• Review the decisions: Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind.\nCoach Summary: clarify, simplify and rehearse. Goal: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
-    }
-  },
-  "Preparation": {
-    high: {
-      title: "High Performance Directive — Reinforce, Own & Maintain",
-      detail: "A high score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.\n• Confirm the routine: Identify the habits that help the player arrive organised, focused and ready.\n• Build ownership: Encourage the player to take responsibility for equipment, warm-up, hydration and personal goals.\n• Connect preparation to performance: Help them see how good preparation improves confidence, concentration and execution.\n• Prepare for different demands: Teach the player to adjust for travel, weather, pitch conditions, aggressive opposition, questionable umpires and different roles.\n• Monitor consistency: Make sure preparation standards remain high for every practice and match.\nCoach Summary: reinforce, own and maintain. Goal: arrive ready, so performance has the best possible chance to follow."
-    },
-    avg: {
-      title: "Developing Performance Directive — Standardize & Own",
-      detail: "A medium score shows the player follows standard preparation habits but can improve consistency and mental readiness before matches. The focus now is to refine pre-session routines and build personal ownership.\n• Standardize Routines: Follow a consistent physical warm-up, kit check, and mental prep routine.\n• Visualize Match Roles: Spend 5 minutes before play mentally rehearsing key match scenarios.\n• Arrive Match Ready: Settle mentally and complete all preparation before stepping onto the field.\nCoach Summary: standardize, visualize and own."
-    },
-    low: {
-      title: "Priority Development Directive — Clarify, Organise & Improve",
-      detail: "A low score shows that the player needs consistent pre-match and pre-session preparation habits. The focus now is to establish structured routines, build personal accountability, and arrive ready for competition.\n• Identify what is missing: Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?\n• Set clear expectations: Make sure the player knows what ready should look like.\n• Create a simple checklist: Keep equipment, hydration, warm-up and role preparation easy to follow.\n• Build responsibility gradually: Give the player age-appropriate ownership instead of letting others do everything for them.\n• Review the impact: Show how poor preparation may have affected the quality of practice or match performance.\nCoach Summary: clarify, organise and improve. Goal: arrive ready, so performance has the best possible chance to follow."
+      header: "IF THE GAME PLAN SCORE IS LOW",
+      bullets: [
+        "Establish whether there is a plan. Ask the player what they were trying to do and listen for clarity or uncertainty.",
+        "Simplify the thinking. Give the player one or two clear objectives for their role.",
+        "Connect practice to matches. Create scenarios that require the player to practise the same plans they will need in competition.",
+        "Teach adjustment. Help the player recognise when conditions, opposition or the match situation require a different approach.",
+        "Review the decisions. Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
+      highScoreStatement: "High score: confirm, challenge and adapt.",
+      lowScoreStatement: "Low score: clarify, simplify and rehearse.",
+      goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
     }
   },
   "Intensity": {
+    description: "Intensity measures the energy, purpose and competitive intent a player brings to both practice and matches. It’s not about being loud or overactive. The key question is: does the player look fully engaged and ready to compete in the moment? Good intensity should support skill, decision making and team performance.",
     high: {
-      title: "High Performance Directive — Channel, Challenge & Sustain",
-      detail: "A high score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.\n• Confirm what is working: Identify the habits that help the player stay switched on and competitive.\n• Channel the energy: Make sure intensity remains controlled and does not become rushed or reckless.\n• Increase the challenge: Use tougher drills and match situations at practice that demand sustained effort.\n• Protect skill quality: Check that technique and decision making remain strong as intensity rises.\n• Encourage positive influence: Use the player’s energy to lift teammates and team standards.\nCoach Summary: channel, challenge and sustain. Goal: bring the right energy, with the right purpose, for the demands of the moment."
-    },
-    avg: {
-      title: "Developing Performance Directive — Sustain & Engage",
-      detail: "A medium score shows the player brings good energy but experiences periodic intensity lulls during long sessions or matches. The focus now is to sustain competitive effort and maintain active engagement.\n• Sustain Consistent Effort: Eliminate energy lulls between overs or drill sets.\n• Set Session Benchmarks: Use clear physical and target benchmarks to maintain urgency in nets.\n• Active Fielding Effort: Attack the ball in the field, communicate loudly, and stay alert.\nCoach Summary: sustain, target and engage."
+      header: "IF THE INTENSITY SCORE IS HIGH",
+      bullets: [
+        "Confirm what is working. Identify the habits that help the player stay switched on and competitive.",
+        "Channel the energy. Make sure intensity remains controlled and does not become rushed or reckless.",
+        "Increase the challenge. Use tougher drills and match situations at practice that demand sustained effort.",
+        "Protect skill quality. Check that technique and decision making remain strong as intensity rises.",
+        "Encourage positive influence. Use the player’s energy to lift teammates and team standards."
+      ],
+      explanation: "A high score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
+      highScoreStatement: "High score: channel, challenge and sustain.",
+      lowScoreStatement: "Low score: identify, engage and rebuild.",
+      goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
     },
     low: {
-      title: "Priority Development Directive — Identify, Engage & Rebuild",
-      detail: "A low score shows that the player needs higher competitive energy and focus during practice and matches. The focus now is to set clear targets, build effort habits, and maintain intensity throughout sessions.\n• Identify the reason: Is the player tired, distracted, bored, low on confidence or unclear about the task?\n• Clarify the standard: Explain what good intensity should look like in movement, effort and involvement.\n• Set short targets: Give the player immediate goals to create urgency and focus.\n• Increase involvement: Use competitive drills and clearer roles to keep the player engaged.\n• Review the response: Check whether the player’s energy improves when the challenge becomes more meaningful.\nCoach Summary: identify, engage and rebuild. Goal: bring the right energy, with the right purpose, for the demands of the moment."
+      header: "IF THE INTENSITY SCORE IS LOW",
+      bullets: [
+        "Identify the reason. Is the player tired, distracted, bored, low on confidence or unclear about the task?",
+        "Clarify the standard. Explain what good intensity should look like in movement, effort and involvement.",
+        "Set short targets. Give the player immediate goals to create urgency and focus.",
+        "Increase involvement. Use competitive drills and clearer roles to keep the player engaged.",
+        "Review the response. Check whether the player’s energy improves when the challenge becomes more meaningful."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
+      highScoreStatement: "High score: channel, challenge and sustain.",
+      lowScoreStatement: "Low score: identify, engage and rebuild.",
+      goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
     }
   },
-  "Focus": {
+  "Preparation": {
+    description: "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches. The key question is: does the player arrive ready to make the most of the session or game? Good preparation gives performance a better chance before the first ball is even bowled.",
     high: {
-      title: "High Performance Directive — Reinforce, Challenge & Sustain",
-      detail: "A high score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.\n• Confirm the routine: Identify what helps the player stay present, mentally switched on and preserving their concentration energy.\n• Increase the challenge: Use longer, more demanding drills and match scenarios in practice that test concentration.\n• Reinforce reset habits: Encourage simple routines between balls, overs or repetitions.\n• Protect calm thinking: Make sure strong focus does not become tension or overthinking.\n• Monitor consistency: Check whether the player can stay focused when tired, frustrated or under pressure.\nCoach Summary: reinforce, challenge and sustain. Goal: stay present, reset quickly and give the next ball your full attention."
-    },
-    avg: {
-      title: "Developing Performance Directive — Reset & Reconfinement",
-      detail: "A medium score shows the player has solid concentration with occasional focus lapses during prolonged play. The focus now is to strengthen ball-by-ball reset routines and build mental stamina.\n• Ball-by-Ball Reconfinement: Use a focal trigger to lock in complete attention before every delivery.\n• Filter Distractions: Practice staying switched on despite noise, fatigue, or bad decisions.\n• Track Focus Durations: Notice when concentration drifts and trigger an instant mental reset.\nCoach Summary: reset, focus and sustain."
+      header: "IF THE PREPARATION SCORE IS HIGH",
+      bullets: [
+        "Confirm the routine. Identify the habits that help the player arrive organised, focused and ready.",
+        "Build ownership. Encourage the player to take responsibility for equipment, warm-up, hydration and personal goals.",
+        "Connect preparation to performance. Help them see how good preparation improves confidence, concentration and execution.",
+        "Prepare for different demands. Teach the player to adjust for travel, weather, pitch conditions, aggressive opposition, questionable umpires and different roles.",
+        "Monitor consistency. Make sure preparation standards remain high for every practice and match."
+      ],
+      explanation: "A high score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
+      highScoreStatement: "High score: reinforce, own and maintain.",
+      lowScoreStatement: "Low score: clarify, organise and improve.",
+      goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
     },
     low: {
-      title: "Priority Development Directive — Simplify, Reset & Rebuild",
-      detail: "A low score shows that the player experiences concentration lapses during demanding periods. The focus now is to shorten focus tasks, introduce mental reset triggers, and sustain attention ball by ball.\n• Identify the cause: Is the player distracted, tired, anxious, bored or unclear about what matters?\n• Simplify the task: Give one clear focus point rather than too many instructions.\n• Teach a reset: Use a simple routine to help the player reconnect after mistakes or distractions.\n• Create shorter challenges: Break practice into smaller, purposeful blocks.\n• Review the pattern: Look for when focus drops and what tends to trigger it.\nCoach Summary: simplify, reset and rebuild. Goal: stay present, reset quickly and give the next ball your full attention."
+      header: "IF THE PREPARATION SCORE IS LOW",
+      bullets: [
+        "Identify what is missing. Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?",
+        "Set clear expectations. Make sure the player knows what ready should look like.",
+        "Create a simple checklist. Keep equipment, hydration, warm-up and role preparation easy to follow.",
+        "Build responsibility gradually. Give the player age-appropriate ownership instead of letting others do everything for them.",
+        "Review the impact. Show how poor preparation may have affected the quality of practice or match performance."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
+      highScoreStatement: "High score: reinforce, own and maintain.",
+      lowScoreStatement: "Low score: clarify, organise and improve.",
+      goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
     }
   },
-  "Resilience": {
+  "Skill Level": {
+    description: "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches. It is not simply about how many skills they have. It is about how well they can use those skills as the level of difficulty, pressure and competition increases.",
     high: {
-      title: "High Performance Directive — Reinforce, Challenge & Lead",
-      detail: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.\n• Confirm the response: Ask what the player did after a mistake, difficult period or disappointing outcome to regain control.\n• Reinforce the reset routine: Help the player maintain simple habits such as stepping away, breathing, refocusing and committing to the next ball.\n• Increase the challenge: Expose the player to demanding practice and training scenarios where momentum, pressure and emotions change quickly.\n• Develop leadership under pressure: Encourage the player to remain composed, communicate positively and help teammates recover from setbacks.\n• Monitor emotional control: Ensure resilience does not become emotional suppression, denial or pretending that disappointment does not matter.\nCoach Summary: reinforce, challenge and lead. Goal: unshakeable mental toughness under competitive pressure."
-    },
-    avg: {
-      title: "Developing Performance Directive — Compose & Recover",
-      detail: "A medium score shows the player handles standard match pressure reasonably well but can bounce back faster from unexpected setbacks. The focus now is to strengthen post-error recovery routines and build composure.\n• Bounce Back Quicker: Cut down emotional dwell time after a boundary, drop, or bad shot.\n• Maintain Positive Posture: Keep strong, upright body language regardless of match score.\n• Accept Coaching Cues: Process mid-game advice constructively without losing self-belief.\nCoach Summary: compose, recover and push."
+      header: "IF THE SKILL LEVEL SCORE IS HIGH",
+      bullets: [
+        "Identify the strengths. Understand which skills the player performs consistently and confidently.",
+        "Increase the difficulty. Challenge the player with greater speed, variation, pressure and more demanding situations.",
+        "Expand the skill set. Introduce new skills that complement what the player already does well.",
+        "Encourage smart use of skills. Help the player understand when and where each skill is most effective.",
+        "Monitor transfer. Check that skills performed successfully in practice are also being used effectively in matches."
+      ],
+      explanation: "A high score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
+      highScoreStatement: "High score: challenge, expand and apply.",
+      lowScoreStatement: "Low score: identify, build and repeat.",
+      goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
     },
     low: {
-      title: "Priority Development Directive — Understand, Reset & Rebuild",
-      detail: "A low score shows that the player struggles to bounce back quickly from errors under pressure. The focus now is to build emotional control, practice recovery routines, and strengthen mental toughness.\n• Identify the trigger: Establish whether the player struggles most after mistakes, poor decisions, umpiring calls, criticism, failure or pressure from the match situation.\n• Separate the moment from the player: Help them understand that one poor ball, shot or fielding error does not define their ability or contribution.\n• Teach a simple reset: Give the player a repeatable process for releasing the previous moment and reconnecting with the next task.\n• Recreate pressure safely: Use competitive scenarios that allow the player to practise responding to mistakes and changing momentum.\n• Review the recovery: Focus not only on what went wrong, but how quickly and effectively the player returned to the contest.\nCoach Summary: understand, reset and rebuild. Goal: recover quickly enough that the next ball is not controlled by the last one."
+      header: "IF THE SKILL LEVEL SCORE IS LOW",
+      bullets: [
+        "Identify the gap. Establish which important skills are missing, inconsistent or limiting performance.",
+        "Prioritise the basics. Focus on the most important skills for the player’s role before adding greater complexity.",
+        "Build through repetition. Give the player enough quality practice to develop confidence and consistency.",
+        "Match the challenge to the player. Avoid asking for skills that are beyond their current level of development.",
+        "Track the progress. Look for improvement in practice first, then whether that improvement transfers into matches."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
+      highScoreStatement: "High score: challenge, expand and apply.",
+      lowScoreStatement: "Low score: identify, build and repeat.",
+      goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
+    }
+  },
+  "Technical Execution": {
+    description: "Technical Execution measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
+    high: {
+      header: "IF THE TECHNICAL EXECUTION SCORE IS HIGH",
+      bullets: [
+        "Confirm what is working. Help the player understand which parts of their technique are allowing them to perform consistently.",
+        "Protect the basics. Avoid unnecessary changes when the player has a method that is working.",
+        "Increase the challenge. Test the technique against greater speed, pressure, fatigue and more difficult cricket situations.",
+        "Encourage self-correction. Help the player recognise when something feels wrong and make simple adjustments themselves.",
+        "Monitor transfer. Check that the same technical quality shown in practice is being carried into matches."
+      ],
+      explanation: "A high score shows that the player has a reliable technique that is standing up to the demands of practice and competition. The next step is to strengthen it under even greater pressure.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Technical Execution Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
+      highScoreStatement: "High score: protect, challenge and refine.",
+      lowScoreStatement: "Low score: identify, simplify and rebuild.",
+      goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
+    },
+    low: {
+      header: "IF THE TECHNICAL EXECUTION SCORE IS LOW",
+      bullets: [
+        "Identify the main problem. Find the technical issue that is having the greatest effect on performance.",
+        "Keep the correction simple. Work on one clear adjustment rather than trying to change everything at once.",
+        "Return to the basics. Slow the skill down and rebuild the movement before increasing the difficulty.",
+        "Recreate the problem in practice. Use drills and scenarios that mirror where the technique is breaking down in matches.",
+        "Track the improvement. Look for whether the correction becomes more consistent in practice and then transfers into competition."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Technical Execution Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
+      highScoreStatement: "High score: protect, challenge and refine.",
+      lowScoreStatement: "Low score: identify, simplify and rebuild.",
+      goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
     }
   }
 };
@@ -164,8 +276,7 @@ const computeFocusAreasForPlayer = (
     { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
     { name: "Preparation", keys: ["preparation"] },
     { name: "Intensity", keys: ["intensity"] },
-    { name: "Focus", keys: ["focus", "concentration"] },
-    { name: "Resilience", keys: ["resilience", "emotionalControl", "adaptability"] }
+    { name: "Focus", keys: ["focus", "concentration"] }
   ];
 
   const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])];
@@ -192,17 +303,27 @@ const computeFocusAreasForPlayer = (
     }
 
     const recEntry = coachingRecommendations[p.name];
-    let recTier = recEntry ? (avg >= 7.0 ? recEntry.high : avg <= 5.0 ? recEntry.low : recEntry.avg) : null;
+    const isHigh = avg >= 7.0;
+    const tier = isHigh ? recEntry?.high : recEntry?.low;
+
+    let detail = "";
+    if (recEntry && tier) {
+      const bulletsStr = tier.bullets.map(b => `• ${b}`).join("\n");
+      const explanationStr = tier.explanation ? `\n${tier.explanation}` : "";
+      detail = `${recEntry.description}\n\n${tier.header}\n${bulletsStr}${explanationStr}\n\n${tier.summaryHeader}\n${tier.summaryOverview}\n${tier.highScoreStatement}\n${tier.lowScoreStatement}\n${tier.goalStatement}`;
+    } else {
+      detail = "Maintain parameter execution consistency.";
+    }
 
     return {
       name: p.name,
       avg,
-      title: recTier ? `${p.name} — ${recTier.title} (${avg.toFixed(1)}/10)` : `${p.name} (${avg.toFixed(1)}/10)`,
-      detail: recTier ? recTier.detail : "Maintain parameter execution consistency."
+      title: `${p.name} (Score: ${avg.toFixed(1)}/10)`,
+      detail
     };
   });
 
-  // Rank all 7 parameters from strongest (highest score) to weakest (lowest score)
+  // Rank parameters from highest score to lowest score
   rankedParams.sort((a, b) => b.avg - a.avg);
 
   return rankedParams.map((p) => ({
