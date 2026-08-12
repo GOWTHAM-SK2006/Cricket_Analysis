@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Bot, Save, RotateCcw, Loader2, Sparkles, ShieldCheck } from "lucide-react";
 import { useAdminToast } from "../layout";
+import CricketLoader from "@/components/CricketLoader";
 
 interface AiCoachConfig {
   systemInstructions: string;
@@ -20,34 +21,45 @@ const DEFAULT_AI_COACH: AiCoachConfig = {
   parameterAnalysisInstructions: "Evaluate all 7 parameters (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience) ranked from strongest to weakest based on actual assessment scores."
 };
 
+const parseAiConfig = (jsonStr: any): AiCoachConfig | null => {
+  if (!jsonStr) return null;
+  try {
+    let parsed = typeof jsonStr === "string" ? JSON.parse(jsonStr) : jsonStr;
+    if (typeof parsed === "string") {
+      parsed = JSON.parse(parsed);
+    }
+    if (parsed && typeof parsed === "object") {
+      return {
+        systemInstructions: parsed.systemInstructions ?? DEFAULT_AI_COACH.systemInstructions,
+        coachingTone: parsed.coachingTone ?? DEFAULT_AI_COACH.coachingTone,
+        responseGuidance: parsed.responseGuidance ?? DEFAULT_AI_COACH.responseGuidance,
+        recommendationBehaviour: parsed.recommendationBehaviour ?? DEFAULT_AI_COACH.recommendationBehaviour,
+        parameterAnalysisInstructions: parsed.parameterAnalysisInstructions ?? DEFAULT_AI_COACH.parameterAnalysisInstructions,
+      };
+    }
+  } catch (e) {
+    console.error("Error parsing aiCoachJson", e);
+  }
+  return null;
+};
+
 export default function AdminAiPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [aiConfig, setAiConfig] = useState<AiCoachConfig>(DEFAULT_AI_COACH);
-  const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
-
-  const parseAiConfig = (jsonStr: any): AiCoachConfig | null => {
-    if (!jsonStr) return null;
-    try {
-      let parsed = typeof jsonStr === "string" ? JSON.parse(jsonStr) : jsonStr;
-      if (typeof parsed === "string") {
-        parsed = JSON.parse(parsed);
-      }
-      if (parsed && typeof parsed === "object") {
-        return {
-          systemInstructions: parsed.systemInstructions ?? DEFAULT_AI_COACH.systemInstructions,
-          coachingTone: parsed.coachingTone ?? DEFAULT_AI_COACH.coachingTone,
-          responseGuidance: parsed.responseGuidance ?? DEFAULT_AI_COACH.responseGuidance,
-          recommendationBehaviour: parsed.recommendationBehaviour ?? DEFAULT_AI_COACH.recommendationBehaviour,
-          parameterAnalysisInstructions: parsed.parameterAnalysisInstructions ?? DEFAULT_AI_COACH.parameterAnalysisInstructions,
-        };
-      }
-    } catch (e) {
-      console.error("Error parsing aiCoachJson", e);
+  const [aiConfig, setAiConfig] = useState<AiCoachConfig>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("cpi_ai_coach_config");
+        if (cached) {
+          const parsed = parseAiConfig(cached);
+          if (parsed) return parsed;
+        }
+      } catch (e) {}
     }
-    return null;
-  };
+    return DEFAULT_AI_COACH;
+  });
+  const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
 
   useEffect(() => {
     fetchAiConfig();
@@ -67,6 +79,12 @@ export default function AdminAiPage() {
           const parsed = parseAiConfig(data.aiCoachJson);
           if (parsed) {
             setAiConfig(parsed);
+            try {
+              localStorage.setItem(
+                "cpi_ai_coach_config",
+                typeof data.aiCoachJson === "string" ? data.aiCoachJson : JSON.stringify(data.aiCoachJson)
+              );
+            } catch (e) {}
           }
         }
       }
@@ -114,6 +132,12 @@ export default function AdminAiPage() {
         const parsed = parseAiConfig(data.aiCoachJson);
         if (parsed) {
           setAiConfig(parsed);
+          try {
+            localStorage.setItem(
+              "cpi_ai_coach_config",
+              typeof data.aiCoachJson === "string" ? data.aiCoachJson : JSON.stringify(data.aiCoachJson)
+            );
+          } catch (e) {}
         }
       }
 
@@ -124,6 +148,10 @@ export default function AdminAiPage() {
       setSaving(false);
     }
   };
+
+  if (loading && typeof window !== "undefined" && !localStorage.getItem("cpi_ai_coach_config")) {
+    return <CricketLoader message="Loading AI Configuration..." />;
+  }
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">

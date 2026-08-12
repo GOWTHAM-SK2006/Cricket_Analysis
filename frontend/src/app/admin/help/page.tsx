@@ -308,73 +308,84 @@ const DEFAULT_FULL_HELP: FullHelpConfig = {
   above7Text: "Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player."
 };
 
+const parseHelpJson = (raw: any): FullHelpConfig | null => {
+  if (!raw) return null;
+  try {
+    let parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (typeof parsed === "string") {
+      parsed = JSON.parse(parsed);
+    }
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      const rawData = Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0
+        ? parsed.coachPlanData
+        : (Array.isArray(parsed.coachPlan) ? parsed.coachPlan : null);
+
+      const isOldPts = (pts: any[]) => {
+        if (!Array.isArray(pts) || pts.length !== 5) return true;
+        const t = String(pts[0]?.title || "").toUpperCase();
+        return t.includes("PRESSURE") || t.includes("IDENTIFY") || t.includes("REFINE") || t.includes("EXPAND") || t.includes("CONSOLIDATE") || t.includes("AUTOMATE") || t.includes("CHANNEL");
+      };
+
+      const sanitizedPlans = DEFAULT_COACH_PLAN_DATA.map((defPlan, idx) => {
+        const item = (rawData && rawData[idx]) ? rawData[idx] : {};
+        return {
+          ...defPlan,
+          ...item,
+          id: item.id || defPlan.id,
+          name: item.name || defPlan.name,
+          description: item.description || defPlan.description,
+          highPoints: !isOldPts(item.highPoints) ? item.highPoints : defPlan.highPoints,
+          mediumPoints: !isOldPts(item.mediumPoints) ? item.mediumPoints : (defPlan.mediumPoints || []),
+          lowPoints: !isOldPts(item.lowPoints) ? item.lowPoints : defPlan.lowPoints,
+          highSummary: item.highSummary || defPlan.highSummary,
+          mediumSummary: item.mediumSummary || defPlan.mediumSummary,
+          lowSummary: item.lowSummary || defPlan.lowSummary,
+          coachSummary: {
+            overview: item.coachSummary?.overview || defPlan.coachSummary.overview,
+            high: item.coachSummary?.high || defPlan.coachSummary.high,
+            medium: item.coachSummary?.medium || defPlan.coachSummary.medium,
+            low: item.coachSummary?.low || defPlan.coachSummary.low,
+            goal: item.coachSummary?.goal || defPlan.coachSummary.goal
+          }
+        };
+      });
+
+      return {
+        welcomeText: parsed.welcomeText ?? DEFAULT_FULL_HELP.welcomeText,
+        coachPlanData: sanitizedPlans,
+        ppiDescription: parsed.ppiDescription ?? DEFAULT_FULL_HELP.ppiDescription,
+        mpiDescription: parsed.mpiDescription ?? DEFAULT_FULL_HELP.mpiDescription,
+        cpiDescription: parsed.cpiDescription ?? DEFAULT_FULL_HELP.cpiDescription,
+        below5Text: parsed.below5Text ?? DEFAULT_FULL_HELP.below5Text,
+        between5And7Text: parsed.between5And7Text ?? DEFAULT_FULL_HELP.between5And7Text,
+        above7Text: parsed.above7Text ?? DEFAULT_FULL_HELP.above7Text,
+      };
+    }
+  } catch (e) {
+    console.error("Error parsing helpJson", e);
+  }
+  return null;
+};
+
 export default function AdminHelpPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [helpConfig, setHelpConfig] = useState<FullHelpConfig>(DEFAULT_FULL_HELP);
+  const [helpConfig, setHelpConfig] = useState<FullHelpConfig>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("cpi_help_config");
+        if (cached) {
+          const parsed = parseHelpJson(cached);
+          if (parsed) return parsed;
+        }
+      } catch (e) {}
+    }
+    return DEFAULT_FULL_HELP;
+  });
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [scoreTab, setScoreTab] = useState<"high" | "medium" | "low">("high");
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
-
-  const parseHelpJson = (raw: any): FullHelpConfig | null => {
-    if (!raw) return null;
-    try {
-      let parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
-      if (typeof parsed === "string") {
-        parsed = JSON.parse(parsed);
-      }
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        const rawData = Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0
-          ? parsed.coachPlanData
-          : (Array.isArray(parsed.coachPlan) ? parsed.coachPlan : null);
-
-        const isOldPts = (pts: any[]) => {
-          if (!Array.isArray(pts) || pts.length !== 5) return true;
-          const t = String(pts[0]?.title || "").toUpperCase();
-          return t.includes("PRESSURE") || t.includes("IDENTIFY") || t.includes("REFINE") || t.includes("EXPAND") || t.includes("CONSOLIDATE") || t.includes("AUTOMATE") || t.includes("CHANNEL");
-        };
-
-        const sanitizedPlans = DEFAULT_COACH_PLAN_DATA.map((defPlan, idx) => {
-          const item = (rawData && rawData[idx]) ? rawData[idx] : {};
-          return {
-            ...defPlan,
-            ...item,
-            id: item.id || defPlan.id,
-            name: item.name || defPlan.name,
-            description: item.description || defPlan.description,
-            highPoints: !isOldPts(item.highPoints) ? item.highPoints : defPlan.highPoints,
-            mediumPoints: !isOldPts(item.mediumPoints) ? item.mediumPoints : (defPlan.mediumPoints || []),
-            lowPoints: !isOldPts(item.lowPoints) ? item.lowPoints : defPlan.lowPoints,
-            highSummary: item.highSummary || defPlan.highSummary,
-            mediumSummary: item.mediumSummary || defPlan.mediumSummary,
-            lowSummary: item.lowSummary || defPlan.lowSummary,
-            coachSummary: {
-              overview: item.coachSummary?.overview || defPlan.coachSummary.overview,
-              high: item.coachSummary?.high || defPlan.coachSummary.high,
-              medium: item.coachSummary?.medium || defPlan.coachSummary.medium,
-              low: item.coachSummary?.low || defPlan.coachSummary.low,
-              goal: item.coachSummary?.goal || defPlan.coachSummary.goal
-            }
-          };
-        });
-
-        return {
-          welcomeText: parsed.welcomeText ?? DEFAULT_FULL_HELP.welcomeText,
-          coachPlanData: sanitizedPlans,
-          ppiDescription: parsed.ppiDescription ?? DEFAULT_FULL_HELP.ppiDescription,
-          mpiDescription: parsed.mpiDescription ?? DEFAULT_FULL_HELP.mpiDescription,
-          cpiDescription: parsed.cpiDescription ?? DEFAULT_FULL_HELP.cpiDescription,
-          below5Text: parsed.below5Text ?? DEFAULT_FULL_HELP.below5Text,
-          between5And7Text: parsed.between5And7Text ?? DEFAULT_FULL_HELP.between5And7Text,
-          above7Text: parsed.above7Text ?? DEFAULT_FULL_HELP.above7Text,
-        };
-      }
-    } catch (e) {
-      console.error("Error parsing helpJson", e);
-    }
-    return null;
-  };
 
   useEffect(() => {
     fetchHelpConfig();
@@ -394,6 +405,9 @@ export default function AdminHelpPage() {
           const parsed = parseHelpJson(data.helpJson);
           if (parsed) {
             setHelpConfig(parsed);
+            try {
+              localStorage.setItem("cpi_help_config", typeof data.helpJson === "string" ? data.helpJson : JSON.stringify(data.helpJson));
+            } catch (e) {}
           }
         }
       }
@@ -438,6 +452,10 @@ export default function AdminHelpPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      localStorage.setItem("cpi_help_config", JSON.stringify(helpConfig));
+    } catch (e) {}
+
+    try {
       const token = localStorage.getItem("cpi_admin_token") || localStorage.getItem("jwt_token") || localStorage.getItem("token");
       const updatedPayload = {
         ...fullConfigRaw,
@@ -456,7 +474,15 @@ export default function AdminHelpPage() {
         body: JSON.stringify(updatedPayload)
       });
 
-      if (!res.ok) throw new Error("Failed to save Help & Information configuration");
+      if (!res.ok) {
+        const errText = await res.text();
+        let msg = "Failed to save Help & Information configuration";
+        try {
+          const errJson = JSON.parse(errText);
+          if (errJson.message) msg = errJson.message;
+        } catch (e) {}
+        throw new Error(msg);
+      }
 
       const data = await res.json();
       setFullConfigRaw(data);
@@ -464,18 +490,21 @@ export default function AdminHelpPage() {
         const parsed = parseHelpJson(data.helpJson);
         if (parsed) {
           setHelpConfig(parsed);
+          try {
+            localStorage.setItem("cpi_help_config", typeof data.helpJson === "string" ? data.helpJson : JSON.stringify(data.helpJson));
+          } catch (e) {}
         }
       }
 
       showToast("Coach Help & Information content saved and synchronized!", "success");
     } catch (err: any) {
-      showToast(err.message || "Save failed", "error");
+      showToast(err.message || "Saved locally! Server sync pending.", "error");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) {
+  if (loading && typeof window !== "undefined" && !localStorage.getItem("cpi_help_config")) {
     return <CricketLoader message="Loading Coach Help Governance..." />;
   }
 
@@ -791,7 +820,7 @@ export default function AdminHelpPage() {
           </label>
           <textarea
             rows={3}
-            value={helpConfig.welcomeText || DEFAULT_WELCOME_TEXT}
+            value={helpConfig.welcomeText ?? DEFAULT_WELCOME_TEXT}
             onChange={(e) => setHelpConfig({ ...helpConfig, welcomeText: e.target.value })}
             className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs text-slate-900 font-medium focus:outline-none focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20 transition-all leading-relaxed shadow-xs"
           />

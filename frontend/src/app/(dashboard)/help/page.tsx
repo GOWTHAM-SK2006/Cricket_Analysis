@@ -318,11 +318,23 @@ export default function HelpPage() {
     async function loadConfig() {
       try {
         setLoading(true);
-        const res = await fetch("/api/public/config");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data && data.helpJson && typeof data.helpJson === "string") {
-          const parsed = JSON.parse(data.helpJson);
+        let helpJsonStr: string | null = null;
+        try {
+          const res = await fetch("/api/public/config");
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.helpJson) {
+              helpJsonStr = typeof data.helpJson === "string" ? data.helpJson : JSON.stringify(data.helpJson);
+            }
+          }
+        } catch (e) {}
+
+        if (!helpJsonStr && typeof window !== "undefined") {
+          helpJsonStr = localStorage.getItem("cpi_help_config");
+        }
+
+        if (helpJsonStr) {
+          const parsed = typeof helpJsonStr === "string" ? JSON.parse(helpJsonStr) : helpJsonStr;
           if (parsed && typeof parsed === "object") {
             if (Array.isArray(parsed.coachPlanData) && parsed.coachPlanData.length > 0) {
               const sanitized = parsed.coachPlanData.map((item: any, i: number) => {
@@ -416,11 +428,11 @@ export default function HelpPage() {
       <div className="text-left space-y-1">
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase border border-orange-500/20">
-            FRAMEWORK & DEVELOPMENT GUIDE
+            FRAMEWORK ASSISTANT GUIDE
           </span>
         </div>
         <h1 className="text-2xl font-black text-[#0f172a] uppercase tracking-tight">
-          CPI FRAMEWORK & COACH'S PLAN
+          WELCOME TO THE CRICKET PERFORMANCE INDEX (CPI)
         </h1>
         <p className="text-xs text-slate-800 font-medium leading-relaxed">
           {welcomeText}
