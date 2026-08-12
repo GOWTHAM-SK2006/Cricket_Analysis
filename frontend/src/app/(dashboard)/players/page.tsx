@@ -11,6 +11,7 @@ import {
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
 import jsPDF from "jspdf";
+import { getRoleContextForParameter } from "@/lib/roleContext";
 
 interface Player {
   id: number;
@@ -276,54 +277,87 @@ const computeFocusAreasForPlayer = (
     { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
     { name: "Preparation", keys: ["preparation"] },
     { name: "Intensity", keys: ["intensity"] },
-    { name: "Focus", keys: ["focus", "concentration"] }
+    { name: "Focus", keys: ["focus", "concentration"] },
+    { name: "Resilience", keys: ["resilience", "emotionalControl", "adaptability"] }
   ];
 
-  const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])];
+  const practiceList = practiceHistory || [];
+  const matchList = matchHistory || [];
 
   const rankedParams = paramDefs.map((p) => {
-    let scores: number[] = [];
-    allAssessments.forEach((s: any) => {
+    let practiceScores: number[] = [];
+    let matchScores: number[] = [];
+
+    practiceList.forEach((s: any) => {
       p.keys.forEach((k) => {
         if (typeof s[k] === "number" && s[k] > 0) {
-          scores.push(s[k]);
+          practiceScores.push(s[k]);
         }
       });
     });
 
-    let avg = 7.2;
-    if (scores.length > 0) {
-      avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-      avg = Math.round(avg * 10) / 10;
+    matchList.forEach((s: any) => {
+      p.keys.forEach((k) => {
+        if (typeof s[k] === "number" && s[k] > 0) {
+          matchScores.push(s[k]);
+        }
+      });
+    });
+
+    const allScores = [...practiceScores, ...matchScores];
+
+    let overallAvg = 7.2;
+    if (allScores.length > 0) {
+      overallAvg = allScores.reduce((a, b) => a + b, 0) / allScores.length;
+      overallAvg = Math.round(overallAvg * 10) / 10;
     } else if (player.ppiScore || player.mpiScore) {
       const ppi = player.ppiScore || 0;
       const mpi = player.mpiScore || 0;
-      avg = (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2 : (ppi > 0 ? ppi : mpi);
-      avg = Math.round(avg * 10) / 10;
+      overallAvg = (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2 : (ppi > 0 ? ppi : mpi);
+      overallAvg = Math.round(overallAvg * 10) / 10;
+    }
+
+    let practiceAvg = practiceScores.length > 0 ? practiceScores.reduce((a, b) => a + b, 0) / practiceScores.length : null;
+    let matchAvg = matchScores.length > 0 ? matchScores.reduce((a, b) => a + b, 0) / matchScores.length : null;
+
+    let varianceNote = "";
+    if (practiceAvg !== null && matchAvg !== null) {
+      const diff = practiceAvg - matchAvg;
+      if (diff >= 1.5) {
+        varianceNote = `\n\nPRACTICE VS MATCH VARIANCE:\nStrong performance in practice (${practiceAvg.toFixed(1)}/10) but less consistent under match conditions (${matchAvg.toFixed(1)}/10). Focus on bridging net quality into match competition.`;
+      } else if (diff <= -1.5) {
+        varianceNote = `\n\nPRACTICE VS MATCH VARIANCE:\nShows higher match intensity (${matchAvg.toFixed(1)}/10) than practice baseline (${practiceAvg.toFixed(1)}/10). Maintain practice session discipline.`;
+      }
     }
 
     const recEntry = coachingRecommendations[p.name];
-    const isHigh = avg >= 7.0;
-    const tier = isHigh ? recEntry?.high : recEntry?.low;
+    const isHigh = overallAvg >= 7.0;
+    const tier = recEntry ? (isHigh ? recEntry.high : recEntry.low) : null;
+
+    // Role-Aware Context Lookup
+    const roleResolution = getRoleContextForParameter(player.role, p.name, overallAvg);
 
     let detail = "";
     if (recEntry && tier) {
-      const bulletsStr = tier.bullets.map(b => `• ${b}`).join("\n");
-      const explanationStr = tier.explanation ? `\n${tier.explanation}` : "";
-      detail = `${recEntry.description}\n\n${tier.header}\n${bulletsStr}${explanationStr}\n\n${tier.summaryHeader}\n${tier.summaryOverview}\n${tier.highScoreStatement}\n${tier.lowScoreStatement}\n${tier.goalStatement}`;
+      const coachDirectionStr = `COACH DIRECTION:\n${tier.summaryOverview} (${tier.highScoreStatement})`;
+      const roleContextStr = `ROLE CONTEXT (${roleResolution.roleName}):\n${roleResolution.contextText}`;
+      const recBulletsStr = `RECOMMENDATION:\n${tier.header}:\n` + tier.bullets.map(b => `• ${b}`).join("\n");
+      const priorityStr = `COACHING PRIORITY:\n${tier.goalStatement}`;
+
+      detail = `${coachDirectionStr}\n\n${roleContextStr}\n\n${recBulletsStr}${varianceNote}\n\n${priorityStr}`;
     } else {
-      detail = "Maintain parameter execution consistency.";
+      detail = `COACH DIRECTION:\nMaintain consistent parameter execution.\n\nROLE CONTEXT (${roleResolution.roleName}):\n${roleResolution.contextText}\n\nCOACHING PRIORITY:\nConsolidate baseline performance across practice and match play.`;
     }
 
     return {
       name: p.name,
-      avg,
-      title: `${p.name} (Score: ${avg.toFixed(1)}/10)`,
+      avg: overallAvg,
+      title: `${p.name} (Score: ${overallAvg.toFixed(1)}/10)`,
       detail
     };
   });
 
-  // Rank parameters from highest score to lowest score
+  // Rank all 7 parameters from STRONGEST (highest score) to WEAKEST (lowest score)
   rankedParams.sort((a, b) => b.avg - a.avg);
 
   return rankedParams.map((p) => ({
