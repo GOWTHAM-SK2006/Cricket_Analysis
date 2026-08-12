@@ -628,7 +628,7 @@ export default function AdminHelpPage() {
                     scoreTab === "high" ? "bg-emerald-500 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  A Score (&gt;7)
+                  A SCORE (&gt;7)
                 </button>
                 <button
                   onClick={() => setScoreTab("medium")}
@@ -636,7 +636,7 @@ export default function AdminHelpPage() {
                     scoreTab === "medium" ? "bg-amber-500 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  A Score (5-7)
+                  A SCORE (5-7)
                 </button>
                 <button
                   onClick={() => setScoreTab("low")}
@@ -644,7 +644,7 @@ export default function AdminHelpPage() {
                     scoreTab === "low" ? "bg-rose-500 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  A Score (&lt;5)
+                  A SCORE (&lt;5)
                 </button>
               </div>
             </div>
