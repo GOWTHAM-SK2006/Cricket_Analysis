@@ -626,22 +626,7 @@ export default function DashboardPage() {
 
 
 
-      {/* Floating AI Chatbot Button & Modal */}
-      <div className="fixed bottom-28 right-6 z-40">
-        <motion.button
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowChatModal(true)}
-          className="relative group w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500 via-amber-500 to-orange-400 text-slate-950 shadow-xl shadow-orange-500/25 flex items-center justify-center cursor-pointer border-2 border-orange-300/60 active:scale-95 transition-all"
-          title="Ask AI Cricket Coach"
-        >
-          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500 border-2 border-white"></span>
-          </span>
-          <Bot className="w-7 h-7 stroke-[2.4]" />
-        </motion.button>
-      </div>
+
 
       {/* AI Chatbot Overlay Modal Component */}
       <AIChatModal
