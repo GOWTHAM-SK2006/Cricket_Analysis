@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface CricketLoaderProps {
@@ -20,206 +21,17 @@ export default function CricketLoader({
   showSubtext = false,
   className = "",
 }: CricketLoaderProps) {
-  // Scale multiplier: Ultra-sleek, compact micro-scale
-  const scale = size === "sm" ? 0.65 : size === "lg" ? 1.0 : 0.75;
+  const iconSize = size === "sm" ? "w-6 h-6" : size === "lg" ? "w-10 h-10" : "w-8 h-8";
 
   const content = (
-    <div className="flex flex-col items-center justify-center text-center select-none">
-      {/* Micro Animated Bat & Ball Container */}
-      <div className="relative w-24 h-16 flex items-center justify-center">
-        {/* Glow backdrop behind bat and ball */}
-        <div className="absolute w-14 h-14 bg-orange-500/10 rounded-full blur-lg animate-pulse pointer-events-none" />
-
-        {/* Pitch Ground Line & Dynamic Shadow */}
-        <div className="absolute bottom-0.5 w-16 h-1.5 flex items-center justify-center">
-          <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-slate-400 dark:via-slate-600 to-transparent rounded-full" />
-          <motion.div
-            className="absolute w-6 h-1 bg-slate-900/25 dark:bg-black/50 rounded-full blur-[1px]"
-            animate={{
-              scaleX: [0.6, 1.4, 0.4, 0.6],
-              opacity: [0.3, 0.7, 0.2, 0.3],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              times: [0, 0.45, 0.7, 1],
-            }}
-          />
-        </div>
-
-        {/* Impact Shockwave Burst */}
-        <motion.div
-          className="absolute z-20 pointer-events-none"
-          style={{ left: "42%", top: "44%" }}
-          animate={{
-            scale: [0, 0, 1.6, 0],
-            opacity: [0, 1, 0, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeOut",
-            times: [0, 0.42, 0.6, 1],
-          }}
-        >
-          <div className="w-4 h-4 rounded-full border border-orange-500/80 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-        </motion.div>
-
-        {/* Impact Spark Particles */}
-        <motion.div
-          className="absolute z-20 pointer-events-none"
-          style={{ left: "45%", top: "46%" }}
-          animate={{
-            opacity: [0, 1, 0, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            times: [0, 0.44, 0.65, 1],
-          }}
-        >
-          {[0, 72, 144, 216, 288].map((deg, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-0.8 h-0.8 bg-amber-400 rounded-full shadow-[0_0_3px_#f59e0b]"
-              animate={{
-                x: [0, Math.cos((deg * Math.PI) / 180) * 10],
-                y: [0, Math.sin((deg * Math.PI) / 180) * 10],
-                scale: [1, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                times: [0.42, 0.65],
-              }}
-            />
-          ))}
-        </motion.div>
-
-        {/* Incoming/Hit Cricket Ball */}
-        <motion.div
-          className="absolute z-10 w-4 h-4"
-          animate={{
-            x: [36, 2, -32, 36],
-            y: [-22, 4, -25, -22],
-            scale: [0.7, 1, 1.1, 0.7],
-            rotate: [0, 360, 720, 1080],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            times: [0, 0.45, 0.85, 1],
-          }}
-        >
-          <svg viewBox="0 0 40 40" className="w-full h-full drop-shadow-sm">
-            <defs>
-              <radialGradient id="ballGradientMicro" cx="35%" cy="35%" r="65%">
-                <stop offset="0%" stopColor="#ef4444" />
-                <stop offset="60%" stopColor="#dc2626" />
-                <stop offset="100%" stopColor="#7f1d1d" />
-              </radialGradient>
-            </defs>
-            {/* Red Leather Ball Body */}
-            <circle cx="20" cy="20" r="18" fill="url(#ballGradientMicro)" />
-            {/* White Seam Stitching */}
-            <path
-              d="M 5 20 C 12 10, 28 10, 35 20"
-              fill="none"
-              stroke="#ffffff"
-              strokeWidth="2.5"
-              strokeDasharray="2 1.5"
-              opacity="0.9"
-            />
-            <path
-              d="M 5 20 C 12 30, 28 30, 35 20"
-              fill="none"
-              stroke="#ffffff"
-              strokeWidth="2.5"
-              strokeDasharray="2 1.5"
-              opacity="0.9"
-            />
-            {/* Specular Highlight */}
-            <circle cx="13" cy="13" r="4" fill="#ffffff" opacity="0.55" />
-          </svg>
-        </motion.div>
-
-        {/* Animated Cricket Bat */}
-        <motion.div
-          className="absolute w-14 h-14 origin-bottom-right"
-          animate={{
-            rotate: [-28, 12, 38, -28],
-            x: [-3, 1, 4, -3],
-            y: [1, -1, -2, 1],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            times: [0, 0.45, 0.75, 1],
-          }}
-          style={{ right: "32%", bottom: "14%" }}
-        >
-          <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
-            <defs>
-              {/* Willow Wood Texture Gradient */}
-              <linearGradient id="willowWoodMicro" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#fef3c7" />
-                <stop offset="30%" stopColor="#fde047" />
-                <stop offset="70%" stopColor="#d97706" />
-                <stop offset="100%" stopColor="#92400e" />
-              </linearGradient>
-
-              {/* Rubber Grip Gradient */}
-              <linearGradient id="handleGripMicro" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#ea580c" />
-                <stop offset="50%" stopColor="#f97316" />
-                <stop offset="100%" stopColor="#c2410c" />
-              </linearGradient>
-            </defs>
-
-            <g transform="rotate(-38 50 50)">
-              {/* Bat Blade Body */}
-              <path
-                d="M 42 22 L 58 22 L 56 82 C 56 86, 44 86, 44 82 Z"
-                fill="url(#willowWoodMicro)"
-                stroke="#78350f"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-              {/* Wood Grain Lines */}
-              <path d="M 46 25 L 47 80" stroke="#b45309" strokeWidth="0.75" opacity="0.4" />
-              <path d="M 50 24 L 50 81" stroke="#b45309" strokeWidth="0.75" opacity="0.4" />
-              <path d="M 54 25 L 53 80" stroke="#b45309" strokeWidth="0.75" opacity="0.4" />
-
-              {/* Sweet Spot Highlight */}
-              <ellipse cx="50" cy="55" rx="5" ry="14" fill="#ffffff" opacity="0.2" />
-
-              {/* Colored Brand Accent Stripe on Bat Shoulder */}
-              <path d="M 43 28 L 57 28 L 56.5 35 L 43.5 35 Z" fill="#ea580c" opacity="0.95" />
-              <path d="M 43.5 35 L 56.5 35 L 56 38 L 44 38 Z" fill="#0f172a" opacity="0.9" />
-
-              {/* Bat Handle Cone Junction */}
-              <path d="M 46 22 L 54 22 L 53 14 L 47 14 Z" fill="#78350f" />
-
-              {/* Rubber Handle Grip */}
-              <rect x="47.5" y="0" width="5" height="15" rx="2.5" fill="url(#handleGripMicro)" stroke="#9a3412" strokeWidth="0.75" />
-              {/* Grip Wrap Textures */}
-              <line x1="47.5" y1="3" x2="52.5" y2="3" stroke="#ffffff" strokeWidth="0.5" opacity="0.6" />
-              <line x1="47.5" y1="6" x2="52.5" y2="6" stroke="#ffffff" strokeWidth="0.5" opacity="0.6" />
-              <line x1="47.5" y1="9" x2="52.5" y2="9" stroke="#ffffff" strokeWidth="0.5" opacity="0.6" />
-              <line x1="47.5" y1="12" x2="52.5" y2="12" stroke="#ffffff" strokeWidth="0.5" opacity="0.6" />
-
-              {/* Colored Grip Top Knob */}
-              <circle cx="50" cy="0" r="3.2" fill="#0f172a" />
-            </g>
-          </svg>
-        </motion.div>
+    <div className="flex flex-col items-center justify-center text-center select-none space-y-3">
+      {/* Normal Spinning Circle Spinner */}
+      <div className="relative flex items-center justify-center">
+        <Loader2 className={`${iconSize} text-orange-500 animate-spin stroke-[2.5]`} />
       </div>
 
       {/* Loading Text & Bouncing Dots */}
-      <div className="mt-1 flex flex-col items-center gap-0.5">
+      <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center gap-1">
           <span className={`font-extrabold uppercase tracking-widest text-[11px] ${fullScreen ? "text-slate-800 dark:text-slate-100" : "text-slate-700 dark:text-slate-200"}`}>
             {message}
@@ -257,9 +69,8 @@ export default function CricketLoader({
 
   if (fullScreen) {
     return (
-      <div className={`fixed inset-0 z-50 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 ${className}`}>
-        {/* No white card sheet container - artwork floats seamlessly directly on backdrop */}
-        <div className="p-4 flex flex-col items-center">
+      <div className={`fixed inset-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 ${className}`}>
+        <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl flex flex-col items-center">
           {content}
         </div>
       </div>
@@ -267,7 +78,7 @@ export default function CricketLoader({
   }
 
   return (
-    <div className={`w-full flex items-center justify-center py-4 ${className}`} style={{ transform: `scale(${scale})` }}>
+    <div className={`w-full flex items-center justify-center py-6 ${className}`}>
       {content}
     </div>
   );
