@@ -517,4 +517,3 @@ public class AdminSeeder implements CommandLineRunner {
             log.info("Default CPI Master Admin Content Configuration seeded successfully.");
         }
     }
-}
