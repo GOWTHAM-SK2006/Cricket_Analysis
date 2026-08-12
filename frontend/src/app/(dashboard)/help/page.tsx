@@ -446,7 +446,7 @@ export default function HelpPage() {
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">HOW TO SCORE A PLAYER</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase">WHAT TO LOOK FOR WHEN SCORING A PLAYER</h3>
           </div>
         </div>
 
