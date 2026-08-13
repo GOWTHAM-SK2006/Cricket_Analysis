@@ -428,7 +428,7 @@ export default function HelpPage() {
       <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 sm:p-6 space-y-4 text-left shadow-sm">
         <div className="flex items-center gap-2">
           <span className="px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-extrabold text-[10px] tracking-widest uppercase border border-orange-500/20">
-            FRAMEWORK ASSISTANT GUIDE
+            FRAMEWORK AND ASSESSMENT GUIDE
           </span>
         </div>
         <h1 className="text-xl sm:text-2xl font-black text-[#0f172a] uppercase tracking-tight leading-snug">
