@@ -453,7 +453,7 @@ export default function HelpPage() {
         {/* Parameter Selector Tabs */}
         <div className="space-y-2">
           <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
-            SELECT INDEX PARAMETER:
+            THE 7 INDEX PARAMETERS
           </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             {plans.map((plan, idx) => (
