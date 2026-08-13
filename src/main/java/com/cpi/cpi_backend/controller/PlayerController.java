@@ -6,6 +6,8 @@ import com.cpi.cpi_backend.entity.Player;
 import com.cpi.cpi_backend.entity.Role;
 import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.CoachRepository;
+import com.cpi.cpi_backend.repository.PracticeAssessmentRepository;
+import com.cpi.cpi_backend.repository.MatchAssessmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +24,8 @@ public class PlayerController {
 
     private final PlayerRepository playerRepository;
     private final CoachRepository coachRepository;
+    private final PracticeAssessmentRepository practiceAssessmentRepository;
+    private final MatchAssessmentRepository matchAssessmentRepository;
 
     private void checkAccess(Player player, Coach currentCoach) {
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
@@ -131,6 +135,9 @@ public class PlayerController {
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
         checkAccess(player, currentCoach);
+
+        practiceAssessmentRepository.deleteAll(practiceAssessmentRepository.findByPlayerId(player.getId()));
+        matchAssessmentRepository.deleteAll(matchAssessmentRepository.findByPlayerId(player.getId()));
 
         playerRepository.delete(player);
         return ResponseEntity.noContent().build();

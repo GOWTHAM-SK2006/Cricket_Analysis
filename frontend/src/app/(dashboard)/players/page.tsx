@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { 
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck, 
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download
+  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
@@ -1474,7 +1474,24 @@ export default function PlayersPage() {
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
   const profilePhotoInputRef = useRef<HTMLInputElement>(null);
+
+  // Edit & Delete player states
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
+  const [editPlayerForm, setEditPlayerForm] = useState({
+    name: "",
+    age: "16",
+    role: "Batsman",
+    battingStyle: "Right-hand bat",
+    bowlingStyle: "None",
+    photo: ""
+  });
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingPlayer, setDeletingPlayer] = useState<Player | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -1793,6 +1810,95 @@ export default function PlayersPage() {
       setError(err.response?.data?.message || "Failed to create player.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const parsePlayerAgeAndRole = (roleStr: string) => {
+    let cleanRole = roleStr || "Batsman";
+    let age = "";
+    const ageMatch = roleStr?.match(/\(Age\s*(\d+)\)/i);
+    if (ageMatch) {
+      age = ageMatch[1];
+      cleanRole = roleStr.replace(/\(Age\s*\d+\)/i, "").trim();
+    }
+    return { cleanRole, age };
+  };
+
+  const handleOpenEditModal = (player: Player, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const { cleanRole, age } = parsePlayerAgeAndRole(player.role);
+    setEditingPlayer(player);
+    const existingPhoto = typeof window !== "undefined" ? localStorage.getItem(`player_photo_${player.id}`) || "" : "";
+    setEditPlayerForm({
+      name: player.name || "",
+      age: age || "16",
+      role: cleanRole || "Batsman",
+      battingStyle: player.battingStyle || "Right-hand bat",
+      bowlingStyle: player.bowlingStyle || "None",
+      photo: existingPhoto
+    });
+    setError("");
+    setShowEditForm(true);
+  };
+
+  const handleEditPlayerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPlayer) return;
+    setSaving(true);
+    setError("");
+    try {
+      const roleStr = editPlayerForm.age ? `${editPlayerForm.role} (Age ${editPlayerForm.age})` : editPlayerForm.role;
+      const res = await api.put(`/players/${editingPlayer.id}`, {
+        name: editPlayerForm.name,
+        role: roleStr,
+        battingStyle: editPlayerForm.battingStyle,
+        bowlingStyle: editPlayerForm.bowlingStyle
+      });
+      const updated = res.data;
+      if (editPlayerForm.photo) {
+        localStorage.setItem(`player_photo_${updated.id}`, editPlayerForm.photo);
+      }
+
+      setPlayers(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p));
+      if (selectedPlayer?.id === updated.id) {
+        setSelectedPlayer(prev => prev ? { ...prev, ...updated } : null);
+      }
+      setShowEditForm(false);
+      setEditingPlayer(null);
+      triggerSuccess("Player Updated Successfully!");
+      fetchData();
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to update player.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleOpenDeleteModal = (player: Player, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setDeletingPlayer(player);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingPlayer) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/players/${deletingPlayer.id}`);
+      setPlayers(prev => prev.filter(p => p.id !== deletingPlayer.id));
+      if (selectedPlayer?.id === deletingPlayer.id) {
+        setSelectedPlayer(null);
+        setView("list");
+        router.replace("/players");
+      }
+      setShowDeleteModal(false);
+      setDeletingPlayer(null);
+      triggerSuccess("Player Deleted Successfully!");
+      fetchData();
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to delete player.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -2329,9 +2435,30 @@ export default function PlayersPage() {
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
-                      <div className="text-xs font-bold text-zinc-500 tracking-widest uppercase">{scoreLabel}</div>
-                      <div className="text-2xl font-bold text-orange-500 tracking-tight">{scoreDisplay}</div>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <div className="text-right">
+                        <div className="text-xs font-bold text-zinc-500 tracking-widest uppercase">{scoreLabel}</div>
+                        <div className="text-2xl font-bold text-orange-500 tracking-tight">{scoreDisplay}</div>
+                      </div>
+
+                      {role !== "player" && (
+                        <div className="flex items-center gap-1.5 border-l border-slate-200 pl-3">
+                          <button
+                            onClick={(e) => handleOpenEditModal(player, e)}
+                            className="p-2.5 rounded-xl bg-slate-100 hover:bg-orange-100 text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-300 transition-all cursor-pointer"
+                            title="Edit Player"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={(e) => handleOpenDeleteModal(player, e)}
+                            className="p-2.5 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-600 border border-slate-200 hover:border-rose-300 transition-all cursor-pointer"
+                            title="Delete Player"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -2495,16 +2622,36 @@ export default function PlayersPage() {
 
         return (
           <div className="space-y-6 text-center pb-12 select-none">
-            {/* Back Header */}
+            {/* Back Header & Actions */}
             {role !== "player" && (
-              <div className="flex items-center gap-3 text-left">
+              <div className="flex items-center justify-between gap-3 text-left">
                 <button
                   onClick={() => { setView("list"); router.replace("/players"); }}
-                  className="h-11 px-4 bg-white bg-white border-2 border-slate-200 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-slate-900 cursor-pointer"
+                  className="h-11 px-4 bg-white border-2 border-slate-200 rounded-xl flex items-center justify-center gap-2 text-zinc-400 font-bold uppercase text-xs hover:text-slate-900 cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4 stroke-[3]" />
                   BACK TO LIST
                 </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => handleOpenEditModal(selectedPlayer, e)}
+                    className="h-11 px-4 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 rounded-xl flex items-center justify-center gap-2 font-black uppercase text-xs cursor-pointer transition-all active:scale-95 shadow-xs"
+                    title="Edit Player Details"
+                  >
+                    <Edit2 className="w-4 h-4 text-orange-500" />
+                    <span>Edit Player</span>
+                  </button>
+
+                  <button
+                    onClick={(e) => handleOpenDeleteModal(selectedPlayer, e)}
+                    className="h-11 px-4 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl flex items-center justify-center gap-2 font-black uppercase text-xs cursor-pointer transition-all active:scale-95 shadow-xs"
+                    title="Delete Player"
+                  >
+                    <Trash2 className="w-4 h-4 text-rose-500" />
+                    <span>Delete Player</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -3616,6 +3763,187 @@ export default function PlayersPage() {
               >
                 <Download className="w-4 h-4" />
                 GENERATE REPORT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------ EDIT PLAYER MODAL ------------------ */}
+      {showEditForm && editingPlayer && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[90] flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-orange-500 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200">
+              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wider">EDIT PLAYER DETAILS</h3>
+              <button 
+                onClick={() => { setShowEditForm(false); setEditingPlayer(null); }}
+                className="p-1 rounded bg-slate-100 hover:bg-slate-200 text-zinc-500 cursor-pointer"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 text-red-700 border-2 border-red-200 text-sm font-bold p-3 rounded-xl text-center">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleEditPlayerSubmit} className="space-y-4 text-left">
+              
+              {/* Photo Picker */}
+              <div className="flex flex-col items-center space-y-2">
+                <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
+                <div 
+                  onClick={() => editFileInputRef.current?.click()}
+                  className="w-24 h-24 rounded-3xl bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
+                >
+                  {editPlayerForm.photo ? (
+                    <img src={editPlayerForm.photo} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      <Camera className="w-8 h-8 text-zinc-500 group-hover:text-orange-500 mb-1" />
+                      <span className="text-sm font-bold text-zinc-500 uppercase">CHANGE</span>
+                    </>
+                  )}
+                </div>
+                <input 
+                  type="file" 
+                  ref={editFileInputRef} 
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setEditPlayerForm(prev => ({ ...prev, photo: reader.result as string }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYER NAME</label>
+                <input
+                  type="text"
+                  required
+                  value={editPlayerForm.name}
+                  onChange={(e) => setEditPlayerForm({ ...editPlayerForm, name: e.target.value })}
+                  className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
+                  placeholder="Enter player full name"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-bold tracking-widest text-zinc-400">AGE</label>
+                  <input
+                    type="number"
+                    required
+                    value={editPlayerForm.age}
+                    onChange={(e) => setEditPlayerForm({ ...editPlayerForm, age: e.target.value })}
+                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
+                    placeholder="e.g. 16"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYING ROLE</label>
+                  <select
+                    value={editPlayerForm.role}
+                    onChange={(e) => setEditPlayerForm({ ...editPlayerForm, role: e.target.value })}
+                    className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    <option value="Batsman">Batsman</option>
+                    <option value="Bowler">Bowler</option>
+                    <option value="All-rounder">All-rounder</option>
+                    <option value="Wicketkeeper">Wicketkeeper</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-bold tracking-widest text-zinc-400">BATTING STYLE</label>
+                  <select
+                    value={editPlayerForm.battingStyle}
+                    onChange={(e) => setEditPlayerForm({ ...editPlayerForm, battingStyle: e.target.value })}
+                    className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    <option value="Right-hand bat">Right-hand bat</option>
+                    <option value="Left-hand bat">Left-hand bat</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-bold tracking-widest text-zinc-400">BOWLING STYLE</label>
+                  <select
+                    value={editPlayerForm.bowlingStyle}
+                    onChange={(e) => setEditPlayerForm({ ...editPlayerForm, bowlingStyle: e.target.value })}
+                    className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    <option value="None">None</option>
+                    <option value="Right-arm fast">Right-arm fast</option>
+                    <option value="Right-arm medium">Right-arm medium</option>
+                    <option value="Right-arm spin">Right-arm spin</option>
+                    <option value="Left-arm fast">Left-arm fast</option>
+                    <option value="Left-arm spin">Left-arm spin</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => { setShowEditForm(false); setEditingPlayer(null); }}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3.5 font-bold uppercase cursor-pointer"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-3.5 font-black uppercase transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {saving ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "UPDATE PLAYER"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------ DELETE CONFIRMATION MODAL ------------------ */}
+      {showDeleteModal && deletingPlayer && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[90] flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-rose-500 rounded-3xl p-6 max-w-md w-full text-center space-y-4 shadow-2xl">
+            <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto border border-rose-200">
+              <Trash2 className="w-7 h-7 stroke-[2.5]" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">DELETE PLAYER?</h3>
+              <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                Are you sure you want to delete <span className="font-bold text-slate-900">{deletingPlayer.name}</span>? All associated practice and match assessments will be permanently removed.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => { setShowDeleteModal(false); setDeletingPlayer(null); }}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3.5 font-bold uppercase cursor-pointer"
+              >
+                CANCEL
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3.5 font-black uppercase transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+              >
+                {deleting ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "CONFIRM DELETE"}
               </button>
             </div>
           </div>
