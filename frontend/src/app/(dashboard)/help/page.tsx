@@ -446,15 +446,15 @@ export default function HelpPage() {
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">HOW TO SCORE A PLAYER</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase leading-snug">HOW TO SCORE A PLAYER</h3>
+            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block mt-0.5">
+              THE 7 INDEX PARAMETERS
+            </span>
           </div>
         </div>
 
         {/* Parameter Selector Tabs */}
         <div className="space-y-2">
-          <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
-            THE 7 INDEX PARAMETERS
-          </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             {plans.map((plan, idx) => (
               <button
