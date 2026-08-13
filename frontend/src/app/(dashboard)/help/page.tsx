@@ -672,7 +672,7 @@ export default function HelpPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
-              <span className="text-xs font-black text-slate-900 uppercase">- STRONG</span>
+              <span className="text-xs font-black text-slate-900 uppercase">- ELITE</span>
             </div>
             <p className="text-xs font-medium text-slate-900 leading-relaxed">
               {above7}

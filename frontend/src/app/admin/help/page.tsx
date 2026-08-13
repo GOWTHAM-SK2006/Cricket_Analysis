@@ -896,7 +896,7 @@ export default function AdminHelpPage() {
             </div>
             <div className="space-y-1.5">
               <span className="text-[11px] font-black text-emerald-500 block uppercase tracking-wide">
-                7.0 and Above - Strong
+                7.0 and Above - Elite
               </span>
               <textarea
                 rows={5}
