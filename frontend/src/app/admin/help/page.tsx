@@ -52,7 +52,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Self-Correction Is Strong", detail: "Self-Correction Is Strong" },
       { title: "Technique Enables Performance", detail: "Technique Enables Performance" }
     ],
-    highSummary: "An elite score (7–10) shows reliable fundamentals, consistent movement, and strong self-correction under pressure. Technique enables high-level performance.",
+    highSummary: "A strong score (7–10) shows reliable fundamentals, consistent movement, and strong self-correction under pressure. Technique enables high-level performance.",
     mediumPoints: [
       { title: "Basics Are Sound", detail: "Basics Are Sound" },
       { title: "Execution Is Improving", detail: "Execution Is Improving" },
@@ -88,7 +88,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Skills Are Adaptable", detail: "Skills Are Adaptable" },
       { title: "Advanced Development Is Possible", detail: "Advanced Development Is Possible" }
     ],
-    highSummary: "An elite score (7–10) shows a broad, adaptable skill set that holds under pressure, enabling advanced development and game control.",
+    highSummary: "A strong score (7–10) shows a broad, adaptable skill set that holds under pressure, enabling advanced development and game control.",
     mediumPoints: [
       { title: "Good Core Skills", detail: "Good Core Skills" },
       { title: "Attack and Defence Are Developing", detail: "Attack and Defence Are Developing" },
@@ -124,7 +124,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Adapts Quickly", detail: "Adapts Quickly" },
       { title: "Thinks Independently", detail: "Thinks Independently" }
     ],
-    highSummary: "An elite score (7–10) shows a clear strategy and purpose that fits every role and situation, allowing the player to stay ahead of the game.",
+    highSummary: "A strong score (7–10) shows a clear strategy and purpose that fits every role and situation, allowing the player to stay ahead of the game.",
     mediumPoints: [
       { title: "Basic Plan Is Evident", detail: "Basic Plan Is Evident" },
       { title: "Role Awareness Is Good", detail: "Role Awareness Is Good" },
@@ -160,7 +160,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Tactically Prepared", detail: "Tactically Prepared" },
       { title: "Player-Led", detail: "Player-Led" }
     ],
-    highSummary: "An elite score (7–10) shows consistent, player-led physical, mental, and tactical preparation before every session and match.",
+    highSummary: "A strong score (7–10) shows consistent, player-led physical, mental, and tactical preparation before every session and match.",
     mediumPoints: [
       { title: "Basic Routine Exists", detail: "Basic Routine Exists" },
       { title: "Usually Ready to Perform", detail: "Usually Ready to Perform" },
@@ -196,7 +196,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Pressure Raises Engagement", detail: "Pressure Raises Engagement" },
       { title: "Self-Driven Standards", detail: "Self-Driven Standards" }
     ],
-    highSummary: "An elite score (7–10) shows consistent intensity, high work rate, and self-driven standards where pressure raises competitive engagement.",
+    highSummary: "A strong score (7–10) shows consistent intensity, high work rate, and self-driven standards where pressure raises competitive engagement.",
     mediumPoints: [
       { title: "Generally Good Energy", detail: "Generally Good Energy" },
       { title: "Standards Occasionally Drop", detail: "Standards Occasionally Drop" },
@@ -232,7 +232,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Focus Lasts", detail: "Focus Lasts" },
       { title: "Self-Manages Attention", detail: "Self-Manages Attention" }
     ],
-    highSummary: "An elite score (7–10) shows present ball-by-ball concentration, fast mental resets, and total filtering of external distractions.",
+    highSummary: "A strong score (7–10) shows present ball-by-ball concentration, fast mental resets, and total filtering of external distractions.",
     mediumPoints: [
       { title: "Focus Is Generally Good", detail: "Focus Is Generally Good" },
       { title: "Concentration Can Drift", detail: "Concentration Can Drift" },
@@ -268,7 +268,7 @@ const DEFAULT_COACH_PLAN_DATA: CoachPlanItem[] = [
       { title: "Next Moment Is Protected", detail: "Next Moment Is Protected" },
       { title: "Recovers Independently", detail: "Recovers Independently" }
     ],
-    highSummary: "An elite score (7–10) shows constructive response to adversity, holding composure and stable confidence while protecting the next moment independently.",
+    highSummary: "A strong score (7–10) shows constructive response to adversity, holding composure and stable confidence while protecting the next moment independently.",
     mediumPoints: [
       { title: "Usually Recovers", detail: "Usually Recovers" },
       { title: "Temporary Drop-Off", detail: "Temporary Drop-Off" },
@@ -746,7 +746,7 @@ export default function AdminHelpPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1">Elite Score Directive</span>
+                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1">Strong Score Directive</span>
                   <input
                     type="text"
                     value={currentPlan.coachSummary.high}
