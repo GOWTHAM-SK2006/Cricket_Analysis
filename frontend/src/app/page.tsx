@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BarChart3, Activity, Shield } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
@@ -95,41 +95,6 @@ export default function Home() {
           </motion.div>
         </div>
       </main>
-
-      {/* Features Section */}
-      <section className="py-20 px-6 border-t border-slate-200 relative z-10 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-6">
-            <FeatureCard
-              icon={<Activity />}
-              title="Practice & Match Index"
-              description="Slider-based assessment for PPI and MPI to accurately track player progression and form."
-            />
-            <FeatureCard
-              icon={<BarChart3 />}
-              title="Advanced Analytics"
-              description="Radar charts, team comparisons, and trend analysis visualised with stunning clarity."
-            />
-            <FeatureCard
-              icon={<Shield />}
-              title="Smart Insights"
-              description="AI-driven strengths, weaknesses, and targeted recommendations for every individual."
-            />
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-orange-200 transition-all duration-200 group shadow-sm hover:shadow-md">
-      <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-        {icon}
-      </div>
-      <h3 className="text-base font-black mb-2 text-slate-900">{title}</h3>
-      <p className="text-slate-500 text-xs font-medium leading-relaxed">{description}</p>
     </div>
   );
 }
