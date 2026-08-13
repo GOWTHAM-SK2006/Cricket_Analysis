@@ -446,13 +446,13 @@ export default function HelpPage() {
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">WHAT TO LOOK FOR WHEN SCORING A PLAYER</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase">HOW TO SCORE A PLAYER</h3>
           </div>
         </div>
 
         {/* Parameter Selector Tabs */}
         <div className="space-y-2">
-          <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest block">
+          <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
             SELECT INDEX PARAMETER:
           </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
