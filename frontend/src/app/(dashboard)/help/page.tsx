@@ -305,13 +305,13 @@ export default function HelpPage() {
     "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back."
   );
   const [below5, setBelow5] = useState<string>(
-    "Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority."
+    "The player is performing below the expected standard with clear gaps, inconsistency or weaknesses that require focused coaching and development."
   );
   const [between5And7, setBetween5And7] = useState<string>(
-    "There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches."
+    "The player has a good base but performance is inconsistent or unreliable, particularly as pressure, difficulty or match demands increase."
   );
   const [above7, setAbove7] = useState<string>(
-    "Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player."
+    "The player is performing at an elite level, with a game that remains consistent and reliable under pressure, fatigue and challenging conditions."
   );
 
   useEffect(() => {
@@ -581,19 +581,37 @@ export default function HelpPage() {
             )}
           </div>
 
-          {/* THE COACH’S SUMMARY BOX */}
-          <div className="bg-slate-900 text-white p-4.5 rounded-2.5xl space-y-2.5 text-xs shadow-md">
-            <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest block">
-              THE COACH’S SUMMARY — {safeName.toUpperCase()}
-            </span>
-            <p className="font-medium text-slate-200 leading-relaxed">
-              {safeCoachSummary.overview}
-            </p>
-            <div className="pt-2 border-t border-slate-800 space-y-1.5">
-              <p><span className="text-emerald-400 font-bold uppercase">Strong Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.high}</span></p>
-              <p><span className="text-amber-400 font-bold uppercase">Developing Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.medium || "refine and stabilize."}</span></p>
-              <p><span className="text-rose-400 font-bold uppercase">Priority Score:</span> <span className="text-slate-300 capitalize">{safeCoachSummary.low}</span></p>
-              <p className="pt-1 text-orange-300 font-bold"><span className="uppercase text-orange-400">The goal:</span> {safeCoachSummary.goal}</p>
+          {/* HOW TO INTERPRET SCORES (OUT OF 10) */}
+          <div className="bg-white border-2 border-slate-200 rounded-2.5xl p-4.5 space-y-4">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">HOW TO INTERPRET SCORES (OUT OF 10)</h3>
+            <div className="space-y-4 pt-1">
+              <div className="space-y-1 pb-3 border-b border-slate-200">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- NEEDS ATTENTION</span>
+                </div>
+                <p className="text-xs font-medium text-slate-900 leading-relaxed">
+                  {below5}
+                </p>
+              </div>
+              <div className="space-y-1 pb-3 border-b border-slate-200">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- DEVELOPING</span>
+                </div>
+                <p className="text-xs font-medium text-slate-900 leading-relaxed">
+                  {between5And7}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- ELITE</span>
+                </div>
+                <p className="text-xs font-medium text-slate-900 leading-relaxed">
+                  {above7}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -645,40 +663,6 @@ export default function HelpPage() {
         <p className="text-xs font-semibold text-slate-900 leading-relaxed">
           {cpiDesc}
         </p>
-      </div>
-
-      {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">HOW TO INTERPRET SCORES (OUT OF 10)</h3>
-        <div className="space-y-4 pt-1">
-          <div className="space-y-1 pb-3 border-b border-slate-200">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
-              <span className="text-xs font-black text-slate-900 uppercase">- NEEDS ATTENTION</span>
-            </div>
-            <p className="text-xs font-medium text-slate-900 leading-relaxed">
-              {below5}
-            </p>
-          </div>
-          <div className="space-y-1 pb-3 border-b border-slate-200">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
-              <span className="text-xs font-black text-slate-900 uppercase">- DEVELOPING</span>
-            </div>
-            <p className="text-xs font-medium text-slate-900 leading-relaxed">
-              {between5And7}
-            </p>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
-              <span className="text-xs font-black text-slate-900 uppercase">- ELITE</span>
-            </div>
-            <p className="text-xs font-medium text-slate-900 leading-relaxed">
-              {above7}
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Restart Tour */}
