@@ -760,10 +760,10 @@ const computeFocusAreasForPlayer = (
 
     const title = `${p.name.toUpperCase()} (Score: ${overallAvg.toFixed(1)}/10)`;
 
-    const actionPointsStr = actionPoints.map(pt => `• ${pt.title}: ${pt.detail}`).join("\n");
-    const daryllStr = daryllDirectives.map(b => `• ${b}`).join("\n");
-
-    const detail = `CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}\n\nACTION POINTS:\n${actionPointsStr}\n\nDARYLL CULLINAN COACH PLAN DIRECTIVE:\n${daryllStr}\n\nROLE CONTEXT:\n${roleContext}\n\nCOACHING PRIORITY:\n${coachingPriority}`;
+    const detailParts = [];
+    if (cpiGuidance) detailParts.push(`CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}`);
+    if (roleContext) detailParts.push(`ROLE CONTEXT:\n${roleContext}`);
+    const detail = detailParts.join("\n\n");
 
     return {
       name: p.name,
@@ -1268,17 +1268,8 @@ const generatePlayerPdfReport = async (
       if (f.cpiGuidance) {
         printSubSection("CPI FRAMEWORK GUIDANCE:", [f.cpiGuidance]);
       }
-      if (f.actionPoints && f.actionPoints.length > 0) {
-        printSubSection("ACTION POINTS:", f.actionPoints.map((pt: any) => `• ${pt.title}: ${pt.detail}`), true);
-      }
-      if (f.daryllDirectives && f.daryllDirectives.length > 0) {
-        printSubSection("DARYLL CULLINAN COACH PLAN DIRECTIVE:", f.daryllDirectives.map((d: string) => `• ${d}`), true);
-      }
       if (f.roleContext) {
         printSubSection("ROLE CONTEXT:", [f.roleContext]);
-      }
-      if (f.coachingPriority) {
-        printSubSection("COACHING PRIORITY:", [f.coachingPriority]);
       }
 
       y += 5; // Spacing between parameter blocks
