@@ -641,7 +641,7 @@ export default function HelpPage() {
           </div>
           <div>
             <h3 className="text-base font-black text-slate-900 uppercase">Match Performance Index (MPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Play Assessment Index</p>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Assessment Index</p>
           </div>
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-relaxed">
