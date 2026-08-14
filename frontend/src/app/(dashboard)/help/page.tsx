@@ -583,7 +583,7 @@ export default function HelpPage() {
 
           {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
           <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">HOW TO INTERPRET SCORES (OUT OF 10)</h3>
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">SCORE INTERPRETATION SUMMARY</h3>
             <div className="space-y-3.5">
               <div className="space-y-1 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-2">
