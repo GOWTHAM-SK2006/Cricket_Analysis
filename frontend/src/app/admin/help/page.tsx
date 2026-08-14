@@ -829,7 +829,7 @@ export default function AdminHelpPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-1.5">
             <label className="block text-xs font-black text-slate-800 uppercase tracking-wider flex items-center justify-between">
-              <span>Practice Performance (PPI) Text</span>
+              <span>Practice Performance Index (PPI) Text</span>
               <span className="text-[10px] text-slate-400 font-bold">Practice Index</span>
             </label>
             <textarea
@@ -842,7 +842,7 @@ export default function AdminHelpPage() {
 
           <div className="space-y-1.5">
             <label className="block text-xs font-black text-slate-800 uppercase tracking-wider flex items-center justify-between">
-              <span>Match Performance (MPI) Text</span>
+              <span>Match Performance Index (MPI) Text</span>
               <span className="text-[10px] text-slate-400 font-bold">Match Index</span>
             </label>
             <textarea
@@ -855,7 +855,7 @@ export default function AdminHelpPage() {
 
           <div className="space-y-1.5">
             <label className="block text-xs font-black text-slate-800 uppercase tracking-wider flex items-center justify-between">
-              <span>Cricket Performance (CPI) Text</span>
+              <span>Cricket Performance Index (CPI) Text</span>
               <span className="text-[10px] text-slate-400 font-bold">Overall Rating Index</span>
             </label>
             <textarea

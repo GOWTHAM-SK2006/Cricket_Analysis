@@ -624,7 +624,7 @@ export default function HelpPage() {
             <Clipboard className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Practice Performance (PPI)</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase">Practice Performance Index (PPI)</h3>
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Practice Assessment Index</p>
           </div>
         </div>
@@ -640,7 +640,7 @@ export default function HelpPage() {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Match Performance (MPI)</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase">Match Performance Index (MPI)</h3>
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Play Assessment Index</p>
           </div>
         </div>
@@ -656,7 +656,7 @@ export default function HelpPage() {
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Cricket Performance (CPI)</h3>
+            <h3 className="text-base font-black text-slate-900 uppercase">Cricket Performance Index (CPI)</h3>
             <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Overall Player Rating Index</p>
           </div>
         </div>
