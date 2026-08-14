@@ -762,7 +762,6 @@ const computeFocusAreasForPlayer = (
 
     const detailParts = [];
     if (cpiGuidance) detailParts.push(`CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}`);
-    if (roleContext) detailParts.push(`ROLE CONTEXT:\n${roleContext}`);
     const detail = detailParts.join("\n\n");
 
     return {
@@ -1267,9 +1266,6 @@ const generatePlayerPdfReport = async (
 
       if (f.cpiGuidance) {
         printSubSection("CPI FRAMEWORK GUIDANCE:", [f.cpiGuidance]);
-      }
-      if (f.roleContext) {
-        printSubSection("ROLE CONTEXT:", [f.roleContext]);
       }
 
       y += 5; // Spacing between parameter blocks
