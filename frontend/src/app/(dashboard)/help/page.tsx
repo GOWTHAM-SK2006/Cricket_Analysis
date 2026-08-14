@@ -305,13 +305,13 @@ export default function HelpPage() {
     "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back."
   );
   const [below5, setBelow5] = useState<string>(
-    "The player is performing below the expected standard with clear gaps, inconsistency or weaknesses that require focused coaching and development."
+    "Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority."
   );
   const [between5And7, setBetween5And7] = useState<string>(
-    "The player has a good base but performance is inconsistent or unreliable, particularly as pressure, difficulty or match demands increase."
+    "There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches."
   );
   const [above7, setAbove7] = useState<string>(
-    "The player is performing at an elite level, with a game that remains consistent and reliable under pressure, fatigue and challenging conditions."
+    "Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player."
   );
 
   useEffect(() => {
@@ -581,25 +581,25 @@ export default function HelpPage() {
             )}
           </div>
 
-          {/* HOW TO INTERPRET SCORES (OUT OF 10) */}
-          <div className="bg-white border-2 border-slate-200 rounded-2.5xl p-4.5 space-y-4">
-            <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">HOW TO INTERPRET SCORES (OUT OF 10)</h3>
-            <div className="space-y-4 pt-1">
-              <div className="space-y-1 pb-3 border-b border-slate-200">
+          {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
+          <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">HOW TO INTERPRET SCORES (OUT OF 10)</h3>
+            <div className="space-y-3.5">
+              <div className="space-y-1 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
                   <span className="text-xs font-black text-slate-900 uppercase">- NEEDS ATTENTION</span>
                 </div>
-                <p className="text-xs font-medium text-slate-900 leading-relaxed">
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
                   {below5}
                 </p>
               </div>
-              <div className="space-y-1 pb-3 border-b border-slate-200">
+              <div className="space-y-1 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
                   <span className="text-xs font-black text-slate-900 uppercase">- DEVELOPING</span>
                 </div>
-                <p className="text-xs font-medium text-slate-900 leading-relaxed">
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
                   {between5And7}
                 </p>
               </div>
@@ -608,7 +608,7 @@ export default function HelpPage() {
                   <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
                   <span className="text-xs font-black text-slate-900 uppercase">- ELITE</span>
                 </div>
-                <p className="text-xs font-medium text-slate-900 leading-relaxed">
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
                   {above7}
                 </p>
               </div>
