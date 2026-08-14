@@ -52,6 +52,7 @@ interface CoachParameterSection {
 interface CoachParameterRecommendation {
   description: string;
   high: CoachParameterSection;
+  medium?: CoachParameterSection;
   low: CoachParameterSection;
 }
 
@@ -59,7 +60,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Focus": {
     description: "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches. The key question is: does the player stay engaged with what matters, or does their concentration drift when pressure, fatigue or distractions increase?",
     high: {
-      header: "IF THE FOCUS SCORE IS HIGH",
+      header: "Focus High Directive",
       bullets: [
         "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.",
         "Increase the challenge. Use longer, more demanding drills and match scenarios in practice that test concentration.",
@@ -74,8 +75,23 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       lowScoreStatement: "Low score: simplify, reset and rebuild.",
       goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
     },
+    medium: {
+      header: "Focus Average Directive",
+      bullets: [
+        "Strengthen reset routines. Practice locking in attention immediately before each ball release.",
+        "Filter external distractions. Maintain focus despite noise, decisions, or scoreboard pressure.",
+        "Recognize focus drift. Train awareness of when concentration begins to wander.",
+        "Build mental stamina. Extend concentration durations in practice scenario sets.",
+        "Review ball-by-ball presence. Ensure complete mental engagement for every single delivery."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
+      highScoreStatement: "Average score: reset, focus and sustain.",
+      lowScoreStatement: "Low score: simplify, reset and rebuild.",
+      goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
+    },
     low: {
-      header: "IF THE FOCUS SCORE IS LOW",
+      header: "Focus Low Directive",
       bullets: [
         "Identify the cause. Is the player distracted, tired, anxious, bored or unclear about what matters?",
         "Simplify the task. Give one clear focus point rather than too many instructions.",
@@ -93,7 +109,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Game Plan": {
     description: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. The key question for the coach is simple: does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes.",
     high: {
-      header: "IF THE GAME PLAN SCORE IS HIGH",
+      header: "Game Plan High Directive",
       bullets: [
         "Confirm the thinking. Ask the player what their plan was and why they chose it.",
         "Reinforce role clarity. Make sure the player understands what their role requires in different situations.",
@@ -108,8 +124,23 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       lowScoreStatement: "Low score: clarify, simplify and rehearse.",
       goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
     },
+    medium: {
+      header: "Game Plan Average Directive",
+      bullets: [
+        "Sharpen tactical clarity. Outline clear phase-by-phase match objectives.",
+        "Practice scenario adjustments. Work on shifting plans when match situations change quickly.",
+        "Enhance matchup awareness. Study field placements and opposition strengths to inform choices.",
+        "Build disciplined execution. Stick to agreed role tactics during tough match phases.",
+        "Review tactical outcomes. Evaluate after sessions whether execution matched the intended plan."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
+      highScoreStatement: "Average score: sharpen, adapt and execute.",
+      lowScoreStatement: "Low score: clarify, simplify and rehearse.",
+      goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+    },
     low: {
-      header: "IF THE GAME PLAN SCORE IS LOW",
+      header: "Game Plan Low Directive",
       bullets: [
         "Establish whether there is a plan. Ask the player what they were trying to do and listen for clarity or uncertainty.",
         "Simplify the thinking. Give the player one or two clear objectives for their role.",
@@ -127,7 +158,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Intensity": {
     description: "Intensity measures the energy, purpose and competitive intent a player brings to both practice and matches. It’s not about being loud or overactive. The key question is: does the player look fully engaged and ready to compete in the moment? Good intensity should support skill, decision making and team performance.",
     high: {
-      header: "IF THE INTENSITY SCORE IS HIGH",
+      header: "Intensity High Directive",
       bullets: [
         "Confirm what is working. Identify the habits that help the player stay switched on and competitive.",
         "Channel the energy. Make sure intensity remains controlled and does not become rushed or reckless.",
@@ -142,8 +173,23 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       lowScoreStatement: "Low score: identify, engage and rebuild.",
       goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
     },
+    medium: {
+      header: "Intensity Average Directive",
+      bullets: [
+        "Eliminate energy lulls. Maintain consistent competitive effort between overs and drill sets.",
+        "Set active session benchmarks. Use timed or target-driven drills to maintain physical urgency.",
+        "Channel energy into execution. Ensure high effort supports rather than rushes technical execution.",
+        "Increase active communication. Stay vocal and engaged in the field to maintain mental intensity.",
+        "Monitor endurance. Track competitive energy through late stages of practice and match play."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
+      highScoreStatement: "Average score: sustain, target and engage.",
+      lowScoreStatement: "Low score: identify, engage and rebuild.",
+      goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
+    },
     low: {
-      header: "IF THE INTENSITY SCORE IS LOW",
+      header: "Intensity Low Directive",
       bullets: [
         "Identify the reason. Is the player tired, distracted, bored, low on confidence or unclear about the task?",
         "Clarify the standard. Explain what good intensity should look like in movement, effort and involvement.",
@@ -161,7 +207,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Preparation": {
     description: "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches. The key question is: does the player arrive ready to make the most of the session or game? Good preparation gives performance a better chance before the first ball is even bowled.",
     high: {
-      header: "IF THE PREPARATION SCORE IS HIGH",
+      header: "Preparation High Directive",
       bullets: [
         "Confirm the routine. Identify the habits that help the player arrive organised, focused and ready.",
         "Build ownership. Encourage the player to take responsibility for equipment, warm-up, hydration and personal goals.",
@@ -176,8 +222,23 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       lowScoreStatement: "Low score: clarify, organise and improve.",
       goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
     },
+    medium: {
+      header: "Preparation Average Directive",
+      bullets: [
+        "Standardize pre-session routines. Ensure consistent warm-up and mental preparation before every session.",
+        "Build personal ownership. Encourage taking full responsibility for gear, nutrition, and mental focus.",
+        "Incorporate mental visualization. Rehearse key match roles and opposition conditions before play.",
+        "Improve arrival timing. Avoid rushed entries to allow full physical and mental settling.",
+        "Review prep quality. Assess whether pre-game preparation directly enhanced initial session focus."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
+      highScoreStatement: "Average score: standardize, visualize and own.",
+      lowScoreStatement: "Low score: clarify, organise and improve.",
+      goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
+    },
     low: {
-      header: "IF THE PREPARATION SCORE IS LOW",
+      header: "Preparation Low Directive",
       bullets: [
         "Identify what is missing. Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?",
         "Set clear expectations. Make sure the player knows what ready should look like.",
@@ -195,7 +256,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Skill Level": {
     description: "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches. It is not simply about how many skills they have. It is about how well they can use those skills as the level of difficulty, pressure and competition increases.",
     high: {
-      header: "IF THE SKILL LEVEL SCORE IS HIGH",
+      header: "Skill Level High Directive",
       bullets: [
         "Identify the strengths. Understand which skills the player performs consistently and confidently.",
         "Increase the difficulty. Challenge the player with greater speed, variation, pressure and more demanding situations.",
@@ -210,8 +271,23 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       lowScoreStatement: "Low score: identify, build and repeat.",
       goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
     },
+    medium: {
+      header: "Skill Level Average Directive",
+      bullets: [
+        "Consolidate core skills. Strengthen primary options before expanding variation.",
+        "Practice scenario execution. Execute skills within specific field settings and match targets.",
+        "Build adaptability. Test execution across varying pitch conditions and opposition plans.",
+        "Refine decision speed. Improve quick choice of skill based on bowler release or batter positioning.",
+        "Monitor skill repeatability. Ensure execution quality remains steady across entire practice sessions."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
+      highScoreStatement: "Average score: consolidate, expand and execute.",
+      lowScoreStatement: "Low score: identify, build and repeat.",
+      goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
+    },
     low: {
-      header: "IF THE SKILL LEVEL SCORE IS LOW",
+      header: "Skill Level Low Directive",
       bullets: [
         "Identify the gap. Establish which important skills are missing, inconsistent or limiting performance.",
         "Prioritise the basics. Focus on the most important skills for the player’s role before adding greater complexity.",
@@ -229,7 +305,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Technical Execution": {
     description: "Technical Execution measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
     high: {
-      header: "IF THE TECHNICAL EXECUTION SCORE IS HIGH",
+      header: "Technical Execution High Directive",
       bullets: [
         "Confirm what is working. Help the player understand which parts of their technique are allowing them to perform consistently.",
         "Protect the basics. Avoid unnecessary changes when the player has a method that is working.",
@@ -244,8 +320,23 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       lowScoreStatement: "Low score: identify, simplify and rebuild.",
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
     },
+    medium: {
+      header: "Technical Execution Average Directive",
+      bullets: [
+        "Refine core mechanics. Work on stabilizing technique during moderate pressure nets.",
+        "Eliminate minor breakdowns. Address technical drift before it affects match performance.",
+        "Build repeatable habits. Maintain posture and balance across extended practice sessions.",
+        "Test under controlled pressure. Introduce variable bowling lengths and target zones.",
+        "Track technical stability. Monitor consistency between practice sets and match overs."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Technical Execution Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
+      highScoreStatement: "Average score: refine, stabilize and test under moderate pressure.",
+      lowScoreStatement: "Low score: identify, simplify and rebuild.",
+      goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
+    },
     low: {
-      header: "IF THE TECHNICAL EXECUTION SCORE IS LOW",
+      header: "Technical Execution Low Directive",
       bullets: [
         "Identify the main problem. Find the technical issue that is having the greatest effect on performance.",
         "Keep the correction simple. Work on one clear adjustment rather than trying to change everything at once.",
@@ -258,6 +349,55 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       highScoreStatement: "High score: protect, challenge and refine.",
       lowScoreStatement: "Low score: identify, simplify and rebuild.",
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
+    }
+  },
+  "Resilience": {
+    description: "Resilience measures how well a player responds to adversity, pressure, mistakes and setbacks in both practice and matches. The key question is: does the player maintain effort, focus and body language when things go wrong, or do they fold under pressure?",
+    high: {
+      header: "Resilience High Directive",
+      bullets: [
+        "Anchor crunch moments. Encourage the player to step up during high-pressure phases and tough overs.",
+        "Lead squad recovery. Help the player guide teammates calmly when match momentum swings against the team.",
+        "Expose to high-consequence scenarios. Train in tough drills where mistakes require immediate composure.",
+        "Protect emotional stability. Ensure intense desire to win does not turn into frustration or negative body language.",
+        "Monitor bounce-back speed. Track how quickly the player resets after a boundary, dropped catch, or wicket."
+      ],
+      explanation: "A high score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
+      highScoreStatement: "High score: anchor, challenge and lead.",
+      lowScoreStatement: "Low score: identify, reset and rebuild.",
+      goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
+    },
+    medium: {
+      header: "Resilience Average Directive",
+      bullets: [
+        "Cut emotional dwell time. Practice instant posture reset following a misfield, boundary, or dot-ball pressure.",
+        "Maintain positive posture. Preserve confident body language regardless of match circumstances.",
+        "Accept constructive cues. Receive mid-session feedback positively without losing self-belief.",
+        "Rebuild composure under pressure. Practice staying calm during momentum swings.",
+        "Track recovery consistency. Ensure quick bounce-back becomes a reliable match habit."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
+      highScoreStatement: "Average score: compose, recover and push.",
+      lowScoreStatement: "Low score: identify, reset and rebuild.",
+      goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
+    },
+    low: {
+      header: "Resilience Low Directive",
+      bullets: [
+        "Separate self from error. Help the player understand that one mistake does not define overall ability.",
+        "Teach immediate post-mistake reset. Use a deep breath and physical posture adjustment post-error.",
+        "Rebuild composure in low-stakes drills. Practice recovery routines in controlled practice settings.",
+        "Focus on next-ball execution. Direct attention immediately to the next task rather than dwelling on the past.",
+        "Track emotional recovery. Praise quick mental resets and positive body language under pressure."
+      ],
+      summaryHeader: "THE COACH’S SUMMARY",
+      summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
+      highScoreStatement: "High score: anchor, challenge and lead.",
+      lowScoreStatement: "Low score: identify, reset and rebuild.",
+      goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
     }
   }
 };
@@ -507,11 +647,21 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
 cpiFrameworkNotes["Skills Level"] = cpiFrameworkNotes["Skill Level"];
 cpiFrameworkNotes["Concentration"] = cpiFrameworkNotes["Focus"];
 
+export interface CpiFocusArea {
+  title: string;
+  cpiGuidance: string;
+  actionPoints: { title: string; detail: string }[];
+  daryllDirectives: string[];
+  roleContext: string;
+  coachingPriority: string;
+  detail: string;
+}
+
 const computeFocusAreasForPlayer = (
   player: Player,
   practiceHistory: any[],
   matchHistory: any[]
-): { title: string; detail: string }[] => {
+): CpiFocusArea[] => {
   const paramDefs = [
     { name: "Technical Execution", keys: ["technicalExecution"] },
     { name: "Skill Level", keys: ["skillsLevel", "technique"] },
@@ -558,76 +708,83 @@ const computeFocusAreasForPlayer = (
       overallAvg = Math.round(overallAvg * 10) / 10;
     }
 
-    let practiceAvg = practiceScores.length > 0 ? practiceScores.reduce((a, b) => a + b, 0) / practiceScores.length : null;
-    let matchAvg = matchScores.length > 0 ? matchScores.reduce((a, b) => a + b, 0) / matchScores.length : null;
-
-    let varianceNote = "";
-    if (practiceAvg !== null && matchAvg !== null) {
-      const diff = practiceAvg - matchAvg;
-      if (diff >= 1.5) {
-        varianceNote = `\n\nPRACTICE VS MATCH VARIANCE:\nStrong performance in practice (${practiceAvg.toFixed(1)}/10) but less consistent under match conditions (${matchAvg.toFixed(1)}/10). Focus on bridging net quality into match competition.`;
-      } else if (diff <= -1.5) {
-        varianceNote = `\n\nPRACTICE VS MATCH VARIANCE:\nShows higher match intensity (${matchAvg.toFixed(1)}/10) than practice baseline (${practiceAvg.toFixed(1)}/10). Maintain practice session discipline.`;
-      }
-    }
+    const isHigh = overallAvg >= 7.0;
+    const isLow = overallAvg < 5.0;
 
     // Source 1: CPI Framework Notes
     const frameworkItem = cpiFrameworkNotes[p.name];
-    let frameworkTierSummary = "";
-    let frameworkPointsStr = "";
+    let cpiGuidance = "";
+    let actionPoints: { title: string; detail: string }[] = [];
+
     if (frameworkItem) {
-      if (overallAvg >= 7.0) {
-        frameworkTierSummary = frameworkItem.highSummary;
-        frameworkPointsStr = frameworkItem.highPoints.map(pt => `• ${pt.title}: ${pt.detail}`).join("\n");
-      } else if (overallAvg <= 5.0) {
-        frameworkTierSummary = frameworkItem.lowSummary;
-        frameworkPointsStr = frameworkItem.lowPoints.map(pt => `• ${pt.title}: ${pt.detail}`).join("\n");
+      if (isHigh) {
+        cpiGuidance = frameworkItem.highSummary;
+        actionPoints = frameworkItem.highPoints;
+      } else if (isLow) {
+        cpiGuidance = frameworkItem.lowSummary || "";
+        actionPoints = frameworkItem.lowPoints;
       } else {
-        frameworkTierSummary = frameworkItem.mediumSummary || frameworkItem.highSummary;
-        const pts = frameworkItem.mediumPoints || frameworkItem.highPoints;
-        frameworkPointsStr = pts.map(pt => `• ${pt.title}: ${pt.detail}`).join("\n");
+        cpiGuidance = frameworkItem.mediumSummary || frameworkItem.highSummary;
+        actionPoints = frameworkItem.mediumPoints || frameworkItem.highPoints;
       }
     }
 
     // Source 2: Daryll Cullinan's Coach's Plan of Action
     const daryllEntry = coachingRecommendations[p.name];
-    const isHigh = overallAvg >= 7.0;
-    const daryllTier = daryllEntry ? (isHigh ? daryllEntry.high : daryllEntry.low) : null;
+    let daryllDirectives: string[] = [];
+    if (daryllEntry) {
+      const tier = isHigh ? daryllEntry.high : isLow ? daryllEntry.low : (daryllEntry.medium || daryllEntry.high);
+      daryllDirectives = tier.bullets;
+    }
 
     // Role-Aware Context Lookup
     const roleResolution = getRoleContextForParameter(player.role, p.name, overallAvg);
+    const roleContext = roleResolution.contextText;
 
-    const cpiSection = frameworkItem
-      ? `CPI FRAMEWORK GUIDANCE:\n${frameworkTierSummary}\nAction Points:\n${frameworkPointsStr}`
-      : "";
+    // Coaching Priority
+    let coachingPriority = "";
+    if (frameworkItem) {
+      if (isHigh) {
+        coachingPriority = `High score: ${frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
+      } else if (isLow) {
+        coachingPriority = `Low score: ${frameworkItem.coachSummary.low} ${frameworkItem.coachSummary.goal}`;
+      } else {
+        coachingPriority = `Average score: ${frameworkItem.coachSummary.medium || frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
+      }
+    } else if (daryllEntry) {
+      const tier = isHigh ? daryllEntry.high : isLow ? daryllEntry.low : (daryllEntry.medium || daryllEntry.high);
+      coachingPriority = tier.goalStatement;
+    } else {
+      coachingPriority = "Consolidate baseline performance across practice and match play.";
+    }
 
-    const daryllSection = daryllTier
-      ? `DARYLL CULLINAN COACH PLAN DIRECTIVE:\n${daryllTier.header}:\n` + daryllTier.bullets.map(b => `• ${b}`).join("\n")
-      : "";
+    const title = `${p.name.toUpperCase()} (Score: ${overallAvg.toFixed(1)}/10)`;
 
-    const roleSection = `ROLE CONTEXT (${roleResolution.roleName}):\n${roleResolution.contextText}`;
+    const actionPointsStr = actionPoints.map(pt => `• ${pt.title}: ${pt.detail}`).join("\n");
+    const daryllStr = daryllDirectives.map(b => `• ${b}`).join("\n");
 
-    const prioritySection = daryllTier
-      ? `COACHING PRIORITY:\n${daryllTier.goalStatement}`
-      : frameworkItem
-      ? `COACHING PRIORITY:\n${frameworkItem.coachSummary.goal}`
-      : `COACHING PRIORITY:\nConsolidate baseline performance across practice and match play.`;
-
-    const detail = `${cpiSection}\n\n${daryllSection}\n\n${roleSection}${varianceNote}\n\n${prioritySection}`;
+    const detail = `CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}\n\nACTION POINTS:\n${actionPointsStr}\n\nDARYLL CULLINAN COACH PLAN DIRECTIVE:\n${daryllStr}\n\nROLE CONTEXT:\n${roleContext}\n\nCOACHING PRIORITY:\n${coachingPriority}`;
 
     return {
       name: p.name,
       avg: overallAvg,
-      title: `${p.name} (Score: ${overallAvg.toFixed(1)}/10)`,
+      title,
+      cpiGuidance,
+      actionPoints,
+      daryllDirectives,
+      roleContext,
+      coachingPriority,
       detail
     };
   });
 
-  // Rank all 7 parameters from STRONGEST (highest score) to WEAKEST (lowest score)
-  rankedParams.sort((a, b) => b.avg - a.avg);
-
   return rankedParams.map((p) => ({
     title: p.title,
+    cpiGuidance: p.cpiGuidance,
+    actionPoints: p.actionPoints,
+    daryllDirectives: p.daryllDirectives,
+    roleContext: p.roleContext,
+    coachingPriority: p.coachingPriority,
     detail: p.detail
   }));
 };
@@ -1022,58 +1179,122 @@ const generatePlayerPdfReport = async (
   y = 22;
 
   // 5. AI COACH RECOMMENDATIONS
+  const checkPageSpace = (neededHeight: number) => {
+    if (y + neededHeight > pageHeight - 20) {
+      addFooter((doc as any).getNumberOfPages());
+      doc.addPage();
+
+      doc.setFillColor(15, 23, 42);
+      doc.rect(0, 0, pageWidth, 14, "F");
+      doc.setFillColor(249, 115, 22);
+      doc.rect(0, 13, pageWidth, 1, "F");
+      if (logoDataUrl) {
+        try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+      } else {
+        doc.setFillColor(255, 255, 255);
+        doc.circle(18, 7, 4.5, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(5.5);
+        doc.setTextColor(249, 115, 22);
+        doc.text("CPI", 18, 8.8, { align: "center" });
+      }
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(255, 255, 255);
+      doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
+      y = 22;
+      return true;
+    }
+    return false;
+  };
+
+  checkPageSpace(15);
   doc.setFontSize(10.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
   doc.text("5. AI COACH RECOMMENDATIONS", 14, y);
 
-  y += 5.5;
-  if (focusAreas && focusAreas.length > 0) {
-    focusAreas.forEach((f, idx) => {
-      // Check for page overflow within recommendations
-      if (y > pageHeight - 35) {
-        addFooter(doc.internal.getNumberOfPages());
-        doc.addPage();
+  y += 6.5;
 
-        doc.setFillColor(15, 23, 42);
-        doc.rect(0, 0, pageWidth, 14, "F");
-        doc.setFillColor(249, 115, 22);
-        doc.rect(0, 13, pageWidth, 1, "F");
-        if (logoDataUrl) {
-          try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
-        }
+  if (focusAreas && focusAreas.length > 0) {
+    focusAreas.forEach((f: any) => {
+      // Ensure space for Parameter Title + line divider + first section heading (22mm)
+      checkPageSpace(22);
+
+      // PARAMETER NAME (Score: X/10)
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(249, 115, 22); // CPI Orange accent
+      doc.text(f.title, 14, y);
+      y += 4.5;
+
+      // Divider line under parameter title
+      doc.setFillColor(226, 232, 240);
+      doc.rect(14, y - 1, pageWidth - 28, 0.4, "F");
+      y += 3.5;
+
+      // Sub-section print helper
+      const printSubSection = (headingText: string, linesText: string[], isBulletList: boolean = false) => {
+        checkPageSpace(12);
+
+        doc.setFontSize(8.5);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(255, 255, 255);
-        doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
-        y = 22;
+        doc.setTextColor(15, 23, 42); // Dark slate
+        doc.text(headingText, 14, y);
+        y += 4;
+
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(51, 65, 85); // Slate 700
+
+        linesText.forEach((lineStr) => {
+          const xMargin = isBulletList ? 18 : 14;
+          const wrapWidth = isBulletList ? (pageWidth - 32) : (pageWidth - 28);
+          const wrapped = doc.splitTextToSize(lineStr, wrapWidth);
+
+          if (checkPageSpace(wrapped.length * 3.6 + 2)) {
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(51, 65, 85);
+          }
+
+          doc.text(wrapped, xMargin, y);
+          y += wrapped.length * 3.6 + (isBulletList ? 1.5 : 0);
+        });
+
+        y += 2.5;
+      };
+
+      if (f.cpiGuidance) {
+        printSubSection("CPI FRAMEWORK GUIDANCE:", [f.cpiGuidance]);
+      }
+      if (f.actionPoints && f.actionPoints.length > 0) {
+        printSubSection("ACTION POINTS:", f.actionPoints.map((pt: any) => `• ${pt.title}: ${pt.detail}`), true);
+      }
+      if (f.daryllDirectives && f.daryllDirectives.length > 0) {
+        printSubSection("DARYLL CULLINAN COACH PLAN DIRECTIVE:", f.daryllDirectives.map((d: string) => `• ${d}`), true);
+      }
+      if (f.roleContext) {
+        printSubSection("ROLE CONTEXT:", [f.roleContext]);
+      }
+      if (f.coachingPriority) {
+        printSubSection("COACHING PRIORITY:", [f.coachingPriority]);
       }
 
-      doc.setFontSize(8.5);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(249, 115, 22);
-      doc.text(`${idx + 1}. ${f.title}`, 16, y);
-      y += 4;
-
-      doc.setFontSize(7.5);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(51, 65, 85);
-      const lines = doc.splitTextToSize(f.detail, pageWidth - 32);
-      doc.text(lines, 20, y);
-      y += lines.length * 3.4 + 2.5;
+      y += 5; // Spacing between parameter blocks
     });
   } else {
     doc.setFontSize(8.5);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(100, 116, 139);
-    doc.text("Focus on maintaining core execution and preparation consistency.", 16, y);
+    doc.text("Focus on maintaining core execution and preparation consistency.", 14, y);
     y += 8;
   }
 
   y += 4;
 
   if (y > pageHeight - 60) {
-    addFooter(doc.internal.getNumberOfPages());
+    addFooter((doc as any).getNumberOfPages());
     doc.addPage();
 
     doc.setFillColor(15, 23, 42);
@@ -1198,7 +1419,7 @@ const generatePlayerPdfReport = async (
     });
   }
 
-  addFooter(doc.internal.getNumberOfPages());
+  addFooter((doc as any).getNumberOfPages());
 
   doc.save(`${player.name.replace(/\s+/g, "_")}_Performance_Report.pdf`);
 };
