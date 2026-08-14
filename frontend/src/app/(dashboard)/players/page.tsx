@@ -2984,12 +2984,12 @@ export default function PlayersPage() {
               )}
             </div>
 
-            {/* SECTION 2 – CURRENT STATUS */}
+            {/* SECTION 2 – PLAYER'S CURRENT STATUS */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-3.5 sm:p-5.5 space-y-4 text-left">
               <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500" />
-                  CURRENT STATUS
+                  PLAYER'S CURRENT STATUS
                 </h3>
               </div>
               <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center pt-1">
@@ -3084,12 +3084,12 @@ export default function PlayersPage() {
               </div>
             </div>
 
-            {/* SECTION 5 – WHAT DO I NEED TO WORK ON? */}
+            {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS */}
             <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
-                  WHAT DO I NEED TO WORK ON?
+                  KEY PERFORMANCE HIGHLIGHTS
                 </h3>
               </div>
               
