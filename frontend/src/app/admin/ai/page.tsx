@@ -11,6 +11,8 @@ interface AiCoachConfig {
   responseGuidance: string;
   recommendationBehaviour: string;
   parameterAnalysisInstructions: string;
+  coachActionPlanDirectives: string;
+  recommendedFocusDirectives: string;
 }
 
 const DEFAULT_AI_COACH: AiCoachConfig = {
@@ -18,7 +20,9 @@ const DEFAULT_AI_COACH: AiCoachConfig = {
   coachingTone: "Professional, encouraging, analytical, and actionable.",
   responseGuidance: "Format outputs clearly with executive summary, 5-part parameter recommendations, and practice vs match variance analysis.",
   recommendationBehaviour: "Interpret approved Daryll Cullinan Coach Plan in the context of the player's role (Batsman, Bowler, Wicketkeeper, Fielder). Never contradict high scores or invent unapproved technical drills.",
-  parameterAnalysisInstructions: "Evaluate all 7 parameters (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience) ranked from strongest to weakest based on actual assessment scores."
+  parameterAnalysisInstructions: "Evaluate all 7 parameters (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience) ranked from strongest to weakest based on actual assessment scores.",
+  coachActionPlanDirectives: "Use the Coach's Action Plan as the primary foundational framework. Align development objectives directly with approved Daryll Cullinan drills and technical action points.",
+  recommendedFocusDirectives: "Prioritize high-impact focus areas based on the player's key weakness parameters and role requirements (Batsman, Bowler, All-rounder, Wicketkeeper)."
 };
 
 const parseAiConfig = (jsonStr: any): AiCoachConfig | null => {
@@ -35,6 +39,8 @@ const parseAiConfig = (jsonStr: any): AiCoachConfig | null => {
         responseGuidance: parsed.responseGuidance ?? DEFAULT_AI_COACH.responseGuidance,
         recommendationBehaviour: parsed.recommendationBehaviour ?? DEFAULT_AI_COACH.recommendationBehaviour,
         parameterAnalysisInstructions: parsed.parameterAnalysisInstructions ?? DEFAULT_AI_COACH.parameterAnalysisInstructions,
+        coachActionPlanDirectives: parsed.coachActionPlanDirectives ?? DEFAULT_AI_COACH.coachActionPlanDirectives,
+        recommendedFocusDirectives: parsed.recommendedFocusDirectives ?? DEFAULT_AI_COACH.recommendedFocusDirectives,
       };
     }
   } catch (e) {
@@ -266,6 +272,32 @@ export default function AdminAiPage() {
             rows={3}
             value={aiConfig.parameterAnalysisInstructions}
             onChange={(e) => setAiConfig({ ...aiConfig, parameterAnalysisInstructions: e.target.value })}
+            className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition-all leading-relaxed font-medium"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+            6. Coach's Action Plan Directives
+          </label>
+          <textarea
+            rows={3}
+            value={aiConfig.coachActionPlanDirectives}
+            onChange={(e) => setAiConfig({ ...aiConfig, coachActionPlanDirectives: e.target.value })}
+            placeholder="Directives for integrating Coach's Action Plan into AI analysis..."
+            className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition-all leading-relaxed font-medium"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+            7. Recommended Focus Directives
+          </label>
+          <textarea
+            rows={3}
+            value={aiConfig.recommendedFocusDirectives}
+            onChange={(e) => setAiConfig({ ...aiConfig, recommendedFocusDirectives: e.target.value })}
+            placeholder="Directives for generating targeted Recommended Focus areas..."
             className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition-all leading-relaxed font-medium"
           />
         </div>

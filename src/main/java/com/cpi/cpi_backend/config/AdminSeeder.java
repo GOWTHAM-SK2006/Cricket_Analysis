@@ -347,9 +347,9 @@ public class AdminSeeder implements CommandLineRunner {
                   "ppiDescription": "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.",
                   "mpiDescription": "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.",
                   "cpiDescription": "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back.",
-                  "below5Text": "The player is performing below the expected standard with clear gaps, inconsistency or weaknesses that require focused coaching and development.",
-                  "between5And7Text": "The player has a good base but performance is inconsistent or unreliable, particularly as pressure, difficulty or match demands increase.",
-                  "above7Text": "The player is performing at an elite level, with a game that remains consistent and reliable under pressure, fatigue and challenging conditions."
+                  "below5Text": "Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority.",
+                  "between5And7Text": "There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches.",
+                  "above7Text": "Performance is strong across the key areas. Protect what is working, maintain standards and continue to challenge the player."
                 }
                 """;
 
@@ -390,7 +390,9 @@ public class AdminSeeder implements CommandLineRunner {
                   "coachingTone": "Professional, encouraging, analytical, and actionable.",
                   "responseGuidance": "Format outputs clearly with executive summary, parameter rankings from strongest to weakest, and targeted action points.",
                   "recommendationBehaviour": "Focus on high-impact technical and mental adjustments that yield rapid performance improvements.",
-                  "parameterAnalysisInstructions": "Evaluate all 7 parameters (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience) on a 10-point scale."
+                  "parameterAnalysisInstructions": "Evaluate all 7 parameters (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience) on a 10-point scale.",
+                  "coachActionPlanDirectives": "Use the Coach's Action Plan as the primary foundational framework. Align development objectives directly with approved Daryll Cullinan drills and technical action points.",
+                  "recommendedFocusDirectives": "Prioritize high-impact focus areas based on the player's key weakness parameters and role requirements (Batsman, Bowler, All-rounder, Wicketkeeper)."
                 }
                 """;
 
