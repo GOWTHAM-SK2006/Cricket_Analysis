@@ -3021,12 +3021,12 @@ export default function PlayersPage() {
             </div>
 
 
-            {/* SECTION 4 – TARGETS (WHERE DO I WANT TO BE?) */}
+            {/* SECTION 4 – TARGETS (PLAYER'S CPI GOAL) */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Target className="w-4 h-4 text-orange-500" />
-                  WHERE DO I WANT TO BE?
+                  PLAYER'S CPI GOAL
                 </h3>
               </div>
               
