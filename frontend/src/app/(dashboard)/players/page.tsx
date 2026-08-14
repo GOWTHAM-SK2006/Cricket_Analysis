@@ -758,7 +758,7 @@ const computeFocusAreasForPlayer = (
       coachingPriority = "Consolidate baseline performance across practice and match play.";
     }
 
-    const title = `${p.name.toUpperCase()} (Score: ${overallAvg.toFixed(1)}/10)`;
+    const title = p.name.toUpperCase();
 
     const detailParts = [];
     if (cpiGuidance) detailParts.push(`CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}`);
