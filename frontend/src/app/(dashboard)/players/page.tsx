@@ -1213,62 +1213,54 @@ const generatePlayerPdfReport = async (
   doc.setTextColor(15, 23, 42);
   doc.text("5. AI COACH RECOMMENDATIONS", 14, y);
 
-  y += 6.5;
+  y += 7.0;
 
   if (focusAreas && focusAreas.length > 0) {
     focusAreas.forEach((f: any) => {
-      // Ensure space for Parameter Title + line divider + first section heading (22mm)
-      checkPageSpace(22);
+      // Ensure space for Parameter Title + line divider + content block (20mm)
+      checkPageSpace(20);
 
-      // PARAMETER NAME (Score: X/10)
-      doc.setFontSize(10);
+      // PARAMETER NAME (TECHNICAL EXECUTION, SKILL LEVEL, etc.)
+      doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(249, 115, 22); // CPI Orange accent
       doc.text(f.title, 14, y);
-      y += 4.5;
-
-      // Divider line under parameter title
-      doc.setFillColor(226, 232, 240);
-      doc.rect(14, y - 1, pageWidth - 28, 0.4, "F");
       y += 3.5;
 
-      // Sub-section print helper
-      const printSubSection = (headingText: string, linesText: string[], isBulletList: boolean = false) => {
-        checkPageSpace(12);
+      // Divider line under parameter title (Symmetrical 3.5mm padding)
+      doc.setFillColor(226, 232, 240);
+      doc.rect(14, y, pageWidth - 28, 0.3, "F");
+      y += 3.5;
 
+      if (f.cpiGuidance) {
+        // Sub-section Header
+        checkPageSpace(10);
         doc.setFontSize(8.5);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(15, 23, 42); // Dark slate
-        doc.text(headingText, 14, y);
-        y += 4;
+        doc.text("CPI FRAMEWORK GUIDANCE:", 14, y);
+        y += 3.8;
 
-        doc.setFontSize(8);
+        // Body Text
+        doc.setFontSize(8.2);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(51, 65, 85); // Slate 700
 
-        linesText.forEach((lineStr) => {
-          const xMargin = isBulletList ? 18 : 14;
-          const wrapWidth = isBulletList ? (pageWidth - 32) : (pageWidth - 28);
-          const wrapped = doc.splitTextToSize(lineStr, wrapWidth);
+        const wrapWidth = pageWidth - 28;
+        const wrappedLines = doc.splitTextToSize(f.cpiGuidance, wrapWidth);
 
-          if (checkPageSpace(wrapped.length * 3.6 + 2)) {
-            doc.setFontSize(8);
+        wrappedLines.forEach((lineStr: string) => {
+          if (checkPageSpace(4.5)) {
+            doc.setFontSize(8.2);
             doc.setFont("helvetica", "normal");
             doc.setTextColor(51, 65, 85);
           }
-
-          doc.text(wrapped, xMargin, y);
-          y += wrapped.length * 3.6 + (isBulletList ? 1.5 : 0);
+          doc.text(lineStr, 14, y);
+          y += 3.8;
         });
 
-        y += 2.5;
-      };
-
-      if (f.cpiGuidance) {
-        printSubSection("CPI FRAMEWORK GUIDANCE:", [f.cpiGuidance]);
+        y += 4.5; // Spacing between parameter blocks
       }
-
-      y += 5; // Spacing between parameter blocks
     });
   } else {
     doc.setFontSize(8.5);
