@@ -649,6 +649,7 @@ cpiFrameworkNotes["Concentration"] = cpiFrameworkNotes["Focus"];
 
 export interface CpiFocusArea {
   title: string;
+  avg: number;
   cpiGuidance: string;
   actionPoints: { title: string; detail: string }[];
   daryllDirectives: string[];
@@ -777,8 +778,12 @@ const computeFocusAreasForPlayer = (
     };
   });
 
+  // Sort from Strongest to Weakest (highest score to lowest score)
+  rankedParams.sort((a, b) => b.avg - a.avg);
+
   return rankedParams.map((p) => ({
     title: p.title,
+    avg: p.avg,
     cpiGuidance: p.cpiGuidance,
     actionPoints: p.actionPoints,
     daryllDirectives: p.daryllDirectives,
@@ -1211,7 +1216,7 @@ const generatePlayerPdfReport = async (
   doc.setFontSize(10.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("5. AI COACH RECOMMENDATIONS", 14, y);
+  doc.text("5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST", 14, y);
 
   y += 7.0;
 
@@ -1220,11 +1225,12 @@ const generatePlayerPdfReport = async (
       // Ensure space for Parameter Title + line divider + content block (20mm)
       checkPageSpace(20);
 
-      // PARAMETER NAME (TECHNICAL EXECUTION, SKILL LEVEL, etc.)
+      // PARAMETER NAME (e.g. RESILIENCE (8.3/10))
       doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(249, 115, 22); // CPI Orange accent
-      doc.text(f.title, 14, y);
+      const scoreStr = typeof f.avg === "number" ? ` (${f.avg}/10)` : "";
+      doc.text(`${f.title}${scoreStr}`, 14, y);
       y += 3.5;
 
       // Divider line under parameter title (Symmetrical 3.5mm padding)
@@ -3101,17 +3107,17 @@ export default function PlayersPage() {
               </div>
             </div>
 
-            {/* SECTION 5 – RECOMMENDED FOCUS */}
+            {/* SECTION 5 – KEY PERFORMANCE AREAS (STRONGEST TO WEAKEST) */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
               <h3 className="text-xs font-black tracking-widest text-slate-900 uppercase border-b border-slate-200 pb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-orange-500" />
-                RECOMMENDED FOCUS
+                KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST
               </h3>
               <div className="space-y-2.5 pt-1">
                 {focusAreas.map((focus, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden transition-all duration-300 cursor-pointer"
+                    className="rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden transition-all duration-300 cursor-pointer hover:border-orange-300"
                     onClick={() => setExpandedFocus(expandedFocus === idx ? null : idx)}
                   >
                     <div className="flex items-center gap-3 p-3.5">
@@ -3119,6 +3125,24 @@ export default function PlayersPage() {
                         {idx + 1}
                       </span>
                       <span className="text-xs font-black text-slate-900 flex-1">{focus.title}</span>
+                      {typeof focus.avg === "number" && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono">
+                            {focus.avg} / 10
+                          </span>
+                          <span
+                            className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                              focus.avg >= 8.0
+                                ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                                : focus.avg >= 6.5
+                                ? "bg-orange-100 text-orange-700 border border-orange-300"
+                                : "bg-red-100 text-red-700 border border-red-300"
+                            }`}
+                          >
+                            {focus.avg >= 8.0 ? "Optimal" : focus.avg >= 6.5 ? "Good" : "Needs Focus"}
+                          </span>
+                        </div>
+                      )}
                       <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
                     </div>
                     <div
