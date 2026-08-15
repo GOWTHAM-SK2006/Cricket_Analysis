@@ -3124,14 +3124,14 @@ export default function PlayersPage() {
                       <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
                         {idx + 1}
                       </span>
-                      <span className="text-xs font-black text-slate-900 flex-1">{focus.title}</span>
+                      <span className="text-xs font-black text-slate-900 flex-1 min-w-0 truncate">{focus.title}</span>
                       {typeof focus.avg === "number" && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-md border border-slate-200 font-mono">
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="w-[64px] text-center text-[11px] font-bold text-slate-700 bg-white px-1.5 py-1 rounded-lg border border-slate-200 font-mono inline-block">
                             {focus.avg} / 10
                           </span>
                           <span
-                            className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                            className={`w-[96px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${
                               focus.avg >= 8.0
                                 ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
                                 : focus.avg >= 6.5
