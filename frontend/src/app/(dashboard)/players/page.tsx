@@ -854,48 +854,48 @@ const generatePlayerPdfReport = async (
   // ==========================================
 
   // HEADER (CPI Logo, Cricket Performance Index, Player Performance Report, Report Date, Coach Name)
-  doc.setFillColor(15, 23, 42); // Slate 900 Banner
+  doc.setFillColor(255, 255, 255); // White Banner Background
   doc.rect(0, 0, pageWidth, 22, "F");
 
-  doc.setFillColor(249, 115, 22); // CPI Accent Stripe
-  doc.rect(0, 21, pageWidth, 1, "F");
+  doc.setFillColor(249, 115, 22); // CPI Orange Accent Stripe
+  doc.rect(0, 21, pageWidth, 1.2, "F");
 
-  // CPI High-Res Logo Badge Icon (Crisp, sharp, non-blurry)
+  // CPI High-Res Logo Badge Icon (Crisp on white background)
   if (logoDataUrl) {
     try {
       doc.addImage(logoDataUrl, "PNG", 12, 3, 14, 16);
     } catch (e) {
-      doc.setFillColor(255, 255, 255);
+      doc.setFillColor(249, 115, 22);
       doc.circle(18, 11, 7, "F");
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.5);
-      doc.setTextColor(249, 115, 22);
+      doc.setTextColor(255, 255, 255);
       doc.text("CPI", 18, 13.5, { align: "center" });
     }
   } else {
-    doc.setFillColor(255, 255, 255);
+    doc.setFillColor(249, 115, 22);
     doc.circle(18, 11, 7, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
-    doc.setTextColor(249, 115, 22);
+    doc.setTextColor(255, 255, 255);
     doc.text("CPI", 18, 13.5, { align: "center" });
   }
 
-  // Header Title & Subtitle
+  // Header Title & Subtitle (Dark slate text for white banner)
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
-  doc.setTextColor(255, 255, 255);
+  doc.setTextColor(15, 23, 42);
   doc.text("CRICKET PERFORMANCE INDEX", 29, 10);
 
   doc.setFontSize(8.5);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("helvetica", "bold");
   doc.setTextColor(249, 115, 22);
   doc.text("Player Performance Report", 29, 16);
 
   // Header Metadata (Report Date, Coach Name)
   doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(203, 213, 225);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(71, 85, 105);
   doc.text(`Report Date: ${reportDateStr}`, pageWidth - 14, 10, { align: "right" });
   doc.text(`Coach Name: ${coachName}`, pageWidth - 14, 16, { align: "right" });
 
@@ -903,20 +903,24 @@ const generatePlayerPdfReport = async (
 
   // PLAYER INFORMATION SECTION (Player Name, Player ID, Age, Role, Team, Assessment Date)
   doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(226, 232, 240);
-  doc.setLineWidth(0.5);
+  doc.setDrawColor(203, 213, 225);
+  doc.setLineWidth(0.6);
   doc.roundedRect(14, y, pageWidth - 28, 28, 3, 3, "FD");
+
+  // Left orange accent bar inside player info card
+  doc.setFillColor(249, 115, 22);
+  doc.rect(14, y, 3.5, 28, "F");
 
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(249, 115, 22);
-  doc.text("PLAYER INFORMATION", 20, y + 7.5);
+  doc.text("PLAYER INFORMATION", 21, y + 7.5);
 
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(`Player Name: ${player.name}`, 20, y + 15);
-  doc.text(`Player ID: #${player.id}`, 20, y + 22);
+  doc.text(`Player Name: ${player.name}`, 21, y + 15);
+  doc.text(`Player ID: #${player.id}`, 21, y + 22);
 
   doc.text(`Age: ${(player.id % 5) + 19}`, 85, y + 15);
   doc.text(`Role: ${player.role}`, 85, y + 22);
@@ -924,7 +928,7 @@ const generatePlayerPdfReport = async (
   doc.text(`Team: Senior Squad`, 145, y + 15);
   doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 145, y + 22);
 
-  y += 34;
+  y += 36;
 
   // 1. OVERALL PERFORMANCE SUMMARY (CPI, PPI, MPI, Overall Rating)
   doc.setFontSize(10.5);
@@ -1007,11 +1011,11 @@ const generatePlayerPdfReport = async (
 
   y += 30;
 
-  // 2. SEVEN PERFORMANCE PARAMETERS (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience)
+  // 2. 7 KEY PERFORMANCE AREAS
   doc.setFontSize(10.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("2. SEVEN PERFORMANCE PARAMETERS", 14, y);
+  doc.text("2. 7 KEY PERFORMANCE AREAS", 14, y);
 
   y += 6;
 
@@ -1148,23 +1152,23 @@ const generatePlayerPdfReport = async (
       addFooter((doc as any).getNumberOfPages());
       doc.addPage();
 
-      doc.setFillColor(15, 23, 42);
+      doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, pageWidth, 14, "F");
       doc.setFillColor(249, 115, 22);
-      doc.rect(0, 13, pageWidth, 1, "F");
+      doc.rect(0, 13, pageWidth, 1.2, "F");
       if (logoDataUrl) {
         try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
       } else {
-        doc.setFillColor(255, 255, 255);
+        doc.setFillColor(249, 115, 22);
         doc.circle(18, 7, 4.5, "F");
         doc.setFont("helvetica", "bold");
         doc.setFontSize(5.5);
-        doc.setTextColor(249, 115, 22);
+        doc.setTextColor(255, 255, 255);
         doc.text("CPI", 18, 8.8, { align: "center" });
       }
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
-      doc.setTextColor(255, 255, 255);
+      doc.setTextColor(15, 23, 42);
       doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
       y = 22;
       return true;
@@ -1257,15 +1261,21 @@ const generatePlayerPdfReport = async (
   }
 
   // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
+  checkPageSpace(38);
   doc.setFontSize(10.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
   doc.text("6. PERFORMANCE TREND", 14, y);
 
   y += 6;
-  doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(226, 232, 240);
-  doc.roundedRect(14, y, pageWidth - 28, 26, 3, 3, "FD");
+  doc.setFillColor(254, 243, 199); // Highlight amber background
+  doc.setDrawColor(245, 158, 11);
+  doc.setLineWidth(0.8);
+  doc.roundedRect(14, y, pageWidth - 28, 28, 3, 3, "FD");
+
+  // Left orange accent bar inside trend card
+  doc.setFillColor(249, 115, 22);
+  doc.rect(14, y, 3.5, 28, "F");
 
   const prevAssessment = (allAssessments.length > 1) ? allAssessments[1] : null;
   const prevCpi = prevAssessment ? (prevAssessment.ppiScore || prevAssessment.mpiScore || 70) : Math.max(0, cpiNum - 3);
@@ -1274,11 +1284,11 @@ const generatePlayerPdfReport = async (
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(`• CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 18, y + 7);
-  doc.text(`• PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 18, y + 13.5);
-  doc.text(`• MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 18, y + 20);
+  doc.text(`• CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 20, y + 8);
+  doc.text(`• PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 20, y + 15);
+  doc.text(`• MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 20, y + 22);
 
-  y += 32;
+  y += 36;
 
   // 7. ASSESSMENT HISTORY
   doc.setFontSize(10.5);
