@@ -2060,13 +2060,12 @@ export default function PlayersPage() {
     setError("");
     try {
       const roleStr = `${newPlayer.role} (Age ${newPlayer.age})`;
-      const photoPayload = (newPlayer.photo && newPlayer.photo.length < 255) ? newPlayer.photo : "";
       const res = await api.post("/players", {
         name: newPlayer.name,
         role: roleStr,
         battingStyle: newPlayer.battingStyle,
         bowlingStyle: newPlayer.bowlingStyle,
-        imageUrl: photoPayload
+        imageUrl: newPlayer.photo || ""
       });
       
       const created = res.data;
@@ -2137,13 +2136,12 @@ export default function PlayersPage() {
     setError("");
     try {
       const roleStr = editPlayerForm.age ? `${editPlayerForm.role} (Age ${editPlayerForm.age})` : editPlayerForm.role;
-      const photoPayload = (editPlayerForm.photo && editPlayerForm.photo.length < 255) ? editPlayerForm.photo : "";
       const res = await api.put(`/players/${editingPlayer.id}`, {
         name: editPlayerForm.name,
         role: roleStr,
         battingStyle: editPlayerForm.battingStyle,
         bowlingStyle: editPlayerForm.bowlingStyle,
-        imageUrl: photoPayload
+        imageUrl: editPlayerForm.photo || ""
       });
       const updated = res.data;
       const fullPhoto = editPlayerForm.photo || updated.imageUrl || "";

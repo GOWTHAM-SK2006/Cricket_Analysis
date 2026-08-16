@@ -1,6 +1,7 @@
 package com.cpi.cpi_backend.controller;
 
 import com.cpi.cpi_backend.dto.PlayerRequest;
+import com.cpi.cpi_backend.dto.PlayerResponse;
 import com.cpi.cpi_backend.entity.Coach;
 import com.cpi.cpi_backend.entity.Player;
 import com.cpi.cpi_backend.entity.Role;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/players")
@@ -26,6 +28,34 @@ public class PlayerController {
     private final CoachRepository coachRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
+
+    private PlayerResponse toPlayerResponse(Player player) {
+        if (player == null) return null;
+
+        PlayerResponse.CoachSummary coachSummary = null;
+        if (player.getCreatorCoach() != null) {
+            coachSummary = PlayerResponse.CoachSummary.builder()
+                    .id(player.getCreatorCoach().getId())
+                    .name(player.getCreatorCoach().getName())
+                    .email(player.getCreatorCoach().getEmail())
+                    .build();
+        }
+
+        return PlayerResponse.builder()
+                .id(player.getId())
+                .name(player.getName())
+                .role(player.getRole())
+                .battingStyle(player.getBattingStyle())
+                .bowlingStyle(player.getBowlingStyle())
+                .imageUrl(player.getImageUrl())
+                .ppiScore(player.getPpiScore())
+                .mpiScore(player.getMpiScore())
+                .invitationCode(player.getInvitationCode())
+                .invitationCodeActivated(player.getInvitationCodeActivated())
+                .creatorCoach(coachSummary)
+                .createdAt(player.getCreatedAt())
+                .build();
+    }
 
     private void checkAccess(Player player, Coach currentCoach) {
         if (currentCoach == null || currentCoach.getId() == null) {
@@ -49,7 +79,7 @@ public class PlayerController {
 
     @GetMapping
     @Transactional
-    public ResponseEntity<List<Player>> getMyPlayers(@AuthenticationPrincipal Coach currentCoach) {
+    public ResponseEntity<List<PlayerResponse>> getMyPlayers(@AuthenticationPrincipal Coach currentCoach) {
         if (currentCoach == null || currentCoach.getId() == null) {
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.UNAUTHORIZED, "Unauthorized"
@@ -75,12 +105,16 @@ public class PlayerController {
             }
         }
 
-        return ResponseEntity.ok(allPlayers);
+        List<PlayerResponse> responseList = allPlayers.stream()
+                .map(this::toPlayerResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
-    public ResponseEntity<Player> getPlayerById(
+    public ResponseEntity<PlayerResponse> getPlayerById(
             @PathVariable Long id,
             @AuthenticationPrincipal Coach currentCoach
     ) {
@@ -91,7 +125,7 @@ public class PlayerController {
 
         checkAccess(player, currentCoach);
 
-        return ResponseEntity.ok(player);
+        return ResponseEntity.ok(toPlayerResponse(player));
     }
 
     private String generateInvitationCode() {
@@ -106,7 +140,7 @@ public class PlayerController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Player> createPlayer(
+    public ResponseEntity<PlayerResponse> createPlayer(
             @RequestBody PlayerRequest request,
             @AuthenticationPrincipal Coach currentCoach
     ) {
@@ -118,17 +152,12 @@ public class PlayerController {
             code = generateInvitationCode();
         } while (playerRepository.findByInvitationCode(code).isPresent());
 
-        String safeImageUrl = request.getImageUrl();
-        if (safeImageUrl != null && safeImageUrl.length() > 255) {
-            safeImageUrl = safeImageUrl.startsWith("data:") ? "" : safeImageUrl.substring(0, 255);
-        }
-
         Player player = Player.builder()
                 .name(request.getName())
                 .role(request.getRole())
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
-                .imageUrl(safeImageUrl)
+                .imageUrl(request.getImageUrl())
                 .creatorCoach(creatorCoach)
                 .ppiScore(0.0)
                 .mpiScore(0.0)
@@ -136,12 +165,13 @@ public class PlayerController {
                 .invitationCodeActivated(false)
                 .build();
                 
-        return ResponseEntity.ok(playerRepository.save(player));
+        Player saved = playerRepository.save(player);
+        return ResponseEntity.ok(toPlayerResponse(saved));
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<Player> updatePlayer(
+    public ResponseEntity<PlayerResponse> updatePlayer(
             @PathVariable Long id,
             @RequestBody PlayerRequest request,
             @AuthenticationPrincipal Coach currentCoach
@@ -155,15 +185,10 @@ public class PlayerController {
         if (request.getRole() != null) player.setRole(request.getRole());
         if (request.getBattingStyle() != null) player.setBattingStyle(request.getBattingStyle());
         if (request.getBowlingStyle() != null) player.setBowlingStyle(request.getBowlingStyle());
-        if (request.getImageUrl() != null) {
-            String safeImg = request.getImageUrl();
-            if (safeImg.length() > 255) {
-                safeImg = safeImg.startsWith("data:") ? "" : safeImg.substring(0, 255);
-            }
-            player.setImageUrl(safeImg);
-        }
+        if (request.getImageUrl() != null) player.setImageUrl(request.getImageUrl());
 
-        return ResponseEntity.ok(playerRepository.save(player));
+        Player saved = playerRepository.save(player);
+        return ResponseEntity.ok(toPlayerResponse(saved));
     }
 
     @DeleteMapping("/{id}")
