@@ -2980,7 +2980,7 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 2 – PLAYER'S CURRENT STATUS */}
-            <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left shadow-xs">
+            <div className="bg-white border-2 border-slate-900 rounded-3xl p-5.5 space-y-4 text-left shadow-md">
               <div className="border-b border-slate-200 pb-2">
                 <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
                   <Flame className="w-4 h-4 text-orange-500 fill-orange-500/20" />
@@ -2988,7 +2988,7 @@ export default function PlayersPage() {
                 </h3>
               </div>
               <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5 text-center pt-1">
-                <div className="bg-orange-500/10 border-2 border-orange-500/40 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
+                <div className="bg-orange-50 border-2 border-orange-500 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0 shadow-xs">
                   <p className="text-[10px] sm:text-xs font-black text-orange-600 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     CPI SCORE
                   </p>
@@ -2996,16 +2996,16 @@ export default function PlayersPage() {
                     {formatScoreValue(currentCpi)}
                   </p>
                 </div>
-                <div className="bg-slate-50 border border-slate-200 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
-                  <p className="text-[10px] sm:text-xs font-black text-slate-700 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                <div className="bg-slate-50 border-2 border-slate-800 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0 shadow-xs">
+                  <p className="text-[10px] sm:text-xs font-black text-slate-800 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     PPI SCORE
                   </p>
                   <p className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentPpi)}
                   </p>
                 </div>
-                <div className="bg-slate-50 border border-slate-200 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
-                  <p className="text-[10px] sm:text-xs font-black text-slate-700 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                <div className="bg-slate-50 border-2 border-slate-800 p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0 shadow-xs">
+                  <p className="text-[10px] sm:text-xs font-black text-slate-800 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     MPI SCORE
                   </p>
                   <p className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-none whitespace-nowrap">
