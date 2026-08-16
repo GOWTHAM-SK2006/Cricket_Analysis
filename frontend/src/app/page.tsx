@@ -7,9 +7,9 @@ import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-orange-500/20 font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFF3EC] via-[#FFF8F4] to-[#FFF3EC] text-slate-900 selection:bg-orange-500/20 font-sans">
       {/* Navigation */}
-      <nav className="fixed w-full z-50 top-0 border-b border-slate-200 bg-white/90 backdrop-blur-md shadow-xs">
+      <nav className="fixed w-full z-50 top-0 border-b border-orange-100/60 bg-[#FFF5EE]/90 backdrop-blur-md shadow-xs">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="relative w-8 h-9 flex-shrink-0">
@@ -38,9 +38,9 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-28 pb-20 px-6 relative overflow-hidden">
-        {/* Abstract Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <main className="pt-28 pb-20 px-6 relative overflow-hidden min-h-[calc(100vh-4rem)] flex flex-col justify-center">
+        {/* Ambient Glow */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-orange-400/10 via-amber-300/10 to-orange-500/10 blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10 text-center mt-12">
           <motion.div
