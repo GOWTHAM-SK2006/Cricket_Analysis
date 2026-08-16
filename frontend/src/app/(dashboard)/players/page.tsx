@@ -2844,20 +2844,26 @@ export default function PlayersPage() {
               <div className="relative inline-block mx-auto">
                 <div 
                   onClick={() => profilePhotoInputRef.current?.click()}
-                  className="w-28 h-28 rounded-full bg-slate-100 border-3 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500 shadow-md"
+                  className="w-28 h-28 rounded-full bg-slate-100 border-3 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500 shadow-md relative"
                 >
                   {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
                     <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-4xl font-bold text-orange-500">{getInitials(selectedPlayer.name)}</span>
                   )}
-                  <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                    <Camera className="w-6 h-6 text-slate-900" />
+                  <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity text-white">
+                    <Camera className="w-6 h-6 mb-0.5" />
+                    <span className="text-[9px] font-black uppercase tracking-wider">CHANGE</span>
                   </div>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-sm shadow-md z-10" title={selectedPlayer.role}>
-                  {getRoleEmoji(selectedPlayer.role)}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => profilePhotoInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 w-8 h-8 bg-orange-500 hover:bg-orange-600 border-2 border-white text-white rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 cursor-pointer z-10"
+                  title="Click to edit image"
+                >
+                  <Pencil className="w-4 h-4 stroke-[2.5]" />
+                </button>
               </div>
               
               <input 
@@ -4041,21 +4047,44 @@ export default function PlayersPage() {
             <form onSubmit={handleEditPlayerSubmit} className="space-y-4 text-left">
               
               {/* Photo Picker */}
-              <div className="flex flex-col items-center space-y-2">
-                <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
-                <div 
-                  onClick={() => editFileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-3xl bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
-                >
-                  {editPlayerForm.photo ? (
-                    <img src={editPlayerForm.photo} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <>
-                      <Camera className="w-8 h-8 text-zinc-500 group-hover:text-orange-500 mb-1" />
-                      <span className="text-sm font-bold text-zinc-500 uppercase">CHANGE</span>
-                    </>
-                  )}
+              <div className="flex flex-col items-center space-y-1.5">
+                <span className="text-xs font-black tracking-widest text-slate-700 block self-start uppercase">PLAYER PHOTO</span>
+                <div className="relative inline-block my-1">
+                  <div 
+                    onClick={() => editFileInputRef.current?.click()}
+                    className="w-28 h-28 rounded-full bg-slate-100 border-4 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group shadow-md transition-all active:scale-95"
+                    title="Click to change player photo"
+                  >
+                    {editPlayerForm.photo ? (
+                      <>
+                        <img src={editPlayerForm.photo} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity text-white">
+                          <Camera className="w-6 h-6 mb-0.5" />
+                          <span className="text-[10px] font-black uppercase tracking-wider">CHANGE</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-slate-500 group-hover:text-orange-500">
+                        <Camera className="w-7 h-7 mb-1" />
+                        <span className="text-[10px] font-black uppercase tracking-wider">UPLOAD</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Edit Pencil Icon Badge */}
+                  <button
+                    type="button"
+                    onClick={() => editFileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 w-8 h-8 bg-orange-500 hover:bg-orange-600 border-2 border-white text-white rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-90 cursor-pointer z-10"
+                    title="Click to edit image"
+                  >
+                    <Pencil className="w-4 h-4 stroke-[2.5]" />
+                  </button>
                 </div>
+                <span className="text-[11px] font-bold text-orange-600 uppercase tracking-wider">
+                  Tap photo or pencil icon to change image
+                </span>
+              </div>
                 <input 
                   type="file" 
                   ref={editFileInputRef} 
@@ -4072,7 +4101,6 @@ export default function PlayersPage() {
                   accept="image/*" 
                   className="hidden" 
                 />
-              </div>
 
               <div className="space-y-1">
                 <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYER NAME</label>
