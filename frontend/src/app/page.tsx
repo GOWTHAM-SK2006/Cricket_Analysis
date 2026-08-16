@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-slate-900 selection:bg-orange-500/20 font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FAF9F6] text-slate-900 selection:bg-orange-500/20 font-sans flex flex-col">
       {/* Navigation */}
       <nav className="fixed w-full z-50 top-0 border-b border-slate-200/80 bg-[#FAF9F6]/90 backdrop-blur-md shadow-xs">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -38,13 +38,13 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-20 pb-12 px-6 relative overflow-hidden flex-1 flex flex-col items-center justify-center -mt-6">
-        <div className="max-w-5xl mx-auto relative z-10 text-center">
+      <main className="pt-20 sm:pt-24 pb-12 px-6 relative overflow-hidden flex-1 flex flex-col items-center justify-start">
+        <div className="max-w-5xl mx-auto relative z-10 text-center pt-2 sm:pt-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-200/80 bg-orange-50/80 text-orange-600 text-xs font-black mb-6 shadow-xs"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-200/80 bg-orange-50/80 text-orange-600 text-xs font-black mb-5 shadow-xs"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
@@ -57,7 +57,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight mb-6 text-slate-900 leading-[1.05]"
+            className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-5 text-slate-900 leading-[1.08]"
           >
             Cricket Performance
             <br />
@@ -70,9 +70,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl sm:text-2xl text-slate-600 max-w-3xl mx-auto mb-10 font-bold leading-relaxed"
+            className="text-lg sm:text-2xl text-slate-600 max-w-3xl mx-auto mb-8 font-bold leading-relaxed"
           >
-            Are we training properly? If not, what must we do better?
+            Are we training properly? If not, what must we do better?{" "}
             <br className="hidden sm:inline" />
             The premier analytics platform designed for all cricket coaches.
           </motion.p>
