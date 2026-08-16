@@ -1140,49 +1140,9 @@ const generatePlayerPdfReport = async (
     doc.text(`• ${imp.name} (${imp.score})`, 18 + colW + 6, y + 13 + idx * 4.5);
   });
 
-  addFooter(1);
+  y += 34;
 
-  // ==========================================
-  // PAGE 2: 5. AI Coach Recommendations, 6. Performance Trend, 7. Assessment History
-  // ==========================================
-  doc.addPage();
-
-  // Header Page 2 Banner with CPI Logo
-  doc.setFillColor(15, 23, 42); // Dark slate
-  doc.rect(0, 0, pageWidth, 14, "F");
-
-  doc.setFillColor(249, 115, 22);
-  doc.rect(0, 13, pageWidth, 1, "F");
-
-  // Mini High-Res Logo on Page 2
-  if (logoDataUrl) {
-    try {
-      doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10);
-    } catch (e) {
-      doc.setFillColor(255, 255, 255);
-      doc.circle(18, 7, 4.5, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(5.5);
-      doc.setTextColor(249, 115, 22);
-      doc.text("CPI", 18, 8.8, { align: "center" });
-    }
-  } else {
-    doc.setFillColor(255, 255, 255);
-    doc.circle(18, 7, 4.5, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(5.5);
-    doc.setTextColor(249, 115, 22);
-    doc.text("CPI", 18, 8.8, { align: "center" });
-  }
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(255, 255, 255);
-  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-
-  y = 22;
-
-  // 5. AI COACH RECOMMENDATIONS
+  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST
   const checkPageSpace = (neededHeight: number) => {
     if (y + neededHeight > pageHeight - 20) {
       addFooter((doc as any).getNumberOfPages());
@@ -1222,30 +1182,30 @@ const generatePlayerPdfReport = async (
 
   if (focusAreas && focusAreas.length > 0) {
     focusAreas.forEach((f: any) => {
-      // Ensure space for Parameter Title + line divider + content block (20mm)
-      checkPageSpace(20);
+      // Ensure space for Parameter Title + line divider + content block
+      checkPageSpace(22);
 
-      // PARAMETER NAME (e.g. RESILIENCE (8.3/10))
+      // PARAMETER NAME (e.g. RESILIENCE (8.3))
       doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(249, 115, 22); // CPI Orange accent
       const scoreStr = typeof f.avg === "number" ? ` (${f.avg})` : "";
       doc.text(`${f.title}${scoreStr}`, 14, y);
-      y += 3.5;
+      y += 4.5;
 
-      // Divider line under parameter title (Symmetrical 3.5mm padding)
+      // Divider line under parameter title
       doc.setFillColor(226, 232, 240);
       doc.rect(14, y, pageWidth - 28, 0.3, "F");
-      y += 3.5;
+      y += 4.5;
 
       if (f.cpiGuidance) {
         // Sub-section Header
-        checkPageSpace(10);
+        checkPageSpace(12);
         doc.setFontSize(8.5);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(15, 23, 42); // Dark slate
         doc.text("CPI FRAMEWORK GUIDANCE:", 14, y);
-        y += 3.8;
+        y += 4.0;
 
         // Body Text
         doc.setFontSize(8.2);
@@ -1256,16 +1216,16 @@ const generatePlayerPdfReport = async (
         const wrappedLines = doc.splitTextToSize(f.cpiGuidance, wrapWidth);
 
         wrappedLines.forEach((lineStr: string) => {
-          if (checkPageSpace(4.5)) {
+          if (checkPageSpace(5.0)) {
             doc.setFontSize(8.2);
             doc.setFont("helvetica", "normal");
             doc.setTextColor(51, 65, 85);
           }
           doc.text(lineStr, 14, y);
-          y += 3.8;
+          y += 4.0;
         });
 
-        y += 4.5; // Spacing between parameter blocks
+        y += 7.5; // Generous breathing room between parameter blocks
       }
     });
   } else {
