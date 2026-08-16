@@ -126,14 +126,14 @@ export default function HistoryPage() {
     <div className="space-y-6 pb-12 select-none">
       
       <div className="space-y-2 text-center">
-        <h1 className="text-zinc-500 font-black tracking-widest text-xs uppercase">TIMELINE LOGS</h1>
+        <h1 className="text-slate-900 font-black tracking-widest text-xs uppercase">TIMELINE LOGS</h1>
         <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">PERFORMANCE HISTORY</h2>
       </div>
 
       {/* Select Player (only for Coach role) */}
       {role !== "player" && (
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black tracking-widest text-zinc-500 uppercase block pl-1">SELECT PLAYER</label>
+          <label className="text-[10px] font-black tracking-widest text-slate-900 uppercase block pl-1">SELECT PLAYER</label>
           <select
             value={selectedPlayerId || ""}
             onChange={(e) => handlePlayerChange(Number(e.target.value))}
@@ -188,7 +188,7 @@ export default function HistoryPage() {
               
               {/* Practice List */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase block pl-1">PRACTICE TIMELINE</h4>
+                <h4 className="text-xs font-black tracking-widest text-slate-900 uppercase block pl-1">PRACTICE TIMELINE</h4>
                 {practiceHistory.length === 0 ? (
                   <div className="bg-slate-50 border-2 border-dashed border-slate-200 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
                     No practice assessments recorded.
@@ -223,7 +223,7 @@ export default function HistoryPage() {
 
               {/* Match List */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black tracking-widest text-zinc-500 uppercase block pl-1">MATCH PLAY TIMELINE</h4>
+                <h4 className="text-xs font-black tracking-widest text-slate-900 uppercase block pl-1">MATCH PLAY TIMELINE</h4>
                 {matchHistory.length === 0 ? (
                   <div className="bg-slate-50 border-2 border-dashed border-slate-200 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
                     No match play assessments recorded.

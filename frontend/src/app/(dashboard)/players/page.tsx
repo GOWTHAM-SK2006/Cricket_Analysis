@@ -2893,11 +2893,11 @@ export default function PlayersPage() {
 
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">{selectedPlayer.name}</h2>
-                <p className="text-xs font-bold text-zinc-550 uppercase tracking-widest">{selectedPlayer.role}</p>
-                <div className="text-sm text-zinc-400 font-semibold uppercase mt-1">
+                <p className="text-xs font-extrabold text-slate-700 uppercase tracking-widest">{selectedPlayer.role}</p>
+                <div className="text-sm text-slate-600 font-bold uppercase mt-1">
                   Age: {((selectedPlayer.id % 5) + 19)} • Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
                 </div>
-                <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
+                <div className="text-xs text-slate-800 font-extrabold uppercase tracking-wider">
                   Last Assessed: {lastAssessmentDate}
                 </div>
               </div>
@@ -3022,7 +3022,7 @@ export default function PlayersPage() {
             {/* SECTION 4 – TARGETS (PLAYER'S CPI GOAL) */}
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="border-b border-slate-200 pb-2">
-                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
+                <h3 className="text-sm font-black tracking-wider text-slate-900 uppercase flex items-center gap-2">
                   <Target className="w-4 h-4 text-orange-500" />
                   PLAYER'S CPI GOAL
                 </h3>
@@ -3032,8 +3032,8 @@ export default function PlayersPage() {
                 {/* Target CPI Editing Card */}
                 <div className="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 flex justify-between items-center">
                   <div>
-                    <span className="text-sm font-bold text-zinc-550 uppercase tracking-widest block">TARGET CPI</span>
-                    <span className="text-xs font-bold text-zinc-400 uppercase block mt-0.5">
+                    <span className="text-sm font-black text-slate-900 uppercase tracking-widest block">TARGET CPI</span>
+                    <span className="text-xs font-extrabold text-slate-600 uppercase block mt-0.5">
                       {gapVal > 0 ? `${gapVal} points to target cpi` : "Target achieved!"}
                     </span>
                   </div>
@@ -3068,7 +3068,7 @@ export default function PlayersPage() {
 
                 {/* Progress Bar toward Target */}
                 <div className="space-y-1.5">
-                  <div className="flex justify-between items-center text-sm font-bold text-zinc-500 uppercase tracking-wider px-1">
+                  <div className="flex justify-between items-center text-sm font-black text-slate-900 uppercase tracking-wider px-1">
                     <span>Progress to Target</span>
                     <span className="font-bold text-orange-500 tracking-tight">{targetPercent}%</span>
                   </div>
@@ -3085,7 +3085,7 @@ export default function PlayersPage() {
             {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS */}
             <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="border-b border-slate-200 pb-2">
-                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
                   KEY PERFORMANCE HIGHLIGHTS
                 </h3>
@@ -3093,15 +3093,15 @@ export default function PlayersPage() {
               
               <div className="space-y-3 pt-1">
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-sm font-bold text-zinc-500 uppercase">Strongest Area</span>
+                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase">Strongest Area</span>
                   <span className="text-xs font-bold text-green-500 uppercase">{strongestArea}</span>
                 </div>
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-sm font-bold text-zinc-500 uppercase">Needs Improvement</span>
+                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase">Needs Improvement</span>
                   <span className="text-xs font-bold text-orange-500 uppercase">{needsImprovement}</span>
                 </div>
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <span className="text-sm font-bold text-zinc-500 uppercase">Weakest Area</span>
+                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase">Weakest Area</span>
                   <span className="text-xs font-bold text-red-550 text-red-500 uppercase">{weakestArea}</span>
                 </div>
               </div>
@@ -3164,13 +3164,13 @@ export default function PlayersPage() {
             {/* SECTION 7 – ASSESSMENT HISTORY */}
             <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
               <div className="flex justify-between items-center border-b border-slate-200 pb-2">
-                <h3 className="text-xs font-bold tracking-widest text-zinc-400 uppercase flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
                   <Brain className="w-4 h-4 text-orange-500" />
                   ASSESSMENT HISTORY
                 </h3>
                 <button
                   onClick={() => setShowHistoryOverlay(true)}
-                  className="text-xs font-bold text-orange-500 hover:text-orange-600 uppercase tracking-wider transition-colors cursor-pointer"
+                  className="text-xs font-black text-orange-600 hover:text-orange-700 uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   VIEW ALL
                 </button>
@@ -3179,11 +3179,11 @@ export default function PlayersPage() {
               <div className="space-y-4 pt-1">
                 {/* Practice History scroll area */}
                 <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
+                  <span className="text-xs font-black text-slate-900 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1.5">
                     Practice History
                   </span>
                   {practiceHistory.length === 0 ? (
-                    <p className="text-xs text-zinc-605 font-bold uppercase py-1">No Practice History</p>
+                    <p className="text-xs text-slate-600 font-bold uppercase py-1">No Practice History</p>
                   ) : (
                     <div className="max-h-[160px] overflow-y-auto space-y-1.5 pr-1">
                       {practiceHistory.map((p, idx) => (
@@ -3195,9 +3195,9 @@ export default function PlayersPage() {
                         >
                           <div>
                             <span className="font-bold text-slate-900 block group-hover:text-orange-600 transition-colors">Practice Assessment</span>
-                            <span className="text-xs text-zinc-550">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
+                            <span className="text-xs text-slate-600 font-semibold">{new Date(p.date || p.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <span className="font-bold text-orange-500 text-sm tracking-tight">PPI {formatScoreValue(p.ppiScore)}</span>
+                          <span className="font-extrabold text-orange-600 text-sm tracking-tight">PPI {formatScoreValue(p.ppiScore)}</span>
                         </div>
                       ))}
                     </div>
@@ -3206,7 +3206,7 @@ export default function PlayersPage() {
 
                 {/* Match History scroll area */}
                 <div>
-                  <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1">
+                  <span className="text-xs font-black text-slate-900 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1.5">
                     Match History
                   </span>
                   {matchHistory.length === 0 ? (
