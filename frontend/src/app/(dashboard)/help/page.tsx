@@ -448,7 +448,7 @@ export default function HelpPage() {
           <div>
             <h3 className="text-base font-black text-slate-900 uppercase leading-snug">HOW TO SCORE A PLAYER</h3>
             <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block mt-0.5">
-              THE 7 INDEX PARAMETERS
+              THE 7 KEY PERFORMANCE AREAS
             </span>
           </div>
         </div>
