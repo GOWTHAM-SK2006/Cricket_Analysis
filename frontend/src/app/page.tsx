@@ -65,7 +65,7 @@ export default function Home() {
             Cricket Performance
             <br />
             <span className="text-orange-500 font-black px-1 inline-block">
-              Intelligence
+              Intelligence (CPI)
             </span>
           </motion.h1>
 
@@ -76,7 +76,8 @@ export default function Home() {
             className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 font-medium leading-relaxed"
           >
             Are we training properly? If not, what must we do better?
-            The premier analytics platform designed for elite cricket coaches.
+            <br className="hidden sm:inline" />
+            The premier analytics platform designed for all cricket coaches.
           </motion.p>
 
           <motion.div

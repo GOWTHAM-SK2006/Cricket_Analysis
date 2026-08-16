@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "CPI - Cricket Performance Index",
-  description: "The premier analytics platform designed for elite cricket coaches. Track PPI, MPI, and team CPI performance.",
+  description: "The premier analytics platform designed for all cricket coaches. Track PPI, MPI, and team CPI performance.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
