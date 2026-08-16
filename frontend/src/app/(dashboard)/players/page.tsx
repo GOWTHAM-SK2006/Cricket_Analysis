@@ -2045,8 +2045,17 @@ export default function PlayersPage() {
     }
   };
 
+  const triggerSuccess = (msg: string) => {
+    setSuccessMessage(msg);
+    setShowSuccessOverlay(true);
+    setTimeout(() => {
+      setShowSuccessOverlay(false);
+    }, 1500);
+  };
+
   const handleAddPlayerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (saving) return;
     setSaving(true);
     setError("");
     try {
@@ -2060,25 +2069,29 @@ export default function PlayersPage() {
       });
       
       const created = res.data;
-      if (newPlayer.photo) {
-        localStorage.setItem(`player_photo_${created.id}`, newPlayer.photo);
+      if (created && created.id) {
+        if (newPlayer.photo) {
+          localStorage.setItem(`player_photo_${created.id}`, newPlayer.photo);
+        }
+        
+        setPlayers((prev) => {
+          if (prev.some(p => p.id === created.id)) return prev;
+          return [created, ...prev];
+        });
+        setShowAddForm(false);
+        setNewPlayer({
+          name: "",
+          age: "",
+          role: "Batsman",
+          battingStyle: "Right-hand bat",
+          bowlingStyle: "None",
+          photo: ""
+        });
+        
+        triggerSuccess("Player Added Successfully!");
       }
-      
-      setPlayers((prev) => [created, ...prev]);
-      setShowAddForm(false);
-      setNewPlayer({
-        name: "",
-        age: "",
-        role: "Batsman",
-        battingStyle: "Right-hand bat",
-        bowlingStyle: "None",
-        photo: ""
-      });
-      
-      router.replace("/players");
-      triggerSuccess("Player Added Successfully!");
-      fetchData();
     } catch (err: any) {
+      console.error("Error creating player:", err);
       setError(err.response?.data?.message || "Failed to create player.");
     } finally {
       setSaving(false);
@@ -2255,14 +2268,6 @@ export default function PlayersPage() {
     triggerSuccess("Self Assessment Logged!");
     setSaving(false);
     fetchLastAssessmentDates(players);
-  };
-
-  const triggerSuccess = (msg: string) => {
-    setSuccessMessage(msg);
-    setShowSuccessOverlay(true);
-    setTimeout(() => {
-      setShowSuccessOverlay(false);
-    }, 1500);
   };
 
   const getRecommendations = () => {
