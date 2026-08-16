@@ -855,42 +855,42 @@ const generatePlayerPdfReport = async (
 
   // HEADER (CPI Logo, Cricket Performance Index, Player Performance Report, Report Date, Coach Name)
   doc.setFillColor(255, 255, 255); // White Banner Background
-  doc.rect(0, 0, pageWidth, 22, "F");
+  doc.rect(0, 0, pageWidth, 20, "F");
 
-  doc.setFillColor(249, 115, 22); // CPI Orange Accent Stripe
-  doc.rect(0, 21, pageWidth, 1.2, "F");
+  doc.setFillColor(226, 232, 240); // Subtle Slate Divider Line
+  doc.rect(0, 19.5, pageWidth, 0.8, "F");
 
   // CPI High-Res Logo Badge Icon (Crisp on white background)
   if (logoDataUrl) {
     try {
-      doc.addImage(logoDataUrl, "PNG", 12, 3, 14, 16);
+      doc.addImage(logoDataUrl, "PNG", 12, 2.5, 14, 15);
     } catch (e) {
-      doc.setFillColor(249, 115, 22);
-      doc.circle(18, 11, 7, "F");
+      doc.setFillColor(15, 23, 42);
+      doc.circle(18, 10, 6.5, "F");
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.5);
       doc.setTextColor(255, 255, 255);
-      doc.text("CPI", 18, 13.5, { align: "center" });
+      doc.text("CPI", 18, 12.5, { align: "center" });
     }
   } else {
-    doc.setFillColor(249, 115, 22);
-    doc.circle(18, 11, 7, "F");
+    doc.setFillColor(15, 23, 42);
+    doc.circle(18, 10, 6.5, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
     doc.setTextColor(255, 255, 255);
-    doc.text("CPI", 18, 13.5, { align: "center" });
+    doc.text("CPI", 18, 12.5, { align: "center" });
   }
 
-  // Header Title & Subtitle (Dark slate text for white banner)
+  // Header Title & Subtitle (Executive dark slate text)
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
+  doc.setFontSize(11.5);
   doc.setTextColor(15, 23, 42);
-  doc.text("CRICKET PERFORMANCE INDEX", 29, 10);
+  doc.text("CRICKET PERFORMANCE INDEX", 29, 9.5);
 
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(249, 115, 22);
-  doc.text("Player Performance Report", 29, 16);
+  doc.setTextColor(71, 85, 105);
+  doc.text("Player Performance Report", 29, 15.0);
 
   // Header Metadata (Report Date, Coach Name)
   doc.setFontSize(8);
@@ -899,43 +899,43 @@ const generatePlayerPdfReport = async (
   doc.text(`Report Date: ${reportDateStr}`, pageWidth - 14, 10, { align: "right" });
   doc.text(`Coach Name: ${coachName}`, pageWidth - 14, 16, { align: "right" });
 
-  let y = 26;
+  let y = 23;
 
   // PLAYER INFORMATION SECTION (Player Name, Player ID, Age, Role, Team, Assessment Date)
   doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(203, 213, 225);
-  doc.setLineWidth(0.6);
-  doc.roundedRect(14, y, pageWidth - 28, 32, 3, 3, "FD");
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(14, y, pageWidth - 28, 27, 2.5, 2.5, "FD");
 
-  // Left orange accent bar inside player info card
-  doc.setFillColor(249, 115, 22);
-  doc.rect(14, y, 3.5, 32, "F");
+  // Left primary slate accent bar inside player info card
+  doc.setFillColor(15, 23, 42);
+  doc.rect(14, y, 2.5, 27, "F");
 
-  doc.setFontSize(9.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(249, 115, 22);
-  doc.text("PLAYER INFORMATION", 21, y + 6.5);
-
-  doc.setFontSize(8.5);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(`Player Name: ${player.name}`, 21, y + 13.5);
-  doc.text(`Team: Senior Squad`, 110, y + 13.5);
+  doc.text("PLAYER INFORMATION", 20, y + 5.5);
 
-  doc.text(`Player ID: #${player.id}`, 21, y + 20.0);
-  doc.text(`Role: ${player.role}`, 110, y + 20.0);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(51, 65, 85);
+  doc.text(`Player Name: ${player.name}`, 20, y + 12.0);
+  doc.text(`Team: Senior Squad`, 110, y + 12.0);
 
-  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 21, y + 26.5);
+  doc.text(`Player ID: #${player.id}`, 20, y + 17.5);
+  doc.text(`Role: ${player.role}`, 110, y + 17.5);
 
-  y += 38;
+  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 20, y + 23.0);
+
+  y += 33;
 
   // 1. OVERALL PERFORMANCE SUMMARY (CPI, PPI, MPI, Overall Rating)
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
   doc.text("1. OVERALL PERFORMANCE SUMMARY", 14, y);
 
-  y += 5.5;
+  y += 5.0;
 
   const to100 = (val: number | null | undefined): number => {
     if (val === null || val === undefined || val === 0) return 0;
@@ -949,87 +949,87 @@ const generatePlayerPdfReport = async (
   const mpiNum = to100(currentMpi);
 
   let ratingStr = "Needs Focus";
-  let ratingColor = [239, 68, 68]; // Red
+  let ratingColor = [225, 29, 72]; // Rose/Red
   if (cpiNum >= 80) {
     ratingStr = "Elite";
     ratingColor = [16, 185, 129]; // Green
   } else if (cpiNum >= 70) {
     ratingStr = "Developing";
-    ratingColor = [245, 158, 11]; // Amber
+    ratingColor = [217, 119, 6]; // Amber
   } else if (cpiNum >= 50) {
     ratingStr = "Developing";
-    ratingColor = [245, 158, 11];
+    ratingColor = [217, 119, 6];
   }
 
   const boxWidth = (pageWidth - 28 - 9) / 4;
   
   // CPI Box
-  doc.setFillColor(254, 243, 199);
-  doc.setDrawColor(245, 158, 11);
-  doc.roundedRect(14, y, boxWidth, 22, 3, 3, "FD");
-  doc.setFontSize(7.5);
+  doc.setFillColor(255, 247, 237);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(14, y, boxWidth, 20, 2.5, 2.5, "FD");
+  doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(180, 83, 9);
-  doc.text("CPI SCORE", 18, y + 6.5);
-  doc.setFontSize(13);
-  doc.text(`${cpiNum || "N/A"}`, 18, y + 16.5);
+  doc.setTextColor(194, 65, 12);
+  doc.text("CPI SCORE", 18, y + 6.0);
+  doc.setFontSize(12);
+  doc.text(`${cpiNum || "N/A"}`, 18, y + 15.0);
 
   // PPI Box
-  doc.setFillColor(241, 245, 249);
-  doc.setDrawColor(203, 213, 225);
-  doc.roundedRect(14 + boxWidth + 3, y, boxWidth, 22, 3, 3, "FD");
-  doc.setFontSize(7.5);
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(14 + boxWidth + 3, y, boxWidth, 20, 2.5, 2.5, "FD");
+  doc.setFontSize(7);
   doc.setTextColor(71, 85, 105);
-  doc.text("PPI SCORE", 18 + boxWidth + 3, y + 6.5);
-  doc.setFontSize(13);
+  doc.text("PPI SCORE", 18 + boxWidth + 3, y + 6.0);
+  doc.setFontSize(12);
   doc.setTextColor(15, 23, 42);
-  doc.text(`${ppiNum || "N/A"}`, 18 + boxWidth + 3, y + 16.5);
+  doc.text(`${ppiNum || "N/A"}`, 18 + boxWidth + 3, y + 15.0);
 
   // MPI Box
-  doc.setFillColor(241, 245, 249);
-  doc.setDrawColor(203, 213, 225);
-  doc.roundedRect(14 + (boxWidth + 3) * 2, y, boxWidth, 22, 3, 3, "FD");
-  doc.setFontSize(7.5);
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(14 + (boxWidth + 3) * 2, y, boxWidth, 20, 2.5, 2.5, "FD");
+  doc.setFontSize(7);
   doc.setTextColor(71, 85, 105);
-  doc.text("MPI SCORE", 18 + (boxWidth + 3) * 2, y + 6.5);
-  doc.setFontSize(13);
+  doc.text("MPI SCORE", 18 + (boxWidth + 3) * 2, y + 6.0);
+  doc.setFontSize(12);
   doc.setTextColor(15, 23, 42);
-  doc.text(`${mpiNum || "N/A"}`, 18 + (boxWidth + 3) * 2, y + 16.5);
+  doc.text(`${mpiNum || "N/A"}`, 18 + (boxWidth + 3) * 2, y + 15.0);
 
   // Overall Rating Box
   doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(ratingColor[0], ratingColor[1], ratingColor[2]);
-  doc.roundedRect(14 + (boxWidth + 3) * 3, y, boxWidth, 22, 3, 3, "FD");
-  doc.setFontSize(7.5);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(14 + (boxWidth + 3) * 3, y, boxWidth, 20, 2.5, 2.5, "FD");
+  doc.setFontSize(7);
   doc.setTextColor(71, 85, 105);
-  doc.text("OVERALL RATING", 18 + (boxWidth + 3) * 3, y + 6.5);
-  doc.setFontSize(9);
+  doc.text("OVERALL RATING", 18 + (boxWidth + 3) * 3, y + 6.0);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(ratingColor[0], ratingColor[1], ratingColor[2]);
-  doc.text(ratingStr, 18 + (boxWidth + 3) * 3, y + 16);
+  doc.text(ratingStr, 18 + (boxWidth + 3) * 3, y + 14.5);
 
-  y += 28;
+  y += 25;
 
   // 2. 7 KEY PERFORMANCE AREAS
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
   doc.text("2. 7 KEY PERFORMANCE AREAS", 14, y);
 
-  y += 5.5;
+  y += 5.0;
 
   // Table Header
   doc.setFillColor(241, 245, 249);
-  doc.rect(14, y, pageWidth - 28, 7, "F");
-  doc.setFontSize(8);
+  doc.rect(14, y, pageWidth - 28, 6.5, "F");
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
-  doc.text("PARAMETER", 18, y + 4.8);
-  doc.text("SCORE (0-10)", 80, y + 4.8);
-  doc.text("RATING", 116, y + 4.8);
-  doc.text("PROGRESS BAR", 150, y + 4.8);
+  doc.text("PARAMETER", 18, y + 4.5);
+  doc.text("SCORE (0-10)", 80, y + 4.5);
+  doc.text("RATING", 116, y + 4.5);
+  doc.text("PROGRESS BAR", 150, y + 4.5);
 
-  y += 7;
+  y += 6.5;
 
   const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])];
 
@@ -1060,10 +1060,10 @@ const generatePlayerPdfReport = async (
     let color = [16, 185, 129];
     if (score < 5.0) {
       label = "Needs Focus";
-      color = [239, 68, 68];
+      color = [225, 29, 72];
     } else if (score < 7.0) {
       label = "Developing";
-      color = [245, 158, 11];
+      color = [217, 119, 6];
     }
     return { name: p.name, score, label, color };
   });
@@ -1071,36 +1071,36 @@ const generatePlayerPdfReport = async (
   paramData.forEach((p, idx) => {
     if (idx % 2 === 1) {
       doc.setFillColor(248, 250, 252);
-      doc.rect(14, y, pageWidth - 28, 6.0, "F");
+      doc.rect(14, y, pageWidth - 28, 5.2, "F");
     }
 
-    doc.setFontSize(8.5);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(15, 23, 42);
-    doc.text(p.name, 18, y + 4.2);
+    doc.text(p.name, 18, y + 3.8);
 
     doc.setFont("helvetica", "bold");
-    doc.text(`${p.score}`, 80, y + 4.2);
+    doc.text(`${p.score}`, 80, y + 3.8);
 
-    doc.setFontSize(8);
+    doc.setFontSize(7.5);
     doc.setTextColor(p.color[0], p.color[1], p.color[2]);
-    doc.text(p.label, 116, y + 4.2);
+    doc.text(p.label, 116, y + 3.8);
 
     // Progress Bar (out of 10)
     const barMaxW = 38;
     const fillW = Math.min(barMaxW, (p.score / 10) * barMaxW);
     doc.setFillColor(226, 232, 240);
-    doc.roundedRect(150, y + 1.2, barMaxW, 3.2, 1.5, 1.5, "F");
+    doc.roundedRect(150, y + 1.0, barMaxW, 2.8, 1.2, 1.2, "F");
 
     doc.setFillColor(p.color[0], p.color[1], p.color[2]);
     if (fillW > 0) {
-      doc.roundedRect(150, y + 1.2, fillW, 3.2, 1.5, 1.5, "F");
+      doc.roundedRect(150, y + 1.0, fillW, 2.8, 1.2, 1.2, "F");
     }
 
-    y += 6.0;
+    y += 5.2;
   });
 
-  y += 6;
+  y += 5;
 
   // 3. STRENGTHS & 4. AREAS FOR IMPROVEMENT
   const sortedByScore = [...paramData].sort((a, b) => b.score - a.score);
@@ -1111,71 +1111,50 @@ const generatePlayerPdfReport = async (
 
   // 3. STRENGTHS Box
   doc.setFillColor(240, 253, 244);
-  doc.setDrawColor(34, 197, 94);
-  doc.roundedRect(14, y, colW, 26, 3, 3, "FD");
+  doc.setDrawColor(187, 247, 208);
+  doc.roundedRect(14, y, colW, 23, 2.5, 2.5, "FD");
 
-  doc.setFontSize(9);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(21, 128, 61);
-  doc.text("3. STRENGTHS", 18, y + 6);
+  doc.text("3. STRENGTHS", 18, y + 5.5);
 
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(30, 41, 59);
   strengths.forEach((s, idx) => {
-    doc.text(`• ${s.name} (${s.score})`, 18, y + 12 + idx * 4.2);
+    doc.text(`• ${s.name} (${s.score})`, 18, y + 11 + idx * 3.8);
   });
 
   // 4. AREAS FOR IMPROVEMENT Box
   doc.setFillColor(254, 243, 199);
-  doc.setDrawColor(245, 158, 11);
-  doc.roundedRect(14 + colW + 6, y, colW, 26, 3, 3, "FD");
+  doc.setDrawColor(253, 230, 138);
+  doc.roundedRect(14 + colW + 6, y, colW, 23, 2.5, 2.5, "FD");
 
-  doc.setFontSize(9);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(180, 83, 9);
-  doc.text("4. AREAS FOR IMPROVEMENT", 18 + colW + 6, y + 6);
+  doc.text("4. AREAS FOR IMPROVEMENT", 18 + colW + 6, y + 5.5);
 
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(30, 41, 59);
   improvements.forEach((imp, idx) => {
-    doc.text(`• ${imp.name} (${imp.score})`, 18 + colW + 6, y + 12 + idx * 4.2);
+    doc.text(`• ${imp.name} (${imp.score})`, 18 + colW + 6, y + 11 + idx * 3.8);
   });
 
-  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Starts cleanly on Page 2)
-  addFooter((doc as any).getNumberOfPages());
-  doc.addPage();
+  y += 28;
 
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0, 0, pageWidth, 14, "F");
-  doc.setFillColor(249, 115, 22);
-  doc.rect(0, 13, pageWidth, 1.2, "F");
-  if (logoDataUrl) {
-    try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
-  } else {
-    doc.setFillColor(249, 115, 22);
-    doc.circle(18, 7, 4.5, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(5.5);
-    doc.setTextColor(255, 255, 255);
-    doc.text("CPI", 18, 8.8, { align: "center" });
-  }
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(15, 23, 42);
-  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-  y = 22;
-
+  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Flows directly onto Page 1)
   const checkPageSpace = (neededHeight: number) => {
-    if (y + neededHeight > pageHeight - 20) {
+    if (y + neededHeight > pageHeight - 18) {
       addFooter((doc as any).getNumberOfPages());
       doc.addPage();
 
       doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, pageWidth, 14, "F");
-      doc.setFillColor(249, 115, 22);
-      doc.rect(0, 13, pageWidth, 1.2, "F");
+      doc.setFillColor(226, 232, 240);
+      doc.rect(0, 13, pageWidth, 0.8, "F");
       if (logoDataUrl) {
         try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
       } else {
@@ -1190,7 +1169,7 @@ const generatePlayerPdfReport = async (
       doc.setFontSize(9);
       doc.setTextColor(15, 23, 42);
       doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-      y = 22;
+      y = 20;
       return true;
     }
     return false;
