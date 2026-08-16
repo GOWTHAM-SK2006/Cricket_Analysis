@@ -905,11 +905,11 @@ const generatePlayerPdfReport = async (
   doc.setFillColor(248, 250, 252);
   doc.setDrawColor(203, 213, 225);
   doc.setLineWidth(0.6);
-  doc.roundedRect(14, y, pageWidth - 28, 28, 3, 3, "FD");
+  doc.roundedRect(14, y, pageWidth - 28, 34, 3, 3, "FD");
 
   // Left orange accent bar inside player info card
   doc.setFillColor(249, 115, 22);
-  doc.rect(14, y, 3.5, 28, "F");
+  doc.rect(14, y, 3.5, 34, "F");
 
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
@@ -919,16 +919,15 @@ const generatePlayerPdfReport = async (
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(`Player Name: ${player.name}`, 21, y + 15);
-  doc.text(`Player ID: #${player.id}`, 21, y + 22);
+  doc.text(`Player Name: ${player.name}`, 21, y + 14.5);
+  doc.text(`Team: Senior Squad`, 110, y + 14.5);
 
-  doc.text(`Age: ${(player.id % 5) + 19}`, 85, y + 15);
-  doc.text(`Role: ${player.role}`, 85, y + 22);
+  doc.text(`Player ID: #${player.id}`, 21, y + 21.5);
+  doc.text(`Age: ${(player.id % 5) + 19}  •  Role: ${player.role}`, 110, y + 21.5);
 
-  doc.text(`Team: Senior Squad`, 145, y + 15);
-  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 145, y + 22);
+  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 21, y + 28.5);
 
-  y += 36;
+  y += 42;
 
   // 1. OVERALL PERFORMANCE SUMMARY (CPI, PPI, MPI, Overall Rating)
   doc.setFontSize(10.5);
