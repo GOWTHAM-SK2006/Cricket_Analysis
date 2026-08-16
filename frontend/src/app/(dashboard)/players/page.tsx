@@ -76,7 +76,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
     },
     medium: {
-      header: "Focus Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Strengthen reset routines. Practice locking in attention immediately before each ball release.",
         "Filter external distractions. Maintain focus despite noise, decisions, or scoreboard pressure.",
@@ -86,7 +86,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      highScoreStatement: "Average score: reset, focus and sustain.",
+      highScoreStatement: "Developing score: reset, focus and sustain.",
       lowScoreStatement: "Low score: simplify, reset and rebuild.",
       goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
     },
@@ -125,7 +125,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
     },
     medium: {
-      header: "Game Plan Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Sharpen tactical clarity. Outline clear phase-by-phase match objectives.",
         "Practice scenario adjustments. Work on shifting plans when match situations change quickly.",
@@ -135,7 +135,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
-      highScoreStatement: "Average score: sharpen, adapt and execute.",
+      highScoreStatement: "Developing score: sharpen, adapt and execute.",
       lowScoreStatement: "Low score: clarify, simplify and rehearse.",
       goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
     },
@@ -174,7 +174,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
     },
     medium: {
-      header: "Intensity Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Eliminate energy lulls. Maintain consistent competitive effort between overs and drill sets.",
         "Set active session benchmarks. Use timed or target-driven drills to maintain physical urgency.",
@@ -184,7 +184,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
-      highScoreStatement: "Average score: sustain, target and engage.",
+      highScoreStatement: "Developing score: sustain, target and engage.",
       lowScoreStatement: "Low score: identify, engage and rebuild.",
       goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
     },
@@ -223,7 +223,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
     },
     medium: {
-      header: "Preparation Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Standardize pre-session routines. Ensure consistent warm-up and mental preparation before every session.",
         "Build personal ownership. Encourage taking full responsibility for gear, nutrition, and mental focus.",
@@ -233,7 +233,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
-      highScoreStatement: "Average score: standardize, visualize and own.",
+      highScoreStatement: "Developing score: standardize, visualize and own.",
       lowScoreStatement: "Low score: clarify, organise and improve.",
       goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
     },
@@ -272,7 +272,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
     },
     medium: {
-      header: "Skill Level Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Consolidate core skills. Strengthen primary options before expanding variation.",
         "Practice scenario execution. Execute skills within specific field settings and match targets.",
@@ -282,7 +282,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
-      highScoreStatement: "Average score: consolidate, expand and execute.",
+      highScoreStatement: "Developing score: consolidate, expand and execute.",
       lowScoreStatement: "Low score: identify, build and repeat.",
       goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
     },
@@ -321,7 +321,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
     },
     medium: {
-      header: "Technique Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Refine core mechanics. Work on stabilizing technique during moderate pressure nets.",
         "Eliminate minor breakdowns. Address technical drift before it affects match performance.",
@@ -331,7 +331,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
-      highScoreStatement: "Average score: refine, stabilize and test under moderate pressure.",
+      highScoreStatement: "Developing score: refine, stabilize and test under moderate pressure.",
       lowScoreStatement: "Low score: identify, simplify and rebuild.",
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
     },
@@ -370,7 +370,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
     },
     medium: {
-      header: "Resilience Average Directive",
+      header: "Developing Directive",
       bullets: [
         "Cut emotional dwell time. Practice instant posture reset following a misfield, boundary, or dot-ball pressure.",
         "Maintain positive posture. Preserve confident body language regardless of match circumstances.",
@@ -380,7 +380,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       summaryHeader: "THE COACH’S SUMMARY",
       summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
-      highScoreStatement: "Average score: compose, recover and push.",
+      highScoreStatement: "Developing score: compose, recover and push.",
       lowScoreStatement: "Low score: identify, reset and rebuild.",
       goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
     },
@@ -1058,12 +1058,12 @@ const generatePlayerPdfReport = async (
     const score = getParamScore(p.key);
     let label = "Elite";
     let color = [16, 185, 129];
-    if (score < 6.5) {
+    if (score < 5.0) {
       label = "Needs Focus";
       color = [239, 68, 68];
-    } else if (score < 8.0) {
-      label = "Good";
-      color = [249, 115, 22];
+    } else if (score < 7.0) {
+      label = "Developing";
+      color = [245, 158, 11];
     }
     return { name: p.name, score, label, color };
   });
@@ -3139,15 +3139,15 @@ export default function PlayersPage() {
                             {focus.avg}
                           </span>
                           <span
-                            className={`w-[96px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${
-                              focus.avg >= 8.0
+                            className={`w-[105px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${
+                              focus.avg >= 7.0
                                 ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                                : focus.avg >= 6.5
-                                ? "bg-orange-100 text-orange-700 border border-orange-300"
+                                : focus.avg >= 5.0
+                                ? "bg-amber-100 text-amber-700 border border-amber-300"
                                 : "bg-red-100 text-red-700 border border-red-300"
                             }`}
                           >
-                            {focus.avg >= 8.0 ? "Elite" : focus.avg >= 6.5 ? "Good" : "Needs Focus"}
+                            {focus.avg >= 7.0 ? "Elite" : focus.avg >= 5.0 ? "Developing" : "Needs Focus"}
                           </span>
                         </div>
                       )}
