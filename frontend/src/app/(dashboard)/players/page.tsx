@@ -2540,7 +2540,7 @@ export default function PlayersPage() {
                   <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-24 h-24 rounded-3xl bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
+                    className="w-24 h-24 rounded-full bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group shadow-xs"
                   >
                     {newPlayer.photo ? (
                       <img src={newPlayer.photo} alt="Preview" className="w-full h-full object-cover" />
