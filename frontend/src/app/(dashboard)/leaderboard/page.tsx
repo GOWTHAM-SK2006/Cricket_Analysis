@@ -153,7 +153,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="w-full truncate px-0.5">
-                  <p className="text-xs sm:text-sm font-black text-slate-900 uppercase truncate leading-tight">{topThree[1].name}</p>
+                  <p className="text-xs sm:text-sm font-black text-slate-900 truncate leading-tight">{topThree[1].name}</p>
                   <p className="text-[9px] font-bold text-slate-400 uppercase truncate mt-0.5">{topThree[1].role}</p>
                 </div>
               </div>
@@ -190,7 +190,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="w-full truncate px-0.5">
-                  <p className="text-sm font-black text-slate-900 uppercase truncate leading-tight tracking-tight">{topThree[0].name}</p>
+                  <p className="text-sm font-black text-slate-900 truncate leading-tight tracking-tight">{topThree[0].name}</p>
                   <p className="text-[9px] font-extrabold text-orange-500 uppercase truncate mt-0.5">{topThree[0].role}</p>
                 </div>
               </div>
@@ -227,7 +227,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="w-full truncate px-0.5">
-                  <p className="text-xs sm:text-sm font-black text-slate-900 uppercase truncate leading-tight">{topThree[2].name}</p>
+                  <p className="text-xs sm:text-sm font-black text-slate-900 truncate leading-tight">{topThree[2].name}</p>
                   <p className="text-[9px] font-bold text-slate-400 uppercase truncate mt-0.5">{topThree[2].role}</p>
                 </div>
               </div>
