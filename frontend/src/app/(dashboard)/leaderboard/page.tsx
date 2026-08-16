@@ -22,6 +22,17 @@ const formatScore = (val: number | null | undefined): number => {
   return num <= 10 ? Math.round(num * 10) : Math.round(num);
 };
 
+const getPlayerImage = (player: Player) => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem(`player_photo_${player.id}`);
+    if (saved) return saved;
+  }
+  if ((player as any).photoUrl) return (player as any).photoUrl;
+  if ((player as any).photo) return (player as any).photo;
+  const name = player.name || "Player";
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`;
+};
+
 const getRoleEmoji = (roleStr: string) => {
   const r = (roleStr || "").toLowerCase();
   if (r.includes("batsman") || r.includes("batter")) return "🏏";
@@ -128,7 +139,7 @@ export default function LeaderboardPage() {
 
       {/* ── SLEEK & SPACIOUS PODIUM DISPLAY ── */}
       {topThree.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 items-end pt-4 pb-2">
+        <div className="grid grid-cols-3 gap-3 items-end pt-2 pb-2">
 
           {/* RANK 2 — Silver */}
           {topThree[1] ? (
@@ -138,16 +149,19 @@ export default function LeaderboardPage() {
               onClick={() => router.push(`/players?id=${topThree[1].id}`)}
               className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 text-center cursor-pointer flex flex-col items-center justify-between min-h-[175px] shadow-2xs hover:shadow-md transition-all relative group"
             >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-slate-200 border border-slate-300 text-slate-700 font-mono font-black text-xs flex items-center justify-center shadow-2xs">
-                2
-              </div>
-
-              <div className="pt-3 flex flex-col items-center gap-1.5 w-full">
+              <div className="pt-2 flex flex-col items-center gap-1.5 w-full">
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-700 font-black text-sm uppercase shadow-inner">
-                    {topThree[1].name.substring(0, 2)}
+                  <div className="w-14 h-14 rounded-full bg-slate-100 border-2 border-slate-200 overflow-hidden shadow-xs flex items-center justify-center">
+                    <img
+                      src={getPlayerImage(topThree[1])}
+                      alt={topThree[1].name}
+                      className="w-full h-full object-cover rounded-full"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-4.5 h-4.5 bg-white border border-slate-200 rounded-full flex items-center justify-center text-[9px] z-10 shadow-2xs">
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white border border-slate-200 rounded-full flex items-center justify-center text-[10px] z-10 shadow-2xs">
                     {getRoleEmoji(topThree[1].role)}
                   </div>
                 </div>
@@ -175,14 +189,17 @@ export default function LeaderboardPage() {
               onClick={() => router.push(`/players?id=${topThree[0].id}`)}
               className="bg-white border-2 border-orange-400 rounded-2xl p-4 sm:p-6 text-center cursor-pointer flex flex-col items-center justify-between min-h-[195px] shadow-md shadow-orange-100 transition-all relative group z-10"
             >
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black text-sm flex items-center justify-center shadow-xs ring-2 ring-white">
-                👑
-              </div>
-
-              <div className="pt-3 flex flex-col items-center gap-1.5 w-full">
+              <div className="pt-2 flex flex-col items-center gap-1.5 w-full">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-2xl bg-orange-100 border-2 border-orange-300 flex items-center justify-center text-orange-600 font-black text-base uppercase shadow-inner">
-                    {topThree[0].name.substring(0, 2)}
+                  <div className="w-16 h-16 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden shadow-xs flex items-center justify-center">
+                    <img
+                      src={getPlayerImage(topThree[0])}
+                      alt={topThree[0].name}
+                      className="w-full h-full object-cover rounded-full"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white border border-orange-300 rounded-full flex items-center justify-center text-[10px] z-10 shadow-2xs">
                     {getRoleEmoji(topThree[0].role)}
@@ -212,16 +229,19 @@ export default function LeaderboardPage() {
               onClick={() => router.push(`/players?id=${topThree[2].id}`)}
               className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 text-center cursor-pointer flex flex-col items-center justify-between min-h-[175px] shadow-2xs hover:shadow-md transition-all relative group"
             >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-amber-100 border border-amber-300 text-amber-800 font-mono font-black text-xs flex items-center justify-center shadow-2xs">
-                3
-              </div>
-
-              <div className="pt-3 flex flex-col items-center gap-1.5 w-full">
+              <div className="pt-2 flex flex-col items-center gap-1.5 w-full">
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 font-black text-sm uppercase">
-                    {topThree[2].name.substring(0, 2)}
+                  <div className="w-14 h-14 rounded-full bg-amber-50 border-2 border-amber-300 overflow-hidden shadow-xs flex items-center justify-center">
+                    <img
+                      src={getPlayerImage(topThree[2])}
+                      alt={topThree[2].name}
+                      className="w-full h-full object-cover rounded-full"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-4.5 h-4.5 bg-white border border-slate-200 rounded-full flex items-center justify-center text-[9px] z-10 shadow-2xs">
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white border border-slate-200 rounded-full flex items-center justify-center text-[10px] z-10 shadow-2xs">
                     {getRoleEmoji(topThree[2].role)}
                   </div>
                 </div>
@@ -260,7 +280,6 @@ export default function LeaderboardPage() {
               const scores = getPlayerScores(player);
               const scoreVal = scores[metricTab];
               const rank = index + 1;
-              const initials = player.name.substring(0, 2).toUpperCase();
               const delta = getRankDelta(index);
               const barPct = maxScore > 0 ? Math.min((scoreVal / maxScore) * 100, 100) : 0;
 
@@ -285,10 +304,17 @@ export default function LeaderboardPage() {
                     </div>
 
                     <div className="relative shrink-0">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs uppercase ${
-                        rank === 1 ? "bg-orange-100 text-orange-600 border border-orange-200" : "bg-slate-100 text-slate-600 border border-slate-200"
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border ${
+                        rank === 1 ? "bg-orange-100 border-orange-300" : "bg-slate-100 border-slate-200"
                       }`}>
-                        {initials}
+                        <img
+                          src={getPlayerImage(player)}
+                          alt={player.name}
+                          className="w-full h-full object-cover rounded-full"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
                       </div>
                       <div className="absolute -bottom-1 -right-1 text-[9px] shadow-2xs">
                         {getRoleEmoji(player.role)}

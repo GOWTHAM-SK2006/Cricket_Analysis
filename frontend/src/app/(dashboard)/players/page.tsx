@@ -2648,11 +2648,11 @@ export default function PlayersPage() {
                       {/* Photo or Initials Avatar */}
                       <div className="relative shrink-0">
                         <div className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden shadow-xs">
-                          {cachedPhoto ? (
-                            <img src={cachedPhoto} alt={player.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <span className="text-xl font-bold text-orange-500">{getInitials(player.name)}</span>
-                          )}
+                          <img 
+                            src={cachedPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`} 
+                            alt={player.name} 
+                            className="w-full h-full object-cover rounded-full" 
+                          />
                         </div>
                         <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white border border-slate-200 rounded-full flex items-center justify-center text-xs shadow-xs z-10" title={player.role}>
                           {getRoleEmoji(player.role)}
@@ -2893,11 +2893,11 @@ export default function PlayersPage() {
                   onClick={() => profilePhotoInputRef.current?.click()}
                   className="w-28 h-28 rounded-full bg-slate-100 border-3 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500 shadow-md"
                 >
-                  {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
-                    <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-4xl font-bold text-orange-500">{getInitials(selectedPlayer.name)}</span>
-                  )}
+                  <img 
+                    src={(typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`)) || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`} 
+                    alt={selectedPlayer.name} 
+                    className="w-full h-full object-cover rounded-full" 
+                  />
                   <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                     <Camera className="w-6 h-6 text-slate-900" />
                   </div>
