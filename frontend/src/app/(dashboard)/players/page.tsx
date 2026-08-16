@@ -1268,28 +1268,42 @@ const generatePlayerPdfReport = async (
   y += 2.0;
 
   // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
-  doc.setFontSize(9.5);
+  doc.setFillColor(234, 88, 12);
+  doc.roundedRect(14, y, pageWidth - 28, 6.5, 1.5, 1.5, "F");
+
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("6. PERFORMANCE TREND", 14, y);
+  doc.setTextColor(255, 255, 255);
+  doc.text("6. PERFORMANCE TREND", 18, y + 4.5);
 
-  y += 5.0;
+  y += 8.0;
 
-  doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(226, 232, 240);
-  doc.setLineWidth(0.4);
+  doc.setFillColor(255, 247, 237);
+  doc.setDrawColor(253, 186, 116);
+  doc.setLineWidth(0.5);
   doc.roundedRect(14, y, pageWidth - 28, 23, 2.5, 2.5, "FD");
 
   const prevAssessment = (allAssessments.length > 1) ? allAssessments[1] : null;
   const prevCpi = prevAssessment ? (prevAssessment.ppiScore || prevAssessment.mpiScore || 70) : Math.max(0, cpiNum - 3);
   const diff = cpiNum - prevCpi;
 
-  doc.setFontSize(7.8);
+  doc.setFontSize(8.0);
   doc.setFont("helvetica", "bold");
+
+  doc.setTextColor(234, 88, 12);
+  doc.text("•", 18, y + 6.5);
   doc.setTextColor(15, 23, 42);
-  doc.text(`• CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 18, y + 6.5);
-  doc.text(`• PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 18, y + 12.5);
-  doc.text(`• MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 18, y + 18.5);
+  doc.text(`CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 22, y + 6.5);
+
+  doc.setTextColor(234, 88, 12);
+  doc.text("•", 18, y + 12.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 22, y + 12.5);
+
+  doc.setTextColor(234, 88, 12);
+  doc.text("•", 18, y + 18.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 22, y + 18.5);
 
   y += 28;
 
