@@ -907,25 +907,21 @@ const generatePlayerPdfReport = async (
   doc.setLineWidth(0.4);
   doc.roundedRect(14, y, pageWidth - 28, 27, 2.5, 2.5, "FD");
 
-  // Left primary slate accent bar inside player info card
-  doc.setFillColor(15, 23, 42);
-  doc.rect(14, y, 2.5, 27, "F");
-
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("PLAYER INFORMATION", 20, y + 5.5);
+  doc.text("PLAYER INFORMATION", 18, y + 5.5);
 
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(51, 65, 85);
-  doc.text(`Player Name: ${player.name}`, 20, y + 12.0);
+  doc.text(`Player Name: ${player.name}`, 18, y + 12.0);
   doc.text(`Team: Senior Squad`, 110, y + 12.0);
 
-  doc.text(`Player ID: #${player.id}`, 20, y + 17.5);
+  doc.text(`Player ID: #${player.id}`, 18, y + 17.5);
   doc.text(`Role: ${player.role}`, 110, y + 17.5);
 
-  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 20, y + 23.0);
+  doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 18, y + 23.0);
 
   y += 32;
 
@@ -1145,118 +1141,11 @@ const generatePlayerPdfReport = async (
 
   y += 28;
 
-  // 5. STRATEGIC COACHING DIRECTIVES & ACTION PLAN (Completes Page 1 perfectly)
+  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Completes Page 1)
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("5. STRATEGIC COACHING DIRECTIVES & ACTION PLAN", 14, y);
-
-  y += 5.0;
-
-  doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(226, 232, 240);
-  doc.roundedRect(14, y, pageWidth - 28, 86, 2.5, 2.5, "FD");
-
-  // Left accent line
-  doc.setFillColor(15, 23, 42);
-  doc.rect(14, y, 2.5, 86, "F");
-
-  let cardY = y + 7;
-
-  // Section A: Leadership Asset
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(21, 128, 61); // Green
-  doc.text("PRIMARY STRENGTH & LEADERSHIP ASSET:", 20, cardY);
-  cardY += 4.2;
-
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(51, 65, 85);
-  const assetStr = `${strengths[0]?.name || "Technique"} (${strengths[0]?.score || "7.2"}) is performing at ${strengths[0]?.label || "Elite"} level. Leverage this performance foundation to build confidence during high-pressure match situations.`;
-  const assetLines = doc.splitTextToSize(assetStr, pageWidth - 36);
-  assetLines.forEach((l: string) => {
-    doc.text(l, 20, cardY);
-    cardY += 3.8;
-  });
-
-  cardY += 3.0;
-
-  // Section B: Development Intervention
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(180, 83, 9); // Amber
-  doc.text("KEY DEVELOPMENT INTERVENTION:", 20, cardY);
-  cardY += 4.2;
-
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(51, 65, 85);
-  const devStr = `${improvements[0]?.name || "Resilience"} (${improvements[0]?.score || "5.0"}) represents the key development area. Focus on structured scenario drills to stabilize execution consistency.`;
-  const devLines = doc.splitTextToSize(devStr, pageWidth - 36);
-  devLines.forEach((l: string) => {
-    doc.text(l, 20, cardY);
-    cardY += 3.8;
-  });
-
-  cardY += 3.0;
-
-  // Section C: Action Directives
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("TACTICAL TRAINING DIRECTIVES:", 20, cardY);
-  cardY += 4.2;
-
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(51, 65, 85);
-  const actionBullets = [
-    "• Allocate 70% of training time to core skill repeatability and 30% to high-consequence scenario netting.",
-    "• Perform regular self-assessments (sleep, nutrition, mental readiness) prior to key match sessions.",
-    "• Re-assess performance metrics after 4 consecutive sessions to measure CPI development."
-  ];
-
-  actionBullets.forEach(b => {
-    const bLines = doc.splitTextToSize(b, pageWidth - 36);
-    bLines.forEach((l: string) => {
-      doc.text(l, 20, cardY);
-      cardY += 3.8;
-    });
-  });
-
-  // End of Page 1
-  addFooter(1);
-
-  // ==========================================
-  // PAGE 2: CPI Framework Guidance, Performance Trend, Assessment History
-  // ==========================================
-  doc.addPage();
-
-  // Page 2 Header Banner
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0, 0, pageWidth, 16, "F");
-  doc.setFillColor(226, 232, 240);
-  doc.rect(0, 15.5, pageWidth, 0.6, "F");
-
-  if (logoDataUrl) {
-    try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
-  } else {
-    doc.setFillColor(15, 23, 42);
-    doc.circle(18, 7, 4.5, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(5.5);
-    doc.setTextColor(255, 255, 255);
-    doc.text("CPI", 18, 8.8, { align: "center" });
-  }
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(15, 23, 42);
-  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-
-  y = 22;
-
-  // 6. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Starts cleanly on Page 2)
-  doc.setFontSize(9.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("6. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST", 14, y);
+  doc.text("5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST", 14, y);
 
   y += 6.0;
 
@@ -1299,13 +1188,43 @@ const generatePlayerPdfReport = async (
     });
   }
 
-  y += 2.0;
+  // End of Page 1
+  addFooter(1);
 
-  // 7. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
+  // ==========================================
+  // PAGE 2: Performance Trend & Assessment History
+  // ==========================================
+  doc.addPage();
+
+  // Page 2 Header Banner
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, pageWidth, 16, "F");
+  doc.setFillColor(226, 232, 240);
+  doc.rect(0, 15.5, pageWidth, 0.6, "F");
+
+  if (logoDataUrl) {
+    try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+  } else {
+    doc.setFillColor(15, 23, 42);
+    doc.circle(18, 7, 4.5, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(5.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text("CPI", 18, 8.8, { align: "center" });
+  }
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
+
+  y = 22;
+
+  // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("7. PERFORMANCE TREND", 14, y);
+  doc.text("6. PERFORMANCE TREND", 14, y);
 
   y += 5.0;
 
@@ -1314,10 +1233,6 @@ const generatePlayerPdfReport = async (
   doc.setLineWidth(0.4);
   doc.roundedRect(14, y, pageWidth - 28, 23, 2.5, 2.5, "FD");
 
-  // Left accent stripe
-  doc.setFillColor(15, 23, 42);
-  doc.rect(14, y, 2.5, 23, "F");
-
   const prevAssessment = (allAssessments.length > 1) ? allAssessments[1] : null;
   const prevCpi = prevAssessment ? (prevAssessment.ppiScore || prevAssessment.mpiScore || 70) : Math.max(0, cpiNum - 3);
   const diff = cpiNum - prevCpi;
@@ -1325,17 +1240,17 @@ const generatePlayerPdfReport = async (
   doc.setFontSize(7.8);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(`• CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 19, y + 6.5);
-  doc.text(`• PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 19, y + 12.5);
-  doc.text(`• MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 19, y + 18.5);
+  doc.text(`• CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 18, y + 6.5);
+  doc.text(`• PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 18, y + 12.5);
+  doc.text(`• MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 18, y + 18.5);
 
   y += 28;
 
-  // 8. ASSESSMENT HISTORY
+  // 7. ASSESSMENT HISTORY
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("8. ASSESSMENT HISTORY", 14, y);
+  doc.text("7. ASSESSMENT HISTORY", 14, y);
 
   y += 5.0;
 
@@ -1394,7 +1309,7 @@ const generatePlayerPdfReport = async (
     doc.setTextColor(100, 116, 139);
     doc.text("No assessment history records found.", 18, y + 4.5);
   } else {
-    sortedHistoryRows.slice(0, 8).forEach((row, idx) => {
+    sortedHistoryRows.slice(0, 10).forEach((row, idx) => {
       if (idx % 2 === 1) {
         doc.setFillColor(248, 250, 252);
         doc.rect(14, y, pageWidth - 28, 5.5, "F");
