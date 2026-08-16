@@ -188,7 +188,9 @@ export default function HistoryPage() {
               
               {/* Practice List */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black tracking-widest text-slate-900 uppercase block pl-1">PRACTICE TIMELINE</h4>
+                <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block pl-1">
+                  PRACTICE HISTORY – {practiceHistory.length} {practiceHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
+                </h4>
                 {practiceHistory.length === 0 ? (
                   <div className="bg-slate-50 border-2 border-dashed border-slate-200 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
                     No practice assessments recorded.
@@ -223,7 +225,9 @@ export default function HistoryPage() {
 
               {/* Match List */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black tracking-widest text-slate-900 uppercase block pl-1">MATCH PLAY TIMELINE</h4>
+                <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block pl-1">
+                  MATCH HISTORY – {matchHistory.length} {matchHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
+                </h4>
                 {matchHistory.length === 0 ? (
                   <div className="bg-slate-50 border-2 border-dashed border-slate-200 text-center py-6 text-zinc-650 font-bold uppercase text-xs rounded-2xl">
                     No match play assessments recorded.

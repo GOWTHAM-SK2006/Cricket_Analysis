@@ -1859,11 +1859,22 @@ export default function PlayersPage() {
         api.get(`/practice/player/${playerId}`).catch(() => ({ data: [] })),
         api.get(`/matches/player/${playerId}`).catch(() => ({ data: [] }))
       ]);
-      setPracticeHistory(pracRes.data || []);
-      setMatchHistory(matchRes.data || []);
+      const pracData = (pracRes.data || []).sort(
+        (a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime()
+      );
+      const matchData = (matchRes.data || []).sort(
+        (a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime()
+      );
+
+      setPracticeHistory(pracData);
+      setMatchHistory(matchData);
 
       const localSelf = localStorage.getItem(`self_assess_${playerId}`);
-      setSelfHistory(localSelf ? JSON.parse(localSelf) : []);
+      const rawSelf = localSelf ? JSON.parse(localSelf) : [];
+      const selfData = [...rawSelf].sort(
+        (a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime()
+      );
+      setSelfHistory(selfData);
     } catch (err) {
       console.error("Failed to load assessments history", err);
     }
@@ -3176,8 +3187,8 @@ export default function PlayersPage() {
               <div className="space-y-4 pt-1">
                 {/* Practice History scroll area */}
                 <div>
-                  <span className="text-xs font-black text-slate-900 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1.5">
-                    Practice History
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block mb-2 border-b border-slate-200 pb-1.5">
+                    PRACTICE HISTORY – {practiceHistory.length} {practiceHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
                   </span>
                   {practiceHistory.length === 0 ? (
                     <p className="text-xs text-slate-600 font-bold uppercase py-1">No Practice History</p>
@@ -3203,8 +3214,8 @@ export default function PlayersPage() {
 
                 {/* Match History scroll area */}
                 <div>
-                  <span className="text-xs font-black text-slate-900 uppercase tracking-widest block mb-2 border-b border-slate-200 pb-1.5">
-                    Match History
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block mb-2 border-b border-slate-200 pb-1.5">
+                    MATCH HISTORY – {matchHistory.length} {matchHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
                   </span>
                   {matchHistory.length === 0 ? (
                     <p className="text-xs text-zinc-605 font-bold uppercase py-1">No Match History</p>
@@ -3538,7 +3549,9 @@ export default function PlayersPage() {
 
           {/* Practice History timeline */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">PRACTICE ASSESSMENTS</h4>
+            <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+              PRACTICE HISTORY – {practiceHistory.length} {practiceHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
+            </h4>
             {practiceHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No practice logs</p>
             ) : (
@@ -3566,7 +3579,9 @@ export default function PlayersPage() {
 
           {/* Match History timeline */}
           <div className="space-y-4 pt-4 border-t border-slate-200">
-            <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">MATCH ASSESSMENTS</h4>
+            <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+              MATCH HISTORY – {matchHistory.length} {matchHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
+            </h4>
             {matchHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No match logs</p>
             ) : (
@@ -3594,7 +3609,9 @@ export default function PlayersPage() {
 
           {/* Self History timeline */}
           <div className="space-y-4 pt-4 border-t border-slate-200">
-            <h4 className="text-xs font-bold tracking-widest text-zinc-500 uppercase">SELF ASSESSMENTS</h4>
+            <h4 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+              SELF ASSESSMENT HISTORY – {selfHistory.length} {selfHistory.length === 1 ? "ASSESSMENT" : "ASSESSMENTS"} DONE
+            </h4>
             {selfHistory.length === 0 ? (
               <p className="text-xs text-zinc-600 font-bold uppercase pl-2">No self-assess logs</p>
             ) : (
