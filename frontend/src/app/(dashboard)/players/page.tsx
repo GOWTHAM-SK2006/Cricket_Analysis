@@ -850,7 +850,7 @@ const generatePlayerPdfReport = async (
   };
 
   // ==========================================
-  // PAGE 1: Header, Player Information, 1. Summary, 2. Seven Parameters, 3. Strengths & 4. Improvements
+  // PAGE 1: Header, Player Information, 1. Summary, 2. 7 Key Performance Areas, 3. Strengths & 4. Improvements
   // ==========================================
 
   // HEADER (CPI Logo, Cricket Performance Index, Player Performance Report, Report Date, Coach Name)
