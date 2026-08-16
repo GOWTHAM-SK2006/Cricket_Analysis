@@ -38,8 +38,8 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-20 sm:pt-24 pb-12 px-6 relative overflow-hidden flex-1 flex flex-col items-center justify-start">
-        <div className="max-w-5xl mx-auto relative z-10 text-center pt-2 sm:pt-6">
+      <main className="pt-24 sm:pt-32 pb-12 px-6 relative overflow-hidden flex-1 flex flex-col items-center justify-start">
+        <div className="max-w-5xl mx-auto relative z-10 text-center pt-4 sm:pt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
