@@ -916,6 +916,7 @@ const generatePlayerPdfReport = async (
   doc.setTextColor(249, 115, 22);
   doc.text("PLAYER INFORMATION", 21, y + 7.5);
 
+  const { cleanRole: pdfCleanRole, age: pdfAge } = parsePlayerAgeAndRole(player.role);
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
@@ -923,7 +924,7 @@ const generatePlayerPdfReport = async (
   doc.text(`Team: Senior Squad`, 110, y + 14.5);
 
   doc.text(`Player ID: #${player.id}`, 21, y + 21.5);
-  doc.text(`Age: ${(player.id % 5) + 19}  •  Role: ${player.role}`, 110, y + 21.5);
+  doc.text(`Age: ${pdfAge || "N/A"}  •  Role: ${pdfCleanRole}`, 110, y + 21.5);
 
   doc.text(`Assessment Date: ${lastAssessmentDate || reportDateStr}`, 21, y + 28.5);
 
@@ -2868,16 +2869,21 @@ export default function PlayersPage() {
                 className="hidden" 
               />
 
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">{selectedPlayer.name}</h2>
-                <p className="text-xs font-extrabold text-slate-700 uppercase tracking-widest">{selectedPlayer.role}</p>
-                <div className="text-sm text-slate-600 font-bold uppercase mt-1">
-                  Age: {((selectedPlayer.id % 5) + 19)} • Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
-                </div>
-                <div className="text-xs text-slate-800 font-extrabold uppercase tracking-wider">
-                  Last Assessed: {lastAssessmentDate}
-                </div>
-              </div>
+              {(() => {
+                const { cleanRole, age } = parsePlayerAgeAndRole(selectedPlayer.role);
+                return (
+                  <div className="space-y-2">
+                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">{selectedPlayer.name}</h2>
+                    <p className="text-xs font-extrabold text-slate-700 uppercase tracking-widest">{cleanRole}</p>
+                    <div className="text-sm text-slate-600 font-bold uppercase mt-1">
+                      Age: {age || "N/A"} • Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
+                    </div>
+                    <div className="text-xs text-slate-800 font-extrabold uppercase tracking-wider">
+                      Last Assessed: {lastAssessmentDate}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Generate PDF Report option in bottom of player card box */}
               <div className="pt-2 flex justify-center">
