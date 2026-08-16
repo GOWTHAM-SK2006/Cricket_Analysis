@@ -1157,8 +1157,8 @@ const generatePlayerPdfReport = async (
       const wrappedLines = f.cpiGuidance ? doc.splitTextToSize(f.cpiGuidance, wrapWidth) : [];
       const itemHeight = 3.8 + 3.6 + (f.cpiGuidance ? (3.6 + wrappedLines.length * 3.6 + 4.5) : 3.0);
 
-      // Check if item exceeds safe bottom boundary on Page 1 (260mm)
-      if (currentPage === 1 && y + itemHeight > 260) {
+      // Check if item exceeds safe bottom boundary on Page 1 (268mm)
+      if (currentPage === 1 && y + itemHeight > 268) {
         addFooter(1);
         doc.addPage();
         currentPage = 2;
@@ -1186,11 +1186,6 @@ const generatePlayerPdfReport = async (
         doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
 
         y = 22;
-        doc.setFontSize(9.5);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(15, 23, 42);
-        doc.text("5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (CONTD.)", 14, y);
-        y += 6.0;
       }
 
       // PARAMETER NAME (e.g. Resilience (7.0))
