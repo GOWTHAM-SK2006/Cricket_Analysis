@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { uploadPlayerImage } from "@/lib/supabase";
 import { 
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck, 
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
@@ -1583,13 +1584,22 @@ export default function PlayersPage() {
   };
 
   // Form states
-  const [newPlayer, setNewPlayer] = useState({
+  const [newPlayer, setNewPlayer] = useState<{
+    name: string;
+    age: string;
+    role: string;
+    battingStyle: string;
+    bowlingStyle: string;
+    photo: string;
+    photoFile: File | null;
+  }>({
     name: "",
     age: "",
     role: "Batsman",
     battingStyle: "Right-hand bat",
     bowlingStyle: "None",
-    photo: ""
+    photo: "",
+    photoFile: null
   });
 
   // Practice sliders (scores 0-10)
@@ -1684,13 +1694,22 @@ export default function PlayersPage() {
   // Edit & Delete player states
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
-  const [editPlayerForm, setEditPlayerForm] = useState({
+  const [editPlayerForm, setEditPlayerForm] = useState<{
+    name: string;
+    age: string;
+    role: string;
+    battingStyle: string;
+    bowlingStyle: string;
+    photo: string;
+    photoFile: File | null;
+  }>({
     name: "",
     age: "16",
     role: "Batsman",
     battingStyle: "Right-hand bat",
     bowlingStyle: "None",
-    photo: ""
+    photo: "",
+    photoFile: null
   });
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -1704,17 +1723,6 @@ export default function PlayersPage() {
       const list = res.data || [];
       setPlayers(list);
       fetchLastAssessmentDates(list);
-
-      if (typeof window !== "undefined") {
-        list.forEach((p: Player) => {
-          const localPhoto = localStorage.getItem(`player_photo_${p.id}`);
-          if (p.imageUrl) {
-            localStorage.setItem(`player_photo_${p.id}`, p.imageUrl);
-          } else if (localPhoto) {
-            api.put(`/players/${p.id}`, { imageUrl: localPhoto }).catch(() => {});
-          }
-        });
-      }
     } catch (err) {
       console.error("Failed to fetch players", err);
     } finally {
@@ -2028,20 +2036,23 @@ export default function PlayersPage() {
     if (!file) return;
 
     try {
-      const base64String = await compressImage(file);
-      if (!base64String) return;
-
       if (isProfileUpdate && selectedPlayer) {
-        localStorage.setItem(`player_photo_${selectedPlayer.id}`, base64String);
-        const updated = { ...selectedPlayer, imageUrl: base64String };
-        setSelectedPlayer(updated);
-        setPlayers((prev) => prev.map((p) => p.id === selectedPlayer.id ? { ...p, imageUrl: base64String } : p));
-        api.put(`/players/${selectedPlayer.id}`, { imageUrl: base64String }).catch(() => {});
+        setSaving(true);
+        const uploadedUrl = await uploadPlayerImage(file);
+        if (uploadedUrl) {
+          const updated = { ...selectedPlayer, imageUrl: uploadedUrl };
+          setSelectedPlayer(updated);
+          setPlayers((prev) => prev.map((p) => p.id === selectedPlayer.id ? { ...p, imageUrl: uploadedUrl } : p));
+          await api.put(`/players/${selectedPlayer.id}`, { imageUrl: uploadedUrl });
+        }
+        setSaving(false);
       } else {
-        setNewPlayer(prev => ({ ...prev, photo: base64String }));
+        const previewUrl = await compressImage(file);
+        setNewPlayer(prev => ({ ...prev, photo: previewUrl, photoFile: file }));
       }
     } catch (err) {
       console.error("Failed to process photo", err);
+      setSaving(false);
     }
   };
 
@@ -2059,27 +2070,27 @@ export default function PlayersPage() {
     setSaving(true);
     setError("");
     try {
+      let finalImageUrl = "";
+      if (newPlayer.photoFile) {
+        finalImageUrl = await uploadPlayerImage(newPlayer.photoFile);
+      } else if (newPlayer.photo) {
+        finalImageUrl = newPlayer.photo;
+      }
+
       const roleStr = `${newPlayer.role} (Age ${newPlayer.age})`;
       const res = await api.post("/players", {
         name: newPlayer.name,
         role: roleStr,
         battingStyle: newPlayer.battingStyle,
         bowlingStyle: newPlayer.bowlingStyle,
-        imageUrl: newPlayer.photo || ""
+        imageUrl: finalImageUrl
       });
       
       const created = res.data;
       if (created && created.id) {
-        const fullPhoto = newPlayer.photo || created.imageUrl || "";
-        if (fullPhoto) {
-          localStorage.setItem(`player_photo_${created.id}`, fullPhoto);
-        }
-        
-        const newPlayerItem = { ...created, imageUrl: fullPhoto };
-
         setPlayers((prev) => {
           if (prev.some(p => p.id === created.id)) return prev;
-          return [newPlayerItem, ...prev];
+          return [created, ...prev];
         });
         setShowAddForm(false);
         setNewPlayer({
@@ -2088,7 +2099,8 @@ export default function PlayersPage() {
           role: "Batsman",
           battingStyle: "Right-hand bat",
           bowlingStyle: "None",
-          photo: ""
+          photo: "",
+          photoFile: null
         });
         
         triggerSuccess("Player Added Successfully!");
@@ -2116,14 +2128,15 @@ export default function PlayersPage() {
     if (e) e.stopPropagation();
     const { cleanRole, age } = parsePlayerAgeAndRole(player.role);
     setEditingPlayer(player);
-    const existingPhoto = player.imageUrl || (typeof window !== "undefined" ? localStorage.getItem(`player_photo_${player.id}`) || "" : "");
+    const existingPhoto = player.imageUrl || "";
     setEditPlayerForm({
       name: player.name || "",
       age: age || "16",
       role: cleanRole || "Batsman",
       battingStyle: player.battingStyle || "Right-hand bat",
       bowlingStyle: player.bowlingStyle || "None",
-      photo: existingPhoto
+      photo: existingPhoto,
+      photoFile: null
     });
     setError("");
     setShowEditForm(true);
@@ -2135,25 +2148,24 @@ export default function PlayersPage() {
     setSaving(true);
     setError("");
     try {
+      let finalImageUrl = editPlayerForm.photo || "";
+      if (editPlayerForm.photoFile) {
+        finalImageUrl = await uploadPlayerImage(editPlayerForm.photoFile);
+      }
+
       const roleStr = editPlayerForm.age ? `${editPlayerForm.role} (Age ${editPlayerForm.age})` : editPlayerForm.role;
       const res = await api.put(`/players/${editingPlayer.id}`, {
         name: editPlayerForm.name,
         role: roleStr,
         battingStyle: editPlayerForm.battingStyle,
         bowlingStyle: editPlayerForm.bowlingStyle,
-        imageUrl: editPlayerForm.photo || ""
+        imageUrl: finalImageUrl
       });
       const updated = res.data;
-      const fullPhoto = editPlayerForm.photo || updated.imageUrl || "";
-      if (fullPhoto) {
-        localStorage.setItem(`player_photo_${updated.id}`, fullPhoto);
-      }
 
-      const updatedPlayerItem = { ...updated, imageUrl: fullPhoto };
-
-      setPlayers(prev => prev.map(p => p.id === updated.id ? { ...p, ...updatedPlayerItem } : p));
+      setPlayers(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p));
       if (selectedPlayer?.id === updated.id) {
-        setSelectedPlayer(prev => prev ? { ...prev, ...updatedPlayerItem } : null);
+        setSelectedPlayer(prev => prev ? { ...prev, ...updated } : null);
       }
       setShowEditForm(false);
       setEditingPlayer(null);
@@ -2688,7 +2700,7 @@ export default function PlayersPage() {
                   scoreDisplay = formatScoreValue(scores.cpi);
                 }
                 
-                const cachedPhoto = player.imageUrl || (typeof window !== 'undefined' ? localStorage.getItem(`player_photo_${player.id}`) : null);
+                const cachedPhoto = player.imageUrl || null;
                 const assessDate = lastAssessmentDates[player.id] || "Loading...";
 
                 return (
@@ -2947,7 +2959,7 @@ export default function PlayersPage() {
                   className="w-28 h-28 rounded-full bg-slate-100 border-3 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500 shadow-md"
                 >
                   <img 
-                    src={selectedPlayer.imageUrl || (typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`)) || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`} 
+                    src={selectedPlayer.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`} 
                     alt={selectedPlayer.name} 
                     className="w-full h-full object-cover rounded-full" 
                   />
@@ -4188,7 +4200,7 @@ export default function PlayersPage() {
                     if (file) {
                       const compressed = await compressImage(file);
                       if (compressed) {
-                        setEditPlayerForm(prev => ({ ...prev, photo: compressed }));
+                        setEditPlayerForm(prev => ({ ...prev, photo: compressed, photoFile: file }));
                       }
                     }
                   }} 

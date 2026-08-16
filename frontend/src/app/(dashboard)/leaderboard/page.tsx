@@ -26,10 +26,6 @@ const getPlayerImage = (player: Player) => {
   if ((player as any).imageUrl) return (player as any).imageUrl;
   if ((player as any).photoUrl) return (player as any).photoUrl;
   if ((player as any).photo) return (player as any).photo;
-  if (typeof window !== "undefined") {
-    const saved = localStorage.getItem(`player_photo_${player.id}`);
-    if (saved) return saved;
-  }
   const name = player.name || "Player";
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`;
 };
