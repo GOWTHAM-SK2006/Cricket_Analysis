@@ -32,7 +32,7 @@ interface HelpItem {
 }
 
 const DEFAULT_HELP: HelpItem[] = [
-  { parameter: "Technical Execution", explanation: "Refers to how biomechanically sound and repeatable a player's fundamental techniques are.", rangeHigh: "Scores 8.0-10.0: Flawless technique, balanced weight distribution, precise bat path.", rangeAvg: "Scores 5.0-7.9: Solid core technique with occasional mechanical flaws under pressure.", rangeLow: "Scores 1.0-4.9: Significant technical breakdowns requiring fundamental rework." },
+  { parameter: "Technique", explanation: "Refers to how biomechanically sound and repeatable a player's fundamental techniques are.", rangeHigh: "Scores 8.0-10.0: Flawless technique, balanced weight distribution, precise bat path.", rangeAvg: "Scores 5.0-7.9: Solid core technique with occasional mechanical flaws under pressure.", rangeLow: "Scores 1.0-4.9: Significant technical breakdowns requiring fundamental rework." },
   { parameter: "Skill Level", explanation: "Refers to stroke repertoire, bowling variations, and fielding dexterity.", rangeHigh: "Scores 8.0-10.0: Masterful control over all shot/bowling variations.", rangeAvg: "Scores 5.0-7.9: Good standard skillset with limited advanced variations.", rangeLow: "Scores 1.0-4.9: Restricted skill set with execution difficulties." },
   { parameter: "Game Plan", explanation: "Tactical comprehension of match scenarios, field settings, and match pace.", rangeHigh: "Scores 8.0-10.0: Elite tactical execution and situational awareness.", rangeAvg: "Scores 5.0-7.9: Understands strategy but occasionally deviates under stress.", rangeLow: "Scores 1.0-4.9: Poor situational decisions and strategy execution." },
   { parameter: "Preparation", explanation: "Professionalism in warmup, mental readiness, and physical prep.", rangeHigh: "Scores 8.0-10.0: Meticulous professional warmup and mental visualization.", rangeAvg: "Scores 5.0-7.9: Standard preparation routine lacking deep focus.", rangeLow: "Scores 1.0-4.9: Casual or rushed preparation leading to slow starts." },
@@ -54,7 +54,7 @@ const MOCK_PLAYER_SCORES: MockParamScore[] = [
   { name: "Preparation", score: 8.1, recommendation: "Designate player as preparation mentor for squad members." },
   { name: "Skill Level", score: 7.9, recommendation: "Practice target bowling and specific boundary options." },
   { name: "Intensity", score: 7.5, recommendation: "Set sprint benchmark targets for running between wickets." },
-  { name: "Technical Execution", score: 7.2, recommendation: "Focus on high-volume mirror drills and video review to refine bat path." }
+  { name: "Technique", score: 7.2, recommendation: "Focus on high-volume mirror drills and video review to refine bat path." }
 ];
 
 export default function AdminReportsPage() {

@@ -313,7 +313,7 @@ export default function HistoryPage() {
               </h4>
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { label: "Technical Execution", val: selectedAssessmentDetail.data.technicalExecution },
+                  { label: "Technique", val: selectedAssessmentDetail.data.technicalExecution },
                   { label: "Skill Level", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique },
                   { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
                   { label: "Preparation", val: selectedAssessmentDetail.data.preparation },

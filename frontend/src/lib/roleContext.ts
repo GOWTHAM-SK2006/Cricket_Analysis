@@ -21,7 +21,7 @@ export type SupportedRole = "Batsman" | "Bowler" | "Wicketkeeper" | "Fielder";
 
 export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<string, RoleParameterContext>> = {
   Batsman: {
-    "Technical Execution": {
+    "Technique": {
       highContext: "Technique remains stable against pace and spin. Focus on bat-face control, footwork alignment, and late point of contact under match pressure.",
       lowContext: "Identify bat-path drift, balance breakdown, or early movement errors. Return to drop-feed throwdowns to stabilize contact point.",
       generalContext: "Refine stroke mechanics, footwork alignment, and crease balance across different bowling types."
@@ -58,7 +58,7 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<string, RoleParamete
     }
   },
   Bowler: {
-    "Technical Execution": {
+    "Technique": {
       highContext: "Repeatable run-up, gather, release point, and seam orientation under fatigue and match pressure.",
       lowContext: "Identify run-up rhythm breakdown, front-foot plant collapse, or wrist alignment drift. Rebuild with target-line spot bowling.",
       generalContext: "Stabilize run-up rhythm, gathering posture, release point, and follow-through."
@@ -95,7 +95,7 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<string, RoleParamete
     }
   },
   Wicketkeeper: {
-    "Technical Execution": {
+    "Technique": {
       highContext: "Clean stance balance, glove tracking, soft hands, and seamless footwork mobility to pace and spin.",
       lowContext: "Address footwork alignment, head movement, or stiff glove posture. Practice drop-feed collection to isolate soft hands.",
       generalContext: "Maintain soft hands, balance posture, and clean glove tracking behind the stumps."
@@ -132,7 +132,7 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<string, RoleParamete
     }
   },
   Fielder: {
-    "Technical Execution": {
+    "Technique": {
       highContext: "Clean attack on ground balls, balance on pick-up, flat trajectory throw, and high-catch positioning.",
       lowContext: "Correct cup stance, foot alignment to target, or head movement during high-catch tracking.",
       generalContext: "Maintain balanced posture on ground attacks, high catches, and accurate throwing."

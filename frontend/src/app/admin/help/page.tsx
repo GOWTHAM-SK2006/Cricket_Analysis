@@ -301,7 +301,7 @@ const DEFAULT_FULL_HELP: FullHelpConfig = {
   welcomeText: DEFAULT_WELCOME_TEXT,
   coachPlanData: DEFAULT_COACH_PLAN_DATA,
   ppiDescription: "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.",
-  mpiDescription: "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technical execution, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.",
+  mpiDescription: "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technique, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.",
   cpiDescription: "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back.",
   below5Text: "Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority.",
   between5And7Text: "There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches.",

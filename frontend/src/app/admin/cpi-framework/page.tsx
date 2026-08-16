@@ -18,7 +18,7 @@ interface ParameterItem {
 const DEFAULT_7_PARAMETERS: ParameterItem[] = [
   {
     id: 1,
-    name: "Technical Execution",
+    name: "Technique",
     description: "Assessment of biomechanical efficiency, shot technique, and mechanical consistency.",
     ratingDescription: "Evaluates footwork, bat path, body balance, and follow-through quality.",
     guidance: "Observe head position at impact and balance through shot completion.",

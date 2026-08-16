@@ -1,0 +1,42 @@
+{
+  "appId": "com.dygon.bustracking",
+  "appName": "dygon",
+  "webDir": "src/main/resources/static",
+  "android": {
+    "useLegacyBridge": true,
+    "allowMixedContent": true
+  },
+  "server": {
+    "allowNavigation": [
+      "bus-tracking-master-production-3369.up.railway.app",
+      "*.railway.app"
+    ]
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#000000"
+  },
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#000000",
+      "style": "LIGHT"
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 0,
+      "backgroundColor": "#000000",
+      "showSpinner": false
+    },
+    "BackgroundGeolocation": {
+      "distanceFilter": 0,
+      "backgroundTitle": "Bus Tracking Active",
+      "backgroundMessage": "Location is being tracked for bus tracking",
+      "requestPermissions": true,
+      "stale": false
+    }
+  }
+}

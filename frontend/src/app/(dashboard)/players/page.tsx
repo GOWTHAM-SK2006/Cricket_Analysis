@@ -178,7 +178,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       bullets: [
         "Eliminate energy lulls. Maintain consistent competitive effort between overs and drill sets.",
         "Set active session benchmarks. Use timed or target-driven drills to maintain physical urgency.",
-        "Channel energy into execution. Ensure high effort supports rather than rushes technical execution.",
+        "Channel energy into execution. Ensure high effort supports rather than rushes technique.",
         "Increase active communication. Stay vocal and engaged in the field to maintain mental intensity.",
         "Monitor endurance. Track competitive energy through late stages of practice and match play."
       ],
@@ -302,10 +302,10 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
     }
   },
-  "Technical Execution": {
-    description: "Technical Execution measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
+  "Technique": {
+    description: "Technique measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
     high: {
-      header: "Technical Execution High Directive",
+      header: "Technique High Directive",
       bullets: [
         "Confirm what is working. Help the player understand which parts of their technique are allowing them to perform consistently.",
         "Protect the basics. Avoid unnecessary changes when the player has a method that is working.",
@@ -315,13 +315,13 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
       ],
       explanation: "A high score shows that the player has a reliable technique that is standing up to the demands of practice and competition. The next step is to strengthen it under even greater pressure.",
       summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Technical Execution Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
+      summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
       highScoreStatement: "High score: protect, challenge and refine.",
       lowScoreStatement: "Low score: identify, simplify and rebuild.",
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
     },
     medium: {
-      header: "Technical Execution Average Directive",
+      header: "Technique Average Directive",
       bullets: [
         "Refine core mechanics. Work on stabilizing technique during moderate pressure nets.",
         "Eliminate minor breakdowns. Address technical drift before it affects match performance.",
@@ -330,13 +330,13 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
         "Track technical stability. Monitor consistency between practice sets and match overs."
       ],
       summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Technical Execution Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
+      summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
       highScoreStatement: "Average score: refine, stabilize and test under moderate pressure.",
       lowScoreStatement: "Low score: identify, simplify and rebuild.",
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
     },
     low: {
-      header: "Technical Execution Low Directive",
+      header: "Technique Low Directive",
       bullets: [
         "Identify the main problem. Find the technical issue that is having the greatest effect on performance.",
         "Keep the correction simple. Work on one clear adjustment rather than trying to change everything at once.",
@@ -345,7 +345,7 @@ const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
         "Track the improvement. Look for whether the correction becomes more consistent in practice and then transfers into competition."
       ],
       summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Technical Execution Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
+      summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
       highScoreStatement: "High score: protect, challenge and refine.",
       lowScoreStatement: "Low score: identify, simplify and rebuild.",
       goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
@@ -431,10 +431,10 @@ interface CpiFrameworkItem {
 }
 
 const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
-  "Technical Execution": {
+  "Technique": {
     id: "technical_execution",
-    name: "Technical Execution",
-    description: "Technical Execution measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
+    name: "Technique",
+    description: "Technique measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
     highPoints: [
       { title: "PRESSURE TEST IT", detail: "Add pace, spin, fatigue, and tougher match scenarios in practice." },
       { title: "PROTECT THE BASICS", detail: "Maintain and reinforce strong fundamentals, avoiding unnecessary changes." },
@@ -454,7 +454,7 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
     ],
     lowSummary: "A low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.",
     coachSummary: {
-      overview: "The Technical Execution Index helps the coach understand whether the player's technique is reliable enough to perform in both practice and matches.",
+      overview: "The Technique Index helps the coach understand whether the player's technique is reliable enough to perform in both practice and matches.",
       high: "protect, challenge and refine.",
       medium: "refine, stabilize and test under moderate pressure.",
       low: "identify, simplify and rebuild.",
@@ -664,7 +664,7 @@ const computeFocusAreasForPlayer = (
   matchHistory: any[]
 ): CpiFocusArea[] => {
   const paramDefs = [
-    { name: "Technical Execution", keys: ["technicalExecution"] },
+    { name: "Technique", keys: ["technicalExecution"] },
     { name: "Skill Level", keys: ["skillsLevel", "technique"] },
     { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
     { name: "Preparation", keys: ["preparation"] },
@@ -1045,7 +1045,7 @@ const generatePlayerPdfReport = async (
   };
 
   const paramDefs = [
-    { name: "Technical Execution", key: "technicalExecution" },
+    { name: "Technique", key: "technicalExecution" },
     { name: "Skill Level", key: "skillsLevel" },
     { name: "Game Plan", key: "gamePlan" },
     { name: "Preparation", key: "preparation" },
@@ -2677,7 +2677,7 @@ export default function PlayersPage() {
           };
 
           practiceHistory.forEach(p => {
-            addMetric("Technical Execution", p.technicalExecution);
+            addMetric("Technique", p.technicalExecution);
             addMetric("Skill Level", p.skillsLevel || p.technique);
             addMetric("Game Plan", p.gamePlan || p.decisionMaking || p.gameAwareness);
             addMetric("Preparation", p.preparation);
@@ -2696,7 +2696,7 @@ export default function PlayersPage() {
           });
 
           matchHistory.forEach(m => {
-            addMetric("Technical Execution", m.technicalExecution);
+            addMetric("Technique", m.technicalExecution);
             addMetric("Skill Level", m.skillsLevel);
             addMetric("Game Plan", m.gamePlan || m.decisionMaking || m.gameAwareness);
             addMetric("Preparation", m.preparation);
@@ -3673,7 +3673,7 @@ export default function PlayersPage() {
               </h4>
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { label: "Technical Execution", val: selectedAssessmentDetail.data.technicalExecution },
+                  { label: "Technique", val: selectedAssessmentDetail.data.technicalExecution },
                   { label: "Skill Level", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique },
                   { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
                   { label: "Preparation", val: selectedAssessmentDetail.data.preparation },
