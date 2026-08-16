@@ -773,7 +773,7 @@ const computeFocusAreasForPlayer = (
     const title = p.name;
 
     const detailParts = [];
-    if (cpiGuidance) detailParts.push(`CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}`);
+    if (cpiGuidance) detailParts.push(`COACHING INTERPRETATION:\n${cpiGuidance}`);
     const detail = detailParts.join("\n\n");
 
     return {
@@ -1216,7 +1216,7 @@ const generatePlayerPdfReport = async (
         doc.setFontSize(7.5);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(71, 85, 105);
-        doc.text("CPI FRAMEWORK GUIDANCE:", 14, y);
+        doc.text("COACHING INTERPRETATION:", 14, y);
         y += 3.6;
 
         doc.setFontSize(7.5);
