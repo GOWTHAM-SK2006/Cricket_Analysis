@@ -157,8 +157,8 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
         }
       }
 
-      // Header Banner (Dark Slate with Orange Accent)
-      doc.setFillColor(15, 23, 42); // Slate 900
+      // Header Banner (White with Orange Accent)
+      doc.setFillColor(255, 255, 255); // White Banner Background
       doc.rect(0, 0, pageWidth, 24, "F");
 
       doc.setFillColor(249, 115, 22); // Orange 500 Stripe
@@ -167,12 +167,12 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
       // Title & Subtitle
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
-      doc.setTextColor(255, 255, 255);
+      doc.setTextColor(15, 23, 42);
       doc.text("CRICKET PERFORMANCE INDEX (CPI)", 14, 11);
 
-      doc.setFont("helvetica", "normal");
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(8.5);
-      doc.setTextColor(203, 213, 225);
+      doc.setTextColor(249, 115, 22);
       doc.text("Official AI Generated Player Analytics & Performance Report", 14, 18);
 
       // Date

@@ -1246,16 +1246,23 @@ const generatePlayerPdfReport = async (
     addFooter((doc as any).getNumberOfPages());
     doc.addPage();
 
-    doc.setFillColor(15, 23, 42);
+    doc.setFillColor(255, 255, 255);
     doc.rect(0, 0, pageWidth, 14, "F");
     doc.setFillColor(249, 115, 22);
-    doc.rect(0, 13, pageWidth, 1, "F");
+    doc.rect(0, 13, pageWidth, 1.2, "F");
     if (logoDataUrl) {
       try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+    } else {
+      doc.setFillColor(249, 115, 22);
+      doc.circle(18, 7, 4.5, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(5.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text("CPI", 18, 8.8, { align: "center" });
     }
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(15, 23, 42);
     doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
     y = 22;
   }
