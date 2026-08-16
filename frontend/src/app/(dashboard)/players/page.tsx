@@ -2312,7 +2312,7 @@ export default function PlayersPage() {
   const getRoleEmoji = (roleStr: string) => {
     const r = (roleStr || "").toLowerCase();
     if (r.includes("batsman") || r.includes("batter")) return "🏏";
-    if (r.includes("bowler")) return "⚾";
+    if (r.includes("bowler")) return "🔴";
     if (r.includes("wicketkeeper") || r.includes("wicket-keeper") || r.includes("wicket keeper") || r.includes("keeper")) return "🧤";
     if (r.includes("all-rounder") || r.includes("all rounder") || r.includes("allrounder")) return "⚡";
     return "🏏";
