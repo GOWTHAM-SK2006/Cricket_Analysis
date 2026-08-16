@@ -35,7 +35,7 @@ const formatScoreValue = (val: number | null | undefined, showMax: boolean = fal
   let num = typeof val === "number" ? val : parseFloat(val as any);
   if (isNaN(num) || num <= 0) return "N/A";
   const score100 = num <= 10 ? Math.round(num * 10) : Math.round(num);
-  return showMax ? `${score100}/100` : `${score100}`;
+  return `${score100}`;
 };
 
 interface CoachParameterSection {
@@ -967,7 +967,7 @@ const generatePlayerPdfReport = async (
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(180, 83, 9);
-  doc.text("CPI SCORE /100", 18, y + 7);
+  doc.text("CPI SCORE", 18, y + 7);
   doc.setFontSize(14);
   doc.text(`${cpiNum || "N/A"}`, 18, y + 18);
 
@@ -977,7 +977,7 @@ const generatePlayerPdfReport = async (
   doc.roundedRect(14 + boxWidth + 3, y, boxWidth, 24, 3, 3, "FD");
   doc.setFontSize(7.5);
   doc.setTextColor(71, 85, 105);
-  doc.text("PPI SCORE /100", 18 + boxWidth + 3, y + 7);
+  doc.text("PPI SCORE", 18 + boxWidth + 3, y + 7);
   doc.setFontSize(14);
   doc.setTextColor(15, 23, 42);
   doc.text(`${ppiNum || "N/A"}`, 18 + boxWidth + 3, y + 18);
@@ -988,7 +988,7 @@ const generatePlayerPdfReport = async (
   doc.roundedRect(14 + (boxWidth + 3) * 2, y, boxWidth, 24, 3, 3, "FD");
   doc.setFontSize(7.5);
   doc.setTextColor(71, 85, 105);
-  doc.text("MPI SCORE /100", 18 + (boxWidth + 3) * 2, y + 7);
+  doc.text("MPI SCORE", 18 + (boxWidth + 3) * 2, y + 7);
   doc.setFontSize(14);
   doc.setTextColor(15, 23, 42);
   doc.text(`${mpiNum || "N/A"}`, 18 + (boxWidth + 3) * 2, y + 18);
@@ -1053,7 +1053,7 @@ const generatePlayerPdfReport = async (
 
   const paramData = paramDefs.map(p => {
     const score = getParamScore(p.key);
-    let label = "Optimal";
+    let label = "Elite";
     let color = [16, 185, 129];
     if (score < 6.5) {
       label = "Needs Focus";
@@ -1077,7 +1077,7 @@ const generatePlayerPdfReport = async (
     doc.text(p.name, 18, y + 4.5);
 
     doc.setFont("helvetica", "bold");
-    doc.text(`${p.score} / 10`, 82, y + 4.5);
+    doc.text(`${p.score}`, 82, y + 4.5);
 
     doc.setFontSize(8);
     doc.setTextColor(p.color[0], p.color[1], p.color[2]);
@@ -1120,7 +1120,7 @@ const generatePlayerPdfReport = async (
   doc.setFont("helvetica", "normal");
   doc.setTextColor(30, 41, 59);
   strengths.forEach((s, idx) => {
-    doc.text(`• ${s.name} (${s.score}/10)`, 18, y + 13 + idx * 4.5);
+    doc.text(`• ${s.name} (${s.score})`, 18, y + 13 + idx * 4.5);
   });
 
   // 4. AREAS FOR IMPROVEMENT Box
@@ -1137,7 +1137,7 @@ const generatePlayerPdfReport = async (
   doc.setFont("helvetica", "normal");
   doc.setTextColor(30, 41, 59);
   improvements.forEach((imp, idx) => {
-    doc.text(`• ${imp.name} (${imp.score}/10)`, 18 + colW + 6, y + 13 + idx * 4.5);
+    doc.text(`• ${imp.name} (${imp.score})`, 18 + colW + 6, y + 13 + idx * 4.5);
   });
 
   addFooter(1);
@@ -1229,7 +1229,7 @@ const generatePlayerPdfReport = async (
       doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(249, 115, 22); // CPI Orange accent
-      const scoreStr = typeof f.avg === "number" ? ` (${f.avg}/10)` : "";
+      const scoreStr = typeof f.avg === "number" ? ` (${f.avg})` : "";
       doc.text(`${f.title}${scoreStr}`, 14, y);
       y += 3.5;
 
@@ -2993,7 +2993,7 @@ export default function PlayersPage() {
               <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center pt-1">
                 <div className="bg-orange-500/10 border border-orange-500/30 px-1.5 py-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-orange-400 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    CPI SCORE /100
+                    CPI SCORE
                   </p>
                   <p className="text-xl sm:text-3xl font-extrabold text-orange-500 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentCpi)}
@@ -3001,7 +3001,7 @@ export default function PlayersPage() {
                 </div>
                 <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    PPI SCORE /100
+                    PPI SCORE
                   </p>
                   <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentPpi)}
@@ -3009,7 +3009,7 @@ export default function PlayersPage() {
                 </div>
                 <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
                   <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    MPI SCORE /100
+                    MPI SCORE
                   </p>
                   <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentMpi)}
@@ -3128,7 +3128,7 @@ export default function PlayersPage() {
                       {typeof focus.avg === "number" && (
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="w-[64px] text-center text-[11px] font-bold text-slate-700 bg-white px-1.5 py-1 rounded-lg border border-slate-200 font-mono inline-block">
-                            {focus.avg} / 10
+                            {focus.avg}
                           </span>
                           <span
                             className={`w-[96px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${
@@ -3139,7 +3139,7 @@ export default function PlayersPage() {
                                 : "bg-red-100 text-red-700 border border-red-300"
                             }`}
                           >
-                            {focus.avg >= 8.0 ? "Optimal" : focus.avg >= 6.5 ? "Good" : "Needs Focus"}
+                            {focus.avg >= 8.0 ? "Elite" : focus.avg >= 6.5 ? "Good" : "Needs Focus"}
                           </span>
                         </div>
                       )}
@@ -3310,7 +3310,7 @@ export default function PlayersPage() {
                     <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                     <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
-                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(practiceForm as any)[metric.key]}/10</span>
+                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(practiceForm as any)[metric.key]}</span>
                 </div>
                 <input
                   type="range"
@@ -3417,7 +3417,7 @@ export default function PlayersPage() {
                     <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                     <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
-                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(matchForm as any)[metric.key]}/10</span>
+                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(matchForm as any)[metric.key]}</span>
                 </div>
                 <input
                   type="range"
@@ -3479,7 +3479,7 @@ export default function PlayersPage() {
                     <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                     <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                   </div>
-                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(selfForm as any)[metric.key]}/10</span>
+                  <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(selfForm as any)[metric.key]}</span>
                 </div>
                 <input
                   type="range"
@@ -3613,7 +3613,7 @@ export default function PlayersPage() {
                         </div>
                       </div>
                       <span className="text-base font-bold text-orange-500 bg-orange-500/10 px-3 py-1 rounded-xl">
-                        {avg.toFixed(1)}/10
+                        {avg.toFixed(1)}
                       </span>
                     </div>
                   );
@@ -3672,7 +3672,7 @@ export default function PlayersPage() {
             {/* Parameter Ratings */}
             <div className="space-y-3">
               <h4 className="text-xs font-bold tracking-widest text-slate-900 uppercase border-b border-slate-100 pb-1">
-                Parameter Ratings (Out of 10)
+                Parameter Ratings
               </h4>
               <div className="grid grid-cols-2 gap-2.5">
                 {[
@@ -3686,7 +3686,7 @@ export default function PlayersPage() {
                 ].map((item, idx) => (
                   <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                     <span className="font-semibold text-slate-700">{item.label}</span>
-                    <span className="font-bold text-slate-900 tracking-tight">{item.val !== undefined && item.val !== null ? `${item.val}/10` : "N/A"}</span>
+                    <span className="font-bold text-slate-900 tracking-tight">{item.val !== undefined && item.val !== null ? `${item.val}` : "N/A"}</span>
                   </div>
                 ))}
               </div>

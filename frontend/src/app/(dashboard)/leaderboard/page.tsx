@@ -72,9 +72,9 @@ export default function LeaderboardPage() {
   const maxScore = sortedPlayers.length > 0 ? Math.max(...sortedPlayers.map(p => getPlayerScores(p)[metricTab])) : 100;
 
   const tabs = [
-    { id: "cpi", label: "CPI /100", icon: Zap },
-    { id: "ppi", label: "PPI /100", icon: Target },
-    { id: "mpi", label: "MPI /100", icon: Flame },
+    { id: "cpi", label: "CPI", icon: Zap },
+    { id: "ppi", label: "PPI", icon: Target },
+    { id: "mpi", label: "MPI", icon: Flame },
   ];
 
   return (

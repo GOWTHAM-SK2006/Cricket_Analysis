@@ -287,7 +287,7 @@ export default function DashboardPage() {
     let num = typeof val === "number" ? val : parseFloat(val as any);
     if (isNaN(num) || num <= 0) return "N/A";
     const score100 = num <= 10 ? Math.round(num * 10) : Math.round(num);
-    return showMax ? `${score100}/100` : `${score100}`;
+    return `${score100}`;
   };
 
   if (loading) {
@@ -377,7 +377,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE CPI /100</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE CPI</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -394,7 +394,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE PPI /100</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE PPI</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
               </div>
@@ -411,7 +411,7 @@ export default function DashboardPage() {
             className="bg-white border border-slate-200/90 rounded-2xl p-4 text-left space-y-1.5 relative overflow-hidden transition-all duration-200 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE MPI /100</span>
+              <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">AVERAGE MPI</span>
               <div className="w-7 h-7 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <Trophy className="w-3.5 h-3.5 text-orange-500" />
               </div>
