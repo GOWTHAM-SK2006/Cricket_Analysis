@@ -1374,6 +1374,15 @@ const generatePlayerPdfReport = async (
 export default function PlayersPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const handleSliderInteraction = () => {
+    if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+      if (document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "INPUT") {
+        document.activeElement.blur();
+      }
+    }
+  };
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -3311,7 +3320,13 @@ export default function PlayersPage() {
                   min="0"
                   max="10"
                   value={(practiceForm as any)[metric.key]}
-                  onChange={(e) => setPracticeForm({ ...practiceForm, [metric.key]: parseInt(e.target.value) })}
+                  onPointerDown={handleSliderInteraction}
+                  onTouchStart={handleSliderInteraction}
+                  onFocus={handleSliderInteraction}
+                  onChange={(e) => {
+                    handleSliderInteraction();
+                    setPracticeForm({ ...practiceForm, [metric.key]: parseInt(e.target.value) });
+                  }}
                   className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
                 />
               </div>
@@ -3418,7 +3433,13 @@ export default function PlayersPage() {
                   min="0"
                   max="10"
                   value={(matchForm as any)[metric.key]}
-                  onChange={(e) => setMatchForm({ ...matchForm, [metric.key]: parseInt(e.target.value) })}
+                  onPointerDown={handleSliderInteraction}
+                  onTouchStart={handleSliderInteraction}
+                  onFocus={handleSliderInteraction}
+                  onChange={(e) => {
+                    handleSliderInteraction();
+                    setMatchForm({ ...matchForm, [metric.key]: parseInt(e.target.value) });
+                  }}
                   className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
                 />
               </div>
@@ -3480,7 +3501,13 @@ export default function PlayersPage() {
                   min="1"
                   max="10"
                   value={(selfForm as any)[metric.key]}
-                  onChange={(e) => setSelfForm({ ...selfForm, [metric.key]: parseInt(e.target.value) })}
+                  onPointerDown={handleSliderInteraction}
+                  onTouchStart={handleSliderInteraction}
+                  onFocus={handleSliderInteraction}
+                  onChange={(e) => {
+                    handleSliderInteraction();
+                    setSelfForm({ ...selfForm, [metric.key]: parseInt(e.target.value) });
+                  }}
                   className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
                 />
               </div>
