@@ -30,28 +30,20 @@ public class DashboardController {
     public ResponseEntity<DashboardStatsResponse> getDashboardStats(
             @AuthenticationPrincipal Coach currentCoach
     ) {
+        if (currentCoach == null || currentCoach.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Unauthorized"
+            );
+        }
         Long coachId = currentCoach.getId();
         Coach managedCoach = coachRepository.findById(coachId)
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found"
+                ));
 
-        final List<Player> players = new ArrayList<>();
-        final List<PracticeAssessment> practiceAssessments = new ArrayList<>();
-        final List<MatchAssessment> matchAssessments = new ArrayList<>();
-
-        players.addAll(playerRepository.findByCreatorCoachId(coachId));
-        if (players.isEmpty()) {
-            players.addAll(playerRepository.findAll());
-        }
-
-        practiceAssessments.addAll(practiceAssessmentRepository.findByCoachId(coachId));
-        if (practiceAssessments.isEmpty()) {
-            practiceAssessments.addAll(practiceAssessmentRepository.findAll());
-        }
-
-        matchAssessments.addAll(matchAssessmentRepository.findByCoachId(coachId));
-        if (matchAssessments.isEmpty()) {
-            matchAssessments.addAll(matchAssessmentRepository.findAll());
-        }
+        final List<Player> players = new ArrayList<>(playerRepository.findByCreatorCoachId(coachId));
+        final List<PracticeAssessment> practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findByCoachId(coachId));
+        final List<MatchAssessment> matchAssessments = new ArrayList<>(matchAssessmentRepository.findByCoachId(coachId));
 
         // Compute Card Stats
         long totalPlayers = players.size();

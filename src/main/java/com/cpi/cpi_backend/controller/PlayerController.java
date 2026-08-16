@@ -28,27 +28,39 @@ public class PlayerController {
     private final MatchAssessmentRepository matchAssessmentRepository;
 
     private void checkAccess(Player player, Coach currentCoach) {
+        if (currentCoach == null || currentCoach.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Unauthorized"
+            );
+        }
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found"
+                ));
 
         boolean isCreator = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
-        boolean isSelf = player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName());
         
-        if (!isCreator && !isSelf) {
-            throw new RuntimeException("Unauthorized");
+        if (!isCreator) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.FORBIDDEN, "You are not authorized to access or modify this player."
+            );
         }
     }
 
     @GetMapping
     @Transactional
     public ResponseEntity<List<Player>> getMyPlayers(@AuthenticationPrincipal Coach currentCoach) {
+        if (currentCoach == null || currentCoach.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Unauthorized"
+            );
+        }
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found"
+                ));
 
         List<Player> allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
-        if (allPlayers.isEmpty()) {
-            allPlayers.addAll(playerRepository.findAll());
-        }
 
         // Generate invitation codes for any players missing one
         for (Player p : allPlayers) {
@@ -64,6 +76,22 @@ public class PlayerController {
         }
 
         return ResponseEntity.ok(allPlayers);
+    }
+
+    @GetMapping("/{id}")
+    @Transactional(readOnly = true)
+    public ResponseEntity<Player> getPlayerById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Player player = playerRepository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Player not found"
+                ));
+
+        checkAccess(player, currentCoach);
+
+        return ResponseEntity.ok(player);
     }
 
     private String generateInvitationCode() {

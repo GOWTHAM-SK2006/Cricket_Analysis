@@ -40,11 +40,8 @@ public class AiService {
             if (currentCoach != null && currentCoach.getId() != null) {
                 com.cpi.cpi_backend.entity.Coach managedCoach = coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
                 allPlayers = playerRepository.findByCreatorCoachId(managedCoach.getId());
-                if (allPlayers == null || allPlayers.isEmpty()) {
-                    allPlayers = playerRepository.findAll();
-                }
             } else {
-                allPlayers = playerRepository.findAll();
+                allPlayers = new java.util.ArrayList<>();
             }
 
             if (allPlayers != null) {

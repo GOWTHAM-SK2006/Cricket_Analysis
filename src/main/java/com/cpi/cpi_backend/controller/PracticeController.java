@@ -45,12 +45,7 @@ public class PracticeController {
                         org.springframework.http.HttpStatus.BAD_REQUEST, "Coach not found."
                 ));
 
-        boolean authorized = false;
-        if (player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId())) {
-            authorized = true;
-        } else if (player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName())) {
-            authorized = true;
-        }
+        boolean authorized = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
 
         if (!authorized) {
             throw new org.springframework.web.server.ResponseStatusException(
@@ -132,15 +127,27 @@ public class PracticeController {
             @PathVariable Long playerId,
             @AuthenticationPrincipal Coach currentCoach
     ) {
+        if (currentCoach == null || currentCoach.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Unauthorized"
+            );
+        }
+
         Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Player not found."
+                ));
 
         Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new RuntimeException("Coach not found"));
-        boolean authorized = (player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId())) ||
-                (player.getName() != null && player.getName().equalsIgnoreCase(managedCoach.getName()));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found."
+                ));
+
+        boolean authorized = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
         if (!authorized) {
-            throw new RuntimeException("Unauthorized");
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.FORBIDDEN, "You are not authorized to view assessments for this player."
+            );
         }
 
         return ResponseEntity.ok(practiceAssessmentRepository.findByPlayerId(playerId));
