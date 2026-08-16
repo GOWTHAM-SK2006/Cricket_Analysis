@@ -2623,7 +2623,7 @@ export default function PlayersPage() {
                     <div className="flex items-center gap-4 min-w-0">
                       {/* Photo or Initials Avatar */}
                       <div className="relative shrink-0">
-                        <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
+                        <div className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden shadow-xs">
                           {cachedPhoto ? (
                             <img src={cachedPhoto} alt={player.name} className="w-full h-full object-cover" />
                           ) : (
@@ -2867,7 +2867,7 @@ export default function PlayersPage() {
               <div className="relative inline-block mx-auto">
                 <div 
                   onClick={() => profilePhotoInputRef.current?.click()}
-                  className="w-28 h-28 rounded-3xl bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500"
+                  className="w-28 h-28 rounded-full bg-slate-100 border-3 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500 shadow-md"
                 >
                   {typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`) ? (
                     <img src={localStorage.getItem(`player_photo_${selectedPlayer.id}`)!} alt={selectedPlayer.name} className="w-full h-full object-cover" />
@@ -2983,35 +2983,35 @@ export default function PlayersPage() {
             </div>
 
             {/* SECTION 2 – PLAYER'S CURRENT STATUS */}
-            <div className="bg-white border-2 border-slate-200 rounded-3xl p-3.5 sm:p-5.5 space-y-4 text-left">
-              <div className="border-b border-slate-200 pb-2">
-                <h3 className="text-sm font-bold tracking-wider text-slate-900 uppercase flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-orange-500" />
+            <div className="bg-slate-900 border-2 border-slate-800 rounded-3xl p-4 sm:p-6 space-y-4 text-left shadow-xl relative overflow-hidden">
+              <div className="border-b border-slate-800 pb-3">
+                <h3 className="text-xs sm:text-sm font-black tracking-widest text-white uppercase flex items-center gap-2">
+                  <Flame className="w-4 h-4 text-orange-500 fill-orange-500/20" />
                   PLAYER'S CURRENT STATUS
                 </h3>
               </div>
-              <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center pt-1">
-                <div className="bg-orange-500/10 border border-orange-500/30 px-1.5 py-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
-                  <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-orange-400 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3.5 text-center pt-0.5">
+                <div className="bg-gradient-to-b from-orange-500/20 to-amber-500/10 border-2 border-orange-500/50 px-2 py-3.5 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0 shadow-lg shadow-orange-500/10">
+                  <p className="text-[10px] sm:text-xs font-black text-orange-400 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     CPI SCORE
                   </p>
-                  <p className="text-xl sm:text-3xl font-extrabold text-orange-500 tracking-tight leading-none whitespace-nowrap">
+                  <p className="text-2xl sm:text-4xl font-black text-orange-400 tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentCpi)}
                   </p>
                 </div>
-                <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
-                  <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                <div className="bg-slate-800/90 border border-slate-700/80 px-2 py-3.5 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
+                  <p className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     PPI SCORE
                   </p>
-                  <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
+                  <p className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentPpi)}
                   </p>
                 </div>
-                <div className="bg-slate-50 px-1.5 py-3 sm:p-4 rounded-2xl border border-slate-200 flex flex-col items-center justify-center min-w-0">
-                  <p className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-zinc-550 uppercase tracking-tight sm:tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                <div className="bg-slate-800/90 border border-slate-700/80 px-2 py-3.5 sm:p-4 rounded-2xl flex flex-col items-center justify-center min-w-0">
+                  <p className="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider mb-1 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     MPI SCORE
                   </p>
-                  <p className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none whitespace-nowrap">
+                  <p className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-none whitespace-nowrap">
                     {formatScoreValue(currentMpi)}
                   </p>
                 </div>
