@@ -1453,6 +1453,7 @@ export default function PlayersPage() {
   const [showPdfDateOverlay, setShowPdfDateOverlay] = useState(false);
   const [pdfFromDate, setPdfFromDate] = useState<string>("");
   const [pdfToDate, setPdfToDate] = useState<string>("");
+  const [pdfPreset, setPdfPreset] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"highest_cpi" | "lowest_cpi" | "highest_ppi" | "lowest_ppi" | "highest_mpi" | "lowest_mpi" | "recently_assessed">("highest_cpi");
   const [quickFilter, setQuickFilter] = useState<"all" | "top_performers" | "needs_attention" | "assessed_today" | "not_assessed_recently">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "batsman" | "bowler" | "all_rounder" | "wicket_keeper">("all");
@@ -2905,7 +2906,27 @@ export default function PlayersPage() {
               {/* Generate PDF Report option in bottom of player card box */}
               <div className="pt-2 flex justify-center">
                 <button
-                  onClick={() => setShowPdfDateOverlay(true)}
+                  onClick={() => {
+                    let minDate: string | null = null;
+                    const allLogs = [...(practiceHistory || []), ...(matchHistory || []), ...(selfHistory || [])];
+                    allLogs.forEach((item: any) => {
+                      const val = item.date || item.createdAt;
+                      if (val) {
+                        const dStr = typeof val === "string" ? val.split("T")[0] : new Date(val).toISOString().split("T")[0];
+                        if (dStr && (!minDate || dStr < minDate)) minDate = dStr;
+                      }
+                    });
+                    if (!minDate) {
+                      const defaultStart = new Date();
+                      defaultStart.setFullYear(defaultStart.getFullYear() - 2);
+                      minDate = defaultStart.toISOString().split("T")[0];
+                    }
+                    const todayStr = new Date().toISOString().split("T")[0];
+                    setPdfFromDate(minDate);
+                    setPdfToDate(todayStr);
+                    setPdfPreset("all");
+                    setShowPdfDateOverlay(true);
+                  }}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-black text-xs uppercase tracking-wider transition-all shadow-xs cursor-pointer active:scale-95 group"
                 >
                   <FileText className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
@@ -3888,7 +3909,10 @@ export default function PlayersPage() {
                 <input
                   type="date"
                   value={pdfFromDate}
-                  onChange={(e) => setPdfFromDate(e.target.value)}
+                  onChange={(e) => {
+                    setPdfFromDate(e.target.value);
+                    setPdfPreset("");
+                  }}
                   className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl p-3.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-orange-500 transition-all shadow-xs"
                 />
               </div>
@@ -3898,7 +3922,10 @@ export default function PlayersPage() {
                 <input
                   type="date"
                   value={pdfToDate}
-                  onChange={(e) => setPdfToDate(e.target.value)}
+                  onChange={(e) => {
+                    setPdfToDate(e.target.value);
+                    setPdfPreset("");
+                  }}
                   className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl p-3.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-orange-500 transition-all shadow-xs"
                 />
               </div>
@@ -3907,67 +3934,89 @@ export default function PlayersPage() {
               <div className="space-y-1.5 pt-1">
                 <label className="text-[10px] font-black tracking-widest text-slate-400 uppercase block">QUICK PRESETS</label>
                 <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPdfFromDate("");
-                      setPdfToDate("");
-                    }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
-                  >
-                    All Time
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const end = new Date();
-                      const start = new Date();
-                      start.setDate(end.getDate() - 7);
-                      setPdfFromDate(start.toISOString().split("T")[0]);
-                      setPdfToDate(end.toISOString().split("T")[0]);
-                    }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
-                  >
-                    Last 7 Days
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const end = new Date();
-                      const start = new Date();
-                      start.setDate(end.getDate() - 30);
-                      setPdfFromDate(start.toISOString().split("T")[0]);
-                      setPdfToDate(end.toISOString().split("T")[0]);
-                    }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
-                  >
-                    Last 30 Days
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const end = new Date();
-                      const start = new Date();
-                      start.setDate(end.getDate() - 90);
-                      setPdfFromDate(start.toISOString().split("T")[0]);
-                      setPdfToDate(end.toISOString().split("T")[0]);
-                    }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
-                  >
-                    Last 90 Days
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const end = new Date();
-                      const start = new Date(end.getFullYear(), 0, 1);
-                      setPdfFromDate(start.toISOString().split("T")[0]);
-                      setPdfToDate(end.toISOString().split("T")[0]);
-                    }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase border border-slate-200 bg-slate-100 hover:bg-orange-50 hover:border-orange-300 text-slate-700 transition-all cursor-pointer"
-                  >
-                    This Year
-                  </button>
+                  {[
+                    {
+                      id: "all",
+                      label: "ALL TIME",
+                      getDates: () => {
+                        let minDate: string | null = null;
+                        const allLogs = [...(practiceHistory || []), ...(matchHistory || []), ...(selfHistory || [])];
+                        allLogs.forEach((item: any) => {
+                          const val = item.date || item.createdAt;
+                          if (val) {
+                            const dStr = typeof val === "string" ? val.split("T")[0] : new Date(val).toISOString().split("T")[0];
+                            if (dStr && (!minDate || dStr < minDate)) minDate = dStr;
+                          }
+                        });
+                        if (!minDate) {
+                          const defaultStart = new Date();
+                          defaultStart.setFullYear(defaultStart.getFullYear() - 2);
+                          minDate = defaultStart.toISOString().split("T")[0];
+                        }
+                        return { start: minDate, end: new Date().toISOString().split("T")[0] };
+                      }
+                    },
+                    {
+                      id: "7_days",
+                      label: "LAST 7 DAYS",
+                      getDates: () => {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setDate(end.getDate() - 7);
+                        return { start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] };
+                      }
+                    },
+                    {
+                      id: "30_days",
+                      label: "LAST 30 DAYS",
+                      getDates: () => {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setDate(end.getDate() - 30);
+                        return { start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] };
+                      }
+                    },
+                    {
+                      id: "90_days",
+                      label: "LAST 90 DAYS",
+                      getDates: () => {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setDate(end.getDate() - 90);
+                        return { start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] };
+                      }
+                    },
+                    {
+                      id: "this_year",
+                      label: "THIS YEAR",
+                      getDates: () => {
+                        const end = new Date();
+                        const start = new Date(end.getFullYear(), 0, 1);
+                        return { start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] };
+                      }
+                    }
+                  ].map((preset) => {
+                    const isActive = pdfPreset === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => {
+                          const { start, end } = preset.getDates();
+                          setPdfFromDate(start);
+                          setPdfToDate(end);
+                          setPdfPreset(preset.id);
+                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase transition-all cursor-pointer ${
+                          isActive
+                            ? "bg-orange-500 text-white border-2 border-orange-500 shadow-md shadow-orange-500/25 scale-[1.02]"
+                            : "border border-slate-200 bg-slate-100 hover:bg-slate-200 hover:border-slate-300 text-slate-700 font-bold"
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
