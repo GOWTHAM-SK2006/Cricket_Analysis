@@ -1141,7 +1141,7 @@ const generatePlayerPdfReport = async (
 
   y += 28;
 
-  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Completes Page 1)
+  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Completes Page 1 and cleanly continues to Page 2 if needed)
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
@@ -1149,8 +1149,50 @@ const generatePlayerPdfReport = async (
 
   y += 6.0;
 
+  let currentPage = 1;
+
   if (focusAreas && focusAreas.length > 0) {
     focusAreas.forEach((f: any) => {
+      const wrapWidth = pageWidth - 28;
+      const wrappedLines = f.cpiGuidance ? doc.splitTextToSize(f.cpiGuidance, wrapWidth) : [];
+      const itemHeight = 3.8 + 3.6 + (f.cpiGuidance ? (3.6 + wrappedLines.length * 3.6 + 4.5) : 3.0);
+
+      // Check if item exceeds safe bottom boundary on Page 1 (260mm)
+      if (currentPage === 1 && y + itemHeight > 260) {
+        addFooter(1);
+        doc.addPage();
+        currentPage = 2;
+
+        // Page 2 Header Banner
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, pageWidth, 16, "F");
+        doc.setFillColor(226, 232, 240);
+        doc.rect(0, 15.5, pageWidth, 0.6, "F");
+
+        if (logoDataUrl) {
+          try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+        } else {
+          doc.setFillColor(15, 23, 42);
+          doc.circle(18, 7, 4.5, "F");
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(5.5);
+          doc.setTextColor(255, 255, 255);
+          doc.text("CPI", 18, 8.8, { align: "center" });
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
+
+        y = 22;
+        doc.setFontSize(9.5);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(15, 23, 42);
+        doc.text("5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (CONTD.)", 14, y);
+        y += 6.0;
+      }
+
       // PARAMETER NAME (e.g. Resilience (7.0))
       doc.setFontSize(8.5);
       doc.setFont("helvetica", "bold");
@@ -1175,9 +1217,6 @@ const generatePlayerPdfReport = async (
         doc.setFont("helvetica", "normal");
         doc.setTextColor(51, 65, 85);
 
-        const wrapWidth = pageWidth - 28;
-        const wrappedLines = doc.splitTextToSize(f.cpiGuidance, wrapWidth);
-
         wrappedLines.forEach((lineStr: string) => {
           doc.text(lineStr, 14, y);
           y += 3.6;
@@ -1188,37 +1227,38 @@ const generatePlayerPdfReport = async (
     });
   }
 
-  // End of Page 1
-  addFooter(1);
+  // If still on Page 1 after focus areas loop, create Page 2
+  if (currentPage === 1) {
+    addFooter(1);
+    doc.addPage();
+    currentPage = 2;
 
-  // ==========================================
-  // PAGE 2: Performance Trend & Assessment History
-  // ==========================================
-  doc.addPage();
+    // Page 2 Header Banner
+    doc.setFillColor(255, 255, 255);
+    doc.rect(0, 0, pageWidth, 16, "F");
+    doc.setFillColor(226, 232, 240);
+    doc.rect(0, 15.5, pageWidth, 0.6, "F");
 
-  // Page 2 Header Banner
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0, 0, pageWidth, 16, "F");
-  doc.setFillColor(226, 232, 240);
-  doc.rect(0, 15.5, pageWidth, 0.6, "F");
+    if (logoDataUrl) {
+      try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
+    } else {
+      doc.setFillColor(15, 23, 42);
+      doc.circle(18, 7, 4.5, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(5.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text("CPI", 18, 8.8, { align: "center" });
+    }
 
-  if (logoDataUrl) {
-    try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) {}
-  } else {
-    doc.setFillColor(15, 23, 42);
-    doc.circle(18, 7, 4.5, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(5.5);
-    doc.setTextColor(255, 255, 255);
-    doc.text("CPI", 18, 8.8, { align: "center" });
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
+
+    y = 22;
   }
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(15, 23, 42);
-  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-
-  y = 22;
+  y += 2.0;
 
   // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
   doc.setFontSize(9.5);
