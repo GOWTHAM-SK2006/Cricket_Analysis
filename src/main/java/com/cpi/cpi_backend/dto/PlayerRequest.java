@@ -14,5 +14,6 @@ public class PlayerRequest {
     private String role;
     private String battingStyle;
     private String bowlingStyle;
+    private String imageUrl;
     private Long teamId;
 }

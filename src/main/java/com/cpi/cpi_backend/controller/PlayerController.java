@@ -123,6 +123,7 @@ public class PlayerController {
                 .role(request.getRole())
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
+                .imageUrl(request.getImageUrl())
                 .creatorCoach(creatorCoach)
                 .ppiScore(0.0)
                 .mpiScore(0.0)
@@ -145,10 +146,11 @@ public class PlayerController {
 
         checkAccess(player, currentCoach);
 
-        player.setName(request.getName());
-        player.setRole(request.getRole());
-        player.setBattingStyle(request.getBattingStyle());
-        player.setBowlingStyle(request.getBowlingStyle());
+        if (request.getName() != null) player.setName(request.getName());
+        if (request.getRole() != null) player.setRole(request.getRole());
+        if (request.getBattingStyle() != null) player.setBattingStyle(request.getBattingStyle());
+        if (request.getBowlingStyle() != null) player.setBowlingStyle(request.getBowlingStyle());
+        if (request.getImageUrl() != null) player.setImageUrl(request.getImageUrl());
 
         return ResponseEntity.ok(playerRepository.save(player));
     }

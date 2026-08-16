@@ -29,6 +29,9 @@ public class Player {
     private String battingStyle;
     private String bowlingStyle;
 
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
     private Double ppiScore;
     private Double mpiScore;
 

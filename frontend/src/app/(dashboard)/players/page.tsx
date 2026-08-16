@@ -19,6 +19,7 @@ interface Player {
   role: string;
   battingStyle: string;
   bowlingStyle: string;
+  imageUrl?: string;
   ppiScore: number | null;
   mpiScore: number | null;
   invitationCode?: string;
@@ -1689,6 +1690,17 @@ export default function PlayersPage() {
       const list = res.data || [];
       setPlayers(list);
       fetchLastAssessmentDates(list);
+
+      if (typeof window !== "undefined") {
+        list.forEach((p: Player) => {
+          const localPhoto = localStorage.getItem(`player_photo_${p.id}`);
+          if (p.imageUrl) {
+            localStorage.setItem(`player_photo_${p.id}`, p.imageUrl);
+          } else if (localPhoto) {
+            api.put(`/players/${p.id}`, { imageUrl: localPhoto }).catch(() => {});
+          }
+        });
+      }
     } catch (err) {
       console.error("Failed to fetch players", err);
     } finally {
@@ -1965,8 +1977,10 @@ export default function PlayersPage() {
       const base64String = reader.result as string;
       if (isProfileUpdate && selectedPlayer) {
         localStorage.setItem(`player_photo_${selectedPlayer.id}`, base64String);
-        // Force refresh state to update UI
-        setSelectedPlayer({ ...selectedPlayer });
+        const updated = { ...selectedPlayer, imageUrl: base64String };
+        setSelectedPlayer(updated);
+        setPlayers((prev) => prev.map((p) => p.id === selectedPlayer.id ? { ...p, imageUrl: base64String } : p));
+        api.put(`/players/${selectedPlayer.id}`, { imageUrl: base64String }).catch(() => {});
       } else {
         setNewPlayer(prev => ({ ...prev, photo: base64String }));
       }
@@ -1984,7 +1998,8 @@ export default function PlayersPage() {
         name: newPlayer.name,
         role: roleStr,
         battingStyle: newPlayer.battingStyle,
-        bowlingStyle: newPlayer.bowlingStyle
+        bowlingStyle: newPlayer.bowlingStyle,
+        imageUrl: newPlayer.photo || ""
       });
       
       const created = res.data;
@@ -2028,7 +2043,7 @@ export default function PlayersPage() {
     if (e) e.stopPropagation();
     const { cleanRole, age } = parsePlayerAgeAndRole(player.role);
     setEditingPlayer(player);
-    const existingPhoto = typeof window !== "undefined" ? localStorage.getItem(`player_photo_${player.id}`) || "" : "";
+    const existingPhoto = player.imageUrl || (typeof window !== "undefined" ? localStorage.getItem(`player_photo_${player.id}`) || "" : "");
     setEditPlayerForm({
       name: player.name || "",
       age: age || "16",
@@ -2052,7 +2067,8 @@ export default function PlayersPage() {
         name: editPlayerForm.name,
         role: roleStr,
         battingStyle: editPlayerForm.battingStyle,
-        bowlingStyle: editPlayerForm.bowlingStyle
+        bowlingStyle: editPlayerForm.bowlingStyle,
+        imageUrl: editPlayerForm.photo || ""
       });
       const updated = res.data;
       if (editPlayerForm.photo) {
@@ -2605,7 +2621,7 @@ export default function PlayersPage() {
                   scoreDisplay = formatScoreValue(scores.cpi);
                 }
                 
-                const cachedPhoto = typeof window !== 'undefined' ? localStorage.getItem(`player_photo_${player.id}`) : null;
+                const cachedPhoto = player.imageUrl || (typeof window !== 'undefined' ? localStorage.getItem(`player_photo_${player.id}`) : null);
                 const assessDate = lastAssessmentDates[player.id] || "Loading...";
 
                 return (
@@ -2864,7 +2880,7 @@ export default function PlayersPage() {
                   className="w-28 h-28 rounded-full bg-slate-100 border-3 border-slate-200 flex items-center justify-center overflow-hidden cursor-pointer group hover:border-orange-500 shadow-md"
                 >
                   <img 
-                    src={(typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`)) || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`} 
+                    src={selectedPlayer.imageUrl || (typeof window !== 'undefined' && localStorage.getItem(`player_photo_${selectedPlayer.id}`)) || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`} 
                     alt={selectedPlayer.name} 
                     className="w-full h-full object-cover rounded-full" 
                   />
