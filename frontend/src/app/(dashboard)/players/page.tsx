@@ -2060,23 +2060,27 @@ export default function PlayersPage() {
     setError("");
     try {
       const roleStr = `${newPlayer.role} (Age ${newPlayer.age})`;
+      const photoPayload = (newPlayer.photo && newPlayer.photo.length < 255) ? newPlayer.photo : "";
       const res = await api.post("/players", {
         name: newPlayer.name,
         role: roleStr,
         battingStyle: newPlayer.battingStyle,
         bowlingStyle: newPlayer.bowlingStyle,
-        imageUrl: newPlayer.photo || ""
+        imageUrl: photoPayload
       });
       
       const created = res.data;
       if (created && created.id) {
-        if (newPlayer.photo) {
-          localStorage.setItem(`player_photo_${created.id}`, newPlayer.photo);
+        const fullPhoto = newPlayer.photo || created.imageUrl || "";
+        if (fullPhoto) {
+          localStorage.setItem(`player_photo_${created.id}`, fullPhoto);
         }
         
+        const newPlayerItem = { ...created, imageUrl: fullPhoto };
+
         setPlayers((prev) => {
           if (prev.some(p => p.id === created.id)) return prev;
-          return [created, ...prev];
+          return [newPlayerItem, ...prev];
         });
         setShowAddForm(false);
         setNewPlayer({
@@ -2133,26 +2137,29 @@ export default function PlayersPage() {
     setError("");
     try {
       const roleStr = editPlayerForm.age ? `${editPlayerForm.role} (Age ${editPlayerForm.age})` : editPlayerForm.role;
+      const photoPayload = (editPlayerForm.photo && editPlayerForm.photo.length < 255) ? editPlayerForm.photo : "";
       const res = await api.put(`/players/${editingPlayer.id}`, {
         name: editPlayerForm.name,
         role: roleStr,
         battingStyle: editPlayerForm.battingStyle,
         bowlingStyle: editPlayerForm.bowlingStyle,
-        imageUrl: editPlayerForm.photo || ""
+        imageUrl: photoPayload
       });
       const updated = res.data;
-      if (editPlayerForm.photo) {
-        localStorage.setItem(`player_photo_${updated.id}`, editPlayerForm.photo);
+      const fullPhoto = editPlayerForm.photo || updated.imageUrl || "";
+      if (fullPhoto) {
+        localStorage.setItem(`player_photo_${updated.id}`, fullPhoto);
       }
 
-      setPlayers(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p));
+      const updatedPlayerItem = { ...updated, imageUrl: fullPhoto };
+
+      setPlayers(prev => prev.map(p => p.id === updated.id ? { ...p, ...updatedPlayerItem } : p));
       if (selectedPlayer?.id === updated.id) {
-        setSelectedPlayer(prev => prev ? { ...prev, ...updated } : null);
+        setSelectedPlayer(prev => prev ? { ...prev, ...updatedPlayerItem } : null);
       }
       setShowEditForm(false);
       setEditingPlayer(null);
       triggerSuccess("Player Updated Successfully!");
-      fetchData();
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update player.");
     } finally {

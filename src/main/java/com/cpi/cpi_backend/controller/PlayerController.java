@@ -118,12 +118,17 @@ public class PlayerController {
             code = generateInvitationCode();
         } while (playerRepository.findByInvitationCode(code).isPresent());
 
+        String safeImageUrl = request.getImageUrl();
+        if (safeImageUrl != null && safeImageUrl.length() > 255) {
+            safeImageUrl = safeImageUrl.startsWith("data:") ? "" : safeImageUrl.substring(0, 255);
+        }
+
         Player player = Player.builder()
                 .name(request.getName())
                 .role(request.getRole())
                 .battingStyle(request.getBattingStyle())
                 .bowlingStyle(request.getBowlingStyle())
-                .imageUrl(request.getImageUrl())
+                .imageUrl(safeImageUrl)
                 .creatorCoach(creatorCoach)
                 .ppiScore(0.0)
                 .mpiScore(0.0)
@@ -150,7 +155,13 @@ public class PlayerController {
         if (request.getRole() != null) player.setRole(request.getRole());
         if (request.getBattingStyle() != null) player.setBattingStyle(request.getBattingStyle());
         if (request.getBowlingStyle() != null) player.setBowlingStyle(request.getBowlingStyle());
-        if (request.getImageUrl() != null) player.setImageUrl(request.getImageUrl());
+        if (request.getImageUrl() != null) {
+            String safeImg = request.getImageUrl();
+            if (safeImg.length() > 255) {
+                safeImg = safeImg.startsWith("data:") ? "" : safeImg.substring(0, 255);
+            }
+            player.setImageUrl(safeImg);
+        }
 
         return ResponseEntity.ok(playerRepository.save(player));
     }
