@@ -273,7 +273,7 @@ export default function HistoryPage() {
                 <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">
                   {selectedAssessmentDetail.type === "Practice" ? "Practice Assessment Details" : "Match Assessment Details"}
                 </h3>
-                <p className="text-xs font-bold text-orange-500 uppercase">{selectedPlayer?.name}</p>
+                <p className="text-xs font-bold text-orange-500">{selectedPlayer?.name}</p>
               </div>
               <button
                 onClick={() => setSelectedAssessmentDetail(null)}

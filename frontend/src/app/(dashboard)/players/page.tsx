@@ -759,7 +759,7 @@ const computeFocusAreasForPlayer = (
       coachingPriority = "Consolidate baseline performance across practice and match play.";
     }
 
-    const title = p.name.toUpperCase();
+    const title = p.name;
 
     const detailParts = [];
     if (cpiGuidance) detailParts.push(`CPI FRAMEWORK GUIDANCE:\n${cpiGuidance}`);
@@ -1178,7 +1178,7 @@ const generatePlayerPdfReport = async (
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(255, 255, 255);
-  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
+  doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
 
   y = 22;
 
@@ -1205,7 +1205,7 @@ const generatePlayerPdfReport = async (
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
       doc.setTextColor(255, 255, 255);
-      doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
+      doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
       y = 22;
       return true;
     }
@@ -1292,7 +1292,7 @@ const generatePlayerPdfReport = async (
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text(`CRICKET PERFORMANCE INDEX — ${player.name.toUpperCase()} REPORT`, 26, 9.5);
+    doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
     y = 22;
   }
 
@@ -2636,7 +2636,7 @@ export default function PlayersPage() {
                       </div>
                       
                       <div className="min-w-0 text-left space-y-0.5">
-                        <h4 className="text-xl font-bold text-slate-900 truncate uppercase tracking-tight leading-none">{player.name}</h4>
+                        <h4 className="text-xl font-bold text-slate-900 truncate tracking-tight leading-none">{player.name}</h4>
                         <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest truncate">{player.role}</p>
                       </div>
                     </div>
@@ -2892,7 +2892,7 @@ export default function PlayersPage() {
               />
 
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-slate-900 uppercase tracking-tight leading-none">{selectedPlayer.name}</h2>
+                <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-none">{selectedPlayer.name}</h2>
                 <p className="text-xs font-bold text-zinc-550 uppercase tracking-widest">{selectedPlayer.role}</p>
                 <div className="text-sm text-zinc-400 font-semibold uppercase mt-1">
                   Age: {((selectedPlayer.id % 5) + 19)} • Style: {selectedPlayer.battingStyle || "N/A"} • {selectedPlayer.bowlingStyle || "N/A"}
@@ -3457,7 +3457,7 @@ export default function PlayersPage() {
           <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-1">
               <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">MY SELF GRADES</h3>
-              <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
+              <p className="text-xs text-orange-500 font-bold">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowSelfOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
@@ -3508,7 +3508,7 @@ export default function PlayersPage() {
           <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-1">
               <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">PLAYER LOGS</h3>
-              <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
+              <p className="text-xs text-orange-500 font-bold">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowHistoryOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />
@@ -3726,7 +3726,7 @@ export default function PlayersPage() {
           <div className="flex justify-between items-center pb-4 border-b border-slate-200">
             <div className="space-y-1">
               <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">COACH ADVICE</h3>
-              <p className="text-xs text-orange-500 font-bold uppercase">{selectedPlayer.name}</p>
+              <p className="text-xs text-orange-500 font-bold">{selectedPlayer.name}</p>
             </div>
             <button onClick={() => setShowRecsOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
               <X className="w-7 h-7" />

@@ -297,7 +297,7 @@ export default function LeaderboardPage() {
 
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center justify-between pr-2">
-                        <span className="text-sm font-black text-slate-900 uppercase truncate group-hover:text-orange-600 transition-colors leading-tight">
+                        <span className="text-sm font-black text-slate-900 truncate group-hover:text-orange-600 transition-colors leading-tight">
                           {player.name}
                         </span>
                         <span className="text-[10px] font-bold text-slate-400 uppercase ml-2 shrink-0">{player.role}</span>
