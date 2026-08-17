@@ -322,8 +322,8 @@ export default function HistoryPage() {
                   { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
                   { label: "Preparation", val: selectedAssessmentDetail.data.preparation },
                   { label: "Intensity", val: selectedAssessmentDetail.data.intensity },
-                  { label: "Focus / Concentration", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration },
-                  { label: "Resilience / Adaptability", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability }
+                  { label: "Focus", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration },
+                  { label: "Resilience", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability }
                 ].map((item, idx) => (
                   <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                     <span className="font-semibold text-slate-700">{item.label}</span>
