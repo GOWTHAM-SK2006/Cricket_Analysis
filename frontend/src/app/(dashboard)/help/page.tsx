@@ -514,7 +514,7 @@ export default function HelpPage() {
                   : "text-slate-800 hover:text-slate-900"
               }`}
             >
-              A SCORE (&gt;7)
+              ELITE (8.0-10.0)
             </button>
             <button
               onClick={() => setScoreTab("medium")}
@@ -524,7 +524,7 @@ export default function HelpPage() {
                   : "text-slate-800 hover:text-slate-900"
               }`}
             >
-              A SCORE (5-7)
+              DEVELOPING (5.1-7.9)
             </button>
             <button
               onClick={() => setScoreTab("low")}
@@ -534,7 +534,7 @@ export default function HelpPage() {
                   : "text-slate-800 hover:text-slate-900"
               }`}
             >
-              A SCORE (&lt;5)
+              NEEDS FOCUS (0.0-5.0)
             </button>
           </div>
 

@@ -713,8 +713,8 @@ const computeFocusAreasForPlayer = (
       overallAvg = Math.round(overallAvg * 10) / 10;
     }
 
-    const isHigh = overallAvg >= 7.0;
-    const isLow = overallAvg < 5.0;
+    const isHigh = overallAvg >= 8.0;
+    const isLow = overallAvg <= 5.0;
 
     // Source 1: CPI Framework Notes
     const frameworkItem = cpiFrameworkNotes[p.name];
@@ -737,11 +737,11 @@ const computeFocusAreasForPlayer = (
     // Standardize tier phrasing to match rating badges
     if (cpiGuidance) {
       if (isHigh) {
-        cpiGuidance = cpiGuidance.replace(/^A High score shows/i, "A High score shows").replace(/^An Elite score/i, "A High score").replace(/^A high score shows/i, "A High score shows");
+        cpiGuidance = cpiGuidance.replace(/^A High score shows/i, "An Elite score shows").replace(/^An Elite score/i, "An Elite score shows").replace(/^A high score shows/i, "An Elite score shows");
       } else if (isLow) {
-        cpiGuidance = cpiGuidance.replace(/^A Low score shows/i, "A Low score shows").replace(/^A Needs Focus score/i, "A Low score").replace(/^A low score shows/i, "A Low score shows");
+        cpiGuidance = cpiGuidance.replace(/^A Low score shows/i, "A Needs Focus score shows").replace(/^A Needs Focus score/i, "A Needs Focus score shows").replace(/^A low score shows/i, "A Needs Focus score shows");
       } else {
-        cpiGuidance = cpiGuidance.replace(/^An Average score shows/i, "An Average score shows").replace(/^A Developing score/i, "An Average score").replace(/^A (medium|developing) score/i, "An Average score");
+        cpiGuidance = cpiGuidance.replace(/^An Average score shows/i, "A Developing score shows").replace(/^A Developing score/i, "A Developing score shows").replace(/^A (medium|developing) score/i, "A Developing score shows");
       }
     }
 
@@ -761,11 +761,11 @@ const computeFocusAreasForPlayer = (
     let coachingPriority = "";
     if (frameworkItem) {
       if (isHigh) {
-        coachingPriority = `High score: ${frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
+        coachingPriority = `Elite score: ${frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
       } else if (isLow) {
-        coachingPriority = `Low score: ${frameworkItem.coachSummary.low} ${frameworkItem.coachSummary.goal}`;
+        coachingPriority = `Needs Focus score: ${frameworkItem.coachSummary.low} ${frameworkItem.coachSummary.goal}`;
       } else {
-        coachingPriority = `Average score: ${frameworkItem.coachSummary.medium || frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
+        coachingPriority = `Developing score: ${frameworkItem.coachSummary.medium || frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
       }
     } else if (daryllEntry) {
       const tier = isHigh ? daryllEntry.high : isLow ? daryllEntry.low : (daryllEntry.medium || daryllEntry.high);
@@ -959,13 +959,13 @@ const generatePlayerPdfReport = async (
   const ppiNum = to100(currentPpi);
   const mpiNum = to100(currentMpi);
 
-  let ratingStr = "Low";
+  let ratingStr = "NEEDS FOCUS";
   let ratingColor = [225, 29, 72]; // Rose/Red
-  if (cpiNum >= 70) {
-    ratingStr = "High";
+  if (cpiNum >= 80) {
+    ratingStr = "ELITE";
     ratingColor = [16, 185, 129]; // Green
-  } else if (cpiNum >= 50) {
-    ratingStr = "Average";
+  } else if (cpiNum > 50) {
+    ratingStr = "DEVELOPING";
     ratingColor = [217, 119, 6]; // Amber
   }
 
@@ -1064,14 +1064,14 @@ const generatePlayerPdfReport = async (
 
   const paramData = paramDefs.map(p => {
     const score = getParamScore(p.key);
-    let label = "High";
-    let color = [16, 185, 129];
-    if (score < 5.0) {
-      label = "Low";
+    let label = "DEVELOPING";
+    let color = [217, 119, 6];
+    if (score <= 5.0) {
+      label = "NEEDS FOCUS";
       color = [225, 29, 72];
-    } else if (score < 7.0) {
-      label = "Average";
-      color = [217, 119, 6];
+    } else if (score >= 8.0) {
+      label = "ELITE";
+      color = [16, 185, 129];
     }
     return { name: p.name, score, label, color };
   });
@@ -3289,14 +3289,14 @@ return (
                           {focus.avg}
                         </span>
                         <span
-                          className={`w-[105px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${focus.avg >= 7.0
+                          className={`w-[115px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${focus.avg >= 8.0
                               ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                              : focus.avg >= 5.0
+                              : focus.avg > 5.0
                                 ? "bg-amber-100 text-amber-700 border border-amber-300"
                                 : "bg-red-100 text-red-700 border border-red-300"
                             }`}
                         >
-                          {focus.avg >= 7.0 ? "High" : focus.avg >= 5.0 ? "Average" : "Low"}
+                          {focus.avg >= 8.0 ? "ELITE" : focus.avg > 5.0 ? "DEVELOPING" : "NEEDS FOCUS"}
                         </span>
                       </div>
                     )}

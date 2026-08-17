@@ -217,7 +217,7 @@ export function getRoleContextForParameter(
   }
 
   const pContext = roleParams[matchedParamKey];
-  const contextText = score >= 7.0 ? pContext.highContext : score < 5.0 ? pContext.lowContext : pContext.generalContext;
+  const contextText = score >= 8.0 ? pContext.highContext : score <= 5.0 ? pContext.lowContext : pContext.generalContext;
 
   return {
     isRoleSpecific: true,
