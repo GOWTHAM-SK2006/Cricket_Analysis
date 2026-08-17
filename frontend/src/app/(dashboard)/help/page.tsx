@@ -588,7 +588,7 @@ export default function HelpPage() {
               <div className="space-y-1 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- NEEDS ATTENTION</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- LOW</span>
                 </div>
                 <p className="text-xs font-medium text-slate-800 leading-relaxed">
                   {below5}
@@ -597,7 +597,7 @@ export default function HelpPage() {
               <div className="space-y-1 pb-3 border-b border-slate-200/80">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- DEVELOPING</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- AVERAGE</span>
                 </div>
                 <p className="text-xs font-medium text-slate-800 leading-relaxed">
                   {between5And7}
@@ -606,7 +606,7 @@ export default function HelpPage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- ELITE</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- HIGH</span>
                 </div>
                 <p className="text-xs font-medium text-slate-800 leading-relaxed">
                   {above7}

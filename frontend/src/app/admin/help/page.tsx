@@ -874,7 +874,7 @@ export default function AdminHelpPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-1.5">
               <span className="text-[11px] font-black text-red-500 block uppercase tracking-wide">
-                Below 5.0 - Needs Attention
+                Below 5.0 - Low
               </span>
               <textarea
                 rows={5}
@@ -885,7 +885,7 @@ export default function AdminHelpPage() {
             </div>
             <div className="space-y-1.5">
               <span className="text-[11px] font-black text-amber-500 block uppercase tracking-wide">
-                5.0 to 7.0 - Developing
+                5.0 to 7.0 - Average
               </span>
               <textarea
                 rows={5}
@@ -896,7 +896,7 @@ export default function AdminHelpPage() {
             </div>
             <div className="space-y-1.5">
               <span className="text-[11px] font-black text-emerald-500 block uppercase tracking-wide">
-                7.0 and Above - Elite
+                7.0 and Above - High
               </span>
               <textarea
                 rows={5}
