@@ -12,4 +12,7 @@ import java.util.List;
 public interface MatchAssessmentRepository extends JpaRepository<MatchAssessment, Long> {
     List<MatchAssessment> findByPlayerId(Long playerId);
     List<MatchAssessment> findByCoachId(Long coachId);
+
+    @Query("SELECT m.player.id, MAX(m.date) FROM MatchAssessment m WHERE m.player.id IN :playerIds GROUP BY m.player.id")
+    List<Object[]> findMaxDatesByPlayerIds(@Param("playerIds") List<Long> playerIds);
 }

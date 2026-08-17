@@ -30,6 +30,10 @@ public class PlayerController {
     private final MatchAssessmentRepository matchAssessmentRepository;
 
     private PlayerResponse toPlayerResponse(Player player) {
+        return toPlayerResponse(player, null, null);
+    }
+
+    private PlayerResponse toPlayerResponse(Player player, String lastPracticeDate, String lastMatchDate) {
         if (player == null) return null;
 
         PlayerResponse.CoachSummary coachSummary = null;
@@ -54,6 +58,8 @@ public class PlayerController {
                 .invitationCodeActivated(player.getInvitationCodeActivated())
                 .creatorCoach(coachSummary)
                 .createdAt(player.getCreatedAt())
+                .lastPracticeDate(lastPracticeDate)
+                .lastMatchDate(lastMatchDate)
                 .build();
     }
 
@@ -105,8 +111,27 @@ public class PlayerController {
             }
         }
 
+        List<Long> playerIds = allPlayers.stream().map(Player::getId).collect(Collectors.toList());
+        java.util.Map<Long, String> practiceDateMap = new java.util.HashMap<>();
+        java.util.Map<Long, String> matchDateMap = new java.util.HashMap<>();
+
+        if (!playerIds.isEmpty()) {
+            List<Object[]> pracList = practiceAssessmentRepository.findMaxDatesByPlayerIds(playerIds);
+            for (Object[] row : pracList) {
+                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                    practiceDateMap.put((Long) row[0], row[1].toString());
+                }
+            }
+            List<Object[]> matchList = matchAssessmentRepository.findMaxDatesByPlayerIds(playerIds);
+            for (Object[] row : matchList) {
+                if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                    matchDateMap.put((Long) row[0], row[1].toString());
+                }
+            }
+        }
+
         List<PlayerResponse> responseList = allPlayers.stream()
-                .map(this::toPlayerResponse)
+                .map(p -> toPlayerResponse(p, practiceDateMap.get(p.getId()), matchDateMap.get(p.getId())))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(responseList);

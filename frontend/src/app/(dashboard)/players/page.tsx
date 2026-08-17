@@ -30,6 +30,8 @@ interface Player {
     name: string;
     email: string;
   };
+  lastPracticeDate?: string;
+  lastMatchDate?: string;
 }
 
 const formatScoreValue = (val: number | null | undefined, showMax: boolean = false) => {
@@ -1727,44 +1729,36 @@ export default function PlayersPage() {
     }
   };
 
-  const fetchLastAssessmentDates = async (playerList: Player[]) => {
+  const fetchLastAssessmentDates = (playerList: Player[]) => {
     const datesMap: Record<number, string> = {};
-    await Promise.all(playerList.map(async (p) => {
-      try {
-        const [pracRes, matchRes] = await Promise.all([
-          api.get(`/practice/player/${p.id}`).catch(() => ({ data: [] })),
-          api.get(`/matches/player/${p.id}`).catch(() => ({ data: [] }))
-        ]);
-        
-        const allDates = [
-          ...(pracRes.data || []).map((x: any) => x.date),
-          ...(matchRes.data || []).map((x: any) => x.date)
-        ];
-        
-        // Check for self-assessment in local storage
-        const localSelf = localStorage.getItem(`self_assess_${p.id}`);
-        if (localSelf) {
+    playerList.forEach((p) => {
+      const allDates: string[] = [];
+      if (p.lastPracticeDate) allDates.push(p.lastPracticeDate);
+      if (p.lastMatchDate) allDates.push(p.lastMatchDate);
+      
+      // Check for self-assessment in local storage
+      const localSelf = localStorage.getItem(`self_assess_${p.id}`);
+      if (localSelf) {
+        try {
           const selfList = JSON.parse(localSelf);
           selfList.forEach((x: any) => {
             if (x.date) allDates.push(x.date);
           });
-        }
+        } catch (e) {}
+      }
 
-        if (allDates.length > 0) {
-          const sorted = allDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-          const latestDate = new Date(sorted[0]);
-          datesMap[p.id] = latestDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
-          });
-        } else {
-          datesMap[p.id] = "No assessments";
-        }
-      } catch (e) {
+      if (allDates.length > 0) {
+        const sorted = allDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+        const latestDate = new Date(sorted[0]);
+        datesMap[p.id] = latestDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+      } else {
         datesMap[p.id] = "No assessments";
       }
-    }));
+    });
     setLastAssessmentDates(prev => ({ ...prev, ...datesMap }));
   };
 
@@ -1781,12 +1775,17 @@ export default function PlayersPage() {
     
     fetchData();
 
-    api.get("/profile").then((res) => {
-      if (res.data && res.data.name) {
-        setCurrentCoachName(res.data.name);
-        localStorage.setItem("userName", res.data.name);
-      }
-    }).catch(() => {});
+    const savedUserName = localStorage.getItem("userName");
+    if (savedUserName) {
+      setCurrentCoachName(savedUserName);
+    } else {
+      api.get("/profile").then((res) => {
+        if (res.data && res.data.name) {
+          setCurrentCoachName(res.data.name);
+          localStorage.setItem("userName", res.data.name);
+        }
+      }).catch(() => {});
+    }
 
     // URL direct navigation check
     if (searchParams.get("add") === "true") {

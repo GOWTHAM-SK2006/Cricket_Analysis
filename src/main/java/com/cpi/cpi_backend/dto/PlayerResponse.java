@@ -24,6 +24,8 @@ public class PlayerResponse {
     private Boolean invitationCodeActivated;
     private CoachSummary creatorCoach;
     private LocalDateTime createdAt;
+    private String lastPracticeDate;
+    private String lastMatchDate;
 
     @Data
     @Builder
