@@ -28,11 +28,12 @@ export default function ProfilePage() {
     api.get("/profile")
       .then((res) => {
         setProfile(res.data);
-        const savedAvatar = localStorage.getItem(`profileAvatar_${res.data.id || 'default'}`);
+        const userId = res.data.id || "default";
+        const savedAvatar = localStorage.getItem(`profileAvatar_${userId}`) || localStorage.getItem("profileAvatar_default");
         if (savedAvatar) {
           setCustomAvatar(savedAvatar);
         }
-        const savedCompany = localStorage.getItem(`companyName_${res.data.id || 'default'}`);
+        const savedCompany = localStorage.getItem(`companyName_${userId}`);
         setCompanyName(savedCompany || res.data.organizationName || res.data.companyName || "CPI CRICKET ACADEMY");
         setLoading(false);
       })
@@ -68,36 +69,48 @@ export default function ProfilePage() {
       reader.onloadend = () => {
         const base64 = reader.result as string;
         setCustomAvatar(base64);
-        localStorage.setItem(`profileAvatar_${profile?.id || 'default'}`, base64);
+        const userId = profile?.id || "default";
+        localStorage.setItem(`profileAvatar_${userId}`, base64);
+        localStorage.setItem("profileAvatar_default", base64);
       };
       reader.readAsDataURL(file);
+      e.target.value = "";
     }
   };
 
   const handleDownloadPicture = async () => {
     try {
-      const avatarSrc = customAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`;
+      const avatarSrc = customAvatar || (profile?.avatarUrl || profile?.imageUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`;
       
+      const fileName = `${(profile?.name || "profile").toLowerCase().replace(/\s+/g, "_")}_picture.png`;
+      let blob: Blob;
+
       if (avatarSrc.startsWith("data:")) {
-        const link = document.createElement("a");
-        link.href = avatarSrc;
-        link.download = `${(profile?.name || "profile").toLowerCase().replace(/\s+/g, "_")}_picture.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        return;
+        const parts = avatarSrc.split(",");
+        const mimeMatch = parts[0].match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : "image/png";
+        const bstr = atob(parts[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        blob = new Blob([u8arr], { type: mime });
+      } else {
+        const response = await fetch(avatarSrc);
+        blob = await response.blob();
       }
 
-      const response = await fetch(avatarSrc);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = url;
-      link.download = `${(profile?.name || "profile").toLowerCase().replace(/\s+/g, "_")}_picture.png`;
+      link.href = blobUrl;
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+      }, 1000);
     } catch (err) {
       console.error("Failed to download picture", err);
     }
@@ -112,7 +125,7 @@ export default function ProfilePage() {
     return <CricketLoader message="Loading Profile..." />;
   }
 
-  const avatarUrl = customAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`;
+  const avatarUrl = customAvatar || (profile?.avatarUrl || profile?.imageUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`;
 
   return (
     <div className="space-y-6 pb-12 select-none text-center">
@@ -127,11 +140,11 @@ export default function ProfilePage() {
           
           {/* Avatar and Primary Details */}
           <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-4">
-            <div className="relative w-24 h-24 mx-auto group">
+            <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-slate-200 shadow-sm flex items-center justify-center bg-orange-50">
               <img
                 src={avatarUrl}
                 alt={profile.name}
-                className="w-24 h-24 rounded-2xl object-cover border-2 border-slate-200 shadow-sm"
+                className="w-full h-full object-cover rounded-full"
               />
               <input
                 type="file"
@@ -153,7 +166,8 @@ export default function ProfilePage() {
               </button>
               <button
                 onClick={handleDownloadPicture}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 font-bold text-xs transition-all cursor-pointer border border-orange-200"
+                disabled={!avatarUrl}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 font-bold text-xs transition-all cursor-pointer border border-orange-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="w-3.5 h-3.5" />
                 Download Picture
