@@ -2831,7 +2831,61 @@ return (
           strongestArea = averages[0].name;
           if (averages.length > 1) {
             weakestArea = averages[averages.length - 1].name;
-            needsImprovement = averages.length > 2 ? averages[averages.length - 2].name : averages[0].name;
+
+            // Candidates excluding strongest and weakest (when 3+ metrics available)
+            const candidates = averages.filter(
+              (m) => m.name !== strongestArea && m.name !== weakestArea
+            );
+
+            if (candidates.length > 0) {
+              const candidateAnalysis = candidates.map((cand) => {
+                let pSum = 0, pCount = 0, mSum = 0, mCount = 0;
+
+                practiceHistory.forEach((p: any) => {
+                  const val = p[cand.name] || p[cand.name.toLowerCase()] || (cand.name === "Focus" ? p.concentration : cand.name === "Technique" ? p.technicalExecution : cand.name === "Skill Level" ? p.skillsLevel : null);
+                  if (typeof val === "number" && val > 0) {
+                    pSum += val;
+                    pCount++;
+                  }
+                });
+
+                matchHistory.forEach((m: any) => {
+                  const val = m[cand.name] || m[cand.name.toLowerCase()] || (cand.name === "Focus" ? m.concentration : cand.name === "Technique" ? m.technicalExecution : cand.name === "Skill Level" ? m.skillsLevel : null);
+                  if (typeof val === "number" && val > 0) {
+                    mSum += val;
+                    mCount++;
+                  }
+                });
+
+                const pAvg = pCount > 0 ? pSum / pCount : cand.avg;
+                const mAvg = mCount > 0 ? mSum / mCount : cand.avg;
+                const matchDrop = pAvg - mAvg;
+
+                return {
+                  name: cand.name,
+                  avg: cand.avg,
+                  matchDrop: Math.round(matchDrop * 10) / 10,
+                  isUnderperforming: cand.avg < 7.0
+                };
+              });
+
+              candidateAnalysis.sort((a, b) => {
+                if (Math.abs(b.matchDrop - a.matchDrop) >= 0.5) {
+                  return b.matchDrop - a.matchDrop;
+                }
+                if (a.isUnderperforming !== b.isUnderperforming) {
+                  return a.isUnderperforming ? -1 : 1;
+                }
+                if (Math.abs(a.avg - b.avg) > 0.1) {
+                  return a.avg - b.avg;
+                }
+                return b.matchDrop - a.matchDrop;
+              });
+
+              needsImprovement = candidateAnalysis[0].name;
+            } else {
+              needsImprovement = averages[0].name;
+            }
           }
         }
       }
