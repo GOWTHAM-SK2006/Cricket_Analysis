@@ -619,7 +619,7 @@ export default function AdminHelpPage() {
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
-                2. 3-Point Action Plans ({scoreTab === "high" ? "Elite Score (8.0-10.0)" : scoreTab === "medium" ? "Developing Score (5.1-7.9)" : "Needs Focus Score (0.0-5.0)"})
+                2. 3-Point Action Plans ({scoreTab === "high" ? "High Score >7" : scoreTab === "medium" ? "Medium Score 5 to 7" : "Low Score <5"})
               </label>
               <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1">
                 <button
@@ -628,7 +628,7 @@ export default function AdminHelpPage() {
                     scoreTab === "high" ? "bg-emerald-500 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  ELITE (8.0-10.0)
+                  A SCORE (&gt;7)
                 </button>
                 <button
                   onClick={() => setScoreTab("medium")}
@@ -636,7 +636,7 @@ export default function AdminHelpPage() {
                     scoreTab === "medium" ? "bg-amber-500 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  DEVELOPING (5.1-7.9)
+                  A SCORE (5-7)
                 </button>
                 <button
                   onClick={() => setScoreTab("low")}
@@ -644,7 +644,7 @@ export default function AdminHelpPage() {
                     scoreTab === "low" ? "bg-rose-500 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  NEEDS FOCUS (0.0-5.0)
+                  A SCORE (&lt;5)
                 </button>
               </div>
             </div>

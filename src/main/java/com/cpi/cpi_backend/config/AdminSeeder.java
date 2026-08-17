@@ -102,7 +102,7 @@ public class AdminSeeder implements CommandLineRunner {
                         { "title": "Self-Correction Is Strong", "detail": "Self-Correction Is Strong" },
                         { "title": "Technique Enables Performance", "detail": "Technique Enables Performance" }
                       ],
-                      "highSummary": "An elite score (8.0–10.0) shows reliable fundamentals, consistent movement, and strong self-correction under pressure. Technique enables high-level performance.",
+                      "highSummary": "An elite score (7–10) shows reliable fundamentals, consistent movement, and strong self-correction under pressure. Technique enables high-level performance.",
                       "mediumPoints": [
                         { "title": "Basics Are Sound", "detail": "Basics Are Sound" },
                         { "title": "Execution Is Improving", "detail": "Execution Is Improving" },
@@ -110,7 +110,7 @@ public class AdminSeeder implements CommandLineRunner {
                         { "title": "Gaps Are Specific", "detail": "Gaps Are Specific" },
                         { "title": "Transfer Is Good", "detail": "Transfer Is Good" }
                       ],
-                      "mediumSummary": "A developing score (5.1–7.9) shows sound basics with execution improving, though pressure can cause drift. Focus on specific technical gaps and consistent match transfer.",
+                      "mediumSummary": "A developing score (5–7) shows sound basics with execution improving, though pressure can cause drift. Focus on specific technical gaps and consistent match transfer.",
                       "lowPoints": [
                         { "title": "Basics Break Down", "detail": "Basics Break Down" },
                         { "title": "Movement Lacks Control", "detail": "Movement Lacks Control" },
@@ -118,7 +118,7 @@ public class AdminSeeder implements CommandLineRunner {
                         { "title": "Faults Keep Returning", "detail": "Faults Keep Returning" },
                         { "title": "Technique Limits Performance", "detail": "Technique Limits Performance" }
                       ],
-                      "lowSummary": "A score needing focus (0.0–5.0) shows that basic technique breaks down under pressure and limits performance. Focus on controlled movement and fundamental mechanics.",
+                      "lowSummary": "A score needing attention (0–5) shows that basic technique breaks down under pressure and limits performance. Focus on controlled movement and fundamental mechanics.",
                       "coachSummary": {
                         "overview": "The Technique Index measures how strong a player's basic technique is during practice and matches.",
                         "high": "Fundamentals are reliable, technique holds up, and self-correction is strong.",
@@ -405,13 +405,13 @@ public class AdminSeeder implements CommandLineRunner {
                   "strengthWeaknessWording": "Full 7-Parameter Spectrum Analysis:",
                   "scoreFormatNote": "All scores normalized to 10-point CPI scale (e.g. 7.7 / 10)",
                   "helpItems": [
-                    {"parameter": "Technique", "explanation": "Refers to how biomechanically sound and repeatable a player's fundamental techniques are.", "rangeHigh": "Scores 8.0-10.0: Flawless technique, balanced weight distribution, precise bat path.", "rangeAvg": "Scores 5.1-7.9: Solid core technique with occasional mechanical flaws under pressure.", "rangeLow": "Scores 0.0-5.0: Significant technical breakdowns requiring fundamental rework."},
-                    {"parameter": "Skill Level", "explanation": "Refers to stroke repertoire, bowling variations, and fielding dexterity.", "rangeHigh": "Scores 8.0-10.0: Masterful control over all shot/bowling variations.", "rangeAvg": "Scores 5.1-7.9: Good standard skillset with limited advanced variations.", "rangeLow": "Scores 0.0-5.0: Restricted skill set with execution difficulties."},
-                    {"parameter": "Game Plan", "explanation": "Tactical comprehension of match scenarios, field settings, and match pace.", "rangeHigh": "Scores 8.0-10.0: Elite tactical execution and situational awareness.", "rangeAvg": "Scores 5.1-7.9: Understands strategy but occasionally deviates under stress.", "rangeLow": "Scores 0.0-5.0: Poor situational decisions and strategy execution."},
-                    {"parameter": "Preparation", "explanation": "Professionalism in warmup, mental readiness, and physical prep.", "rangeHigh": "Scores 8.0-10.0: Meticulous professional warmup and mental visualization.", "rangeAvg": "Scores 5.1-7.9: Standard preparation routine lacking deep focus.", "rangeLow": "Scores 0.0-5.0: Casual or rushed preparation leading to slow starts."},
-                    {"parameter": "Intensity", "explanation": "Physical energy, sprinting between wickets, and fielding commitment.", "rangeHigh": "Scores 8.0-10.0: Relentless high energy and total physical effort.", "rangeAvg": "Scores 5.1-7.9: Inconsistent energy output across match phases.", "rangeLow": "Scores 0.0-5.0: Passive body language and low physical intensity."},
-                    {"parameter": "Focus", "explanation": "Concentration maintenance and ball-by-ball cognitive reset.", "rangeHigh": "Scores 8.0-10.0: Laser concentration and instant mental reset.", "rangeAvg": "Scores 5.1-7.9: Solid focus with occasional middle-session lapses.", "rangeLow": "Scores 0.0-5.0: Easily distracted, carrying errors from ball to ball."},
-                    {"parameter": "Resilience", "explanation": "Mental toughness under pressure and bounce-back capacity.", "rangeHigh": "Scores 8.0-10.0: Thrives in high-pressure crunch situations.", "rangeAvg": "Scores 5.1-7.9: Competent response to setback with occasional hesitation.", "rangeLow": "Scores 0.0-5.0: Folds quickly when match pressure escalates."}
+                    {"parameter": "Technique", "explanation": "Refers to how biomechanically sound and repeatable a player's fundamental techniques are.", "rangeHigh": "Scores 8.0-10.0: Flawless technique, balanced weight distribution, precise bat path.", "rangeAvg": "Scores 5.0-7.9: Solid core technique with occasional mechanical flaws under pressure.", "rangeLow": "Scores 1.0-4.9: Significant technical breakdowns requiring fundamental rework."},
+                    {"parameter": "Skill Level", "explanation": "Refers to stroke repertoire, bowling variations, and fielding dexterity.", "rangeHigh": "Scores 8.0-10.0: Masterful control over all shot/bowling variations.", "rangeAvg": "Scores 5.0-7.9: Good standard skillset with limited advanced variations.", "rangeLow": "Scores 1.0-4.9: Restricted skill set with execution difficulties."},
+                    {"parameter": "Game Plan", "explanation": "Tactical comprehension of match scenarios, field settings, and match pace.", "rangeHigh": "Scores 8.0-10.0: Elite tactical execution and situational awareness.", "rangeAvg": "Scores 5.0-7.9: Understands strategy but occasionally deviates under stress.", "rangeLow": "Scores 1.0-4.9: Poor situational decisions and strategy execution."},
+                    {"parameter": "Preparation", "explanation": "Professionalism in warmup, mental readiness, and physical prep.", "rangeHigh": "Scores 8.0-10.0: Meticulous professional warmup and mental visualization.", "rangeAvg": "Scores 5.0-7.9: Standard preparation routine lacking deep focus.", "rangeLow": "Scores 1.0-4.9: Casual or rushed preparation leading to slow starts."},
+                    {"parameter": "Intensity", "explanation": "Physical energy, sprinting between wickets, and fielding commitment.", "rangeHigh": "Scores 8.0-10.0: Relentless high energy and total physical effort.", "rangeAvg": "Scores 5.0-7.9: Inconsistent energy output across match phases.", "rangeLow": "Scores 1.0-4.9: Passive body language and low physical intensity."},
+                    {"parameter": "Focus", "explanation": "Concentration maintenance and ball-by-ball cognitive reset.", "rangeHigh": "Scores 8.0-10.0: Laser concentration and instant mental reset.", "rangeAvg": "Scores 5.0-7.9: Solid focus with occasional middle-session lapses.", "rangeLow": "Scores 1.0-4.9: Easily distracted, carrying errors from ball to ball."},
+                    {"parameter": "Resilience", "explanation": "Mental toughness under pressure and bounce-back capacity.", "rangeHigh": "Scores 8.0-10.0: Thrives in high-pressure crunch situations.", "rangeAvg": "Scores 5.0-7.9: Competent response to setback with occasional hesitation.", "rangeLow": "Scores 1.0-4.9: Folds quickly when match pressure escalates."}
                   ]
                 }
                 """;
