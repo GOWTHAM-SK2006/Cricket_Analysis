@@ -25,7 +25,9 @@ public class ProfileController {
                 "email", currentCoach.getEmail(),
                 "role", currentCoach.getRole().name(),
                 "approvalStatus", "APPROVED",
-                "organization", Map.of()
+                "organizationName", "CPI Cricket Academy",
+                "companyName", "CPI Cricket Academy",
+                "organization", Map.of("name", "CPI Cricket Academy")
         ));
     }
 }
