@@ -45,10 +45,12 @@ export default function ProfilePage() {
   const toggleTheme = (targetTheme: "light" | "dark") => {
     setTheme(targetTheme);
     localStorage.setItem("theme", targetTheme);
-    if (targetTheme === "light") {
-      document.documentElement.classList.add("light");
-    } else {
+    if (targetTheme === "dark") {
+      document.documentElement.classList.add("dark");
       document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
     }
   };
 
@@ -215,7 +217,7 @@ export default function ProfilePage() {
                   onClick={() => toggleTheme("light")}
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
                     theme === "light"
-                      ? "bg-white text-black border-white shadow-md"
+                      ? "bg-orange-500 text-white border-orange-500 shadow-md"
                       : "bg-slate-100 text-slate-500 border-slate-200 hover:text-slate-900"
                   }`}
                 >
@@ -226,7 +228,7 @@ export default function ProfilePage() {
                   onClick={() => toggleTheme("dark")}
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
                     theme === "dark"
-                      ? "bg-white text-black border-white shadow-md"
+                      ? "bg-orange-500 text-white border-orange-500 shadow-md"
                       : "bg-slate-100 text-slate-500 border-slate-200 hover:text-slate-900"
                   }`}
                 >

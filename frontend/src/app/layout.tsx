@@ -35,10 +35,12 @@ export default function RootLayout({
             __html: `
               try {
                 var t = localStorage.getItem('theme');
-                if (t === 'light' || !t) {
-                  document.documentElement.classList.add('light');
-                } else {
+                if (t === 'dark') {
+                  document.documentElement.classList.add('dark');
                   document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
                 }
               } catch (_) {}
             `,

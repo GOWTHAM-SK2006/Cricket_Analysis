@@ -11,6 +11,19 @@
   --text-tertiary: #64748b;
 }
 
+html.dark,
+.dark {
+  color-scheme: dark;
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+  --border-color: #374151;
+  --border-color-light: #4b5563;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+}
+
 @theme {
   --color-orange-500: #f97316;
   --color-orange-600: #ea580c;
@@ -43,6 +56,79 @@
   h6,
   svg,
   path {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   }
+}
+
+/* ------------------ GLOBAL DARK MODE OVERRIDES ------------------ */
+html.dark body {
+  background-color: #0b0f19 !important;
+  color: #f9fafb !important;
+}
+
+/* Backgrounds in Dark Mode */
+html.dark .bg-white,
+html.dark .bg-\[\#FAF9F6\] {
+  background-color: #111827 !important;
+  color: #f9fafb !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+html.dark .bg-slate-50\/80,
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-100\/80,
+html.dark .bg-\[\#FAF9F6\]\/90 {
+  background-color: rgba(17, 24, 39, 0.95) !important;
+}
+
+/* Borders in Dark Mode */
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-300,
+html.dark .border-slate-200\/80 {
+  border-color: #374151 !important;
+}
+
+/* Typography in Dark Mode */
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #f9fafb !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-slate-500,
+html.dark .text-zinc-650,
+html.dark .text-zinc-600,
+html.dark .text-zinc-500,
+html.dark .text-zinc-400 {
+  color: #9ca3af !important;
+}
+
+/* Inputs, Selects & Textareas in Dark Mode */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Orange Cards / Badges in Dark Mode */
+html.dark .bg-orange-50 {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+}
+
+html.dark .border-orange-200 {
+  border-color: rgba(249, 115, 22, 0.3) !important;
 }
