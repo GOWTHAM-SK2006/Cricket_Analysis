@@ -2468,18 +2468,20 @@ return (
         .sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime())
         .slice(0, 5);
 
+      const latestPractice = last5Prac[0] || null;
+
       const cpiVal = currentCpi ? parseFloat(formatScoreValue(currentCpi)) : 0;
       const gapVal = targetCpi > 0 && cpiVal > 0 ? Math.round((targetCpi - cpiVal) * 10) / 10 : 0;
       const targetPercent = Math.min(100, Math.max(0, Math.round((cpiVal / targetCpi) * 100)));
 
       const devMetrics = [
-        { name: "Technical Execution", val: latestPractice ? latestPractice.technicalExecution : "7.0" },
-        { name: "Skill Level", val: latestPractice ? latestPractice.skillsLevel : "7.0" },
-        { name: "Game Plan", val: latestPractice ? latestPractice.gamePlan : "7.0" },
-        { name: "Preparation", val: latestPractice ? latestPractice.preparation : "7.0" },
-        { name: "Intensity", val: latestPractice ? latestPractice.intensity : "7.0" },
-        { name: "Focus", val: latestPractice ? latestPractice.focus : "7.0" },
-        { name: "Resilience", val: latestPractice ? latestPractice.resilience : "7.0" }
+        { name: "Technical Execution", val: latestPractice ? (latestPractice.technicalExecution ?? latestPractice.technique ?? "7.0") : "7.0" },
+        { name: "Skill Level", val: latestPractice ? (latestPractice.skillsLevel ?? latestPractice.skillLevel ?? "7.0") : "7.0" },
+        { name: "Game Plan", val: latestPractice ? (latestPractice.gamePlan ?? "7.0") : "7.0" },
+        { name: "Preparation", val: latestPractice ? (latestPractice.preparation ?? "7.0") : "7.0" },
+        { name: "Intensity", val: latestPractice ? (latestPractice.intensity ?? "7.0") : "7.0" },
+        { name: "Focus", val: latestPractice ? (latestPractice.focus ?? latestPractice.concentration ?? "7.0") : "7.0" },
+        { name: "Resilience", val: latestPractice ? (latestPractice.resilience ?? "7.0") : "7.0" }
       ];
 
       return (
