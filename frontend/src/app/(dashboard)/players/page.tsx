@@ -184,9 +184,9 @@ const computeFocusAreasForPlayer = (
   practiceHistory: any[],
   matchHistory: any[]
 ): CpiFocusArea[] => {
-  const paramDefs = [
-    { name: "Technique", keys: ["technicalExecution"] },
-    { name: "Skill Level", keys: ["skillsLevel", "technique"] },
+  const paramDefs: { name: string; keys: string[] }[] = [
+    { name: "Technical Execution", keys: ["technicalExecution", "technique"] },
+    { name: "Skill Level", keys: ["skillsLevel", "skillLevel"] },
     { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
     { name: "Preparation", keys: ["preparation"] },
     { name: "Intensity", keys: ["intensity"] },
@@ -196,6 +196,18 @@ const computeFocusAreasForPlayer = (
 
   const practiceList = practiceHistory || [];
   const matchList = matchHistory || [];
+
+  // Determine assessment context: "match" if latest assessment is a match, otherwise "practice"
+  let context: "practice" | "match" = "practice";
+  if (matchList.length > 0 && practiceList.length > 0) {
+    const latestP = new Date(practiceList[0]?.date || practiceList[0]?.createdAt || 0).getTime();
+    const latestM = new Date(matchList[0]?.date || matchList[0]?.createdAt || 0).getTime();
+    if (latestM > latestP) {
+      context = "match";
+    }
+  } else if (matchList.length > 0) {
+    context = "match";
+  }
 
   const rankedParams = paramDefs.map((p) => {
     let practiceScores: number[] = [];
@@ -231,81 +243,34 @@ const computeFocusAreasForPlayer = (
     }
 
     const isHigh = overallAvg >= 7.0;
-    const isLow = overallAvg < 5.0;
+    const normName = normalizeCpiParameterName(p.name);
+    const src = CPI_PREDEFINED_SOURCE[normName] || CPI_PREDEFINED_SOURCE["Technical Execution"];
+    const block = isHigh ? src[context].high : src[context].low;
 
-    // Source 1: CPI Framework Notes
-    const frameworkItem = cpiFrameworkNotes[p.name];
-    let cpiGuidance = "";
-    let actionPoints: { title: string; detail: string }[] = [];
+    const actionPointsText = block.actionPoints.map((pt) => `• ${pt}`).join("\n");
+    const headerText = isHigh
+      ? `IF THE ${p.name.toUpperCase()} SCORE IS HIGH`
+      : `IF THE ${p.name.toUpperCase()} SCORE IS LOW`;
+    
+    const summaryHeader = "THE COACH'S SUMMARY";
+    const summaryBody = `${src[context].overview}\n${isHigh ? `High score: ${block.summary}` : `Low score: ${block.summary}`}\n${src[context].goal}`;
 
-    if (frameworkItem) {
-      if (isHigh) {
-        cpiGuidance = frameworkItem.highSummary || "";
-        actionPoints = frameworkItem.highPoints;
-      } else if (isLow) {
-        cpiGuidance = frameworkItem.lowSummary || "";
-        actionPoints = frameworkItem.lowPoints;
-      } else {
-        cpiGuidance = frameworkItem.mediumSummary || frameworkItem.highSummary || "";
-        actionPoints = frameworkItem.mediumPoints || frameworkItem.highPoints;
-      }
-    }
+    const detail = `THE COACH'S PLAN OF ACTION\n${headerText}\n${actionPointsText}\n\n${summaryHeader}\n${summaryBody}`;
 
-    // Standardize tier phrasing to match rating badges
-    if (cpiGuidance) {
-      if (isHigh) {
-        cpiGuidance = cpiGuidance.replace(/^A High score shows/i, "A High score shows").replace(/^An Elite score/i, "A High score").replace(/^A high score shows/i, "A High score shows");
-      } else if (isLow) {
-        cpiGuidance = cpiGuidance.replace(/^A Low score shows/i, "A Low score shows").replace(/^A Needs Focus score/i, "A Low score").replace(/^A low score shows/i, "A Low score shows");
-      } else {
-        cpiGuidance = cpiGuidance.replace(/^An Average score shows/i, "An Average score shows").replace(/^A Developing score/i, "An Average score").replace(/^A (medium|developing) score/i, "An Average score");
-      }
-    }
-
-    // Source 2: Daryll Cullinan's Coach's Plan of Action
-    const daryllEntry = coachingRecommendations[p.name];
-    let daryllDirectives: string[] = [];
-    if (daryllEntry) {
-      const tier = isHigh ? daryllEntry.high : isLow ? daryllEntry.low : (daryllEntry.medium || daryllEntry.high);
-      daryllDirectives = tier.bullets;
-    }
-
-    // Role-Aware Context Lookup
-    const roleResolution = getRoleContextForParameter(player.role, p.name, overallAvg);
-    const roleContext = roleResolution.contextText;
-
-    // Coaching Priority
-    let coachingPriority = "";
-    if (frameworkItem) {
-      if (isHigh) {
-        coachingPriority = `High score: ${frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
-      } else if (isLow) {
-        coachingPriority = `Low score: ${frameworkItem.coachSummary.low} ${frameworkItem.coachSummary.goal}`;
-      } else {
-        coachingPriority = `Average score: ${frameworkItem.coachSummary.medium || frameworkItem.coachSummary.high} ${frameworkItem.coachSummary.goal}`;
-      }
-    } else if (daryllEntry) {
-      const tier = isHigh ? daryllEntry.high : isLow ? daryllEntry.low : (daryllEntry.medium || daryllEntry.high);
-      coachingPriority = tier.goalStatement;
-    } else {
-      coachingPriority = "Consolidate baseline performance across practice and match play.";
-    }
-
-    const title = p.name;
-
-    const detailParts = [];
-    if (cpiGuidance) detailParts.push(`COACHING INTERPRETATION:\n${cpiGuidance}`);
-    const detail = detailParts.join("\n\n");
+    const actionPoints = block.actionPoints.map((pt) => {
+      const parts = pt.split(". ");
+      return { title: parts[0] || pt, detail: parts.slice(1).join(". ") || pt };
+    });
 
     return {
       name: p.name,
       avg: overallAvg,
-      title,
-      cpiGuidance,
+      title: p.name,
+      cpiGuidance: block.summary,
       actionPoints,
-      daryllDirectives,
-      roleContext,
-      coachingPriority,
+      daryllDirectives: block.actionPoints,
+      roleContext: "",
+      coachingPriority: src[context].goal,
       detail
     };
   });
@@ -2824,7 +2789,7 @@ return (
                   </div>
                   {focus.detail ? (
                     <div
-                      className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFocus === idx ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                      className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFocus === idx ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
                         }`}
                     >
                       <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
