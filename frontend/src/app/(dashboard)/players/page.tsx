@@ -631,7 +631,39 @@ const generatePlayerPdfReport = async (
 
   y += 28;
 
-  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST (Completes Page 1 and cleanly continues to Page 2 if needed)
+  // Helper for dynamic multi-page breaks
+  const checkPageBreak = (neededHeight: number = 6) => {
+    if (y + neededHeight > pageHeight - 18) {
+      doc.addPage();
+      
+      // Page Header Banner for Page 2+
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, 0, pageWidth, 16, "F");
+      doc.setFillColor(226, 232, 240);
+      doc.rect(0, 15.5, pageWidth, 0.6, "F");
+
+      if (logoDataUrl) {
+        try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) { }
+      } else {
+        doc.setFillColor(15, 23, 42);
+        doc.circle(18, 7, 4.5, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(5.5);
+        doc.setTextColor(255, 255, 255);
+        doc.text("CPI", 18, 8.8, { align: "center" });
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(15, 23, 42);
+      doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
+
+      y = 22;
+    }
+  };
+
+  // 5. KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST
+  checkPageBreak(12);
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
@@ -639,46 +671,11 @@ const generatePlayerPdfReport = async (
 
   y += 6.0;
 
-  let currentPage = 1;
-
   if (focusAreas && focusAreas.length > 0) {
     focusAreas.forEach((f: any) => {
-      const wrapWidth = pageWidth - 28;
-      const wrappedLines = f.cpiGuidance ? doc.splitTextToSize(f.cpiGuidance, wrapWidth) : [];
-      const itemHeight = 3.8 + 3.6 + (f.cpiGuidance ? (3.6 + wrappedLines.length * 3.6 + 4.5) : 3.0);
+      checkPageBreak(12);
 
-      // Check if item exceeds safe bottom boundary on Page 1 (268mm)
-      if (currentPage === 1 && y + itemHeight > 268) {
-        addFooter(1);
-        doc.addPage();
-        currentPage = 2;
-
-        // Page 2 Header Banner
-        doc.setFillColor(255, 255, 255);
-        doc.rect(0, 0, pageWidth, 16, "F");
-        doc.setFillColor(226, 232, 240);
-        doc.rect(0, 15.5, pageWidth, 0.6, "F");
-
-        if (logoDataUrl) {
-          try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) { }
-        } else {
-          doc.setFillColor(15, 23, 42);
-          doc.circle(18, 7, 4.5, "F");
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(5.5);
-          doc.setTextColor(255, 255, 255);
-          doc.text("CPI", 18, 8.8, { align: "center" });
-        }
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(15, 23, 42);
-        doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-
-        y = 22;
-      }
-
-      // PARAMETER NAME (e.g. Resilience (7.0))
+      // PARAMETER NAME (e.g. Intensity (9.8))
       doc.setFontSize(8.5);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(15, 23, 42);
@@ -691,61 +688,41 @@ const generatePlayerPdfReport = async (
       doc.rect(14, y, pageWidth - 28, 0.2, "F");
       y += 3.6;
 
-      if (f.cpiGuidance) {
-        doc.setFontSize(7.5);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(71, 85, 105);
-        doc.text("COACHING INTERPRETATION:", 14, y);
-        y += 3.6;
-
-        doc.setFontSize(7.5);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(51, 65, 85);
-
-        wrappedLines.forEach((lineStr: string) => {
-          doc.text(lineStr, 14, y);
-          y += 3.6;
+      const detailText = f.detail || "";
+      if (detailText) {
+        const lines = detailText.split("\n");
+        lines.forEach((line: string) => {
+          const trimmed = line.trim();
+          if (trimmed === "THE COACH'S PLAN OF ACTION" || trimmed === "THE COACH'S SUMMARY") {
+            checkPageBreak(10);
+            doc.setFontSize(8.0);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(15, 23, 42);
+            doc.text(trimmed, 14, y);
+            y += 4.5;
+          } else if (trimmed === "") {
+            y += 2.0;
+          } else {
+            const wrappedLines = doc.splitTextToSize(line, pageWidth - 28);
+            wrappedLines.forEach((wLine: string) => {
+              checkPageBreak(5);
+              doc.setFontSize(7.5);
+              doc.setFont("helvetica", "normal");
+              doc.setTextColor(51, 65, 85);
+              doc.text(wLine, 14, y);
+              y += 3.6;
+            });
+          }
         });
-
-        y += 4.5;
+        y += 4.0;
       }
     });
-  }
-
-  // If still on Page 1 after focus areas loop, create Page 2
-  if (currentPage === 1) {
-    addFooter(1);
-    doc.addPage();
-    currentPage = 2;
-
-    // Page 2 Header Banner
-    doc.setFillColor(255, 255, 255);
-    doc.rect(0, 0, pageWidth, 16, "F");
-    doc.setFillColor(226, 232, 240);
-    doc.rect(0, 15.5, pageWidth, 0.6, "F");
-
-    if (logoDataUrl) {
-      try { doc.addImage(logoDataUrl, "PNG", 14, 1.5, 9, 10); } catch (e) { }
-    } else {
-      doc.setFillColor(15, 23, 42);
-      doc.circle(18, 7, 4.5, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(5.5);
-      doc.setTextColor(255, 255, 255);
-      doc.text("CPI", 18, 8.8, { align: "center" });
-    }
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(15, 23, 42);
-    doc.text(`CRICKET PERFORMANCE INDEX — ${player.name} REPORT`, 26, 9.5);
-
-    y = 22;
   }
 
   y += 2.0;
 
   // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
+  checkPageBreak(35);
   doc.setFillColor(234, 88, 12);
   doc.roundedRect(14, y, pageWidth - 28, 6.5, 1.5, 1.5, "F");
 
@@ -786,6 +763,7 @@ const generatePlayerPdfReport = async (
   y += 28;
 
   // 7. ASSESSMENT HISTORY
+  checkPageBreak(30);
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
@@ -849,6 +827,7 @@ const generatePlayerPdfReport = async (
     doc.text("No assessment history records found.", 18, y + 4.5);
   } else {
     sortedHistoryRows.slice(0, 10).forEach((row, idx) => {
+      checkPageBreak(6);
       if (idx % 2 === 1) {
         doc.setFillColor(248, 250, 252);
         doc.rect(14, y, pageWidth - 28, 5.5, "F");
@@ -869,8 +848,16 @@ const generatePlayerPdfReport = async (
     });
   }
 
-  // End of Page 2
-  addFooter(2);
+  // Draw footers across all dynamic pages
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text("Cricket Performance Index (CPI) • Official Confidential Player Report", 14, pageHeight - 10);
+    doc.text(`Page ${i} of ${totalPages}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+  }
 
   doc.save(`${player.name.replace(/\s+/g, "_")}_Performance_Report.pdf`);
 };
