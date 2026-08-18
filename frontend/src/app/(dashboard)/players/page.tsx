@@ -71,7 +71,7 @@ const buildCoachingRecommendationsFromSource = (): Record<string, CoachParameter
     recs[paramName] = {
       description: src.description,
       high: {
-        header: "IF THE " + paramName.toUpperCase() + " SCORE IS HIGH",
+        header: "",
         bullets: pHigh.actionPoints,
         summaryHeader: "THE COACH'S SUMMARY",
         summaryOverview: src.practice.overview,
@@ -80,7 +80,7 @@ const buildCoachingRecommendationsFromSource = (): Record<string, CoachParameter
         goalStatement: src.practice.goal
       },
       low: {
-        header: "IF THE " + paramName.toUpperCase() + " SCORE IS LOW",
+        header: "",
         bullets: pLow.actionPoints,
         summaryHeader: "THE COACH'S SUMMARY",
         summaryOverview: src.practice.overview,
@@ -248,14 +248,10 @@ const computeFocusAreasForPlayer = (
     const block = isHigh ? src[context].high : src[context].low;
 
     const actionPointsText = block.actionPoints.map((pt) => `• ${pt}`).join("\n");
-    const headerText = isHigh
-      ? `IF THE ${p.name.toUpperCase()} SCORE IS HIGH`
-      : `IF THE ${p.name.toUpperCase()} SCORE IS LOW`;
-    
     const summaryHeader = "THE COACH'S SUMMARY";
     const summaryBody = `${src[context].overview}\n${isHigh ? `High score: ${block.summary}` : `Low score: ${block.summary}`}\n${src[context].goal}`;
 
-    const detail = `THE COACH'S PLAN OF ACTION\n${headerText}\n${actionPointsText}\n\n${summaryHeader}\n${summaryBody}`;
+    const detail = `THE COACH'S PLAN OF ACTION\n${actionPointsText}\n\n${summaryHeader}\n${summaryBody}`;
 
     const actionPoints = block.actionPoints.map((pt) => {
       const parts = pt.split(". ");
