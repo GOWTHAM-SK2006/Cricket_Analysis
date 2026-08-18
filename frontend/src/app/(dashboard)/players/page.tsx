@@ -1050,7 +1050,7 @@ export default function PlayersPage() {
 
     setShowPdfDateOverlay(false);
 
-    const focusAreas = computeFocusAreasForPlayer(selectedPlayer, filteredPrac, filteredMatch);
+    const focusAreas = computeFocusAreasForPlayer(selectedPlayer, practiceHistory, matchHistory);
 
     generatePlayerPdfReport(
       selectedPlayer,
