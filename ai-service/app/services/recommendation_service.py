@@ -17,22 +17,24 @@ class RecommendationService:
         
         json_schema_prompt = (
             "Analyse the following cricket player assessment context and generate a complete performance recommendation.\n"
-            "MUST USE THE EXACT WORDS, BULLET POINTS, AND PHRASINGS from the COACH PLAN OF ACTION / GUIDELINES text file for action points, reset routines, and summaries.\n"
+            "STRICT MANDATE: YOU MUST USE ONLY EXACT SENTENCES AND PHRASES COPIED CHARACTER-FOR-CHARACTER FROM THE APPROVED COACH PLAN OF ACTION TEXT FILE.\n"
+            "ONLY USE THE APPROVED 7 PARAMETERS: Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience.\n"
+            "DO NOT PARAPHRASE, REWRITE, SIMPLIFY, SUMMARISE, OR GENERATE ANY NEW WORDS.\n"
             "Respond ONLY with a valid JSON object matching this exact structure:\n"
             "{\n"
-            '  "summary": "Overall summary of player state and performance trends using exact phrases from guidelines",\n'
-            '  "strengths": ["Strength 1", "Strength 2"],\n'
-            '  "weaknesses": ["Weakness 1", "Weakness 2"],\n'
-            '  "improvementAreas": ["Improvement 1", "Improvement 2"],\n'
+            '  "summary": "Exact coach summary sentence from approved source file",\n'
+            '  "strengths": ["Exact High Score statement from source", "Exact High Score statement from source"],\n'
+            '  "weaknesses": ["Exact Low Score statement from source", "Exact Low Score statement from source"],\n'
+            '  "improvementAreas": ["Exact Low Score statement from source"],\n'
             '  "top5Drills": [\n'
             '    {\n'
-            '      "title": "Drill Title",\n'
-            '      "category": "Drill Category",\n'
-            '      "description": "Step-by-step execution instructions matching the exact coaching action plan"\n'
+            '      "title": "Exact source title",\n'
+            '      "category": "Parameter Name",\n'
+            '      "description": "Exact statement from approved source text"\n'
             "    }\n"
             "  ],\n"
-            '  "trainingFocus": "Specific training priorities matching exact wording from the coach plan of action text",\n'
-            '  "motivationalMessage": "Encouraging closing coach remark using exact coach summary sentence"\n'
+            '  "trainingFocus": "Exact statement from approved source text",\n'
+            '  "motivationalMessage": "Exact goal statement from approved source text"\n'
             "}\n"
         )
         

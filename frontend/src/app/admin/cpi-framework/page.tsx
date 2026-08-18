@@ -5,6 +5,8 @@ import { Sliders, Save, RotateCcw, Loader2, Info, CheckCircle2 } from "lucide-re
 import { useAdminToast } from "../layout";
 import CricketLoader from "@/components/CricketLoader";
 
+import { CPI_PREDEFINED_SOURCE, ApprovedCpiParameter } from "@/lib/cpiPredefinedSource";
+
 interface ParameterItem {
   id: number;
   name: string;
@@ -15,71 +17,32 @@ interface ParameterItem {
   recommendation: string;
 }
 
-const DEFAULT_7_PARAMETERS: ParameterItem[] = [
-  {
-    id: 1,
-    name: "Technique",
-    description: "Assessment of biomechanical efficiency, shot technique, and mechanical consistency.",
-    ratingDescription: "Evaluates footwork, bat path, body balance, and follow-through quality.",
-    guidance: "Observe head position at impact and balance through shot completion.",
-    instructions: "Rate from 1-10 based on mechanical perfection and repeatability under pressure.",
-    recommendation: "Focus on high-volume mirror drills and video review to eliminate technical leaks."
-  },
-  {
-    id: 2,
-    name: "Skill Level",
-    description: "Raw capability, stroke versatility, bowling variations, and positional adaptability.",
-    ratingDescription: "Evaluates range of shots, control over spin/seam variations, and fielding range.",
-    guidance: "Assess execution accuracy when trying advanced variations in match scenarios.",
-    instructions: "Evaluate execution rate across different line and length variations.",
-    recommendation: "Expand repertoire by practicing non-dominant strokes and specialized variations."
-  },
-  {
-    id: 3,
-    name: "Game Plan",
-    description: "Tactical awareness, match situations awareness, and strategy execution.",
-    ratingDescription: "Evaluates field placement reading, target pacing, and bowler targeting tactics.",
-    guidance: "Look for deliberate decision-making tailored to dynamic pitch conditions.",
-    instructions: "Rate tactical discipline and adherence to agreed team match strategies.",
-    recommendation: "Conduct post-match tactical debriefs to sharpen situational decision-making."
-  },
-  {
-    id: 4,
-    name: "Preparation",
-    description: "Pre-match routines, physical warmup, mental focus, and equipment readiness.",
-    ratingDescription: "Evaluates punctuality, pre-game visualization, hydration, and warmup structure.",
-    guidance: "Observe arrival time, warmup intensity, and focus prior to session start.",
-    instructions: "Assess consistency and thoroughness of pre-performance preparation.",
-    recommendation: "Establish a rigid 45-minute structured pre-match warmup and visualization protocol."
-  },
-  {
-    id: 5,
-    name: "Intensity",
-    description: "Energy output, running between wickets, fielding urgency, and pitch presence.",
-    ratingDescription: "Evaluates effort levels on every ball, backup running, and body language.",
-    guidance: "Measure sprint speeds between wickets and diving commitment in fielding.",
-    instructions: "Rate sustained high-energy effort from first ball to session completion.",
-    recommendation: "Incorporate high-intensity interval conditioning into regular practice sessions."
-  },
-  {
-    id: 6,
-    name: "Focus",
-    description: "Concentration, ball-by-ball reset capability, and distraction management.",
-    ratingDescription: "Evaluates focus maintenance over long innings/spells and post-error recovery.",
-    guidance: "Track concentration lapses during middle overs or after contentious calls.",
-    instructions: "Rate ability to maintain clear cognitive focus across full match duration.",
-    recommendation: "Practice breathwork and 5-second reset routines between deliveries."
-  },
-  {
-    id: 7,
-    name: "Resilience",
-    description: "Mental toughness, response to adversity, fight under pressure, and bounce-back capacity.",
-    ratingDescription: "Evaluates performance after getting hit, dropping a catch, or early wicket loss.",
-    guidance: "Observe body language and aggressiveness after making an error.",
-    instructions: "Rate emotional stability and determination when team is under severe pressure.",
-    recommendation: "Simulate high-pressure match scenarios during net sessions to build mental toughness."
-  }
-];
+const buildDefault7Parameters = (): ParameterItem[] => {
+  const ids: Record<ApprovedCpiParameter, number> = {
+    "Technical Execution": 1,
+    "Skill Level": 2,
+    "Game Plan": 3,
+    "Preparation": 4,
+    "Intensity": 5,
+    "Focus": 6,
+    "Resilience": 7
+  };
+
+  return (Object.keys(CPI_PREDEFINED_SOURCE) as ApprovedCpiParameter[]).map((name) => {
+    const src = CPI_PREDEFINED_SOURCE[name];
+    return {
+      id: ids[name],
+      name: name,
+      description: src.description,
+      ratingDescription: src.practice.overview,
+      guidance: src.practice.goal,
+      instructions: "Evaluate performance on 1-10 scale based on approved CPI parameters.",
+      recommendation: src.practice.low.actionPoints[0] || src.practice.high.actionPoints[0] || ""
+    };
+  });
+};
+
+const DEFAULT_7_PARAMETERS: ParameterItem[] = buildDefault7Parameters();
 
 export default function AdminCpiFrameworkPage() {
   const { showToast } = useAdminToast();

@@ -23,6 +23,8 @@ const DEFAULT_REPORT_CONFIG: ReportConfig = {
   scoreFormatNote: "All scores normalized to 10-point CPI scale (e.g. 7.7 / 10)"
 };
 
+import { CPI_PREDEFINED_SOURCE, ApprovedCpiParameter } from "@/lib/cpiPredefinedSource";
+
 interface HelpItem {
   parameter: string;
   explanation: string;
@@ -31,15 +33,20 @@ interface HelpItem {
   rangeLow: string;
 }
 
-const DEFAULT_HELP: HelpItem[] = [
-  { parameter: "Technique", explanation: "Refers to how biomechanically sound and repeatable a player's fundamental techniques are.", rangeHigh: "Scores 8.0-10.0: Flawless technique, balanced weight distribution, precise bat path.", rangeAvg: "Scores 5.0-7.9: Solid core technique with occasional mechanical flaws under pressure.", rangeLow: "Scores 1.0-4.9: Significant technical breakdowns requiring fundamental rework." },
-  { parameter: "Skill Level", explanation: "Refers to stroke repertoire, bowling variations, and fielding dexterity.", rangeHigh: "Scores 8.0-10.0: Masterful control over all shot/bowling variations.", rangeAvg: "Scores 5.0-7.9: Good standard skillset with limited advanced variations.", rangeLow: "Scores 1.0-4.9: Restricted skill set with execution difficulties." },
-  { parameter: "Game Plan", explanation: "Tactical comprehension of match scenarios, field settings, and match pace.", rangeHigh: "Scores 8.0-10.0: Elite tactical execution and situational awareness.", rangeAvg: "Scores 5.0-7.9: Understands strategy but occasionally deviates under stress.", rangeLow: "Scores 1.0-4.9: Poor situational decisions and strategy execution." },
-  { parameter: "Preparation", explanation: "Professionalism in warmup, mental readiness, and physical prep.", rangeHigh: "Scores 8.0-10.0: Meticulous professional warmup and mental visualization.", rangeAvg: "Scores 5.0-7.9: Standard preparation routine lacking deep focus.", rangeLow: "Scores 1.0-4.9: Casual or rushed preparation leading to slow starts." },
-  { parameter: "Intensity", explanation: "Physical energy, sprinting between wickets, and fielding commitment.", rangeHigh: "Scores 8.0-10.0: Relentless high energy and total physical effort.", rangeAvg: "Scores 5.0-7.9: Inconsistent energy output across match phases.", rangeLow: "Scores 1.0-4.9: Passive body language and low physical intensity." },
-  { parameter: "Focus", explanation: "Concentration maintenance and ball-by-ball cognitive reset.", rangeHigh: "Scores 8.0-10.0: Laser concentration and instant mental reset.", rangeAvg: "Scores 5.0-7.9: Solid focus with occasional middle-session lapses.", rangeLow: "Scores 1.0-4.9: Easily distracted, carrying errors from ball to ball." },
-  { parameter: "Resilience", explanation: "Mental toughness under pressure and bounce-back capacity.", rangeHigh: "Scores 8.0-10.0: Thrives in high-pressure crunch situations.", rangeAvg: "Scores 5.0-7.9: Competent response to setback with occasional hesitation.", rangeLow: "Scores 1.0-4.9: Folds quickly when match pressure escalates." }
-];
+const buildDefaultHelpItems = (): HelpItem[] => {
+  return (Object.keys(CPI_PREDEFINED_SOURCE) as ApprovedCpiParameter[]).map((name) => {
+    const src = CPI_PREDEFINED_SOURCE[name];
+    return {
+      parameter: name,
+      explanation: src.description,
+      rangeHigh: `Scores 7.0-10.0: ${src.practice.high.summary}`,
+      rangeAvg: `Scores 5.0-6.9: ${src.practice.overview}`,
+      rangeLow: `Scores 0.0-4.9: ${src.practice.low.summary}`
+    };
+  });
+};
+
+const DEFAULT_HELP: HelpItem[] = buildDefaultHelpItems();
 
 interface MockParamScore {
   name: string;
@@ -47,15 +54,21 @@ interface MockParamScore {
   recommendation: string;
 }
 
-const MOCK_PLAYER_SCORES: MockParamScore[] = [
-  { name: "Resilience", score: 8.8, recommendation: "Position player in high-pressure match crunch overs." },
-  { name: "Focus", score: 8.6, recommendation: "Maintain laser concentration through ball-by-ball reset triggers." },
-  { name: "Game Plan", score: 8.3, recommendation: "Encourage player to lead field placement decisions and tactical discussions." },
-  { name: "Preparation", score: 8.1, recommendation: "Designate player as preparation mentor for squad members." },
-  { name: "Skill Level", score: 7.9, recommendation: "Practice target bowling and specific boundary options." },
-  { name: "Intensity", score: 7.5, recommendation: "Set sprint benchmark targets for running between wickets." },
-  { name: "Technique", score: 7.2, recommendation: "Focus on high-volume mirror drills and video review to refine bat path." }
-];
+const buildMockPlayerScores = (): MockParamScore[] => {
+  return (Object.keys(CPI_PREDEFINED_SOURCE) as ApprovedCpiParameter[]).map((name, i) => {
+    const src = CPI_PREDEFINED_SOURCE[name];
+    const scores = [8.8, 8.6, 8.3, 8.1, 7.9, 7.5, 7.2];
+    const score = scores[i] || 7.5;
+    const block = score >= 7.0 ? src.practice.high : src.practice.low;
+    return {
+      name: name,
+      score: score,
+      recommendation: block.actionPoints[0] || ""
+    };
+  });
+};
+
+const MOCK_PLAYER_SCORES: MockParamScore[] = buildMockPlayerScores();
 
 export default function AdminReportsPage() {
   const { showToast } = useAdminToast();
