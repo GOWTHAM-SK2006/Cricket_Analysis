@@ -691,9 +691,12 @@ const generatePlayerPdfReport = async (
       const detailText = f.detail || "";
       if (detailText) {
         const lines = detailText.split("\n");
-        lines.forEach((line: string) => {
+        for (const line of lines) {
           const trimmed = line.trim();
-          if (trimmed === "THE COACH'S PLAN OF ACTION" || trimmed === "THE COACH'S SUMMARY") {
+          if (trimmed === "THE COACH'S SUMMARY") {
+            break;
+          }
+          if (trimmed === "THE COACH'S PLAN OF ACTION") {
             checkPageBreak(10);
             doc.setFontSize(8.0);
             doc.setFont("helvetica", "bold");
@@ -701,7 +704,7 @@ const generatePlayerPdfReport = async (
             doc.text(trimmed, 14, y);
             y += 4.5;
           } else if (trimmed === "") {
-            y += 2.0;
+            y += 1.5;
           } else {
             const wrappedLines = doc.splitTextToSize(line, pageWidth - 28);
             wrappedLines.forEach((wLine: string) => {
@@ -713,7 +716,7 @@ const generatePlayerPdfReport = async (
               y += 3.6;
             });
           }
-        });
+        }
         y += 4.0;
       }
     });
