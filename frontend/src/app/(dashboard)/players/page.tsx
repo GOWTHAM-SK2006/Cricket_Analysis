@@ -45,7 +45,6 @@ const formatScoreValue = (val: number | null | undefined, showMax: boolean = fal
 interface CoachParameterSection {
   header: string;
   bullets: string[];
-  explanation?: string;
   summaryHeader: string;
   summaryOverview: string;
   highScoreStatement: string;
@@ -62,346 +61,213 @@ interface CoachParameterRecommendation {
 
 const coachingRecommendations: Record<string, CoachParameterRecommendation> = {
   "Focus": {
-    description: "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches. The key question is: does the player stay engaged with what matters, or does their concentration drift when pressure, fatigue or distractions increase?",
+    description: "",
     high: {
-      header: "Focus High Directive",
-      bullets: [
-        "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.",
-        "Increase the challenge. Use longer, more demanding drills and match scenarios in practice that test concentration.",
-        "Reinforce reset habits. Encourage simple routines between balls, overs or repetitions.",
-        "Protect calm thinking. Make sure strong focus does not become tension or overthinking.",
-        "Monitor consistency. Check whether the player can stay focused when tired, frustrated or under pressure."
-      ],
-      explanation: "A High score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      highScoreStatement: "High score: reinforce, challenge and sustain.",
-      lowScoreStatement: "Low score: simplify, reset and rebuild.",
-      goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Strengthen reset routines. Practice locking in attention immediately before each ball release.",
-        "Filter external distractions. Maintain focus despite noise, decisions, or scoreboard pressure.",
-        "Recognize focus drift. Train awareness of when concentration begins to wander.",
-        "Build mental stamina. Extend concentration durations in practice scenario sets.",
-        "Review ball-by-ball presence. Ensure complete mental engagement for every single delivery."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      highScoreStatement: "Average score: reset, focus and sustain.",
-      lowScoreStatement: "Low score: simplify, reset and rebuild.",
-      goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Focus Low Directive",
-      bullets: [
-        "Identify the cause. Is the player distracted, tired, anxious, bored or unclear about what matters?",
-        "Simplify the task. Give one clear focus point rather than too many instructions.",
-        "Teach a reset. Use a simple routine to help the player reconnect after mistakes or distractions.",
-        "Create shorter challenges. Break practice into smaller, purposeful blocks.",
-        "Review the pattern. Look for when focus drops and what tends to trigger it."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      highScoreStatement: "High score: reinforce, challenge and sustain.",
-      lowScoreStatement: "Low score: simplify, reset and rebuild.",
-      goalStatement: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   },
   "Game Plan": {
-    description: "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. The key question for the coach is simple: does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes.",
+    description: "",
     high: {
-      header: "Game Plan High Directive",
-      bullets: [
-        "Confirm the thinking. Ask the player what their plan was and why they chose it.",
-        "Reinforce role clarity. Make sure the player understands what their role requires in different situations.",
-        "Increase the challenge. Use changing practice and match scenarios that force the player to think and adjust.",
-        "Encourage independence. Allow the player to make tactical decisions without constant instruction.",
-        "Monitor adaptability. Check that the player can stick to a good plan but also recognise when it needs to change."
-      ],
-      explanation: "A High score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
-      highScoreStatement: "High score: confirm, challenge and adapt.",
-      lowScoreStatement: "Low score: clarify, simplify and rehearse.",
-      goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Sharpen tactical clarity. Outline clear phase-by-phase match objectives.",
-        "Practice scenario adjustments. Work on shifting plans when match situations change quickly.",
-        "Enhance matchup awareness. Study field placements and opposition strengths to inform choices.",
-        "Build disciplined execution. Stick to agreed role tactics during tough match phases.",
-        "Review tactical outcomes. Evaluate after sessions whether execution matched the intended plan."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
-      highScoreStatement: "Average score: sharpen, adapt and execute.",
-      lowScoreStatement: "Low score: clarify, simplify and rehearse.",
-      goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Game Plan Low Directive",
-      bullets: [
-        "Establish whether there is a plan. Ask the player what they were trying to do and listen for clarity or uncertainty.",
-        "Simplify the thinking. Give the player one or two clear objectives for their role.",
-        "Connect practice to matches. Create scenarios that require the player to practise the same plans they will need in competition.",
-        "Teach adjustment. Help the player recognise when conditions, opposition or the match situation require a different approach.",
-        "Review the decisions. Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
-      highScoreStatement: "High score: confirm, challenge and adapt.",
-      lowScoreStatement: "Low score: clarify, simplify and rehearse.",
-      goalStatement: "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   },
   "Intensity": {
-    description: "Intensity measures the energy, purpose and competitive intent a player brings to both practice and matches. It’s not about being loud or overactive. The key question is: does the player look fully engaged and ready to compete in the moment? Good intensity should support skill, decision making and team performance.",
+    description: "",
     high: {
-      header: "Intensity High Directive",
-      bullets: [
-        "Confirm what is working. Identify the habits that help the player stay switched on and competitive.",
-        "Channel the energy. Make sure intensity remains controlled and does not become rushed or reckless.",
-        "Increase the challenge. Use tougher drills and match situations at practice that demand sustained effort.",
-        "Protect skill quality. Check that technique and decision making remain strong as intensity rises.",
-        "Encourage positive influence. Use the player’s energy to lift teammates and team standards."
-      ],
-      explanation: "A High score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
-      highScoreStatement: "High score: channel, challenge and sustain.",
-      lowScoreStatement: "Low score: identify, engage and rebuild.",
-      goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Eliminate energy lulls. Maintain consistent competitive effort between overs and drill sets.",
-        "Set active session benchmarks. Use timed or target-driven drills to maintain physical urgency.",
-        "Channel energy into execution. Ensure high effort supports rather than rushes technique.",
-        "Increase active communication. Stay vocal and engaged in the field to maintain mental intensity.",
-        "Monitor endurance. Track competitive energy through late stages of practice and match play."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
-      highScoreStatement: "Average score: sustain, target and engage.",
-      lowScoreStatement: "Low score: identify, engage and rebuild.",
-      goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Intensity Low Directive",
-      bullets: [
-        "Identify the reason. Is the player tired, distracted, bored, low on confidence or unclear about the task?",
-        "Clarify the standard. Explain what good intensity should look like in movement, effort and involvement.",
-        "Set short targets. Give the player immediate goals to create urgency and focus.",
-        "Increase involvement. Use competitive drills and clearer roles to keep the player engaged.",
-        "Review the response. Check whether the player’s energy improves when the challenge becomes more meaningful."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
-      highScoreStatement: "High score: channel, challenge and sustain.",
-      lowScoreStatement: "Low score: identify, engage and rebuild.",
-      goalStatement: "The goal is simple: bring the right energy, with the right purpose, for the demands of the moment."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   },
   "Preparation": {
-    description: "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches. The key question is: does the player arrive ready to make the most of the session or game? Good preparation gives performance a better chance before the first ball is even bowled.",
+    description: "",
     high: {
-      header: "Preparation High Directive",
-      bullets: [
-        "Confirm the routine. Identify the habits that help the player arrive organised, focused and ready.",
-        "Build ownership. Encourage the player to take responsibility for equipment, warm-up, hydration and personal goals.",
-        "Connect preparation to performance. Help them see how good preparation improves confidence, concentration and execution.",
-        "Prepare for different demands. Teach the player to adjust for travel, weather, pitch conditions, aggressive opposition, questionable umpires and different roles.",
-        "Monitor consistency. Make sure preparation standards remain high for every practice and match."
-      ],
-      explanation: "A High score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
-      highScoreStatement: "High score: reinforce, own and maintain.",
-      lowScoreStatement: "Low score: clarify, organise and improve.",
-      goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Standardize pre-session routines. Ensure consistent warm-up and mental preparation before every session.",
-        "Build personal ownership. Encourage taking full responsibility for gear, nutrition, and mental focus.",
-        "Incorporate mental visualization. Rehearse key match roles and opposition conditions before play.",
-        "Improve arrival timing. Avoid rushed entries to allow full physical and mental settling.",
-        "Review prep quality. Assess whether pre-game preparation directly enhanced initial session focus."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
-      highScoreStatement: "Average score: standardize, visualize and own.",
-      lowScoreStatement: "Low score: clarify, organise and improve.",
-      goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Preparation Low Directive",
-      bullets: [
-        "Identify what is missing. Is the issue poor planning, low energy, unclear goals, lack of passion, lack of interest or weak routines?",
-        "Set clear expectations. Make sure the player knows what ready should look like.",
-        "Create a simple checklist. Keep equipment, hydration, warm-up and role preparation easy to follow.",
-        "Build responsibility gradually. Give the player age-appropriate ownership instead of letting others do everything for them.",
-        "Review the impact. Show how poor preparation may have affected the quality of practice or match performance."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
-      highScoreStatement: "High score: reinforce, own and maintain.",
-      lowScoreStatement: "Low score: clarify, organise and improve.",
-      goalStatement: "The goal is simple: arrive ready, so performance has the best possible chance to follow."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   },
   "Skill Level": {
-    description: "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches. It is not simply about how many skills they have. It is about how well they can use those skills as the level of difficulty, pressure and competition increases.",
+    description: "",
     high: {
-      header: "Skill Level High Directive",
-      bullets: [
-        "Identify the strengths. Understand which skills the player performs consistently and confidently.",
-        "Increase the difficulty. Challenge the player with greater speed, variation, pressure and more demanding situations.",
-        "Expand the skill set. Introduce new skills that complement what the player already does well.",
-        "Encourage smart use of skills. Help the player understand when and where each skill is most effective.",
-        "Monitor transfer. Check that skills performed successfully in practice are also being used effectively in matches."
-      ],
-      explanation: "A High score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
-      highScoreStatement: "High score: challenge, expand and apply.",
-      lowScoreStatement: "Low score: identify, build and repeat.",
-      goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Consolidate core skills. Strengthen primary options before expanding variation.",
-        "Practice scenario execution. Execute skills within specific field settings and match targets.",
-        "Build adaptability. Test execution across varying pitch conditions and opposition plans.",
-        "Refine decision speed. Improve quick choice of skill based on bowler release or batter positioning.",
-        "Monitor skill repeatability. Ensure execution quality remains steady across entire practice sessions."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
-      highScoreStatement: "Average score: consolidate, expand and execute.",
-      lowScoreStatement: "Low score: identify, build and repeat.",
-      goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Skill Level Low Directive",
-      bullets: [
-        "Identify the gap. Establish which important skills are missing, inconsistent or limiting performance.",
-        "Prioritise the basics. Focus on the most important skills for the player’s role before adding greater complexity.",
-        "Build through repetition. Give the player enough quality practice to develop confidence and consistency.",
-        "Match the challenge to the player. Avoid asking for skills that are beyond their current level of development.",
-        "Track the progress. Look for improvement in practice first, then whether that improvement transfers into matches."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
-      highScoreStatement: "High score: challenge, expand and apply.",
-      lowScoreStatement: "Low score: identify, build and repeat.",
-      goalStatement: "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   },
   "Technique": {
-    description: "Technique measures how consistently and effectively a player performs the basic techniques required for their role in both practice and matches when the difficulty and demands increase.",
+    description: "",
     high: {
-      header: "Technique High Directive",
-      bullets: [
-        "Confirm what is working. Help the player understand which parts of their technique are allowing them to perform consistently.",
-        "Protect the basics. Avoid unnecessary changes when the player has a method that is working.",
-        "Increase the challenge. Test the technique against greater speed, pressure, fatigue and more difficult cricket situations.",
-        "Encourage self-correction. Help the player recognise when something feels wrong and make simple adjustments themselves.",
-        "Monitor transfer. Check that the same technical quality shown in practice is being carried into matches."
-      ],
-      explanation: "A High score shows that the player has a reliable technique that is standing up to the demands of practice and competition. The next step is to strengthen it under even greater pressure.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
-      highScoreStatement: "High score: protect, challenge and refine.",
-      lowScoreStatement: "Low score: identify, simplify and rebuild.",
-      goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Refine core mechanics. Work on stabilizing technique during moderate pressure nets.",
-        "Eliminate minor breakdowns. Address technical drift before it affects match performance.",
-        "Build repeatable habits. Maintain posture and balance across extended practice sessions.",
-        "Test under controlled pressure. Introduce variable bowling lengths and target zones.",
-        "Track technical stability. Monitor consistency between practice sets and match overs."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
-      highScoreStatement: "Average score: refine, stabilize and test under moderate pressure.",
-      lowScoreStatement: "Low score: identify, simplify and rebuild.",
-      goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Technique Low Directive",
-      bullets: [
-        "Identify the main problem. Find the technical issue that is having the greatest effect on performance.",
-        "Keep the correction simple. Work on one clear adjustment rather than trying to change everything at once.",
-        "Return to the basics. Slow the skill down and rebuild the movement before increasing the difficulty.",
-        "Recreate the problem in practice. Use drills and scenarios that mirror where the technique is breaking down in matches.",
-        "Track the improvement. Look for whether the correction becomes more consistent in practice and then transfers into competition."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Technique Index helps the coach understand whether the player’s technique is reliable enough to perform in both practice and matches.",
-      highScoreStatement: "High score: protect, challenge and refine.",
-      lowScoreStatement: "Low score: identify, simplify and rebuild.",
-      goalStatement: "The goal is simple: develop a technique the player can trust and repeat when the game places it under pressure."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   },
   "Resilience": {
-    description: "Resilience measures how well a player responds to adversity, pressure, mistakes and setbacks in both practice and matches. The key question is: does the player maintain effort, focus and body language when things go wrong, or do they fold under pressure?",
+    description: "",
     high: {
-      header: "Resilience High Directive",
-      bullets: [
-        "Anchor crunch moments. Encourage the player to step up during high-pressure phases and tough overs.",
-        "Lead squad recovery. Help the player guide teammates calmly when match momentum swings against the team.",
-        "Expose to high-consequence scenarios. Train in tough drills where mistakes require immediate composure.",
-        "Protect emotional stability. Ensure intense desire to win does not turn into frustration or negative body language.",
-        "Monitor bounce-back speed. Track how quickly the player resets after a boundary, dropped catch, or wicket."
-      ],
-      explanation: "A High score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
-      highScoreStatement: "High score: anchor, challenge and lead.",
-      lowScoreStatement: "Low score: identify, reset and rebuild.",
-      goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     medium: {
-      header: "Average Directive",
-      bullets: [
-        "Cut emotional dwell time. Practice instant posture reset following a misfield, boundary, or dot-ball pressure.",
-        "Maintain positive posture. Preserve confident body language regardless of match circumstances.",
-        "Accept constructive cues. Receive mid-session feedback positively without losing self-belief.",
-        "Rebuild composure under pressure. Practice staying calm during momentum swings.",
-        "Track recovery consistency. Ensure quick bounce-back becomes a reliable match habit."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
-      highScoreStatement: "Average score: compose, recover and push.",
-      lowScoreStatement: "Low score: identify, reset and rebuild.",
-      goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     },
     low: {
-      header: "Resilience Low Directive",
-      bullets: [
-        "Separate self from error. Help the player understand that one mistake does not define overall ability.",
-        "Teach immediate post-mistake reset. Use a deep breath and physical posture adjustment post-error.",
-        "Rebuild composure in low-stakes drills. Practice recovery routines in controlled practice settings.",
-        "Focus on next-ball execution. Direct attention immediately to the next task rather than dwelling on the past.",
-        "Track emotional recovery. Praise quick mental resets and positive body language under pressure."
-      ],
-      summaryHeader: "THE COACH’S SUMMARY",
-      summaryOverview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
-      highScoreStatement: "High score: anchor, challenge and lead.",
-      lowScoreStatement: "Low score: identify, reset and rebuild.",
-      goalStatement: "The goal is simple: develop unshakeable mental toughness under competitive pressure."
+      header: "",
+      bullets: [],
+      summaryHeader: "",
+      summaryOverview: "",
+      highScoreStatement: "",
+      lowScoreStatement: "",
+      goalStatement: ""
     }
   }
 };
@@ -420,7 +286,7 @@ interface CpiFrameworkItem {
   name: string;
   description: string;
   highPoints: CpiActionPoint[];
-  highSummary: string;
+  highSummary?: string;
   mediumPoints?: CpiActionPoint[];
   mediumSummary?: string;
   lowPoints: CpiActionPoint[];
@@ -444,19 +310,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "PROTECT THE BASICS", detail: "Maintain and reinforce strong fundamentals, avoiding unnecessary changes." },
       { title: "OWN THE CORRECTION", detail: "Encourage the player to recognise and self-correct technical drift." }
     ],
-    highSummary: "A High score shows the player has a strong, reliable technical base that holds up under pressure. The focus now is to protect the basics, keep raising the standard, and continue testing the technique in more demanding cricket situations.",
     mediumPoints: [
       { title: "REFINE CORE MECHANICS", detail: "Fix minor technical breakdowns that appear when pace or pressure rises." },
       { title: "BUILD CONSISTENCY", detail: "Repeat sound technique across longer practice sets and multi-over spells." },
       { title: "CONTROLLED PRESSURE NETS", detail: "Expose technique to moderate match drills with clear execution targets." }
     ],
-    mediumSummary: "An Average score shows the player has a functional technical foundation but requires greater consistency under pressure. The focus now is to refine core mechanics, eliminate minor breakdowns, and build repeatable technique.",
     lowPoints: [
       { title: "IDENTIFY MAIN ISSUE", detail: "Find the single technical breakdown having the greatest effect on performance." },
       { title: "KEEP CORRECTION SIMPLE", detail: "Work on one clear technical cue rather than changing multiple things." },
       { title: "RETURN TO BASICS", detail: "Slow down the movement in drill work before increasing execution speed." }
     ],
-    lowSummary: "A Low score shows the player needs to strengthen their technical base and build greater consistency under pressure. The focus now is to rebuild the basics, raise the standard, and keep testing the technique in demanding cricket situations.",
     coachSummary: {
       overview: "The Technique Index helps the coach understand whether the player's technique is reliable enough to perform in both practice and matches.",
       high: "protect, challenge and refine.",
@@ -474,19 +337,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "INCREASE EXECUTION SPEED", detail: "Challenge execution under reduced reaction time and changing conditions." },
       { title: "MONITOR MATCH TRANSFER", detail: "Ensure high-level skills practiced in nets translate directly into matches." }
     ],
-    highSummary: "A High score shows that the player has a strong and reliable skill set. The next step is to make those skills more adaptable, consistent and effective under pressure.",
     mediumPoints: [
       { title: "CONSOLIDATE CORE SKILLS", detail: "Ensure primary batting strokes or bowling deliveries are 100% reliable." },
       { title: "SCENARIO APPLICATION", detail: "Apply skills within specific field settings and match situation targets." },
       { title: "BUILD EXECUTION DEPTH", detail: "Develop consistent control across different pitch types and lengths." }
     ],
-    mediumSummary: "An Average score shows the player possesses a solid basic skill set but needs greater execution variety and adaptability under match pressure. The focus now is to consolidate core skills and expand match options.",
     lowPoints: [
       { title: "IDENTIFY SKILL GAP", detail: "Pinpoint missing or inconsistent fundamentals limiting match contribution." },
       { title: "REPETITION & QUALITY", detail: "Build confidence and muscle memory through high-quality basic repetitions." },
       { title: "MATCH DEMAND TO LEVEL", detail: "Focus on mastering basic skill execution before attempting complex variations." }
     ],
-    lowSummary: "A Low score shows that the player needs to develop their core skill set and build greater execution consistency under pressure. The focus now is to identify skill gaps, rebuild fundamentals, and test skills in demanding cricket situations.",
     coachSummary: {
       overview: "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.",
       high: "challenge, expand and apply.",
@@ -504,19 +364,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "REINFORCE ROLE MASTERY", detail: "Deepen understanding of phase-specific responsibilities in team tactics." },
       { title: "ENCOURAGE INDEPENDENCE", detail: "Empower the player to make smart tactical choices on the field without instruction." }
     ],
-    highSummary: "A High score shows that the player performs with purpose and understands what they are trying to achieve. The next step is to make that thinking more flexible and effective under pressure.",
     mediumPoints: [
       { title: "CLARIFY MATCH ROLE", detail: "Define clear tactical objectives for their specific role in the team." },
       { title: "IMPROVE MATCHUP AWARENESS", detail: "Study field placements, bowler/batter matchups, and scoring options." },
       { title: "PRACTICE IN-GAME SHIFTS", detail: "Rehearse adjusting plans when early wickets fall or match conditions change." }
     ],
-    mediumSummary: "An Average score shows the player understands their game plan but occasionally struggles to adapt when match situations shift. The focus now is to sharpen role clarity, improve tactical adjustments, and build situational awareness.",
     lowPoints: [
       { title: "SIMPLIFY THE PLAN", detail: "Give the player one simple, actionable objective to focus on." },
       { title: "CONNECT DRILLS TO MATCHES", detail: "Run practice scenarios that mirror exact match situations they will face." },
       { title: "REVIEW DECISION MAKING", detail: "Discuss post-play whether decisions matched the plan or were reactive." }
     ],
-    lowSummary: "A Low score shows that the player needs clearer role understanding and tactical direction. The focus now is to simplify decision-making, establish clear match objectives, and test adaptability under pressure.",
     coachSummary: {
       overview: "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.",
       high: "confirm, challenge and adapt.",
@@ -534,19 +391,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "PREPARE FOR EXTREMES", detail: "Plan ahead for adverse weather, slow pitches, travels, and tough umpires." },
       { title: "BUILD PLAYER OWNERSHIP", detail: "Ensure the player takes full personal charge of equipment and readiness." }
     ],
-    highSummary: "A High score shows that the player is giving themselves the best possible chance to perform well. The next step is to make those habits automatic and player-led.",
     mediumPoints: [
       { title: "STANDARDIZE ROUTINES", detail: "Follow a consistent physical warm-up, kit check, and mental prep routine." },
       { title: "VISUALIZE MATCH ROLES", detail: "Spend 5 minutes before play mentally rehearsing key match scenarios." },
       { title: "ARRIVE MATCH READY", detail: "Settle mentally and complete all preparation before stepping onto the field." }
     ],
-    mediumSummary: "An Average score shows the player follows standard preparation habits but can improve consistency and mental readiness before matches. The focus now is to refine pre-session routines and build personal ownership.",
     lowPoints: [
       { title: "IDENTIFY PREP GAPS", detail: "Fix disorganization, rushed arrivals, or lack of focus before sessions." },
       { title: "USE A SIMPLE CHECKLIST", detail: "Create an easy equipment, hydration, and warm-up checklist to follow." },
       { title: "SET CLEAR EXPECTATIONS", detail: "Establish what proper pre-session and pre-match readiness looks like." }
     ],
-    lowSummary: "A Low score shows that the player needs consistent pre-match and pre-session preparation habits. The focus now is to establish structured routines, build personal accountability, and arrive ready for competition.",
     coachSummary: {
       overview: "The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.",
       high: "reinforce, own and maintain.",
@@ -564,19 +418,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "LIFT SQUAD STANDARDS", detail: "Use competitive energy to inspire and raise standards for teammates." },
       { title: "SUSTAIN IN HIGH FATIGUE", detail: "Maintain explosive effort and sharp movement during long spells and innings." }
     ],
-    highSummary: "A High score shows that the player brings strong purpose and competitive effort. The next step is to make that intensity controlled, consistent and useful.",
     mediumPoints: [
       { title: "SUSTAIN CONSISTENT EFFORT", detail: "Eliminate energy lulls between overs or drill sets." },
       { title: "SET SESSION BENCHMARKS", detail: "Use clear physical and target benchmarks to maintain urgency in nets." },
       { title: "ACTIVE FIELDING EFFORT", detail: "Attack the ball in the field, communicate loudly, and stay alert." }
     ],
-    mediumSummary: "An Average score shows the player brings good energy but experiences periodic intensity lulls during long sessions or matches. The focus now is to sustain competitive effort and maintain active engagement.",
     lowPoints: [
       { title: "FIND THE ENERGY TRIGGER", detail: "Determine if low intensity stems from fatigue, boredom, or unclear goals." },
       { title: "SET SHORT TARGETS", detail: "Break practice into short 5-minute competitive challenges." },
       { title: "INCREASE INVOLVEMENT", detail: "Use active, high-touch drills to keep the player physically engaged." }
     ],
-    lowSummary: "A Low score shows that the player needs higher competitive energy and focus during practice and matches. The focus now is to set clear targets, build effort habits, and maintain intensity throughout sessions.",
     coachSummary: {
       overview: "The Intensity Index helps the coach understand whether the player is fully engaged or simply present.",
       high: "channel, challenge and sustain.",
@@ -594,19 +445,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "EXTEND CONCENTRATION SPANS", detail: "Test mental stamina with longer, unbroken practice scenarios." },
       { title: "STAY CALM UNDER PRESSURE", detail: "Ensure intense focus remains relaxed and free from overthinking." }
     ],
-    highSummary: "A High score shows that the player can stay connected to the task and give each moment proper attention. The next step is to make that focus more durable under pressure.",
     mediumPoints: [
       { title: "BALL-BY-BALL RECONFINEMENT", detail: "Use a focal trigger to lock in complete attention before every delivery." },
       { title: "FILTER DISTRACTIONS", detail: "Practice staying switched on despite noise, fatigue, or bad decisions." },
       { title: "TRACK FOCUS DURATIONS", detail: "Notice when concentration drifts and trigger an instant mental reset." }
     ],
-    mediumSummary: "An Average score shows the player has solid concentration with occasional focus lapses during prolonged play. The focus now is to strengthen ball-by-ball reset routines and build mental stamina.",
     lowPoints: [
       { title: "SIMPLIFY FOCAL POINTS", detail: "Focus on just one key cue instead of trying to process multiple inputs." },
       { title: "TEACH 5-SECOND RESET", detail: "Use a simple physical trigger to reset after a mistake or distraction." },
       { title: "SHORTER DRILL BLOCKS", detail: "Practice in brief 3-minute sets to build concentration step-by-step." }
     ],
-    lowSummary: "A Low score shows that the player experiences concentration lapses during demanding periods. The focus now is to shorten focus tasks, introduce mental reset triggers, and sustain attention ball by ball.",
     coachSummary: {
       overview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
       high: "reinforce, challenge and sustain.",
@@ -624,19 +472,16 @@ const cpiFrameworkNotes: Record<string, CpiFrameworkItem> = {
       { title: "LEAD SQUAD RECOVERY", detail: "Guide teammates calmly when match momentum swings against the team." },
       { title: "EXPOSE TO HARD DRILLS", detail: "Train in high-consequence drills where mistakes require immediate composure." }
     ],
-    highSummary: "A High score shows that the player thrives under pressure and bounces back quickly from errors. The next step is to anchor that resilience as a core team asset.",
     mediumPoints: [
       { title: "BOUNCE BACK QUICKER", detail: "Cut down emotional dwell time after a boundary, drop, or bad shot." },
       { title: "MAINTAIN POSITIVE POSTURE", detail: "Keep strong, upright body language regardless of match score." },
       { title: "ACCEPT COACHING CUES", detail: "Process mid-game advice constructively without losing self-belief." }
     ],
-    mediumSummary: "An Average score shows the player handles standard match pressure reasonably well but can bounce back faster from unexpected setbacks. The focus now is to strengthen post-error recovery routines and build composure.",
     lowPoints: [
       { title: "SEPARATE SELF FROM ERROR", detail: "Learn that one mistake does not define overall ability or value." },
       { title: "POST-ERROR RESET ROUTINE", detail: "Take a deep breath and physically reset posture immediately post-mistake." },
       { title: "BUILD CONFIDENCE GRADUALLY", detail: "Practice recovery in low-stakes scenarios to build emotional composure." }
     ],
-    lowSummary: "A Low score shows that the player struggles to bounce back quickly from errors under pressure. The focus now is to build emotional control, practice recovery routines, and strengthen mental toughness.",
     coachSummary: {
       overview: "The Resilience Index helps the coach understand whether the player has the mental toughness to handle pressure and bounce back from setbacks.",
       high: "anchor, challenge and lead.",
@@ -723,13 +568,13 @@ const computeFocusAreasForPlayer = (
 
     if (frameworkItem) {
       if (isHigh) {
-        cpiGuidance = frameworkItem.highSummary;
+        cpiGuidance = frameworkItem.highSummary || "";
         actionPoints = frameworkItem.highPoints;
       } else if (isLow) {
         cpiGuidance = frameworkItem.lowSummary || "";
         actionPoints = frameworkItem.lowPoints;
       } else {
-        cpiGuidance = frameworkItem.mediumSummary || frameworkItem.highSummary;
+        cpiGuidance = frameworkItem.mediumSummary || frameworkItem.highSummary || "";
         actionPoints = frameworkItem.mediumPoints || frameworkItem.highPoints;
       }
     }
@@ -3302,16 +3147,18 @@ return (
                     )}
                     <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
                   </div>
-                  <div
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFocus === idx ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
-                      }`}
-                  >
-                    <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
-                      <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
-                        {focus.detail}
-                      </p>
+                  {focus.detail ? (
+                    <div
+                      className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFocus === idx ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                        }`}
+                    >
+                      <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
+                        <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
+                          {focus.detail}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
                 </div>
               ))}
             </div>
