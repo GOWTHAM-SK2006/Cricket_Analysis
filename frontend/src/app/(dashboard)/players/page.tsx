@@ -214,19 +214,21 @@ const computeFocusAreasForPlayer = (
     let matchScores: number[] = [];
 
     practiceList.forEach((s: any) => {
-      p.keys.forEach((k) => {
+      for (const k of p.keys) {
         if (typeof s[k] === "number" && s[k] > 0) {
           practiceScores.push(s[k]);
+          break;
         }
-      });
+      }
     });
 
     matchList.forEach((s: any) => {
-      p.keys.forEach((k) => {
+      for (const k of p.keys) {
         if (typeof s[k] === "number" && s[k] > 0) {
           matchScores.push(s[k]);
+          break;
         }
-      });
+      }
     });
 
     const allScores = [...practiceScores, ...matchScores];
@@ -323,7 +325,7 @@ const generatePlayerPdfReport = async (
   last5Match: any[],
   practiceHistory: any[],
   matchHistory: any[],
-  focusAreas: { title: string; detail: string }[],
+  focusAreas: CpiFocusArea[],
   lastAssessmentDate: string,
   coachNameStr?: string
 ) => {
@@ -519,7 +521,14 @@ const generatePlayerPdfReport = async (
 
   const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])];
 
-  const getParamScore = (key: string) => {
+  const getParamScore = (name: string, key: string) => {
+    if (focusAreas && focusAreas.length > 0) {
+      const norm = normalizeCpiParameterName(name === "Technique" ? "Technical Execution" : name);
+      const found = focusAreas.find(f => normalizeCpiParameterName(f.title) === norm);
+      if (found && typeof found.avg === "number") {
+        return found.avg;
+      }
+    }
     const scores = allAssessments
       .map((s: any) => s[key] !== undefined ? s[key] : (key === "focus" ? s.concentration : null))
       .filter((v: any) => typeof v === "number" && v > 0);
@@ -541,7 +550,7 @@ const generatePlayerPdfReport = async (
   ];
 
   const paramData = paramDefs.map(p => {
-    const score = getParamScore(p.key);
+    const score = getParamScore(p.name, p.key);
     let label = "High";
     let color = [16, 185, 129];
     if (score < 5.0) {
