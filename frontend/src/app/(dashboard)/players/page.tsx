@@ -13,7 +13,7 @@ import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
 import jsPDF from "jspdf";
 import { getRoleContextForParameter } from "@/lib/roleContext";
-import { CPI_PREDEFINED_SOURCE, ApprovedCpiParameter } from "@/lib/cpiPredefinedSource";
+import { CPI_PREDEFINED_SOURCE, ApprovedCpiParameter, normalizeCpiParameterName } from "@/lib/cpiPredefinedSource";
 
 interface Player {
   id: number;
