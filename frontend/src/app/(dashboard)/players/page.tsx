@@ -179,6 +179,61 @@ export interface CpiFocusArea {
   detail: string;
 }
 
+export const computeKeyPerformanceHighlightsFromFocusAreas = (
+  focusAreas: { title: string; avg: number }[]
+) => {
+  if (!focusAreas || focusAreas.length === 0) {
+    return {
+      strongestArea: "N/A",
+      needsImprovement: "N/A",
+      weakestArea: "N/A"
+    };
+  }
+
+  // Group parameters by score rounded to 1 decimal place
+  const scoreMap = new Map<number, string[]>();
+  focusAreas.forEach((item) => {
+    const rounded = Math.round(item.avg * 10) / 10;
+    if (!scoreMap.has(rounded)) {
+      scoreMap.set(rounded, []);
+    }
+    scoreMap.get(rounded)!.push(item.title);
+  });
+
+  // Unique distinct scores in ascending order (lowest to highest)
+  const distinctScores = Array.from(scoreMap.keys()).sort((a, b) => a - b);
+
+  if (distinctScores.length === 0) {
+    return {
+      strongestArea: "N/A",
+      needsImprovement: "N/A",
+      weakestArea: "N/A"
+    };
+  }
+
+  const formatGroup = (score: number) => {
+    const params = scoreMap.get(score) || [];
+    const scoreStr = score.toFixed(1).replace(/\.0$/, '.0');
+    return params.map((p) => `${p} (${scoreStr})`).join(", ");
+  };
+
+  const highestScore = distinctScores[distinctScores.length - 1];
+  const lowestScore = distinctScores[0];
+
+  const strongestArea = formatGroup(highestScore);
+
+  let weakestArea = "N/A";
+  let needsImprovement = "N/A";
+
+  if (distinctScores.length > 1) {
+    weakestArea = formatGroup(lowestScore);
+    const nextLowestScore = distinctScores[1]; // Next-lowest distinct score above weakest score
+    needsImprovement = formatGroup(nextLowestScore);
+  }
+
+  return { strongestArea, needsImprovement, weakestArea };
+};
+
 const computeFocusAreasForPlayer = (
   player: Player,
   practiceHistory: any[],
@@ -531,7 +586,7 @@ const generatePlayerPdfReport = async (
   };
 
   const paramDefs = [
-    { name: "Technique", key: "technicalExecution" },
+    { name: "Technical Execution", key: "technicalExecution" },
     { name: "Skill Level", key: "skillsLevel" },
     { name: "Game Plan", key: "gamePlan" },
     { name: "Preparation", key: "preparation" },
@@ -2233,133 +2288,11 @@ return (
 
     {/* ------------------ VIEW: PLAYER PROFILE ------------------ */}
     {view === "profile" && selectedPlayer && (() => {
-      // Compute insights
-      let strongestArea = "N/A";
-      let weakestArea = "N/A";
-      let needsImprovement = "N/A";
-
-      const metricSums: Record<string, { sum: number; count: number }> = {};
-
-      if (practiceHistory.length > 0 || matchHistory.length > 0) {
-
-        const addMetric = (key: string, val: number | undefined | null) => {
-          if (val === undefined || val === null || val <= 0) return;
-          if (!metricSums[key]) {
-            metricSums[key] = { sum: 0, count: 0 };
-          }
-          metricSums[key].sum += val;
-          metricSums[key].count += 1;
-        };
-
-        practiceHistory.forEach(p => {
-          addMetric("Technique", p.technicalExecution);
-          addMetric("Skill Level", p.skillsLevel || p.technique);
-          addMetric("Game Plan", p.gamePlan || p.decisionMaking || p.gameAwareness);
-          addMetric("Preparation", p.preparation);
-          addMetric("Intensity", p.intensity);
-          addMetric("Focus", p.focus || p.concentration);
-          addMetric("Resilience", p.resilience || p.emotionalControl || p.adaptability);
-          addMetric("Concentration", p.concentration);
-          addMetric("Decision Making", p.decisionMaking);
-          addMetric("Game Awareness", p.gameAwareness);
-          addMetric("Adaptability", p.adaptability);
-          addMetric("Discipline", p.discipline);
-          addMetric("Teamwork", p.teamwork);
-          addMetric("Coachability", p.coachability);
-          addMetric("Work Ethic", p.workEthic);
-          addMetric("Emotional Control", p.emotionalControl);
-        });
-
-        matchHistory.forEach(m => {
-          addMetric("Technique", m.technicalExecution);
-          addMetric("Skill Level", m.skillsLevel);
-          addMetric("Game Plan", m.gamePlan || m.decisionMaking || m.gameAwareness);
-          addMetric("Preparation", m.preparation);
-          addMetric("Intensity", m.intensity);
-          addMetric("Focus", m.focus || m.concentration);
-          addMetric("Resilience", m.resilience || m.emotionalControl || m.adaptability);
-          addMetric("Concentration", m.concentration);
-          addMetric("Decision Making", m.decisionMaking);
-          addMetric("Game Awareness", m.gameAwareness);
-          addMetric("Adaptability", m.adaptability);
-          addMetric("Discipline", m.discipline);
-          addMetric("Teamwork", m.teamwork);
-          addMetric("Coachability", m.coachability);
-          addMetric("Work Ethic", m.workEthic);
-          addMetric("Emotional Control", m.emotionalControl);
-        });
-
-        const averages = Object.entries(metricSums).map(([name, data]) => ({
-          name,
-          avg: data.sum / data.count
-        }));
-
-        if (averages.length > 0) {
-          averages.sort((a, b) => b.avg - a.avg);
-          strongestArea = averages[0].name;
-          if (averages.length > 1) {
-            weakestArea = averages[averages.length - 1].name;
-
-            // Candidates excluding strongest and weakest (when 3+ metrics available)
-            const candidates = averages.filter(
-              (m) => m.name !== strongestArea && m.name !== weakestArea
-            );
-
-            if (candidates.length > 0) {
-              const candidateAnalysis = candidates.map((cand) => {
-                let pSum = 0, pCount = 0, mSum = 0, mCount = 0;
-
-                practiceHistory.forEach((p: any) => {
-                  const val = p[cand.name] || p[cand.name.toLowerCase()] || (cand.name === "Focus" ? p.concentration : cand.name === "Technique" ? p.technicalExecution : cand.name === "Skill Level" ? p.skillsLevel : null);
-                  if (typeof val === "number" && val > 0) {
-                    pSum += val;
-                    pCount++;
-                  }
-                });
-
-                matchHistory.forEach((m: any) => {
-                  const val = m[cand.name] || m[cand.name.toLowerCase()] || (cand.name === "Focus" ? m.concentration : cand.name === "Technique" ? m.technicalExecution : cand.name === "Skill Level" ? m.skillsLevel : null);
-                  if (typeof val === "number" && val > 0) {
-                    mSum += val;
-                    mCount++;
-                  }
-                });
-
-                const pAvg = pCount > 0 ? pSum / pCount : cand.avg;
-                const mAvg = mCount > 0 ? mSum / mCount : cand.avg;
-                const matchDrop = pAvg - mAvg;
-
-                return {
-                  name: cand.name,
-                  avg: cand.avg,
-                  matchDrop: Math.round(matchDrop * 10) / 10,
-                  isUnderperforming: cand.avg < 7.0
-                };
-              });
-
-              candidateAnalysis.sort((a, b) => {
-                if (Math.abs(b.matchDrop - a.matchDrop) >= 0.5) {
-                  return b.matchDrop - a.matchDrop;
-                }
-                if (a.isUnderperforming !== b.isUnderperforming) {
-                  return a.isUnderperforming ? -1 : 1;
-                }
-                if (Math.abs(a.avg - b.avg) > 0.1) {
-                  return a.avg - b.avg;
-                }
-                return b.matchDrop - a.matchDrop;
-              });
-
-              needsImprovement = candidateAnalysis[0].name;
-            } else {
-              needsImprovement = averages[0].name;
-            }
-          }
-        }
-      }
-
-      // Dynamically generate focus areas from weakest metrics using top-level helper
+      // Dynamically generate focus areas from the 7 CPI parameters ranked Strongest to Weakest
       const focusAreas = computeFocusAreasForPlayer(selectedPlayer, practiceHistory, matchHistory);
+
+      // Compute Key Performance Highlights strictly from the 7 CPI parameter scores
+      const { strongestArea, needsImprovement, weakestArea } = computeKeyPerformanceHighlightsFromFocusAreas(focusAreas);
 
       // Get self-assessment averages
       const getSelfAverages = () => {
@@ -2721,17 +2654,17 @@ return (
             </div>
 
             <div className="space-y-3 pt-1">
-              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase">Strongest Area</span>
-                <span className="text-xs font-bold text-green-500 uppercase">{strongestArea}</span>
+              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Strongest Area</span>
+                <span className="text-xs font-bold text-green-600 uppercase text-right leading-snug">{strongestArea}</span>
               </div>
-              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase">Needs Improvement</span>
-                <span className="text-xs font-bold text-orange-500 uppercase">{needsImprovement}</span>
+              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Needs Improvement</span>
+                <span className="text-xs font-bold text-orange-600 uppercase text-right leading-snug">{needsImprovement}</span>
               </div>
-              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase">Weakest Area</span>
-                <span className="text-xs font-bold text-red-550 text-red-500 uppercase">{weakestArea}</span>
+              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Weakest Area</span>
+                <span className="text-xs font-bold text-red-600 uppercase text-right leading-snug">{weakestArea}</span>
               </div>
             </div>
           </div>
