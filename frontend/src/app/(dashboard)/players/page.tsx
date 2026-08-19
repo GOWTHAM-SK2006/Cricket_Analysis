@@ -286,15 +286,28 @@ const computeFocusAreasForPlayer = (
 
     const allScores = [...practiceScores, ...matchScores];
 
-    let overallAvg = 7.2;
+    let overallAvg = 7.0;
     if (allScores.length > 0) {
       overallAvg = allScores.reduce((a, b) => a + b, 0) / allScores.length;
       overallAvg = Math.round(overallAvg * 10) / 10;
-    } else if (player.ppiScore || player.mpiScore) {
-      const ppi = player.ppiScore || 0;
-      const mpi = player.mpiScore || 0;
-      overallAvg = (ppi > 0 && mpi > 0) ? (ppi + mpi) / 2 : (ppi > 0 ? ppi : mpi);
-      overallAvg = Math.round(overallAvg * 10) / 10;
+    } else {
+      const availableScores: number[] = [];
+      practiceList.forEach((s: any) => {
+        ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"].forEach((k) => {
+          if (typeof s[k] === "number" && s[k] > 0) availableScores.push(s[k]);
+        });
+      });
+      matchList.forEach((s: any) => {
+        ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"].forEach((k) => {
+          if (typeof s[k] === "number" && s[k] > 0) availableScores.push(s[k]);
+        });
+      });
+      if (availableScores.length > 0) {
+        overallAvg = availableScores.reduce((a, b) => a + b, 0) / availableScores.length;
+        overallAvg = Math.round(overallAvg * 10) / 10;
+      } else {
+        overallAvg = 7.0;
+      }
     }
 
     const isHigh = overallAvg >= 7.0;
@@ -1162,6 +1175,7 @@ export default function PlayersPage() {
   const [practiceHistory, setPracticeHistory] = useState<any[]>([]);
   const [matchHistory, setMatchHistory] = useState<any[]>([]);
   const [selfHistory, setSelfHistory] = useState<any[]>([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState<boolean>(true);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -1413,6 +1427,10 @@ useEffect(() => {
 }, [players, role, searchParams, loading, selectedPlayer]);
 
 const loadHistory = async (playerId: number) => {
+  setIsHistoryLoading(true);
+  setPracticeHistory([]);
+  setMatchHistory([]);
+  setSelfHistory([]);
   try {
     const [pracRes, matchRes] = await Promise.all([
       api.get(`/practice/player/${playerId}`).catch(() => ({ data: [] })),
@@ -1436,6 +1454,8 @@ const loadHistory = async (playerId: number) => {
     setSelfHistory(selfData);
   } catch (err) {
     console.error("Failed to load assessments history", err);
+  } finally {
+    setIsHistoryLoading(false);
   }
 };
 
@@ -1497,6 +1517,10 @@ const getPlayerTrendData = () => {
 
 const handleSelectPlayer = (player: Player) => {
   setSelectedPlayer(player);
+  setIsHistoryLoading(true);
+  setPracticeHistory([]);
+  setMatchHistory([]);
+  setSelfHistory([]);
   setView("profile");
   loadHistory(player.id);
   router.replace(`/players?id=${player.id}`);
@@ -2645,7 +2669,7 @@ return (
           </div>
 
           {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS */}
-          <div className="bg-white bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
             <div className="border-b border-slate-200 pb-2">
               <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
                 <Award className="w-4 h-4 text-orange-500" />
@@ -2653,20 +2677,35 @@ return (
               </h3>
             </div>
 
-            <div className="space-y-3 pt-1">
-              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Strongest Area</span>
-                <span className="text-xs font-bold text-green-600 uppercase text-right leading-snug">{strongestArea}</span>
+            {isHistoryLoading ? (
+              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
+                <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
+                  <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                  <span>Loading performance highlights...</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Needs Improvement</span>
-                <span className="text-xs font-bold text-orange-600 uppercase text-right leading-snug">{needsImprovement}</span>
+            ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
+              <div className="flex items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
+                  No assessment data recorded yet for this player.
+                </span>
               </div>
-              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Weakest Area</span>
-                <span className="text-xs font-bold text-red-600 uppercase text-right leading-snug">{weakestArea}</span>
+            ) : (
+              <div className="space-y-3 pt-1">
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
+                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Strongest Area</span>
+                  <span className="text-xs font-bold text-green-600 uppercase text-right leading-snug">{strongestArea}</span>
+                </div>
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
+                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Needs Improvement</span>
+                  <span className="text-xs font-bold text-orange-600 uppercase text-right leading-snug">{needsImprovement}</span>
+                </div>
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
+                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Weakest Area</span>
+                  <span className="text-xs font-bold text-red-600 uppercase text-right leading-snug">{weakestArea}</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* SECTION 5 – KEY PERFORMANCE AREAS (STRONGEST TO WEAKEST) */}
@@ -2675,52 +2714,67 @@ return (
               <Sparkles className="w-4 h-4 text-orange-500" />
               KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST
             </h3>
-            <div className="space-y-2.5 pt-1">
-              {focusAreas.map((focus, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden transition-all duration-300 cursor-pointer hover:border-orange-300"
-                  onClick={() => setExpandedFocus(expandedFocus === idx ? null : idx)}
-                >
-                  <div className="flex items-center gap-3 p-3.5">
-                    <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
-                      {idx + 1}
-                    </span>
-                    <span className="text-xs font-black text-slate-900 flex-1 min-w-0 truncate">{focus.title}</span>
-                    {typeof focus.avg === "number" && (
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="w-[64px] text-center text-[11px] font-bold text-slate-700 bg-white px-1.5 py-1 rounded-lg border border-slate-200 font-mono inline-block">
-                          {focus.avg}
-                        </span>
-                        <span
-                          className={`w-[105px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${focus.avg >= 7.0
-                              ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                              : focus.avg >= 5.0
-                                ? "bg-amber-100 text-amber-700 border border-amber-300"
-                                : "bg-red-100 text-red-700 border border-red-300"
-                            }`}
-                        >
-                          {focus.avg >= 7.0 ? "High" : focus.avg >= 5.0 ? "Average" : "Low"}
-                        </span>
-                      </div>
-                    )}
-                    <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
-                  </div>
-                  {focus.detail ? (
-                    <div
-                      className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFocus === idx ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
-                        }`}
-                    >
-                      <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
-                        <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
-                          {focus.detail}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
+            {isHistoryLoading ? (
+              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
+                <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
+                  <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                  <span>Loading key performance areas...</span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
+              <div className="flex items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
+                  No assessment data recorded yet for this player.
+                </span>
+              </div>
+            ) : (
+              <div className="space-y-2.5 pt-1">
+                {focusAreas.map((focus, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden transition-all duration-300 cursor-pointer hover:border-orange-300"
+                    onClick={() => setExpandedFocus(expandedFocus === idx ? null : idx)}
+                  >
+                    <div className="flex items-center gap-3 p-3.5">
+                      <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
+                        {idx + 1}
+                      </span>
+                      <span className="text-xs font-black text-slate-900 flex-1 min-w-0 truncate">{focus.title}</span>
+                      {typeof focus.avg === "number" && (
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="w-[64px] text-center text-[11px] font-bold text-slate-700 bg-white px-1.5 py-1 rounded-lg border border-slate-200 font-mono inline-block">
+                            {focus.avg}
+                          </span>
+                          <span
+                            className={`w-[105px] text-center text-[10px] font-extrabold px-2 py-1 rounded-full uppercase tracking-wider inline-flex items-center justify-center ${focus.avg >= 7.0
+                                ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                                : focus.avg >= 5.0
+                                  ? "bg-amber-100 text-amber-700 border border-amber-300"
+                                  : "bg-red-100 text-red-700 border border-red-300"
+                              }`}
+                          >
+                            {focus.avg >= 7.0 ? "High" : focus.avg >= 5.0 ? "Average" : "Low"}
+                          </span>
+                        </div>
+                      )}
+                      <ChevronDown className={`w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-300 ${expandedFocus === idx ? "rotate-180 text-orange-500" : ""}`} />
+                    </div>
+                    {focus.detail ? (
+                      <div
+                        className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFocus === idx ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+                          }`}
+                      >
+                        <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
+                          <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
+                            {focus.detail}
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* SECTION 7 – ASSESSMENT HISTORY */}
