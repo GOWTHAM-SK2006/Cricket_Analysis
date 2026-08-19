@@ -20,7 +20,7 @@ const DEFAULT_AI_COACH: AiCoachConfig = {
   coachingTone: "Professional, encouraging, analytical, and actionable.",
   responseGuidance: "Format outputs clearly with executive summary, parameter rankings from strongest to weakest, and exact statements from the approved Coach Plan of Action.",
   recommendationBehaviour: "Outputs must contain ONLY exact sentences from CPI_7_Parameters_Practice_And_Match_Separate.txt. Do not paraphrase or add new wording.",
-  parameterAnalysisInstructions: "Evaluate ONLY the approved 7 parameters (Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience).",
+  parameterAnalysisInstructions: "Evaluate ONLY the approved 7 parameters (Technique, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience).",
   coachActionPlanDirectives: "Use the Coach's Action Plan as the sole approved source for recommendations and reports.",
   recommendedFocusDirectives: "Prioritize exact focus statements based on the player's lowest scores among the 7 parameters."
 };

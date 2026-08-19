@@ -91,7 +91,6 @@ const buildCoachingRecommendationsFromSource = (): Record<string, CoachParameter
     };
   });
 
-  recs["Technique"] = recs["Technical Execution"];
   recs["Skills Level"] = recs["Skill Level"];
   recs["Concentration"] = recs["Focus"];
 
@@ -159,7 +158,6 @@ const buildFrameworkNotesFromSource = (): Record<string, CpiFrameworkItem> => {
     };
   });
   
-  notes["Technique"] = notes["Technical Execution"];
   notes["Skills Level"] = notes["Skill Level"];
   notes["Concentration"] = notes["Focus"];
   
@@ -240,7 +238,7 @@ const computeFocusAreasForPlayer = (
   matchHistory: any[]
 ): CpiFocusArea[] => {
   const paramDefs: { name: string; keys: string[] }[] = [
-    { name: "Technical Execution", keys: ["technicalExecution", "technique"] },
+    { name: "Technique", keys: ["technicalExecution", "technique"] },
     { name: "Skill Level", keys: ["skillsLevel", "skillLevel"] },
     { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
     { name: "Preparation", keys: ["preparation"] },
@@ -312,7 +310,7 @@ const computeFocusAreasForPlayer = (
 
     const isHigh = overallAvg >= 7.0;
     const normName = normalizeCpiParameterName(p.name);
-    const src = CPI_PREDEFINED_SOURCE[normName] || CPI_PREDEFINED_SOURCE["Technical Execution"];
+    const src = CPI_PREDEFINED_SOURCE[normName] || CPI_PREDEFINED_SOURCE["Technique"];
     const block = isHigh ? src[context].high : src[context].low;
 
     const actionPointsText = block.actionPoints.map((pt) => `• ${pt}`).join("\n");
@@ -599,7 +597,7 @@ const generatePlayerPdfReport = async (
   };
 
   const paramDefs = [
-    { name: "Technical Execution", key: "technicalExecution" },
+    { name: "Technique", key: "technicalExecution" },
     { name: "Skill Level", key: "skillsLevel" },
     { name: "Game Plan", key: "gamePlan" },
     { name: "Preparation", key: "preparation" },
@@ -2382,7 +2380,7 @@ return (
       const targetPercent = Math.min(100, Math.max(0, Math.round((cpiVal / targetCpi) * 100)));
 
       const devMetrics = [
-        { name: "Technical Execution", val: latestPractice ? (latestPractice.technicalExecution ?? latestPractice.technique ?? "7.0") : "7.0" },
+        { name: "Technique", val: latestPractice ? (latestPractice.technicalExecution ?? latestPractice.technique ?? "7.0") : "7.0" },
         { name: "Skill Level", val: latestPractice ? (latestPractice.skillsLevel ?? latestPractice.skillLevel ?? "7.0") : "7.0" },
         { name: "Game Plan", val: latestPractice ? (latestPractice.gamePlan ?? "7.0") : "7.0" },
         { name: "Preparation", val: latestPractice ? (latestPractice.preparation ?? "7.0") : "7.0" },
@@ -2702,7 +2700,7 @@ return (
             ) : (() => {
               // Extract exact scores in FIXED CPI framework order (single source of truth from focusAreas)
               const fixedParams = [
-                "Technical Execution",
+                "Technique",
                 "Skill Level",
                 "Game Plan",
                 "Preparation",

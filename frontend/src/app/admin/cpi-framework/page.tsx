@@ -19,7 +19,7 @@ interface ParameterItem {
 
 const buildDefault7Parameters = (): ParameterItem[] => {
   const ids: Record<ApprovedCpiParameter, number> = {
-    "Technical Execution": 1,
+    "Technique": 1,
     "Skill Level": 2,
     "Game Plan": 3,
     "Preparation": 4,

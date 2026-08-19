@@ -11,7 +11,7 @@
  */
 
 export const APPROVED_CPI_7_PARAMETERS = [
-  "Technical Execution",
+  "Technique",
   "Skill Level",
   "Game Plan",
   "Preparation",
@@ -42,7 +42,7 @@ export interface DualContextParameterWording {
 }
 
 export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextParameterWording> = {
-  "Technical Execution": {
+  "Technique": {
     description: "Technical execution measures how effectively a player applies their skills during competitive play and practice.",
     practice: {
       high: {
@@ -89,7 +89,7 @@ export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextPara
         ],
         summary: "separate, diagnose and recreate."
       },
-      overview: "The Technical Execution Index helps the coach judge whether the player can carry their method from practice into competition.",
+      overview: "The Technique Index helps the coach judge whether the player can carry their method from practice into competition.",
       goal: "The goal is not technical perfection. It is a technique the player can trust and execute when the match places it under genuine pressure."
     }
   },
@@ -406,14 +406,14 @@ export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextPara
  */
 export function normalizeCpiParameterName(inputName: string): ApprovedCpiParameter {
   const lower = (inputName || "").trim().toLowerCase();
-  if (lower.includes("tech")) return "Technical Execution";
+  if (lower.includes("tech")) return "Technique";
   if (lower.includes("skill")) return "Skill Level";
   if (lower.includes("game")) return "Game Plan";
   if (lower.includes("prep")) return "Preparation";
   if (lower.includes("intens")) return "Intensity";
   if (lower.includes("foc") || lower.includes("concentr")) return "Focus";
   if (lower.includes("resil")) return "Resilience";
-  return "Technical Execution";
+  return "Technique";
 }
 
 /**

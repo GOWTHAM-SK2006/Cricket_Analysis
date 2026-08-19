@@ -18,7 +18,7 @@ class RecommendationService:
         json_schema_prompt = (
             "Analyse the following cricket player assessment context and generate a complete performance recommendation.\n"
             "STRICT MANDATE: YOU MUST USE ONLY EXACT SENTENCES AND PHRASES COPIED CHARACTER-FOR-CHARACTER FROM THE APPROVED COACH PLAN OF ACTION TEXT FILE.\n"
-            "ONLY USE THE APPROVED 7 PARAMETERS: Technical Execution, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience.\n"
+            "ONLY USE THE APPROVED 7 PARAMETERS: Technique, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience.\n"
             "DO NOT PARAPHRASE, REWRITE, SIMPLIFY, SUMMARISE, OR GENERATE ANY NEW WORDS.\n"
             "Respond ONLY with a valid JSON object matching this exact structure:\n"
             "{\n"

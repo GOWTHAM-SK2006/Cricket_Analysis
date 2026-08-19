@@ -31,7 +31,7 @@ function getSourceWordingForParam(paramName: ApprovedCpiParameter) {
 
 export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<ApprovedCpiParameter, RoleParameterContext>> = {
   Batsman: {
-    "Technical Execution": getSourceWordingForParam("Technical Execution"),
+    "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
@@ -40,7 +40,7 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<ApprovedCpiParameter
     "Resilience": getSourceWordingForParam("Resilience")
   },
   Bowler: {
-    "Technical Execution": getSourceWordingForParam("Technical Execution"),
+    "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
@@ -49,7 +49,7 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<ApprovedCpiParameter
     "Resilience": getSourceWordingForParam("Resilience")
   },
   Wicketkeeper: {
-    "Technical Execution": getSourceWordingForParam("Technical Execution"),
+    "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
@@ -58,7 +58,7 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<ApprovedCpiParameter
     "Resilience": getSourceWordingForParam("Resilience")
   },
   Fielder: {
-    "Technical Execution": getSourceWordingForParam("Technical Execution"),
+    "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
