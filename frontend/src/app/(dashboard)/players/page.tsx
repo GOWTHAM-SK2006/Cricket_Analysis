@@ -992,6 +992,7 @@ export default function PlayersPage() {
   const [roleFilter, setRoleFilter] = useState<"all" | "batsman" | "bowler" | "all_rounder" | "wicket_keeper">("all");
   const [copiedCode, setCopiedCode] = useState(false);
   const [expandedFocus, setExpandedFocus] = useState<number | null>(null);
+  const [hoveredParamIndex, setHoveredParamIndex] = useState<number | null>(null);
 
   const handleGenerateFilteredPdfReport = () => {
     if (!selectedPlayer) return;
@@ -2666,23 +2667,25 @@ return (
             </div>
           </div>
 
-          {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS (CPI PERFORMANCE PROFILE) */}
+          {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS (CPI PERFORMANCE PROFILE LINE GRAPH) */}
           <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left shadow-xs">
-            <div className="border-b border-slate-200 pb-2.5">
-              <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
-                <Award className="w-4 h-4 text-orange-500" />
-                KEY PERFORMANCE HIGHLIGHTS
-              </h3>
-              <p className="text-[11px] sm:text-xs font-extrabold text-slate-500 tracking-wider uppercase mt-0.5">
-                CPI PERFORMANCE PROFILE
-              </p>
+            <div className="border-b border-slate-200 pb-2.5 flex justify-between items-end flex-wrap gap-2">
+              <div>
+                <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
+                  <Award className="w-4 h-4 text-orange-500" />
+                  KEY PERFORMANCE HIGHLIGHTS
+                </h3>
+                <p className="text-[11px] sm:text-xs font-extrabold text-slate-500 tracking-wider uppercase mt-0.5">
+                  CPI PERFORMANCE PROFILE
+                </p>
+              </div>
             </div>
 
             {isHistoryLoading ? (
               <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
                   <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                  <span>Loading performance profile...</span>
+                  <span>Loading performance graph...</span>
                 </div>
               </div>
             ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
@@ -2691,72 +2694,255 @@ return (
                   No assessment data recorded yet for this player.
                 </span>
               </div>
-            ) : (
-              <div className="space-y-4 pt-1">
-                {/* 0-10 Scale Legend Header */}
-                <div className="hidden sm:flex justify-between items-center text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-1 border-b border-slate-100 pb-1.5">
-                  <span>0.0</span>
-                  <span>2.5</span>
-                  <span>5.0 (AVG)</span>
-                  <span>7.5 (HIGH)</span>
-                  <span>10.0</span>
-                </div>
+            ) : (() => {
+              // Extract exact scores in FIXED CPI framework order (single source of truth from focusAreas)
+              const fixedParams = [
+                "Technical Execution",
+                "Skill Level",
+                "Game Plan",
+                "Preparation",
+                "Intensity",
+                "Focus",
+                "Resilience"
+              ];
 
-                {/* 7 CPI Horizontal Parameter Bars */}
-                <div className="space-y-3">
-                  {focusAreas.map((param, idx) => {
-                    const score = typeof param.avg === "number" ? param.avg : 0;
-                    const barWidthPercent = Math.min(100, Math.max(0, (score / 10) * 100));
+              const cpiLineChartData = fixedParams.map((paramName) => {
+                const found = focusAreas.find(
+                  (item) => item.title.toLowerCase() === paramName.toLowerCase()
+                );
+                const score = found && typeof found.avg === "number" ? found.avg : 7.0;
+                return {
+                  name: paramName,
+                  score: Math.min(10, Math.max(0, Math.round(score * 10) / 10))
+                };
+              });
 
-                    let statusText = "Average";
-                    let statusStyle = "bg-amber-50 text-amber-700 border-amber-200/80";
-                    let statusDot = "bg-amber-500";
+              return (
+                <div className="space-y-4 pt-1">
+                  {/* 2D Line Chart SVG */}
+                  <div className="relative bg-white p-2 sm:p-4 rounded-2xl border border-slate-200 overflow-hidden select-none">
+                    <svg
+                      viewBox="0 0 800 320"
+                      className="w-full h-auto overflow-visible"
+                    >
+                      {/* Subtle Grid Lines (Y-Axis Levels: 0, 2, 4, 6, 8, 10) */}
+                      {[10, 8, 6, 4, 2, 0].map((level) => {
+                        const y = 45 + (1 - level / 10) * 200;
+                        return (
+                          <g key={level}>
+                            <line
+                              x1="55"
+                              y1={y}
+                              x2="755"
+                              y2={y}
+                              stroke="#e2e8f0"
+                              strokeWidth="1"
+                              strokeDasharray={level === 0 || level === 10 ? "none" : "4 4"}
+                            />
+                            <text
+                              x="42"
+                              y={y + 4}
+                              textAnchor="end"
+                              fill="#64748b"
+                              fontSize="11"
+                              fontWeight="700"
+                              fontFamily="monospace"
+                            >
+                              {level}
+                            </text>
+                          </g>
+                        );
+                      })}
 
-                    if (score >= 7.0) {
-                      statusText = "High";
-                      statusStyle = "bg-emerald-50 text-emerald-700 border-emerald-200/80";
-                      statusDot = "bg-emerald-500";
-                    } else if (score < 5.0) {
-                      statusText = "Low";
-                      statusStyle = "bg-rose-50 text-rose-700 border-rose-200/80";
-                      statusDot = "bg-rose-500";
-                    }
-
-                    return (
-                      <div
-                        key={param.title || idx}
-                        className="p-3 bg-slate-50/80 border border-slate-200/90 rounded-2xl space-y-2 hover:bg-slate-50 transition-colors"
+                      {/* Y-Axis Title */}
+                      <text
+                        x="18"
+                        y="25"
+                        fill="#94a3b8"
+                        fontSize="10"
+                        fontWeight="800"
+                        fontFamily="sans-serif"
+                        letterSpacing="1"
                       >
-                        {/* Parameter Name, Status Badge, Score */}
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight whitespace-normal">
-                              {param.title}
-                            </span>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border uppercase tracking-wider inline-flex items-center gap-1 shrink-0 ${statusStyle}`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
-                              {statusText}
-                            </span>
-                          </div>
+                        SCORE
+                      </text>
 
-                          <div className="text-xs sm:text-sm font-bold font-mono text-slate-900 shrink-0">
-                            {score.toFixed(1)} <span className="text-slate-400 font-semibold text-[11px] sm:text-xs">/ 10</span>
-                          </div>
-                        </div>
+                      {/* Connecting Line across all 7 parameters */}
+                      {(() => {
+                        const pathD = cpiLineChartData
+                          .map((param, i) => {
+                            const x = 55 + i * (700 / 6);
+                            const y = 45 + (1 - param.score / 10) * 200;
+                            return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+                          })
+                          .join(" ");
 
-                        {/* Progress Bar (0-10 scale) */}
-                        <div className="w-full h-3 bg-slate-200/70 border border-slate-200/80 rounded-full overflow-hidden p-0.5 relative">
-                          <div
-                            className="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out"
-                            style={{ width: `${barWidthPercent}%` }}
+                        return (
+                          <path
+                            d={pathD}
+                            fill="none"
+                            stroke="#f97316"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                           />
-                        </div>
+                        );
+                      })()}
+
+                      {/* Points, Labels, and Interactive Touch/Hover Zones */}
+                      {cpiLineChartData.map((param, i) => {
+                        const x = 55 + i * (700 / 6);
+                        const y = 45 + (1 - param.score / 10) * 200;
+                        const isHovered = hoveredParamIndex === i;
+
+                        // X-Axis Parameter Name split into lines for readability
+                        const nameParts = param.name.split(" ");
+                        const line1 = nameParts[0] || param.name;
+                        const line2 = nameParts.slice(1).join(" ");
+
+                        return (
+                          <g
+                            key={param.name}
+                            className="cursor-pointer"
+                            onMouseEnter={() => setHoveredParamIndex(i)}
+                            onMouseLeave={() => setHoveredParamIndex(null)}
+                            onClick={() => setHoveredParamIndex(hoveredParamIndex === i ? null : i)}
+                          >
+                            {/* Invisible hit area for touch/hover */}
+                            <circle cx={x} cy={y} r="20" fill="transparent" />
+
+                            {/* Hover Halo Ring */}
+                            {isHovered && (
+                              <circle cx={x} cy={y} r="12" fill="rgba(249, 115, 22, 0.15)" stroke="#f97316" strokeWidth="1" />
+                            )}
+
+                            {/* Circular Data Point */}
+                            <circle
+                              cx={x}
+                              cy={y}
+                              r={isHovered ? "7" : "5.5"}
+                              fill="#ffffff"
+                              stroke="#f97316"
+                              strokeWidth="2.5"
+                            />
+                            <circle cx={x} cy={y} r={isHovered ? "3" : "2.5"} fill="#f97316" />
+
+                            {/* Score Label directly above point */}
+                            <text
+                              x={x}
+                              y={y - 12}
+                              textAnchor="middle"
+                              fill="#0f172a"
+                              fontSize="11"
+                              fontWeight="800"
+                              fontFamily="monospace"
+                            >
+                              {param.score.toFixed(1)}
+                            </text>
+
+                            {/* X-Axis Parameter Text */}
+                            {line2 ? (
+                              <>
+                                <text
+                                  x={x}
+                                  y="272"
+                                  textAnchor="middle"
+                                  fill={isHovered ? "#ea580c" : "#0f172a"}
+                                  fontSize="10"
+                                  fontWeight="700"
+                                >
+                                  {line1}
+                                </text>
+                                <text
+                                  x={x}
+                                  y="284"
+                                  textAnchor="middle"
+                                  fill={isHovered ? "#ea580c" : "#0f172a"}
+                                  fontSize="10"
+                                  fontWeight="700"
+                                >
+                                  {line2}
+                                </text>
+                              </>
+                            ) : (
+                              <text
+                                x={x}
+                                y="278"
+                                textAnchor="middle"
+                                fill={isHovered ? "#ea580c" : "#0f172a"}
+                                fontSize="10"
+                                fontWeight="700"
+                              >
+                                {param.name}
+                              </text>
+                            )}
+
+                            {/* Hover / Tap Tooltip */}
+                            {isHovered && (
+                              <g>
+                                <rect
+                                  x={Math.max(10, Math.min(650, x - 75))}
+                                  y={Math.max(5, y - 55)}
+                                  width="150"
+                                  height="38"
+                                  rx="8"
+                                  fill="#0f172a"
+                                  opacity="0.95"
+                                />
+                                <text
+                                  x={Math.max(10, Math.min(650, x - 75)) + 75}
+                                  y={Math.max(5, y - 55) + 16}
+                                  textAnchor="middle"
+                                  fill="#ffffff"
+                                  fontSize="10"
+                                  fontWeight="700"
+                                >
+                                  {param.name}
+                                </text>
+                                <text
+                                  x={Math.max(10, Math.min(650, x - 75)) + 75}
+                                  y={Math.max(5, y - 55) + 30}
+                                  textAnchor="middle"
+                                  fill="#f97316"
+                                  fontSize="11"
+                                  fontWeight="800"
+                                  fontFamily="monospace"
+                                >
+                                  Score: {param.score.toFixed(1)} / 10
+                                </text>
+                              </g>
+                            )}
+                          </g>
+                        );
+                      })}
+                    </svg>
+                  </div>
+
+                  {/* Responsive Parameter Cards (1 to 7 Fixed CPI Order) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pt-1">
+                    {cpiLineChartData.map((item, idx) => (
+                      <div
+                        key={item.name}
+                        onMouseEnter={() => setHoveredParamIndex(idx)}
+                        onMouseLeave={() => setHoveredParamIndex(null)}
+                        className={`p-2 rounded-xl border text-center transition-all cursor-pointer ${
+                          hoveredParamIndex === idx
+                            ? "bg-orange-50 border-orange-300 shadow-xs"
+                            : "bg-slate-50 border-slate-200 hover:bg-slate-100"
+                        }`}
+                      >
+                        <p className="text-[10px] font-extrabold text-slate-600 truncate uppercase" title={item.name}>
+                          {idx + 1}. {item.name}
+                        </p>
+                        <p className="text-xs font-black font-mono text-slate-900 mt-0.5">
+                          {item.score.toFixed(1)} <span className="text-[9px] text-slate-400 font-normal">/ 10</span>
+                        </p>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
 
           {/* SECTION 5 – KEY PERFORMANCE AREAS (STRONGEST TO WEAKEST) */}
