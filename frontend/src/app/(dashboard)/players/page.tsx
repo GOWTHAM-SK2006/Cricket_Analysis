@@ -7,7 +7,7 @@ import { uploadPlayerImage } from "@/lib/supabase";
 import {
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck,
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2
+  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
@@ -2668,8 +2668,9 @@ return (
           </div>
 
           {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS (CPI PERFORMANCE PROFILE LINE GRAPH) */}
-          <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left shadow-xs">
-            <div className="border-b border-slate-200 pb-2.5 flex justify-between items-end flex-wrap gap-2">
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-5 text-left shadow-xs">
+            {/* Header */}
+            <div className="border-b border-slate-200 pb-3 flex justify-between items-center flex-wrap gap-2">
               <div>
                 <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
                   <Award className="w-4 h-4 text-orange-500" />
@@ -2679,17 +2680,21 @@ return (
                   CPI PERFORMANCE PROFILE
                 </p>
               </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                <span>2D PERFORMANCE GRAPH</span>
+              </div>
             </div>
 
             {isHistoryLoading ? (
-              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
+              <div className="flex items-center justify-center p-10 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
-                  <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                  <span>Loading performance graph...</span>
+                  <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                  <span>Loading performance profile...</span>
                 </div>
               </div>
             ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
-              <div className="flex items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-200">
+              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
                   No assessment data recorded yet for this player.
                 </span>
@@ -2717,30 +2722,82 @@ return (
                 };
               });
 
+              // Summary stats for top banner
+              const totalScoreSum = cpiLineChartData.reduce((acc, curr) => acc + curr.score, 0);
+              const avgProfileScore = (totalScoreSum / 7).toFixed(1);
+              const topParam = [...cpiLineChartData].sort((a, b) => b.score - a.score)[0];
+              const highParamsCount = cpiLineChartData.filter((p) => p.score >= 7.0).length;
+
               return (
                 <div className="space-y-4 pt-1">
-                  {/* 2D Line Chart SVG */}
-                  <div className="relative bg-white p-2 sm:p-4 rounded-2xl border border-slate-200 overflow-hidden select-none">
+                  {/* Executive Summary Metrics Banner */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50/90 p-3.5 rounded-2xl border border-slate-200 text-left">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-600 font-bold shrink-0">
+                        <TrendingUp className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">PROFILE AVERAGE</p>
+                        <p className="text-base font-black text-slate-900 font-mono leading-none mt-0.5">{avgProfileScore} <span className="text-xs text-slate-400 font-bold">/ 10</span></p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-slate-200/80 pt-2 sm:pt-0 sm:pl-3">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 font-bold shrink-0">
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">PEAK PARAMETER</p>
+                        <p className="text-xs font-black text-slate-900 truncate mt-0.5">{topParam.name} ({topParam.score.toFixed(1)})</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-slate-200/80 pt-2 sm:pt-0 sm:pl-3">
+                      <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 font-bold shrink-0">
+                        <Target className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">BENCHMARK STATUS</p>
+                        <p className="text-xs font-black text-slate-900 mt-0.5">{highParamsCount} of 7 High (&ge;7.0)</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Premium 2D Line Chart Canvas */}
+                  <div className="relative bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden select-none">
                     <svg
-                      viewBox="0 0 800 320"
+                      viewBox="0 0 840 340"
                       className="w-full h-auto overflow-visible"
                     >
+                      <defs>
+                        {/* Gradient Fill under Line */}
+                        <linearGradient id="cpiAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f97316" stopOpacity="0.18" />
+                          <stop offset="100%" stopColor="#f97316" stopOpacity="0.0" />
+                        </linearGradient>
+
+                        {/* Drop shadow for nodes */}
+                        <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#0f172a" floodOpacity="0.12" />
+                        </filter>
+                      </defs>
+
                       {/* Subtle Grid Lines (Y-Axis Levels: 0, 2, 4, 6, 8, 10) */}
                       {[10, 8, 6, 4, 2, 0].map((level) => {
-                        const y = 45 + (1 - level / 10) * 200;
+                        const y = 50 + (1 - level / 10) * 210;
                         return (
                           <g key={level}>
                             <line
-                              x1="55"
+                              x1="60"
                               y1={y}
-                              x2="755"
+                              x2="790"
                               y2={y}
                               stroke="#e2e8f0"
                               strokeWidth="1"
                               strokeDasharray={level === 0 || level === 10 ? "none" : "4 4"}
                             />
                             <text
-                              x="42"
+                              x="45"
                               y={y + 4}
                               textAnchor="end"
                               fill="#64748b"
@@ -2754,10 +2811,41 @@ return (
                         );
                       })}
 
+                      {/* 7.0 Benchmark Reference Line */}
+                      {(() => {
+                        const benchY = 50 + (1 - 7.0 / 10) * 210;
+                        return (
+                          <g>
+                            <line
+                              x1="60"
+                              y1={benchY}
+                              x2="790"
+                              y2={benchY}
+                              stroke="#10b981"
+                              strokeWidth="1.5"
+                              strokeDasharray="6 6"
+                              opacity="0.5"
+                            />
+                            <text
+                              x="785"
+                              y={benchY - 6}
+                              textAnchor="end"
+                              fill="#10b981"
+                              fontSize="9"
+                              fontWeight="800"
+                              letterSpacing="1"
+                              fontFamily="sans-serif"
+                            >
+                              7.0 HIGH BENCHMARK
+                            </text>
+                          </g>
+                        );
+                      })()}
+
                       {/* Y-Axis Title */}
                       <text
                         x="18"
-                        y="25"
+                        y="28"
                         fill="#94a3b8"
                         fontSize="10"
                         fontWeight="800"
@@ -2767,12 +2855,31 @@ return (
                         SCORE
                       </text>
 
+                      {/* Gradient Fill under the line */}
+                      {(() => {
+                        const firstX = 60;
+                        const lastX = 790;
+                        const bottomY = 260;
+
+                        const linePoints = cpiLineChartData
+                          .map((param, i) => {
+                            const x = 60 + i * (730 / 6);
+                            const y = 50 + (1 - param.score / 10) * 210;
+                            return `${x},${y}`;
+                          })
+                          .join(" L ");
+
+                        const areaD = `M ${firstX},${bottomY} L ${linePoints} L ${lastX},${bottomY} Z`;
+
+                        return <path d={areaD} fill="url(#cpiAreaGradient)" />;
+                      })()}
+
                       {/* Connecting Line across all 7 parameters */}
                       {(() => {
                         const pathD = cpiLineChartData
                           .map((param, i) => {
-                            const x = 55 + i * (700 / 6);
-                            const y = 45 + (1 - param.score / 10) * 200;
+                            const x = 60 + i * (730 / 6);
+                            const y = 50 + (1 - param.score / 10) * 210;
                             return `${i === 0 ? "M" : "L"} ${x} ${y}`;
                           })
                           .join(" ");
@@ -2782,23 +2889,26 @@ return (
                             d={pathD}
                             fill="none"
                             stroke="#f97316"
-                            strokeWidth="2.5"
+                            strokeWidth="3"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                           />
                         );
                       })()}
 
-                      {/* Points, Labels, and Interactive Touch/Hover Zones */}
+                      {/* Data Points, Score Badges, Labels, and Interactive Touch/Hover */}
                       {cpiLineChartData.map((param, i) => {
-                        const x = 55 + i * (700 / 6);
-                        const y = 45 + (1 - param.score / 10) * 200;
+                        const x = 60 + i * (730 / 6);
+                        const y = 50 + (1 - param.score / 10) * 210;
                         const isHovered = hoveredParamIndex === i;
 
-                        // X-Axis Parameter Name split into lines for readability
+                        // X-Axis Parameter Name split into lines
                         const nameParts = param.name.split(" ");
                         const line1 = nameParts[0] || param.name;
                         const line2 = nameParts.slice(1).join(" ");
+
+                        // Status badge border color for node pill
+                        const statusColor = param.score >= 7.0 ? "#10b981" : param.score >= 5.0 ? "#f59e0b" : "#ef4444";
 
                         return (
                           <g
@@ -2808,58 +2918,98 @@ return (
                             onMouseLeave={() => setHoveredParamIndex(null)}
                             onClick={() => setHoveredParamIndex(hoveredParamIndex === i ? null : i)}
                           >
-                            {/* Invisible hit area for touch/hover */}
-                            <circle cx={x} cy={y} r="20" fill="transparent" />
+                            {/* Invisible touch/hover hit zone */}
+                            <circle cx={x} cy={y} r="22" fill="transparent" />
 
-                            {/* Hover Halo Ring */}
+                            {/* Halo Ring on Hover */}
                             {isHovered && (
-                              <circle cx={x} cy={y} r="12" fill="rgba(249, 115, 22, 0.15)" stroke="#f97316" strokeWidth="1" />
+                              <circle cx={x} cy={y} r="14" fill="rgba(249, 115, 22, 0.18)" stroke="#f97316" strokeWidth="1.5" />
                             )}
 
-                            {/* Circular Data Point */}
+                            {/* Node Shadow & Outer Ring */}
+                            <circle cx={x} cy={y} r="10" fill="#f97316" opacity="0.15" />
                             <circle
                               cx={x}
                               cy={y}
-                              r={isHovered ? "7" : "5.5"}
+                              r={isHovered ? "7.5" : "6"}
                               fill="#ffffff"
                               stroke="#f97316"
-                              strokeWidth="2.5"
+                              strokeWidth="3"
+                              filter="url(#nodeShadow)"
                             />
-                            <circle cx={x} cy={y} r={isHovered ? "3" : "2.5"} fill="#f97316" />
+                            <circle cx={x} cy={y} r={isHovered ? "3.5" : "2.5"} fill="#ea580c" />
 
-                            {/* Score Label directly above point */}
-                            <text
-                              x={x}
-                              y={y - 12}
-                              textAnchor="middle"
-                              fill="#0f172a"
-                              fontSize="11"
-                              fontWeight="800"
-                              fontFamily="monospace"
-                            >
-                              {param.score.toFixed(1)}
-                            </text>
+                            {/* Floating Score Badge above node */}
+                            <g transform={`translate(${x - 22}, ${y - 32})`}>
+                              <rect
+                                x="0"
+                                y="0"
+                                width="44"
+                                height="20"
+                                rx="6"
+                                fill="#ffffff"
+                                stroke={statusColor}
+                                strokeWidth="1.5"
+                                filter="url(#nodeShadow)"
+                              />
+                              <text
+                                x="22"
+                                y="14"
+                                textAnchor="middle"
+                                fill="#0f172a"
+                                fontSize="11"
+                                fontWeight="800"
+                                fontFamily="monospace"
+                              >
+                                {param.score.toFixed(1)}
+                              </text>
+                            </g>
 
-                            {/* X-Axis Parameter Text */}
+                            {/* X-Axis Step Number Indicator */}
+                            <g transform={`translate(${x - 9}, 272)`}>
+                              <rect
+                                x="0"
+                                y="0"
+                                width="18"
+                                height="14"
+                                rx="4"
+                                fill={isHovered ? "#ffedd5" : "#f1f5f9"}
+                                stroke={isHovered ? "#fdba74" : "#e2e8f0"}
+                                strokeWidth="1"
+                              />
+                              <text
+                                x="9"
+                                y="10.5"
+                                textAnchor="middle"
+                                fill={isHovered ? "#ea580c" : "#64748b"}
+                                fontSize="9"
+                                fontWeight="800"
+                                fontFamily="monospace"
+                              >
+                                {i + 1}
+                              </text>
+                            </g>
+
+                            {/* X-Axis Parameter Name Label */}
                             {line2 ? (
                               <>
                                 <text
                                   x={x}
-                                  y="272"
+                                  y="298"
                                   textAnchor="middle"
                                   fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="10"
-                                  fontWeight="700"
+                                  fontSize="10.5"
+                                  fontWeight="800"
                                 >
                                   {line1}
                                 </text>
                                 <text
                                   x={x}
-                                  y="284"
+                                  y="311"
                                   textAnchor="middle"
                                   fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="10"
-                                  fontWeight="700"
+                                  fontSize="10.5"
+                                  fontWeight="800"
                                 >
                                   {line2}
                                 </text>
@@ -2867,44 +3017,45 @@ return (
                             ) : (
                               <text
                                 x={x}
-                                y="278"
+                                y="305"
                                 textAnchor="middle"
                                 fill={isHovered ? "#ea580c" : "#0f172a"}
-                                fontSize="10"
-                                fontWeight="700"
+                                fontSize="10.5"
+                                fontWeight="800"
                               >
                                 {param.name}
                               </text>
                             )}
 
-                            {/* Hover / Tap Tooltip */}
+                            {/* Hover / Tap Floating Tooltip */}
                             {isHovered && (
-                              <g>
+                              <g transform={`translate(${Math.max(10, Math.min(680, x - 80))}, ${Math.max(5, y - 62)})`}>
                                 <rect
-                                  x={Math.max(10, Math.min(650, x - 75))}
-                                  y={Math.max(5, y - 55)}
-                                  width="150"
-                                  height="38"
-                                  rx="8"
+                                  x="0"
+                                  y="0"
+                                  width="160"
+                                  height="44"
+                                  rx="10"
                                   fill="#0f172a"
-                                  opacity="0.95"
+                                  opacity="0.96"
+                                  filter="url(#nodeShadow)"
                                 />
                                 <text
-                                  x={Math.max(10, Math.min(650, x - 75)) + 75}
-                                  y={Math.max(5, y - 55) + 16}
+                                  x="80"
+                                  y="18"
                                   textAnchor="middle"
                                   fill="#ffffff"
-                                  fontSize="10"
-                                  fontWeight="700"
+                                  fontSize="11"
+                                  fontWeight="800"
                                 >
                                   {param.name}
                                 </text>
                                 <text
-                                  x={Math.max(10, Math.min(650, x - 75)) + 75}
-                                  y={Math.max(5, y - 55) + 30}
+                                  x="80"
+                                  y="33"
                                   textAnchor="middle"
                                   fill="#f97316"
-                                  fontSize="11"
+                                  fontSize="12"
                                   fontWeight="800"
                                   fontFamily="monospace"
                                 >
