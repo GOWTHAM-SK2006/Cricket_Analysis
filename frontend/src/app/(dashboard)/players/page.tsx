@@ -2917,29 +2917,6 @@ return (
                       })}
                     </svg>
                   </div>
-
-                  {/* Responsive Parameter Cards (1 to 7 Fixed CPI Order) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pt-1">
-                    {cpiLineChartData.map((item, idx) => (
-                      <div
-                        key={item.name}
-                        onMouseEnter={() => setHoveredParamIndex(idx)}
-                        onMouseLeave={() => setHoveredParamIndex(null)}
-                        className={`p-2 rounded-xl border text-center transition-all cursor-pointer ${
-                          hoveredParamIndex === idx
-                            ? "bg-orange-50 border-orange-300 shadow-xs"
-                            : "bg-slate-50 border-slate-200 hover:bg-slate-100"
-                        }`}
-                      >
-                        <p className="text-[10px] font-extrabold text-slate-600 truncate uppercase" title={item.name}>
-                          {idx + 1}. {item.name}
-                        </p>
-                        <p className="text-xs font-black font-mono text-slate-900 mt-0.5">
-                          {item.score.toFixed(1)} <span className="text-[9px] text-slate-400 font-normal">/ 10</span>
-                        </p>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               );
             })()}
