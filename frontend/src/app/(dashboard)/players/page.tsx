@@ -2764,7 +2764,7 @@ return (
                   {/* Premium 2D Line Chart Canvas */}
                   <div className="relative bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden select-none">
                     <svg
-                      viewBox="0 0 840 340"
+                      viewBox="0 0 860 360"
                       className="w-full h-auto overflow-visible"
                     >
                       <defs>
@@ -2782,25 +2782,25 @@ return (
 
                       {/* Subtle Grid Lines (Y-Axis Levels: 0, 2, 4, 6, 8, 10) */}
                       {[10, 8, 6, 4, 2, 0].map((level) => {
-                        const y = 50 + (1 - level / 10) * 210;
+                        const y = 50 + (1 - level / 10) * 220;
                         return (
                           <g key={level}>
                             <line
-                              x1="60"
+                              x1="65"
                               y1={y}
-                              x2="790"
+                              x2="805"
                               y2={y}
                               stroke="#e2e8f0"
                               strokeWidth="1"
                               strokeDasharray={level === 0 || level === 10 ? "none" : "4 4"}
                             />
                             <text
-                              x="45"
+                              x="48"
                               y={y + 4}
                               textAnchor="end"
-                              fill="#64748b"
-                              fontSize="11"
-                              fontWeight="700"
+                              fill="#475569"
+                              fontSize="13"
+                              fontWeight="800"
                               fontFamily="monospace"
                             >
                               {level}
@@ -2811,25 +2811,25 @@ return (
 
                       {/* 7.0 Benchmark Reference Line */}
                       {(() => {
-                        const benchY = 50 + (1 - 7.0 / 10) * 210;
+                        const benchY = 50 + (1 - 7.0 / 10) * 220;
                         return (
                           <g>
                             <line
-                              x1="60"
+                              x1="65"
                               y1={benchY}
-                              x2="790"
+                              x2="805"
                               y2={benchY}
                               stroke="#10b981"
                               strokeWidth="1.5"
                               strokeDasharray="6 6"
-                              opacity="0.5"
+                              opacity="0.6"
                             />
                             <text
-                              x="785"
+                              x="800"
                               y={benchY - 6}
                               textAnchor="end"
                               fill="#10b981"
-                              fontSize="9"
+                              fontSize="11"
                               fontWeight="800"
                               letterSpacing="1"
                               fontFamily="sans-serif"
@@ -2844,25 +2844,25 @@ return (
                       <text
                         x="18"
                         y="28"
-                        fill="#94a3b8"
-                        fontSize="10"
-                        fontWeight="800"
+                        fill="#64748b"
+                        fontSize="12"
+                        fontWeight="900"
                         fontFamily="sans-serif"
-                        letterSpacing="1"
+                        letterSpacing="1.5"
                       >
                         SCORE
                       </text>
 
                       {/* Gradient Fill under the line */}
                       {(() => {
-                        const firstX = 60;
-                        const lastX = 790;
-                        const bottomY = 260;
+                        const firstX = 65;
+                        const lastX = 805;
+                        const bottomY = 270;
 
                         const linePoints = cpiLineChartData
                           .map((param, i) => {
-                            const x = 60 + i * (730 / 6);
-                            const y = 50 + (1 - param.score / 10) * 210;
+                            const x = 65 + i * (740 / 6);
+                            const y = 50 + (1 - param.score / 10) * 220;
                             return `${x},${y}`;
                           })
                           .join(" L ");
@@ -2876,8 +2876,8 @@ return (
                       {(() => {
                         const pathD = cpiLineChartData
                           .map((param, i) => {
-                            const x = 60 + i * (730 / 6);
-                            const y = 50 + (1 - param.score / 10) * 210;
+                            const x = 65 + i * (740 / 6);
+                            const y = 50 + (1 - param.score / 10) * 220;
                             return `${i === 0 ? "M" : "L"} ${x} ${y}`;
                           })
                           .join(" ");
@@ -2887,7 +2887,7 @@ return (
                             d={pathD}
                             fill="none"
                             stroke="#f97316"
-                            strokeWidth="3"
+                            strokeWidth="3.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                           />
@@ -2896,8 +2896,8 @@ return (
 
                       {/* Data Points, Score Badges, Labels, and Interactive Touch/Hover */}
                       {cpiLineChartData.map((param, i) => {
-                        const x = 60 + i * (730 / 6);
-                        const y = 50 + (1 - param.score / 10) * 210;
+                        const x = 65 + i * (740 / 6);
+                        const y = 50 + (1 - param.score / 10) * 220;
                         const isHovered = hoveredParamIndex === i;
 
                         // X-Axis Parameter Name split into lines
@@ -2917,46 +2917,46 @@ return (
                             onClick={() => setHoveredParamIndex(hoveredParamIndex === i ? null : i)}
                           >
                             {/* Invisible touch/hover hit zone */}
-                            <circle cx={x} cy={y} r="22" fill="transparent" />
+                            <circle cx={x} cy={y} r="24" fill="transparent" />
 
                             {/* Halo Ring on Hover */}
                             {isHovered && (
-                              <circle cx={x} cy={y} r="14" fill="rgba(249, 115, 22, 0.18)" stroke="#f97316" strokeWidth="1.5" />
+                              <circle cx={x} cy={y} r="15" fill="rgba(249, 115, 22, 0.2)" stroke="#f97316" strokeWidth="2" />
                             )}
 
                             {/* Node Shadow & Outer Ring */}
-                            <circle cx={x} cy={y} r="10" fill="#f97316" opacity="0.15" />
+                            <circle cx={x} cy={y} r="11" fill="#f97316" opacity="0.15" />
                             <circle
                               cx={x}
                               cy={y}
-                              r={isHovered ? "7.5" : "6"}
+                              r={isHovered ? "8" : "6.5"}
                               fill="#ffffff"
                               stroke="#f97316"
-                              strokeWidth="3"
+                              strokeWidth="3.5"
                               filter="url(#nodeShadow)"
                             />
-                            <circle cx={x} cy={y} r={isHovered ? "3.5" : "2.5"} fill="#ea580c" />
+                            <circle cx={x} cy={y} r={isHovered ? "4" : "3"} fill="#ea580c" />
 
                             {/* Floating Score Badge above node */}
-                            <g transform={`translate(${x - 22}, ${y - 32})`}>
+                            <g transform={`translate(${x - 25}, ${y - 36})`}>
                               <rect
                                 x="0"
                                 y="0"
-                                width="44"
-                                height="20"
-                                rx="6"
+                                width="50"
+                                height="22"
+                                rx="7"
                                 fill="#ffffff"
                                 stroke={statusColor}
-                                strokeWidth="1.5"
+                                strokeWidth="2"
                                 filter="url(#nodeShadow)"
                               />
                               <text
-                                x="22"
-                                y="14"
+                                x="25"
+                                y="15.5"
                                 textAnchor="middle"
                                 fill="#0f172a"
-                                fontSize="11"
-                                fontWeight="800"
+                                fontSize="13"
+                                fontWeight="900"
                                 fontFamily="monospace"
                               >
                                 {param.score.toFixed(1)}
@@ -2964,24 +2964,24 @@ return (
                             </g>
 
                             {/* X-Axis Step Number Indicator */}
-                            <g transform={`translate(${x - 9}, 272)`}>
+                            <g transform={`translate(${x - 11}, 282)`}>
                               <rect
                                 x="0"
                                 y="0"
-                                width="18"
-                                height="14"
-                                rx="4"
+                                width="22"
+                                height="16"
+                                rx="5"
                                 fill={isHovered ? "#ffedd5" : "#f1f5f9"}
-                                stroke={isHovered ? "#fdba74" : "#e2e8f0"}
-                                strokeWidth="1"
+                                stroke={isHovered ? "#fdba74" : "#cbd5e1"}
+                                strokeWidth="1.2"
                               />
                               <text
-                                x="9"
-                                y="10.5"
+                                x="11"
+                                y="12"
                                 textAnchor="middle"
-                                fill={isHovered ? "#ea580c" : "#64748b"}
-                                fontSize="9"
-                                fontWeight="800"
+                                fill={isHovered ? "#ea580c" : "#475569"}
+                                fontSize="11"
+                                fontWeight="900"
                                 fontFamily="monospace"
                               >
                                 {i + 1}
@@ -2993,21 +2993,21 @@ return (
                               <>
                                 <text
                                   x={x}
-                                  y="298"
+                                  y="312"
                                   textAnchor="middle"
                                   fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="10.5"
-                                  fontWeight="800"
+                                  fontSize="12.5"
+                                  fontWeight="900"
                                 >
                                   {line1}
                                 </text>
                                 <text
                                   x={x}
-                                  y="311"
+                                  y="327"
                                   textAnchor="middle"
                                   fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="10.5"
-                                  fontWeight="800"
+                                  fontSize="12.5"
+                                  fontWeight="900"
                                 >
                                   {line2}
                                 </text>
@@ -3015,11 +3015,11 @@ return (
                             ) : (
                               <text
                                 x={x}
-                                y="305"
+                                y="320"
                                 textAnchor="middle"
                                 fill={isHovered ? "#ea580c" : "#0f172a"}
-                                fontSize="10.5"
-                                fontWeight="800"
+                                fontSize="12.5"
+                                fontWeight="900"
                               >
                                 {param.name}
                               </text>
@@ -3027,34 +3027,34 @@ return (
 
                             {/* Hover / Tap Floating Tooltip */}
                             {isHovered && (
-                              <g transform={`translate(${Math.max(10, Math.min(680, x - 80))}, ${Math.max(5, y - 62)})`}>
+                              <g transform={`translate(${Math.max(10, Math.min(680, x - 85))}, ${Math.max(5, y - 68)})`}>
                                 <rect
                                   x="0"
                                   y="0"
-                                  width="160"
-                                  height="44"
+                                  width="170"
+                                  height="48"
                                   rx="10"
                                   fill="#0f172a"
                                   opacity="0.96"
                                   filter="url(#nodeShadow)"
                                 />
                                 <text
-                                  x="80"
-                                  y="18"
+                                  x="85"
+                                  y="20"
                                   textAnchor="middle"
                                   fill="#ffffff"
-                                  fontSize="11"
+                                  fontSize="12"
                                   fontWeight="800"
                                 >
                                   {param.name}
                                 </text>
                                 <text
-                                  x="80"
-                                  y="33"
+                                  x="85"
+                                  y="36"
                                   textAnchor="middle"
                                   fill="#f97316"
-                                  fontSize="12"
-                                  fontWeight="800"
+                                  fontSize="13"
+                                  fontWeight="900"
                                   fontFamily="monospace"
                                 >
                                   Score: {param.score.toFixed(1)} / 10
