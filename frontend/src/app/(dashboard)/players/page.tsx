@@ -2315,8 +2315,6 @@ return (
       // Dynamically generate focus areas from the 7 CPI parameters ranked Strongest to Weakest
       const focusAreas = computeFocusAreasForPlayer(selectedPlayer, practiceHistory, matchHistory);
 
-      // Compute Key Performance Highlights strictly from the 7 CPI parameter scores
-      const { strongestArea, needsImprovement, weakestArea } = computeKeyPerformanceHighlightsFromFocusAreas(focusAreas);
 
       // Get self-assessment averages
       const getSelfAverages = () => {
@@ -2668,20 +2666,23 @@ return (
             </div>
           </div>
 
-          {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left">
-            <div className="border-b border-slate-200 pb-2">
+          {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS (CPI PERFORMANCE PROFILE) */}
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-5.5 space-y-4 text-left shadow-xs">
+            <div className="border-b border-slate-200 pb-2.5">
               <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
                 <Award className="w-4 h-4 text-orange-500" />
                 KEY PERFORMANCE HIGHLIGHTS
               </h3>
+              <p className="text-[11px] sm:text-xs font-extrabold text-slate-500 tracking-wider uppercase mt-0.5">
+                CPI PERFORMANCE PROFILE
+              </p>
             </div>
 
             {isHistoryLoading ? (
               <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
                   <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                  <span>Loading performance highlights...</span>
+                  <span>Loading performance profile...</span>
                 </div>
               </div>
             ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
@@ -2691,18 +2692,68 @@ return (
                 </span>
               </div>
             ) : (
-              <div className="space-y-3 pt-1">
-                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
-                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Strongest Area</span>
-                  <span className="text-xs font-bold text-green-600 uppercase text-right leading-snug">{strongestArea}</span>
+              <div className="space-y-4 pt-1">
+                {/* 0-10 Scale Legend Header */}
+                <div className="hidden sm:flex justify-between items-center text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-1 border-b border-slate-100 pb-1.5">
+                  <span>0.0</span>
+                  <span>2.5</span>
+                  <span>5.0 (AVG)</span>
+                  <span>7.5 (HIGH)</span>
+                  <span>10.0</span>
                 </div>
-                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
-                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Needs Improvement</span>
-                  <span className="text-xs font-bold text-orange-600 uppercase text-right leading-snug">{needsImprovement}</span>
-                </div>
-                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 gap-2">
-                  <span className="text-xs sm:text-sm font-extrabold text-slate-900 uppercase shrink-0">Weakest Area</span>
-                  <span className="text-xs font-bold text-red-600 uppercase text-right leading-snug">{weakestArea}</span>
+
+                {/* 7 CPI Horizontal Parameter Bars */}
+                <div className="space-y-3">
+                  {focusAreas.map((param, idx) => {
+                    const score = typeof param.avg === "number" ? param.avg : 0;
+                    const barWidthPercent = Math.min(100, Math.max(0, (score / 10) * 100));
+
+                    let statusText = "Average";
+                    let statusStyle = "bg-amber-50 text-amber-700 border-amber-200/80";
+                    let statusDot = "bg-amber-500";
+
+                    if (score >= 7.0) {
+                      statusText = "High";
+                      statusStyle = "bg-emerald-50 text-emerald-700 border-emerald-200/80";
+                      statusDot = "bg-emerald-500";
+                    } else if (score < 5.0) {
+                      statusText = "Low";
+                      statusStyle = "bg-rose-50 text-rose-700 border-rose-200/80";
+                      statusDot = "bg-rose-500";
+                    }
+
+                    return (
+                      <div
+                        key={param.title || idx}
+                        className="p-3 bg-slate-50/80 border border-slate-200/90 rounded-2xl space-y-2 hover:bg-slate-50 transition-colors"
+                      >
+                        {/* Parameter Name, Status Badge, Score */}
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight whitespace-normal">
+                              {param.title}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border uppercase tracking-wider inline-flex items-center gap-1 shrink-0 ${statusStyle}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
+                              {statusText}
+                            </span>
+                          </div>
+
+                          <div className="text-xs sm:text-sm font-bold font-mono text-slate-900 shrink-0">
+                            {score.toFixed(1)} <span className="text-slate-400 font-semibold text-[11px] sm:text-xs">/ 10</span>
+                          </div>
+                        </div>
+
+                        {/* Progress Bar (0-10 scale) */}
+                        <div className="w-full h-3 bg-slate-200/70 border border-slate-200/80 rounded-full overflow-hidden p-0.5 relative">
+                          <div
+                            className="h-full bg-orange-500 rounded-full transition-all duration-500 ease-out"
+                            style={{ width: `${barWidthPercent}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
