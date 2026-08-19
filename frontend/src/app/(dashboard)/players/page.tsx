@@ -2764,7 +2764,7 @@ return (
                   {/* Premium 2D Line Chart Canvas */}
                   <div className="relative bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden select-none">
                     <svg
-                      viewBox="0 0 860 360"
+                      viewBox="0 0 860 385"
                       className="w-full h-auto overflow-visible"
                     >
                       <defs>
@@ -2782,7 +2782,7 @@ return (
 
                       {/* Subtle Grid Lines (Y-Axis Levels: 0, 2, 4, 6, 8, 10) */}
                       {[10, 8, 6, 4, 2, 0].map((level) => {
-                        const y = 50 + (1 - level / 10) * 220;
+                        const y = 45 + (1 - level / 10) * 215;
                         return (
                           <g key={level}>
                             <line
@@ -2811,7 +2811,7 @@ return (
 
                       {/* 7.0 Benchmark Reference Line */}
                       {(() => {
-                        const benchY = 50 + (1 - 7.0 / 10) * 220;
+                        const benchY = 45 + (1 - 7.0 / 10) * 215;
                         return (
                           <g>
                             <line
@@ -2843,7 +2843,7 @@ return (
                       {/* Y-Axis Title */}
                       <text
                         x="18"
-                        y="28"
+                        y="26"
                         fill="#64748b"
                         fontSize="12"
                         fontWeight="900"
@@ -2857,12 +2857,12 @@ return (
                       {(() => {
                         const firstX = 65;
                         const lastX = 805;
-                        const bottomY = 270;
+                        const bottomY = 260;
 
                         const linePoints = cpiLineChartData
                           .map((param, i) => {
                             const x = 65 + i * (740 / 6);
-                            const y = 50 + (1 - param.score / 10) * 220;
+                            const y = 45 + (1 - param.score / 10) * 215;
                             return `${x},${y}`;
                           })
                           .join(" L ");
@@ -2877,7 +2877,7 @@ return (
                         const pathD = cpiLineChartData
                           .map((param, i) => {
                             const x = 65 + i * (740 / 6);
-                            const y = 50 + (1 - param.score / 10) * 220;
+                            const y = 45 + (1 - param.score / 10) * 215;
                             return `${i === 0 ? "M" : "L"} ${x} ${y}`;
                           })
                           .join(" ");
@@ -2897,7 +2897,7 @@ return (
                       {/* Data Points, Score Badges, Labels, and Interactive Touch/Hover */}
                       {cpiLineChartData.map((param, i) => {
                         const x = 65 + i * (740 / 6);
-                        const y = 50 + (1 - param.score / 10) * 220;
+                        const y = 45 + (1 - param.score / 10) * 215;
                         const isHovered = hoveredParamIndex === i;
 
                         // X-Axis Parameter Name split into lines
@@ -2964,23 +2964,23 @@ return (
                             </g>
 
                             {/* X-Axis Step Number Indicator */}
-                            <g transform={`translate(${x - 11}, 282)`}>
+                            <g transform={`translate(${x - 13}, 276)`}>
                               <rect
                                 x="0"
                                 y="0"
-                                width="22"
-                                height="16"
-                                rx="5"
+                                width="26"
+                                height="18"
+                                rx="6"
                                 fill={isHovered ? "#ffedd5" : "#f1f5f9"}
                                 stroke={isHovered ? "#fdba74" : "#cbd5e1"}
                                 strokeWidth="1.2"
                               />
                               <text
-                                x="11"
-                                y="12"
+                                x="13"
+                                y="13.5"
                                 textAnchor="middle"
-                                fill={isHovered ? "#ea580c" : "#475569"}
-                                fontSize="11"
+                                fill={isHovered ? "#ea580c" : "#334155"}
+                                fontSize="12.5"
                                 fontWeight="900"
                                 fontFamily="monospace"
                               >
@@ -2988,25 +2988,25 @@ return (
                               </text>
                             </g>
 
-                            {/* X-Axis Parameter Name Label */}
+                            {/* X-Axis Parameter Name Label (Prominent Extra Large Text) */}
                             {line2 ? (
                               <>
                                 <text
                                   x={x}
-                                  y="312"
+                                  y="314"
                                   textAnchor="middle"
                                   fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="12.5"
+                                  fontSize="15.5"
                                   fontWeight="900"
                                 >
                                   {line1}
                                 </text>
                                 <text
                                   x={x}
-                                  y="327"
+                                  y="333"
                                   textAnchor="middle"
                                   fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="12.5"
+                                  fontSize="15.5"
                                   fontWeight="900"
                                 >
                                   {line2}
@@ -3015,10 +3015,10 @@ return (
                             ) : (
                               <text
                                 x={x}
-                                y="320"
+                                y="324"
                                 textAnchor="middle"
                                 fill={isHovered ? "#ea580c" : "#0f172a"}
-                                fontSize="12.5"
+                                fontSize="16.5"
                                 fontWeight="900"
                               >
                                 {param.name}
