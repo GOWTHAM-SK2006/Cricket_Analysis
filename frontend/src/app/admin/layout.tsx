@@ -96,17 +96,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <ToastContext.Provider value={{ showToast }}>
       <div className="flex h-screen bg-slate-50 font-sans antialiased text-slate-800 overflow-hidden">
-        {/* Dark Navy Sidebar */}
-        <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 shadow-2xl z-20">
+        {/* Light White Sidebar */}
+        <aside className="w-64 bg-white text-slate-800 flex flex-col shrink-0 border-r border-slate-200 shadow-xs z-20">
           {/* Brand Header */}
-          <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950/60">
+          <div className="h-16 flex items-center px-6 border-b border-slate-200 bg-slate-50">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-orange-600/30">
+              <div className="w-9 h-9 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-lg shadow-sm shadow-orange-500/30">
                 CPI
               </div>
               <div>
-                <h1 className="font-black text-white tracking-wider text-xs uppercase">CPI MASTER ADMIN</h1>
-                <p className="text-[10px] text-orange-400 font-bold tracking-widest uppercase">Platform Console</p>
+                <h1 className="font-black text-slate-900 tracking-wider text-xs uppercase">CPI MASTER ADMIN</h1>
+                <p className="text-[10px] text-orange-600 font-extrabold tracking-widest uppercase">Platform Console</p>
               </div>
             </div>
           </div>
@@ -125,11 +125,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   href={item.path}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
                     isActive
-                      ? "bg-orange-600 text-white font-bold shadow-md shadow-orange-600/30"
-                      : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/80"
+                      ? "bg-orange-500 text-white font-bold shadow-sm shadow-orange-500/20"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
-                  <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-slate-200"}`} />
+                  <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-white" : "text-slate-500 group-hover:text-slate-900"}`} />
                   <span className="truncate">{item.name}</span>
                   {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-80 shrink-0" />}
                 </Link>
@@ -138,29 +138,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-slate-800/80 transition-all group mt-3 border-t border-slate-800/80"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 transition-all group mt-3 border-t border-slate-200"
             >
-              <LogOut className="w-4 h-4 text-slate-400 group-hover:text-red-400 transition-colors" />
+              <LogOut className="w-4 h-4 text-slate-500 group-hover:text-red-600 transition-colors" />
               <span>Logout</span>
             </button>
           </nav>
 
           {/* User Profile Footer */}
-          <div className="p-4 border-t border-slate-800 bg-slate-950/60">
+          <div className="p-4 border-t border-slate-200 bg-slate-50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
                   <User className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white leading-tight">{adminUser}</p>
-                  <p className="text-[10px] text-slate-400 leading-tight">Master Administrator</p>
+                  <p className="text-xs font-bold text-slate-900 leading-tight">{adminUser}</p>
+                  <p className="text-[10px] text-slate-500 leading-tight font-medium">Master Administrator</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
                 title="Logout"
-                className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -171,7 +171,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
           {/* Top Admin Header Bar with Global Search */}
-          <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between shrink-0 shadow-sm z-10">
+          <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between shrink-0 shadow-xs z-10">
             {/* Global Search Bar */}
             <div className="relative w-72 md:w-96">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
@@ -197,17 +197,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {toasts.map((toast) => (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-center gap-3 p-3.5 rounded-xl shadow-xl text-xs font-bold border text-white transition-all ${
+              className={`pointer-events-auto flex items-center gap-3 p-3.5 rounded-xl shadow-xl text-xs font-bold border transition-all ${
                 toast.type === "success"
-                  ? "bg-slate-900 border-emerald-500 text-emerald-100"
+                  ? "bg-white border-emerald-500 text-slate-900"
                   : toast.type === "error"
-                  ? "bg-slate-900 border-red-500 text-red-100"
-                  : "bg-slate-900 border-sky-500 text-sky-100"
+                  ? "bg-white border-red-500 text-slate-900"
+                  : "bg-white border-sky-500 text-slate-900"
               }`}
             >
-              {toast.type === "success" && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
-              {toast.type === "error" && <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />}
-              {toast.type === "info" && <ShieldAlert className="w-4 h-4 text-sky-400 shrink-0" />}
+              {toast.type === "success" && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
+              {toast.type === "error" && <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />}
+              {toast.type === "info" && <ShieldAlert className="w-4 h-4 text-sky-500 shrink-0" />}
               <span>{toast.message}</span>
             </div>
           ))}

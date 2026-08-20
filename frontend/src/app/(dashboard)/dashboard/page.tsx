@@ -302,7 +302,7 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="text-left relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-slate-50/80 to-orange-50/30 border border-slate-200/80 shadow-sm p-5 sm:p-6 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/20 dark:border-slate-800"
+        className="text-left relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-slate-50/80 to-orange-50/30 border border-slate-200/80 shadow-sm p-5 sm:p-6"
       >
         {/* Subtle Ambient Glow */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
@@ -310,32 +310,32 @@ export default function DashboardPage() {
         <div className="relative z-10 flex flex-col gap-3">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-extrabold text-[9.5px] tracking-widest uppercase mb-1.5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 font-extrabold text-[9.5px] tracking-widest uppercase mb-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
                 WELCOME BACK COACH
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-none flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 uppercase tracking-tight leading-none flex items-center gap-2">
                 {coachName || (typeof window !== "undefined" ? localStorage.getItem("userName") : "") || "COACH"}
                 <span className="text-orange-500">⚡</span>
               </h1>
             </div>
             
             {/* Top Right Live Analytics Pill */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs backdrop-blur-md">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-md">
               <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
-              <span className="text-[9.5px] font-black tracking-widest text-slate-700 dark:text-slate-300 uppercase">
+              <span className="text-[9.5px] font-black tracking-widest text-slate-700 uppercase">
                 CPI HOBBY
               </span>
             </div>
           </div>
 
           {/* Bottom Info Row */}
-          <div className="pt-2.5 mt-0.5 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
+          <div className="pt-2.5 mt-0.5 border-t border-slate-200/60 flex items-center justify-between text-[10px] font-bold text-slate-500">
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="uppercase tracking-wider font-bold text-slate-600 dark:text-slate-400">Analytics Engine Active</span>
+              <span className="uppercase tracking-wider font-bold text-slate-600">Analytics Engine Active</span>
             </div>
-            <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-extrabold uppercase tracking-wider">
+            <div className="flex items-center gap-1 text-orange-600 font-extrabold uppercase tracking-wider">
               <Sparkles className="w-3 h-3" />
               <span>CPI INDEX</span>
             </div>

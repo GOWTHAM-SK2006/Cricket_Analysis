@@ -304,29 +304,29 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
           className="bg-white border border-slate-200/90 rounded-3xl w-full max-w-xl h-[620px] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl shadow-orange-500/10"
         >
           {/* Header */}
-          <div className="px-5 py-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white flex justify-between items-center relative overflow-hidden border-b border-slate-700/50">
+          <div className="px-5 py-4 bg-slate-50 text-slate-900 flex justify-between items-center relative overflow-hidden border-b border-slate-200">
             {/* Subtle background glow */}
-            <div className="absolute -top-12 -left-12 w-32 h-32 bg-orange-500/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -top-12 -left-12 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl pointer-events-none" />
             
             <div className="flex items-center gap-3.5 z-10">
               <div className="relative">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-slate-950 shadow-md shadow-orange-500/30 font-bold border border-orange-300/40">
+                <div className="w-10 h-10 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-sm shadow-orange-500/30 font-bold border border-orange-400">
                   <Bot className="w-6 h-6 stroke-[2.2]" />
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-900 flex items-center justify-center">
+                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping opacity-75" />
                 </span>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-black tracking-wider uppercase text-white">AI CRICKET COACH</h3>
-                  <span className="text-[10px] font-extrabold bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full tracking-wide">
+                  <h3 className="text-sm font-black tracking-wider uppercase text-slate-900">AI CRICKET COACH</h3>
+                  <span className="text-[10px] font-extrabold bg-orange-500/10 text-orange-600 border border-orange-500/20 px-2 py-0.5 rounded-full tracking-wide">
                     PRO
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <p className="text-[11px] text-slate-300 font-medium">Smart Performance & Analytics Engine</p>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <p className="text-[11px] text-slate-500 font-semibold">Smart Performance & Analytics Engine</p>
                 </div>
               </div>
             </div>
@@ -335,14 +335,14 @@ export default function AIChatModal({ isOpen, onClose, userRole }: AIChatModalPr
               <button
                 onClick={handleClearChat}
                 title="Reset Conversation"
-                className="text-slate-400 hover:text-orange-400 hover:bg-slate-800/80 p-2 rounded-xl transition-all cursor-pointer"
+                className="text-slate-500 hover:text-orange-600 hover:bg-slate-200/70 p-2 rounded-xl transition-all cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
               <button
                 onClick={onClose}
                 title="Close Modal"
-                className="text-slate-400 hover:text-white hover:bg-slate-800/80 p-2 rounded-xl transition-all cursor-pointer"
+                className="text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 p-2 rounded-xl transition-all cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>

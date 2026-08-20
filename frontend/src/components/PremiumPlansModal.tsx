@@ -44,37 +44,37 @@ export default function PremiumPlansModal({ isOpen, onClose }: PremiumPlansModal
       <div className="relative w-full max-w-5xl bg-slate-50 border border-slate-200 rounded-3xl shadow-2xl overflow-hidden z-10 my-auto text-slate-900 select-none">
         
         {/* Top Header Banner */}
-        <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-8 text-white border-b border-slate-800">
+        <div className="relative bg-slate-50 p-6 sm:p-8 text-slate-900 border-b border-slate-200">
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-all cursor-pointer border border-slate-700 shadow-md"
+            className="absolute top-5 right-5 p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-all cursor-pointer border border-slate-200 shadow-xs"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
 
           <div className="max-w-2xl space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-400 text-xs font-black uppercase tracking-widest">
-              <Crown className="w-4 h-4 fill-orange-400 stroke-orange-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-xs font-black uppercase tracking-widest">
+              <Crown className="w-4 h-4 fill-orange-500 stroke-orange-500" />
               <span>CPI PREMIUM PLANS</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-slate-900">
               Upgrade Your Coaching Superpowers
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 font-semibold leading-relaxed">
               Unlock advanced performance analytics, AI coaching insights, unlimited squad reports, and custom academy synchronization.
             </p>
           </div>
 
           {/* Billing Cycle Toggle */}
-          <div className="mt-6 inline-flex items-center bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700">
+          <div className="mt-6 inline-flex items-center bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
             <button
               onClick={() => setBillingCycle("monthly")}
               className={`px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase transition-all cursor-pointer ${
                 billingCycle === "monthly"
-                  ? "bg-orange-500 text-black shadow-md"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-orange-500 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Monthly Billing
@@ -83,12 +83,12 @@ export default function PremiumPlansModal({ isOpen, onClose }: PremiumPlansModal
               onClick={() => setBillingCycle("annual")}
               className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase transition-all cursor-pointer ${
                 billingCycle === "annual"
-                  ? "bg-orange-500 text-black shadow-md"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-orange-500 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               <span>Annual Billing</span>
-              <span className="px-1.5 py-0.5 rounded-md bg-emerald-500 text-black text-[9px] font-black">
+              <span className="px-1.5 py-0.5 rounded-md bg-emerald-500 text-white text-[9px] font-black">
                 SAVE 20%
               </span>
             </button>
@@ -261,39 +261,39 @@ export default function PremiumPlansModal({ isOpen, onClose }: PremiumPlansModal
 
 
           {/* 3. ELITE (PREMIUM / HIGHEST TIER) */}
-          <div className="bg-slate-900 text-white border-2 border-amber-400/80 rounded-3xl p-6 flex flex-col justify-between space-y-6 shadow-2xl hover:border-amber-400 transition-all relative">
+          <div className="bg-white text-slate-900 border-2 border-orange-500/80 rounded-3xl p-6 flex flex-col justify-between space-y-6 shadow-md shadow-orange-500/10 hover:border-orange-500 transition-all relative">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-black tracking-widest text-amber-400 uppercase">TIER 03</span>
-                <span className="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-black uppercase flex items-center gap-1">
-                  <Crown className="w-3 h-3 text-amber-300" />
+                <span className="text-xs font-black tracking-widest text-orange-600 uppercase">TIER 03</span>
+                <span className="px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-600 text-[10px] font-black uppercase flex items-center gap-1">
+                  <Crown className="w-3 h-3 text-orange-600" />
                   ELITE ACADEMY
                 </span>
               </div>
 
-              <h3 className="text-xl font-black text-white uppercase flex items-center gap-2">
+              <h3 className="text-xl font-black text-slate-900 uppercase flex items-center gap-2">
                 <span>ELITE</span>
-                <Sparkles className="w-5 h-5 text-amber-400" />
+                <Sparkles className="w-5 h-5 text-orange-500" />
               </h3>
-              <p className="text-xs text-slate-300 font-semibold leading-relaxed mt-1">
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed mt-1">
                 For elite high-performance academies & franchise teams.
               </p>
 
-              <div className="my-5 pb-5 border-b border-slate-800">
+              <div className="my-5 pb-5 border-b border-slate-200">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-white">
+                  <span className="text-3xl font-black text-slate-900">
                     {billingCycle === "monthly" ? "$79" : "$63"}
                   </span>
-                  <span className="text-xs font-extrabold text-slate-400">/ month</span>
+                  <span className="text-xs font-extrabold text-slate-500">/ month</span>
                 </div>
-                <span className="text-[10px] text-amber-400 font-bold uppercase block mt-1">
+                <span className="text-[10px] text-orange-600 font-bold uppercase block mt-1">
                   {billingCycle === "annual" ? "Billed $756 annually" : "Billed monthly"}
                 </span>
               </div>
 
               <div className="space-y-3 text-xs">
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">Everything in Pro, plus:</span>
-                <ul className="space-y-2.5 font-semibold text-slate-200">
+                <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 block">Everything in Pro, plus:</span>
+                <ul className="space-y-2.5 font-semibold text-slate-700">
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-amber-400 shrink-0 stroke-[3]" />
                     <span><strong>Unlimited Players & Squads</strong></span>

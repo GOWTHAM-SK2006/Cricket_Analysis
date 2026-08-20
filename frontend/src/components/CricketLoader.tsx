@@ -69,8 +69,8 @@ export default function CricketLoader({
 
   if (fullScreen) {
     return (
-      <div className={`fixed inset-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 ${className}`}>
-        <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl flex flex-col items-center">
+      <div className={`fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 ${className}`}>
+        <div className="p-6 bg-white border border-slate-200 rounded-3xl shadow-xl flex flex-col items-center">
           {content}
         </div>
       </div>
