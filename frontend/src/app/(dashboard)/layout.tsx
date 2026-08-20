@@ -26,13 +26,19 @@ export default function DashboardLayout({
   const [showTour, setShowTour] = useState(false);
   const [tourPage, setTourPage] = useState<"dashboard" | "players">("dashboard");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("profileAvatar_default") || localStorage.getItem("userAvatar") || null;
+    }
+    return null;
+  });
 
   useEffect(() => {
     const handleAvatarUpdate = () => {
-      const saved = localStorage.getItem("profileAvatar_default");
+      const saved = localStorage.getItem("profileAvatar_default") || localStorage.getItem("userAvatar");
       if (saved) setUserAvatar(saved);
     };
+    handleAvatarUpdate();
     window.addEventListener("profileAvatarUpdated", handleAvatarUpdate);
     return () => window.removeEventListener("profileAvatarUpdated", handleAvatarUpdate);
   }, []);
@@ -110,9 +116,14 @@ export default function DashboardLayout({
         }
 
         const userId = res.data.id || "default";
-        const savedAvatar = res.data.avatarUrl || res.data.imageUrl || localStorage.getItem(`profileAvatar_${userId}`) || localStorage.getItem("profileAvatar_default");
+        const savedAvatar = res.data.avatarUrl || res.data.imageUrl || localStorage.getItem(`profileAvatar_${userId}`) || localStorage.getItem("profileAvatar_default") || localStorage.getItem("userAvatar");
         if (savedAvatar) {
           setUserAvatar(savedAvatar);
+          try {
+            localStorage.setItem(`profileAvatar_${userId}`, savedAvatar);
+            localStorage.setItem("profileAvatar_default", savedAvatar);
+            localStorage.setItem("userAvatar", savedAvatar);
+          } catch (e) {}
         }
         
         localStorage.setItem("userRole", "coach");

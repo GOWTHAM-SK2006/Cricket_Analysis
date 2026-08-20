@@ -103,6 +103,7 @@ export default function ProfilePage() {
           try {
             localStorage.setItem(`profileAvatar_${userId}`, compressedBase64);
             localStorage.setItem("profileAvatar_default", compressedBase64);
+            localStorage.setItem("userAvatar", compressedBase64);
           } catch (err) {
             console.warn("localStorage quota exceeded", err);
           }
