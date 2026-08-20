@@ -313,11 +313,22 @@ const computeFocusAreasForPlayer = (
     const src = CPI_PREDEFINED_SOURCE[normName] || CPI_PREDEFINED_SOURCE["Technique"];
     const block = isHigh ? src[context].high : src[context].low;
 
+    const planHeadings: Record<string, string> = {
+      "Technique": "HOW TO COACH TECHNIQUE",
+      "Skill Level": "HOW TO COACH SKILL LEVEL",
+      "Game Plan": "HOW TO COACH GAME PLAN",
+      "Preparation": "HOW TO COACH PREPARATION",
+      "Intensity": "HOW TO COACH INTENSITY",
+      "Focus": "HOW TO COACH FOCUS",
+      "Resilience": "HOW TO COACH RESILIENCE"
+    };
+    const planHeader = planHeadings[normName] || `HOW TO COACH ${normName.toUpperCase()}`;
+
     const actionPointsText = block.actionPoints.map((pt) => `• ${pt}`).join("\n");
     const summaryHeader = "THE COACH'S SUMMARY";
     const summaryBody = `${src[context].overview}\n${isHigh ? `High score: ${block.summary}` : `Low score: ${block.summary}`}\n${src[context].goal}`;
 
-    const detail = `THE COACH'S PLAN OF ACTION\n${actionPointsText}\n\n${summaryHeader}\n${summaryBody}`;
+    const detail = `${planHeader}\n${actionPointsText}\n\n${summaryHeader}\n${summaryBody}`;
 
     const actionPoints = block.actionPoints.map((pt) => {
       const parts = pt.split(". ");
@@ -762,7 +773,7 @@ const generatePlayerPdfReport = async (
           if (trimmed === "THE COACH'S SUMMARY") {
             break;
           }
-          if (trimmed === "THE COACH'S PLAN OF ACTION") {
+          if (trimmed.startsWith("HOW TO COACH ") || trimmed === "THE COACH'S PLAN OF ACTION") {
             checkPageBreak(10);
             doc.setFontSize(8.0);
             doc.setFont("helvetica", "bold");
