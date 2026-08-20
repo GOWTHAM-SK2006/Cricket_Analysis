@@ -73,20 +73,20 @@ const buildCoachingRecommendationsFromSource = (): Record<string, CoachParameter
       high: {
         header: "",
         bullets: pHigh.actionPoints,
-        summaryHeader: "THE COACH'S SUMMARY",
-        summaryOverview: src.practice.overview,
-        highScoreStatement: "High score: " + pHigh.summary,
-        lowScoreStatement: "Low score: " + pLow.summary,
-        goalStatement: src.practice.goal
+        summaryHeader: "",
+        summaryOverview: "",
+        highScoreStatement: "",
+        lowScoreStatement: "",
+        goalStatement: ""
       },
       low: {
         header: "",
         bullets: pLow.actionPoints,
-        summaryHeader: "THE COACH'S SUMMARY",
-        summaryOverview: src.practice.overview,
-        highScoreStatement: "High score: " + pHigh.summary,
-        lowScoreStatement: "Low score: " + pLow.summary,
-        goalStatement: src.practice.goal
+        summaryHeader: "",
+        summaryOverview: "",
+        highScoreStatement: "",
+        lowScoreStatement: "",
+        goalStatement: ""
       }
     };
   });
@@ -325,10 +325,7 @@ const computeFocusAreasForPlayer = (
     const planHeader = planHeadings[normName] || `HOW TO COACH ${normName.toUpperCase()}`;
 
     const actionPointsText = block.actionPoints.map((pt) => `• ${pt}`).join("\n");
-    const summaryHeader = "THE COACH'S SUMMARY";
-    const summaryBody = `${src[context].overview}\n${isHigh ? `High score: ${block.summary}` : `Low score: ${block.summary}`}\n${src[context].goal}`;
-
-    const detail = `${planHeader}\n${actionPointsText}\n\n${summaryHeader}\n${summaryBody}`;
+    const detail = `${planHeader}\n${actionPointsText}`;
 
     const actionPoints = block.actionPoints.map((pt) => {
       const parts = pt.split(". ");

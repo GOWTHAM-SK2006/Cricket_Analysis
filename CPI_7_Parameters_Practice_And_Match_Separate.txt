@@ -7,7 +7,7 @@ No General Health or other parameters are included.
 ========================================================================
 Technical Execution
 ========================================================================
-THE COACH’S PLAN OF ACTION
+HOW TO COACH TECHNIQUE
 IF THE TECHNIQUE SCORE IS HIGH
 Protect what already works. Do not make technical changes simply to demonstrate that you are coaching.
 Increase the challenge. Test the player’s technique under greater speed, fatigue, pressure and unpredictability.
@@ -20,13 +20,6 @@ Prioritise one correction. Give the player one clear focus and one simple coachi
 Simplify the practice. Reduce the speed or complexity until the player can perform the movement correctly.
 Rebuild through quality repetition. Progress gradually from controlled drills to realistic, pressure-based practice.
 Review the response. Monitor whether the player understands the correction, gains confidence and improves over several sessions.
-THE COACH’S SUMMARY
-A high score tells you that the player’s technique is currently a strength. Your responsibility is to protect it, challenge it and help the player understand it more deeply.
-A low score tells you that something is limiting the player’s ability to perform the skill consistently. Your responsibility is to diagnose it, simplify it and build an achievable improvement plan.
-In both cases, the score must lead to action. It should influence what you coach, how you structure practice, what you monitor and what you discuss with the player.
-High score: protect, challenge and refine.
-Low score: diagnose, simplify and rebuild.
-The Technique Index is not there to tell a young player whether they are good or bad. It is there to show the coach and player what is working, what needs attention and what they should do next.
 
 ========================================================================
 Skill Level
@@ -41,7 +34,7 @@ Game Plan
 ========================================================================
 Preparation
 ========================================================================
-THE COACH’S PLAN OF ACTION
+HOW TO COACH PREPARATION
 Preparation measures how ready a player is to practise with purpose. 
 It includes punctuality, equipment, clothing, hydration, mental and physical readiness and an understanding what the session requires. The player, besides what the coach has in mind, has their own objectives and goals, and what they would like to work on. They don’t need prompting. 
 Good preparation begins before the first ball is delivered and gives the player the best possible chance of learning and performing well.
@@ -59,16 +52,11 @@ Create a simple routine. Give the player a short preparation checklist that can 
 Build accountability gradually. Assign age appropriate responsibility rather than allowing parents or coaches to prepare everything for the player.
 Review the consequences. Help the player understand how poor preparation reduces practice time, learning quality, safety and team standards.
 A low score should not automatically be treated as disrespect or laziness. Young players may need structure, reminders, ideas of good routines and habits and support before they can take full responsibility for their preparation.
-THE COACH’S SUMMARY
-The Preparation Index helps the coach identify whether the player is giving themselves a genuine opportunity to improve.
-High score: reinforce, connect and transfer.
-Low score: clarify, organise and build responsibility.
-The goal is not simply to arrive at practice. It is to arrive ready physically, mentally and practically to make the session count.
 
 ========================================================================
 Intensity
 ========================================================================
-THE COACH’S PLAN OF ACTION
+HOW TO COACH INTENSITY
 Intensity measures the energy, purpose and competitive effort a player brings to practice. It is not simply about moving faster, shouting louder or appearing busy. True intensity means practising with the concentration, urgency and commitment required to improve and prepare for competition.
 IF THE INTENSITY SCORE IS HIGH
 Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless.
@@ -84,12 +72,6 @@ Create short targets. Break the session into smaller, measurable challenges that
 Increase involvement. Use competitive drills, clear roles and regular feedback to keep the player mentally and physically engaged.
 Review the response. Monitor whether the player’s energy improves when the practice becomes more relevant, demanding and enjoyable.
 A low score should not immediately be labelled as laziness or a poor attitude. The coach must first understand what is reducing the player’s engagement before deciding how to respond.
-THE COACH’S SUMMARY
-The Intensity Index helps the coach distinguish between genuine competitive effort and meaningless activity. It gives the player a clearer understanding of the energy required to improve and allows the coach to design practices that demand purpose rather than simple participation.
-High score: channel, challenge and sustain.
-Low score: investigate, engage and rebuild.
-The goal is not maximum intensity at every moment.
-The goal is the right intensity, for the right task, maintained for the right length of time.
 
 ========================================================================
 Focus
@@ -112,7 +94,7 @@ No General Health or other parameters are included.
 ========================================================================
 Technical Execution
 ========================================================================
-THE COACH’S PLAN OF ACTION
+HOW TO COACH TECHNIQUE
 Technical execution measures how effectively a player applies their skills during competitive play. It is not simply whether the player succeeds or fails. It considers whether their technique remains controlled, repeatable and appropriate when facing pressure, stronger opposition, changing conditions and the consequences of a real match.
 IF THE TECHNICAL EXECUTION SCORE IS HIGH
 Confirm the process. Identify the movements, routines and decisions that allowed the player to execute effectively under match pressure.
@@ -128,16 +110,11 @@ Find the recurring fault. Focus on repeated patterns rather than reacting to eve
 Recreate the situation. Design future practices that reproduce the type of delivery, bowler, match situation and pitch conditions that exposed the weakness. This is very important.
 Give one clear correction. Provide the player with a simple technical focus they can understand and apply in the next performance.
 A low score does not automatically mean the player lacks technique. The skill may be present in practice but not yet stable enough to survive match pressure.
-THE COACH’S SUMMARY
-The Technical Execution Index helps the coach judge whether the player can carry their method from practice into competition.
-High score: confirm, protect and stretch.
-Low score: separate, diagnose and recreate.
-The goal is not technical perfection. It is a technique the player can trust and execute when the match places it under genuine pressure.
 
 ========================================================================
 Skill Level
 ========================================================================
-THE COACH’S PLAN OF ACTION-SKILL LEVEL
+HOW TO COACH SKILL LEVEL
 Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches. It is not simply about how many skills they have. It is about how well they can use those skills as the level of difficulty, pressure and competition increases.
 IF THE SKILL LEVEL SCORE IS HIGH
 Identify the strengths. Understand which skills the player performs consistently and confidently.
@@ -152,16 +129,11 @@ Prioritise the basics. Focus on the most important skills for the player’s rol
 Build through repetition. Give the player enough quality practice to develop confidence and consistency.
 Match the challenge to the player. Avoid asking for skills that are beyond their current level of development.
 Track the progress. Look for improvement in practice first, then whether that improvement transfers into matches.
-THE COACH’S SUMMARY
-The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.
-High score: challenge, expand and apply.
-Low score: identify, build and repeat.
-The goal is simple: develop the right skills, then make sure the player can use them when the game demands them.
 
 ========================================================================
 Game Plan
 ========================================================================
-THE COACH’S PLAN OF ACTION-GAME PLAN
+HOW TO COACH GAME PLAN
 Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches. The key question for the coach is simple: does the player give the impression that they have a plan? They should show purpose in their decisions, understand their role and be able to adjust when the situation changes.
 IF THE GAME PLAN SCORE IS HIGH
 Confirm the thinking. Ask the player what their plan was and why they chose it.
@@ -176,16 +148,11 @@ Simplify the thinking. Give the player one or two clear objectives for their rol
 Connect practice to matches. Create scenarios that require the player to practise the same plans they will need in competition.
 Teach adjustment. Help the player recognise when conditions, opposition or the match situation require a different approach.
 Review the decisions. Discuss whether the player followed the plan, abandoned it too quickly or never had one clearly in mind.
-THE COACH’S SUMMARY
-The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.
-High score: confirm, challenge and adapt.
-Low score: clarify, simplify and rehearse.
-The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change.
 
 ========================================================================
 Preparation
 ========================================================================
-THE COACH’S PLAN OF ACTION-PREPARATION
+HOW TO COACH PREPARATION
 Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches. The key question is: does the player arrive ready to make the most of the session or game? Good preparation gives performance a better chance before the first ball is even bowled.
 IF THE PREPARATION SCORE IS HIGH
 Confirm the routine. Identify the habits that help the player arrive organised, focused and ready.
@@ -200,11 +167,6 @@ Set clear expectations. Make sure the player knows what ready should look like.
 Create a simple checklist. Keep equipment, hydration, warm-up and role preparation easy to follow.
 Build responsibility gradually. Give the player age-appropriate ownership instead of letting others do everything for them.
 Review the impact. Show how poor preparation may have affected the quality of practice or match performance.
-THE COACH’S SUMMARY
-The Preparation Index helps the coach understand whether the player is ready to perform or already playing catch-up before they begin.
-High score: reinforce, own and maintain.
-Low score: clarify, organise and improve.
-The goal is simple: arrive ready, so performance has the best possible chance to follow.
 
 ========================================================================
 Intensity
@@ -214,7 +176,7 @@ Intensity
 ========================================================================
 Focus
 ========================================================================
-THE COACH’S PLAN OF ACTION-FOCUS
+HOW TO COACH FOCUS
 Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches. The key question is: does the player stay engaged with what matters, or does their concentration drift when pressure, fatigue or distractions increase?
 IF THE FOCUS SCORE IS HIGH
 Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.
@@ -229,16 +191,11 @@ Simplify the task. Give one clear focus point rather than too many instructions.
 Teach a reset. Use a simple routine to help the player reconnect after mistakes or distractions.
 Create shorter challenges. Break practice into smaller, purposeful blocks.
 Review the pattern. Look for when focus drops and what tends to trigger it.
-THE COACH’S SUMMARY
-The Focus Index helps the coach understand whether the player is mentally present or only physically involved.
-High score: reinforce, challenge and sustain.
-Low score: simplify, reset and rebuild.
-The goal is simple: stay present, reset quickly and give the next ball your full attention.
 
 ========================================================================
 Resilience
 ========================================================================
-THE COACH’S PLAN OF ACTION-RESILIENCE
+HOW TO COACH RESILIENCE
 Resilience measures how well a player responds to mistakes, pressure, disappointment and setbacks in both practice and matches. Cricket will constantly test this. The key is how quickly the player can reset, stay involved and compete again.
 IF THE RESILIENCE SCORE IS HIGH
 Confirm what worked. Ask the player how they recovered after a mistake or difficult moment.
@@ -253,8 +210,3 @@ Keep one moment in perspective. Help the player understand that one bad ball, sh
 Teach a simple reset. Give the player a routine they can use after every setback.
 Practise recovery. Create scenarios where mistakes and pressure are part of the session, then coach the response.
 Review the comeback. Focus on how quickly the player recovered, not only on what went wrong.
-THE COACH’S SUMMARY
-The Resilience Index is not about whether the player makes mistakes. It is about what they do next.
-High score: reinforce, challenge and lead.
-Low score: understand, reset and rebuild.
-The goal is simple: do not let the last ball or moment control the next one.

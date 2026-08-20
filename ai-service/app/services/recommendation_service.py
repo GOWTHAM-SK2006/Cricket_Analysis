@@ -17,12 +17,14 @@ class RecommendationService:
         
         json_schema_prompt = (
             "Analyse the following cricket player assessment context and generate a complete performance recommendation.\n"
-            "STRICT MANDATE: YOU MUST USE ONLY EXACT SENTENCES AND PHRASES COPIED CHARACTER-FOR-CHARACTER FROM THE APPROVED COACH PLAN OF ACTION TEXT FILE.\n"
+            "STRICT MANDATE: YOU MUST USE ONLY EXACT SENTENCES AND PHRASES COPIED CHARACTER-FOR-CHARACTER FROM THE APPROVED CPI SOURCE TEXT FILE.\n"
             "ONLY USE THE APPROVED 7 PARAMETERS: Technique, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience.\n"
-            "DO NOT PARAPHRASE, REWRITE, SIMPLIFY, SUMMARISE, OR GENERATE ANY NEW WORDS.\n"
+            "PARAMETER HEADINGS MUST BE EXACTLY: 'HOW TO COACH TECHNIQUE', 'HOW TO COACH SKILL LEVEL', 'HOW TO COACH GAME PLAN', 'HOW TO COACH PREPARATION', 'HOW TO COACH INTENSITY', 'HOW TO COACH FOCUS', 'HOW TO COACH RESILIENCE'.\n"
+            "DO NOT GENERATE, DISPLAY, OR REFERENCE ANY 'COACH'S SUMMARY' OR 'THE COACH'S SUMMARY' SECTIONS AT ALL.\n"
+            "DO NOT PARAPHRASE, REWRITE, SIMPLIFY, SUMMARISE, OR GENERATE ANY UNAPPROVED NEW WORDS OR DRILLS.\n"
             "Respond ONLY with a valid JSON object matching this exact structure:\n"
             "{\n"
-            '  "summary": "Exact coach summary sentence from approved source file",\n'
+            '  "summary": "Exact action point statement from approved source file",\n'
             '  "strengths": ["Exact High Score statement from source", "Exact High Score statement from source"],\n'
             '  "weaknesses": ["Exact Low Score statement from source", "Exact Low Score statement from source"],\n'
             '  "improvementAreas": ["Exact Low Score statement from source"],\n'
