@@ -36,6 +36,12 @@ public class Coach implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(columnDefinition = "TEXT")
+    private String avatarUrl;
+
+    @Column
+    private String organizationName;
+
     @org.hibernate.annotations.CreationTimestamp
     private java.time.LocalDateTime createdAt;
 

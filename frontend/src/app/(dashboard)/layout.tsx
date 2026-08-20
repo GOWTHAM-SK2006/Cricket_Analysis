@@ -98,6 +98,12 @@ export default function DashboardLayout({
         if (res.data.name) {
           localStorage.setItem("userName", res.data.name);
         }
+
+        const userId = res.data.id || "default";
+        const savedAvatar = res.data.avatarUrl || res.data.imageUrl || localStorage.getItem(`profileAvatar_${userId}`) || localStorage.getItem("profileAvatar_default");
+        if (savedAvatar) {
+          setUserAvatar(savedAvatar);
+        }
         
         localStorage.setItem("userRole", "coach");
         setRole("coach");
@@ -201,8 +207,14 @@ export default function DashboardLayout({
             <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-[9px] font-black text-white flex items-center justify-center border-2 border-white">3</span>
           </button>
           <Link href="/profile" className="flex items-center justify-center cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-orange-100 border-2 border-orange-300 flex items-center justify-center text-orange-700 font-black text-sm uppercase hover:border-orange-500 transition-colors shadow-sm">
-              {userName ? userName.charAt(0).toUpperCase() : <User className="w-5 h-5 stroke-[2.5]" />}
+            <div className="w-10 h-10 rounded-full bg-orange-100 border-2 border-orange-300 flex items-center justify-center text-orange-700 font-black text-sm uppercase hover:border-orange-500 transition-colors shadow-sm overflow-hidden">
+              {userAvatar ? (
+                <img src={userAvatar} alt="Profile Avatar" className="w-full h-full object-cover rounded-full" />
+              ) : userName ? (
+                userName.charAt(0).toUpperCase()
+              ) : (
+                <User className="w-5 h-5 stroke-[2.5]" />
+              )}
             </div>
           </Link>
         </div>

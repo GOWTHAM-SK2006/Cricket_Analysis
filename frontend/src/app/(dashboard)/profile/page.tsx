@@ -29,7 +29,8 @@ export default function ProfilePage() {
       .then((res) => {
         setProfile(res.data);
         const userId = res.data.id || "default";
-        const savedAvatar = localStorage.getItem(`profileAvatar_${userId}`) || localStorage.getItem("profileAvatar_default");
+        const backendAvatar = res.data.avatarUrl || res.data.imageUrl;
+        const savedAvatar = backendAvatar || localStorage.getItem(`profileAvatar_${userId}`) || localStorage.getItem("profileAvatar_default");
         if (savedAvatar) {
           setCustomAvatar(savedAvatar);
         }
@@ -64,18 +65,66 @@ export default function ProfilePage() {
 
   const handlePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setCustomAvatar(base64);
-        const userId = profile?.id || "default";
-        localStorage.setItem(`profileAvatar_${userId}`, base64);
-        localStorage.setItem("profileAvatar_default", base64);
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 400;
+        const MAX_HEIGHT = 400;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+
+          setCustomAvatar(compressedBase64);
+          const userId = profile?.id || "default";
+          
+          try {
+            localStorage.setItem(`profileAvatar_${userId}`, compressedBase64);
+            localStorage.setItem("profileAvatar_default", compressedBase64);
+          } catch (err) {
+            console.warn("localStorage quota exceeded", err);
+          }
+
+          window.dispatchEvent(new Event("profileAvatarUpdated"));
+
+          // Save to backend database
+          api.put("/profile", { avatarUrl: compressedBase64 })
+            .then((res) => {
+              if (res.data?.avatarUrl) {
+                setCustomAvatar(res.data.avatarUrl);
+              }
+            })
+            .catch((err) => {
+              console.warn("Failed to persist avatar to backend", err);
+            });
+        }
       };
-      reader.readAsDataURL(file);
-      e.target.value = "";
-    }
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   };
 
   const handleDownloadPicture = async () => {
@@ -118,7 +167,11 @@ export default function ProfilePage() {
 
   const saveCompanyName = () => {
     setIsEditingCompany(false);
-    localStorage.setItem(`companyName_${profile?.id || 'default'}`, companyName);
+    const userId = profile?.id || 'default';
+    localStorage.setItem(`companyName_${userId}`, companyName);
+    api.put("/profile", { companyName, organizationName: companyName }).catch(err => {
+      console.warn("Failed to update company name on backend", err);
+    });
   };
 
   if (loading) {
