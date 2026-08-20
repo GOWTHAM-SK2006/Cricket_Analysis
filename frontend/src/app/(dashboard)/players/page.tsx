@@ -2771,9 +2771,10 @@ return (
 
                   {/* Premium 2D Line Chart Canvas */}
                   <div className="relative bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden select-none">
+                    {/* Desktop / Tablet 2D Line Chart (sm: 640px and above) */}
                     <svg
                       viewBox="0 0 860 385"
-                      className="w-full h-auto overflow-visible"
+                      className="hidden sm:block w-full h-auto overflow-visible"
                     >
                       <defs>
                         {/* Gradient Fill under Line */}
@@ -3062,6 +3063,301 @@ return (
                                   textAnchor="middle"
                                   fill="#f97316"
                                   fontSize="13"
+                                  fontWeight="900"
+                                  fontFamily="monospace"
+                                >
+                                  Score: {param.score.toFixed(1)} / 10
+                                </text>
+                              </g>
+                            )}
+                          </g>
+                        );
+                      })}
+                    </svg>
+
+                    {/* Mobile 2D Line Chart (below 640px) */}
+                    <svg
+                      viewBox="0 0 860 540"
+                      className="block sm:hidden w-full h-auto overflow-visible"
+                    >
+                      <defs>
+                        <linearGradient id="cpiAreaGradientMobile" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f97316" stopOpacity="0.20" />
+                          <stop offset="100%" stopColor="#f97316" stopOpacity="0.0" />
+                        </linearGradient>
+                        <filter id="nodeShadowMobile" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#0f172a" floodOpacity="0.15" />
+                        </filter>
+                      </defs>
+
+                      {/* Y-Axis Grid Lines & Levels */}
+                      {[10, 8, 6, 4, 2, 0].map((level) => {
+                        const y = 65 + (1 - level / 10) * 310;
+                        return (
+                          <g key={level}>
+                            <line
+                              x1="55"
+                              y1={y}
+                              x2="815"
+                              y2={y}
+                              stroke="#e2e8f0"
+                              strokeWidth="1.2"
+                              strokeDasharray={level === 0 || level === 10 ? "none" : "4 4"}
+                            />
+                            <text
+                              x="42"
+                              y={y + 5}
+                              textAnchor="end"
+                              fill="#475569"
+                              fontSize="16"
+                              fontWeight="900"
+                              fontFamily="monospace"
+                            >
+                              {level}
+                            </text>
+                          </g>
+                        );
+                      })}
+
+                      {/* 7.0 Benchmark Reference Line */}
+                      {(() => {
+                        const benchY = 65 + (1 - 7.0 / 10) * 310;
+                        return (
+                          <g>
+                            <line
+                              x1="55"
+                              y1={benchY}
+                              x2="815"
+                              y2={benchY}
+                              stroke="#10b981"
+                              strokeWidth="2.2"
+                              strokeDasharray="6 6"
+                              opacity="0.8"
+                            />
+                            <text
+                              x="810"
+                              y={benchY - 9}
+                              textAnchor="end"
+                              fill="#10b981"
+                              fontSize="15"
+                              fontWeight="900"
+                              letterSpacing="1"
+                              fontFamily="sans-serif"
+                            >
+                              7.0 HIGH BENCHMARK
+                            </text>
+                          </g>
+                        );
+                      })()}
+
+                      {/* Y-Axis Title */}
+                      <text
+                        x="18"
+                        y="35"
+                        fill="#64748b"
+                        fontSize="15"
+                        fontWeight="900"
+                        fontFamily="sans-serif"
+                        letterSpacing="1.5"
+                      >
+                        SCORE
+                      </text>
+
+                      {/* Gradient Fill under Line */}
+                      {(() => {
+                        const firstX = 55;
+                        const lastX = 815;
+                        const bottomY = 375;
+
+                        const linePoints = cpiLineChartData
+                          .map((param, i) => {
+                            const x = 55 + i * (760 / 6);
+                            const y = 65 + (1 - param.score / 10) * 310;
+                            return `${x},${y}`;
+                          })
+                          .join(" L ");
+
+                        const areaD = `M ${firstX},${bottomY} L ${linePoints} L ${lastX},${bottomY} Z`;
+                        return <path d={areaD} fill="url(#cpiAreaGradientMobile)" />;
+                      })()}
+
+                      {/* Connecting Line */}
+                      {(() => {
+                        const pathD = cpiLineChartData
+                          .map((param, i) => {
+                            const x = 55 + i * (760 / 6);
+                            const y = 65 + (1 - param.score / 10) * 310;
+                            return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+                          })
+                          .join(" ");
+
+                        return (
+                          <path
+                            d={pathD}
+                            fill="none"
+                            stroke="#f97316"
+                            strokeWidth="4.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        );
+                      })()}
+
+                      {/* Data Points, Score Badges, Step Numbers & Labels */}
+                      {cpiLineChartData.map((param, i) => {
+                        const x = 55 + i * (760 / 6);
+                        const y = 65 + (1 - param.score / 10) * 310;
+                        const isHovered = hoveredParamIndex === i;
+
+                        const nameParts = param.name.split(" ");
+                        const line1 = nameParts[0] || param.name;
+                        const line2 = nameParts.slice(1).join(" ");
+
+                        const statusColor = param.score >= 7.0 ? "#10b981" : param.score >= 5.0 ? "#f59e0b" : "#ef4444";
+
+                        return (
+                          <g
+                            key={`mobile-${param.name}`}
+                            className="cursor-pointer"
+                            onMouseEnter={() => setHoveredParamIndex(i)}
+                            onMouseLeave={() => setHoveredParamIndex(null)}
+                            onClick={() => setHoveredParamIndex(hoveredParamIndex === i ? null : i)}
+                          >
+                            <circle cx={x} cy={y} r="30" fill="transparent" />
+
+                            {isHovered && (
+                              <circle cx={x} cy={y} r="20" fill="rgba(249, 115, 22, 0.2)" stroke="#f97316" strokeWidth="2.5" />
+                            )}
+
+                            <circle cx={x} cy={y} r="14" fill="#f97316" opacity="0.18" />
+                            <circle
+                              cx={x}
+                              cy={y}
+                              r={isHovered ? "10" : "8.5"}
+                              fill="#ffffff"
+                              stroke="#f97316"
+                              strokeWidth="4"
+                              filter="url(#nodeShadowMobile)"
+                            />
+                            <circle cx={x} cy={y} r={isHovered ? "5.5" : "4.5"} fill="#ea580c" />
+
+                            {/* Floating Score Badge */}
+                            <g transform={`translate(${x - 30}, ${y - 44})`}>
+                              <rect
+                                x="0"
+                                y="0"
+                                width="60"
+                                height="28"
+                                rx="8"
+                                fill="#ffffff"
+                                stroke={statusColor}
+                                strokeWidth="2.5"
+                                filter="url(#nodeShadowMobile)"
+                              />
+                              <text
+                                x="30"
+                                y="19.5"
+                                textAnchor="middle"
+                                fill="#0f172a"
+                                fontSize="16"
+                                fontWeight="900"
+                                fontFamily="monospace"
+                              >
+                                {param.score.toFixed(1)}
+                              </text>
+                            </g>
+
+                            {/* Step Number Badge */}
+                            <g transform={`translate(${x - 15}, 395)`}>
+                              <rect
+                                x="0"
+                                y="0"
+                                width="30"
+                                height="22"
+                                rx="7"
+                                fill={isHovered ? "#ffedd5" : "#f1f5f9"}
+                                stroke={isHovered ? "#fdba74" : "#cbd5e1"}
+                                strokeWidth="1.5"
+                              />
+                              <text
+                                x="15"
+                                y="16"
+                                textAnchor="middle"
+                                fill={isHovered ? "#ea580c" : "#334155"}
+                                fontSize="14"
+                                fontWeight="900"
+                                fontFamily="monospace"
+                              >
+                                {i + 1}
+                              </text>
+                            </g>
+
+                            {/* Parameter Name Label */}
+                            {line2 ? (
+                              <>
+                                <text
+                                  x={x}
+                                  y="442"
+                                  textAnchor="middle"
+                                  fill={isHovered ? "#ea580c" : "#0f172a"}
+                                  fontSize="20"
+                                  fontWeight="900"
+                                >
+                                  {line1}
+                                </text>
+                                <text
+                                  x={x}
+                                  y="468"
+                                  textAnchor="middle"
+                                  fill={isHovered ? "#ea580c" : "#0f172a"}
+                                  fontSize="20"
+                                  fontWeight="900"
+                                >
+                                  {line2}
+                                </text>
+                              </>
+                            ) : (
+                              <text
+                                x={x}
+                                y="455"
+                                textAnchor="middle"
+                                fill={isHovered ? "#ea580c" : "#0f172a"}
+                                fontSize="21"
+                                fontWeight="900"
+                              >
+                                {param.name}
+                              </text>
+                            )}
+
+                            {/* Floating Tooltip on Hover/Tap */}
+                            {isHovered && (
+                              <g transform={`translate(${Math.max(10, Math.min(650, x - 100))}, ${Math.max(5, y - 80)})`}>
+                                <rect
+                                  x="0"
+                                  y="0"
+                                  width="200"
+                                  height="56"
+                                  rx="12"
+                                  fill="#0f172a"
+                                  opacity="0.96"
+                                  filter="url(#nodeShadowMobile)"
+                                />
+                                <text
+                                  x="100"
+                                  y="24"
+                                  textAnchor="middle"
+                                  fill="#ffffff"
+                                  fontSize="14"
+                                  fontWeight="900"
+                                >
+                                  {param.name}
+                                </text>
+                                <text
+                                  x="100"
+                                  y="42"
+                                  textAnchor="middle"
+                                  fill="#f97316"
+                                  fontSize="15"
                                   fontWeight="900"
                                   fontFamily="monospace"
                                 >
