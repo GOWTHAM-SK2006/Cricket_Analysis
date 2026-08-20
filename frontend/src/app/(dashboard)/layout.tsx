@@ -26,6 +26,16 @@ export default function DashboardLayout({
   const [showTour, setShowTour] = useState(false);
   const [tourPage, setTourPage] = useState<"dashboard" | "players">("dashboard");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleAvatarUpdate = () => {
+      const saved = localStorage.getItem("profileAvatar_default");
+      if (saved) setUserAvatar(saved);
+    };
+    window.addEventListener("profileAvatarUpdated", handleAvatarUpdate);
+    return () => window.removeEventListener("profileAvatarUpdated", handleAvatarUpdate);
+  }, []);
 
   useEffect(() => {
     if (!role) return;
