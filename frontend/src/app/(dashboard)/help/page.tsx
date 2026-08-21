@@ -218,6 +218,54 @@ export default function HelpPage() {
         </p>
       </div>
 
+      {/* PPI Details */}
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+            <Clipboard className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-black text-slate-900 uppercase">Practice Performance Index (PPI)</h3>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Practice Assessment Index</p>
+          </div>
+        </div>
+        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
+          {ppiDesc}
+        </p>
+      </div>
+
+      {/* MPI Details */}
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-black text-slate-900 uppercase">Match Performance Index (MPI)</h3>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Assessment Index</p>
+          </div>
+        </div>
+        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
+          {mpiDesc}
+        </p>
+      </div>
+
+      {/* CPI Details */}
+      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+            <TrendingUp className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-black text-slate-900 uppercase">Cricket Performance Index (CPI)</h3>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Overall Player Rating Index</p>
+          </div>
+        </div>
+        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
+          {cpiDesc}
+        </p>
+      </div>
+
       {/* THE COACH’S PLAN OF ACTION */}
       <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-5">
         <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
@@ -317,10 +365,44 @@ export default function HelpPage() {
             </button>
           </div>
 
+          {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
+          <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">SCORE INTERPRETATION SUMMARY</h3>
+            <div className="space-y-3.5">
+              <div className="space-y-1 pb-3 border-b border-slate-200/80">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- LOW</span>
+                </div>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  {below5}
+                </p>
+              </div>
+              <div className="space-y-1 pb-3 border-b border-slate-200/80">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- AVERAGE</span>
+                </div>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  {between5And7}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- HIGH</span>
+                </div>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  {above7}
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `STRONG ${safeName.toUpperCase()} BENCHMARKS:` : scoreTab === "medium" ? `DEVELOPING ${safeName.toUpperCase()} BENCHMARKS:` : `LOW ${safeName.toUpperCase()} BENCHMARKS:`}
+              {scoreTab === "high" ? `STRONG ${safeName.toUpperCase()} BENCHMARKS:` : scoreTab === "medium" ? "AVERAGE" : `LOW ${safeName.toUpperCase()} BENCHMARKS:`}
             </span>
             <div className="space-y-2">
               {activePoints.map((pt, i) => (
@@ -359,89 +441,7 @@ export default function HelpPage() {
               </div>
             )}
           </div>
-
-          {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
-          <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">SCORE INTERPRETATION SUMMARY</h3>
-            <div className="space-y-3.5">
-              <div className="space-y-1 pb-3 border-b border-slate-200/80">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- LOW</span>
-                </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
-                  {below5}
-                </p>
-              </div>
-              <div className="space-y-1 pb-3 border-b border-slate-200/80">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- AVERAGE</span>
-                </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
-                  {between5And7}
-                </p>
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- HIGH</span>
-                </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
-                  {above7}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-
-      {/* PPI Details */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-            <Clipboard className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Practice Performance Index (PPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Practice Assessment Index</p>
-          </div>
-        </div>
-        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
-          {ppiDesc}
-        </p>
-      </div>
-
-      {/* MPI Details */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Match Performance Index (MPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Assessment Index</p>
-          </div>
-        </div>
-        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
-          {mpiDesc}
-        </p>
-      </div>
-
-      {/* CPI Details */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-            <TrendingUp className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Cricket Performance Index (CPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Overall Player Rating Index</p>
-          </div>
-        </div>
-        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
-          {cpiDesc}
-        </p>
       </div>
 
       {/* Restart Tour */}

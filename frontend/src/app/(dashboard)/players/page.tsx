@@ -815,9 +815,118 @@ const generatePlayerPdfReport = async (
   doc.setLineWidth(0.5);
   doc.roundedRect(14, y, pageWidth - 28, 23, 2.5, 2.5, "FD");
 
-  const prevAssessment = (allAssessments.length > 1) ? allAssessments[1] : null;
-  const prevCpi = prevAssessment ? (prevAssessment.ppiScore || prevAssessment.mpiScore || 70) : Math.max(0, cpiNum - 3);
-  const diff = cpiNum - prevCpi;
+  // 1. CPI Trend Calculation
+  const trendHistoryMap: Record<string, { timestamp: number; ppi: number | null; mpi: number | null; cpi: number | null }> = {};
+
+  (practiceHistory || []).forEach((p: any) => {
+    const rawDate = p.date || p.createdAt;
+    if (!rawDate) return;
+    const dObj = new Date(rawDate);
+    const dStr = dObj.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
+    const score = to100(p.ppiScore);
+    if (!trendHistoryMap[dStr]) {
+      trendHistoryMap[dStr] = { timestamp: dObj.getTime(), ppi: null, mpi: null, cpi: null };
+    }
+    if (score > 0) trendHistoryMap[dStr].ppi = score;
+  });
+
+  (matchHistory || []).forEach((m: any) => {
+    const rawDate = m.date || m.createdAt;
+    if (!rawDate) return;
+    const dObj = new Date(rawDate);
+    const dStr = dObj.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
+    const score = to100(m.mpiScore);
+    if (!trendHistoryMap[dStr]) {
+      trendHistoryMap[dStr] = { timestamp: dObj.getTime(), ppi: null, mpi: null, cpi: null };
+    }
+    if (score > 0) trendHistoryMap[dStr].mpi = score;
+  });
+
+  Object.values(trendHistoryMap).forEach(row => {
+    if (row.ppi !== null && row.mpi !== null) {
+      row.cpi = Math.round((row.ppi + row.mpi) / 2);
+    } else if (row.ppi !== null) {
+      row.cpi = row.ppi;
+    } else if (row.mpi !== null) {
+      row.cpi = row.mpi;
+    }
+  });
+
+  const sortedCpiHistory = Object.values(trendHistoryMap)
+    .filter(row => row.cpi !== null)
+    .sort((a, b) => b.timestamp - a.timestamp);
+
+  let cpiTrendText = "";
+  if (sortedCpiHistory.length >= 2) {
+    const currentCpiVal = cpiNum > 0 ? cpiNum : sortedCpiHistory[0].cpi!;
+    const prevCpiVal = (sortedCpiHistory[0].cpi === currentCpiVal) ? sortedCpiHistory[1].cpi! : sortedCpiHistory[0].cpi!;
+    if (currentCpiVal > prevCpiVal) {
+      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI \u2014 \u2191 Improving from the previous assessment period.`;
+    } else if (currentCpiVal < prevCpiVal) {
+      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI \u2014 \u2193 Declining from the previous assessment period.`;
+    } else {
+      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI \u2014 \u2192 Stable from the previous assessment period.`;
+    }
+  } else if (cpiNum > 0 || sortedCpiHistory.length === 1) {
+    const val = cpiNum > 0 ? cpiNum : sortedCpiHistory[0]?.cpi;
+    cpiTrendText = `CPI Trend: ${val} CPI \u2014 Trend: Insufficient data`;
+  } else {
+    cpiTrendText = `CPI Trend: Trend: Insufficient data`;
+  }
+
+  // 2. PPI Trend Calculation
+  const validPracticeHistory = (practiceHistory || [])
+    .map((p: any) => ({
+      score: to100(p.ppiScore),
+      timestamp: new Date(p.date || p.createdAt).getTime()
+    }))
+    .filter((p: any) => p.score > 0)
+    .sort((a: any, b: any) => b.timestamp - a.timestamp);
+
+  let ppiTrendText = "";
+  if (validPracticeHistory.length >= 2) {
+    const currentPpiVal = ppiNum > 0 ? ppiNum : validPracticeHistory[0].score;
+    const prevPpiVal = (validPracticeHistory[0].score === currentPpiVal) ? validPracticeHistory[1].score : validPracticeHistory[0].score;
+    if (currentPpiVal > prevPpiVal) {
+      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI \u2014 \u2191 Improving from the previous assessment period.`;
+    } else if (currentPpiVal < prevPpiVal) {
+      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI \u2014 \u2193 Declining from the previous assessment period.`;
+    } else {
+      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI \u2014 \u2192 Stable from the previous assessment period.`;
+    }
+  } else if (ppiNum > 0 || validPracticeHistory.length === 1) {
+    const val = ppiNum > 0 ? ppiNum : validPracticeHistory[0]?.score;
+    ppiTrendText = `PPI Trend: ${val} PPI \u2014 Trend: Insufficient data`;
+  } else {
+    ppiTrendText = `PPI Trend: Trend: Insufficient data`;
+  }
+
+  // 3. MPI Trend Calculation
+  const validMatchHistory = (matchHistory || [])
+    .map((m: any) => ({
+      score: to100(m.mpiScore),
+      timestamp: new Date(m.date || m.createdAt).getTime()
+    }))
+    .filter((m: any) => m.score > 0)
+    .sort((a: any, b: any) => b.timestamp - a.timestamp);
+
+  let mpiTrendText = "";
+  if (validMatchHistory.length >= 2) {
+    const currentMpiVal = mpiNum > 0 ? mpiNum : validMatchHistory[0].score;
+    const prevMpiVal = (validMatchHistory[0].score === currentMpiVal) ? validMatchHistory[1].score : validMatchHistory[0].score;
+    if (currentMpiVal > prevMpiVal) {
+      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI \u2014 \u2191 Improving from the previous assessment period.`;
+    } else if (currentMpiVal < prevMpiVal) {
+      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI \u2014 \u2193 Declining from the previous assessment period.`;
+    } else {
+      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI \u2014 \u2192 Stable from the previous assessment period.`;
+    }
+  } else if (mpiNum > 0 || validMatchHistory.length === 1) {
+    const val = mpiNum > 0 ? mpiNum : validMatchHistory[0]?.score;
+    mpiTrendText = `MPI Trend: ${val} MPI \u2014 Trend: Insufficient data`;
+  } else {
+    mpiTrendText = `MPI Trend: Trend: Insufficient data`;
+  }
 
   doc.setFontSize(8.0);
   doc.setFont("helvetica", "bold");
@@ -825,17 +934,17 @@ const generatePlayerPdfReport = async (
   doc.setTextColor(234, 88, 12);
   doc.text("•", 18, y + 6.5);
   doc.setTextColor(15, 23, 42);
-  doc.text(`CPI Trend: Currently at ${cpiNum} CPI — Overall performance trajectory is ${diff >= 0 ? "improving" : "declining"}.`, 22, y + 6.5);
+  doc.text(cpiTrendText, 22, y + 6.5);
 
   doc.setTextColor(234, 88, 12);
   doc.text("•", 18, y + 12.5);
   doc.setTextColor(15, 23, 42);
-  doc.text(`PPI Trend: Practice Performance Index score currently at ${ppiNum || "N/A"} (${last5Prac?.length || 0} practice sessions recorded).`, 22, y + 12.5);
+  doc.text(ppiTrendText, 22, y + 12.5);
 
   doc.setTextColor(234, 88, 12);
   doc.text("•", 18, y + 18.5);
   doc.setTextColor(15, 23, 42);
-  doc.text(`MPI Trend: Match Performance Index score currently at ${mpiNum || "N/A"} (${last5Match?.length || 0} match assessments recorded).`, 22, y + 18.5);
+  doc.text(mpiTrendText, 22, y + 18.5);
 
   y += 28;
 
