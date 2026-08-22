@@ -7,7 +7,7 @@ import { uploadPlayerImage } from "@/lib/supabase";
 import {
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck,
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap
+  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap, AlertTriangle
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
@@ -2773,7 +2773,7 @@ return (
                   <span className="font-bold text-orange-500 tracking-tight">{targetPercent}%</span>
                 </div>
                 <div className="w-full h-3.5 bg-slate-100 border border-slate-200 rounded-full overflow-hidden p-0.5">
-                  <div
+                <div
                     className="h-full bg-orange-500 rounded-full transition-all duration-500"
                     style={{ width: `${targetPercent}%` }}
                   />
@@ -2782,8 +2782,8 @@ return (
             </div>
           </div>
 
-          {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS (CPI PERFORMANCE PROFILE LINE GRAPH) */}
-          <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 space-y-5 text-left shadow-xs">
+          {/* SECTION 5 – KEY PERFORMANCE HIGHLIGHTS */}
+          <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 sm:p-6 space-y-5 text-left shadow-xs">
             {/* Header */}
             <div className="border-b border-slate-200 pb-3 flex justify-between items-center flex-wrap gap-2">
               <div>
@@ -2792,20 +2792,16 @@ return (
                   KEY PERFORMANCE HIGHLIGHTS
                 </h3>
                 <p className="text-[11px] sm:text-xs font-extrabold text-slate-500 tracking-wider uppercase mt-0.5">
-                  CPI PERFORMANCE PROFILE
+                  BITE-SIZED COACHING SUMMARY
                 </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                <span>2D PERFORMANCE GRAPH</span>
               </div>
             </div>
 
             {isHistoryLoading ? (
-              <div className="flex items-center justify-center p-10 bg-slate-50 rounded-2xl border border-slate-200">
+              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
                 <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
                   <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
-                  <span>Loading performance profile...</span>
+                  <span>Loading performance highlights...</span>
                 </div>
               </div>
             ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
@@ -2815,670 +2811,175 @@ return (
                 </span>
               </div>
             ) : (() => {
-              // Extract exact scores in FIXED CPI framework order (single source of truth from focusAreas)
+              // Fixed CPI parameters in order
               const fixedParams = [
-                "Technique",
-                "Skill Level",
-                "Game Plan",
-                "Preparation",
-                "Intensity",
-                "Focus",
-                "Resilience"
+                { name: "Technique", keys: ["technicalExecution", "technique"] },
+                { name: "Skill Level", keys: ["skillsLevel", "skillLevel"] },
+                { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
+                { name: "Preparation", keys: ["preparation"] },
+                { name: "Intensity", keys: ["intensity"] },
+                { name: "Focus", keys: ["focus", "concentration"] },
+                { name: "Resilience", keys: ["resilience", "emotionalControl", "adaptability"] }
               ];
 
-              const cpiLineChartData = fixedParams.map((paramName) => {
+              // 1 & 2: Current scores for STRONGEST and WEAKEST
+              const currentScores = fixedParams.map((p) => {
                 const found = focusAreas.find(
-                  (item) => item.title.toLowerCase() === paramName.toLowerCase()
+                  (item) => item.title.toLowerCase() === p.name.toLowerCase()
                 );
                 const score = found && typeof found.avg === "number" ? found.avg : 7.0;
                 return {
-                  name: paramName,
+                  name: p.name,
                   score: Math.min(10, Math.max(0, Math.round(score * 10) / 10))
                 };
               });
 
-              // Summary stats for top banner
-              const totalScoreSum = cpiLineChartData.reduce((acc, curr) => acc + curr.score, 0);
-              const avgProfileScore = (totalScoreSum / 7).toFixed(1);
-              const topParam = [...cpiLineChartData].sort((a, b) => b.score - a.score)[0];
-              const highParamsCount = cpiLineChartData.filter((p) => p.score >= 7.0).length;
+              const sortedByScoreDesc = [...currentScores].sort((a, b) => b.score - a.score);
+              const strongestItem = sortedByScoreDesc[0];
+              const weakestItem = sortedByScoreDesc[sortedByScoreDesc.length - 1];
+
+              const strongestText = strongestItem ? `${strongestItem.name} — ${strongestItem.score.toFixed(1)}` : "N/A";
+              const weakestText = weakestItem ? `${weakestItem.name} — ${weakestItem.score.toFixed(1)}` : "N/A";
+
+              // Historical assessments for improvement & consistency
+              const allAssessments = [...(practiceHistory || []), ...(matchHistory || [])]
+                .map((s: any) => ({
+                  ...s,
+                  timestamp: new Date(s.date || s.createdAt || 0).getTime()
+                }))
+                .filter((s: any) => s.timestamp > 0)
+                .sort((a: any, b: any) => a.timestamp - b.timestamp);
+
+              const paramHistories: {
+                name: string;
+                scores: number[];
+                diff: number;
+                stdDev: number;
+              }[] = [];
+
+              fixedParams.forEach((p) => {
+                const scores: number[] = [];
+                allAssessments.forEach((s: any) => {
+                  for (const k of p.keys) {
+                    if (typeof s[k] === "number" && s[k] > 0) {
+                      let val = s[k];
+                      if (val > 10) val = val / 10;
+                      val = Math.min(10, Math.max(0, Math.round(val * 10) / 10));
+                      scores.push(val);
+                      break;
+                    }
+                  }
+                });
+
+                if (scores.length >= 2) {
+                  const earliest = scores[0];
+                  const latest = scores[scores.length - 1];
+                  const diff = Math.round((latest - earliest) * 10) / 10;
+                  const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+                  const variance = scores.reduce((acc, v) => acc + Math.pow(v - mean, 2), 0) / scores.length;
+                  const stdDev = Math.sqrt(variance);
+
+                  paramHistories.push({
+                    name: p.name,
+                    scores,
+                    diff,
+                    stdDev
+                  });
+                }
+              });
+
+              // 3 & 4: IMPROVING THE MOST & IMPROVING SLOWEST
+              const positiveImprovements = paramHistories
+                .filter((ph) => ph.diff > 0)
+                .sort((a, b) => b.diff - a.diff);
+
+              let improvingMostText = "Insufficient data";
+              let improvingSlowestText = "Insufficient data";
+
+              if (positiveImprovements.length > 0) {
+                const mostImp = positiveImprovements[0];
+                improvingMostText = `${mostImp.name} — ↑ ${mostImp.diff.toFixed(1)}`;
+
+                if (positiveImprovements.length >= 2) {
+                  const slowestImp = positiveImprovements[positiveImprovements.length - 1];
+                  improvingSlowestText = `${slowestImp.name} — ↑ ${slowestImp.diff.toFixed(1)}`;
+                } else {
+                  improvingSlowestText = `${mostImp.name} — ↑ ${mostImp.diff.toFixed(1)}`;
+                }
+              }
+
+              // 5 & 6: MOST INCONSISTENT & MOST CONSISTENT
+              let mostInconsistentText = "Insufficient data";
+              let mostConsistentText = "Insufficient data";
+
+              if (paramHistories.length >= 1) {
+                const sortedByVarDesc = [...paramHistories].sort((a, b) => b.stdDev - a.stdDev);
+                mostInconsistentText = sortedByVarDesc[0].name;
+                mostConsistentText = sortedByVarDesc[sortedByVarDesc.length - 1].name;
+              }
+
+              const highlightItems = [
+                {
+                  label: "STRONGEST",
+                  value: strongestText,
+                  icon: Zap,
+                  iconBg: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                },
+                {
+                  label: "WEAKEST",
+                  value: weakestText,
+                  icon: Target,
+                  iconBg: "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                },
+                {
+                  label: "IMPROVING THE MOST",
+                  value: improvingMostText,
+                  icon: TrendingUp,
+                  iconBg: "bg-orange-500/10 text-orange-600 border-orange-500/20"
+                },
+                {
+                  label: "IMPROVING SLOWEST",
+                  value: improvingSlowestText,
+                  icon: Flame,
+                  iconBg: "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                },
+                {
+                  label: "MOST INCONSISTENT",
+                  value: mostInconsistentText,
+                  icon: AlertTriangle,
+                  iconBg: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20"
+                },
+                {
+                  label: "MOST CONSISTENT",
+                  value: mostConsistentText,
+                  icon: ShieldCheck,
+                  iconBg: "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                }
+              ];
 
               return (
-                <div className="space-y-4 pt-1">
-                  {/* Executive Summary Metrics Banner */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50/90 p-3.5 rounded-2xl border border-slate-200 text-left">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-600 font-bold shrink-0">
-                        <TrendingUp className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">PROFILE AVERAGE</p>
-                        <p className="text-base font-black text-slate-900 font-mono leading-none mt-0.5">{avgProfileScore} <span className="text-xs text-slate-400 font-bold">/ 10</span></p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-slate-200/80 pt-2 sm:pt-0 sm:pl-3">
-                      <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 font-bold shrink-0">
-                        <Sparkles className="w-4 h-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">PEAK PARAMETER</p>
-                        <p className="text-xs font-black text-slate-900 truncate mt-0.5">{topParam.name} ({topParam.score.toFixed(1)})</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-slate-200/80 pt-2 sm:pt-0 sm:pl-3">
-                      <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 font-bold shrink-0">
-                        <Target className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">BENCHMARK STATUS</p>
-                        <p className="text-xs font-black text-slate-900 mt-0.5">{highParamsCount} of 7 High (&ge;7.0)</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Premium 2D Line Chart Canvas */}
-                  <div className="relative bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden select-none">
-                    {/* Desktop / Tablet 2D Line Chart (sm: 640px and above) */}
-                    <svg
-                      viewBox="0 0 860 385"
-                      className="hidden sm:block w-full h-auto overflow-visible"
-                    >
-                      <defs>
-                        {/* Gradient Fill under Line */}
-                        <linearGradient id="cpiAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#f97316" stopOpacity="0.18" />
-                          <stop offset="100%" stopColor="#f97316" stopOpacity="0.0" />
-                        </linearGradient>
-
-                        {/* Drop shadow for nodes */}
-                        <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
-                          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#0f172a" floodOpacity="0.12" />
-                        </filter>
-                      </defs>
-
-                      {/* Subtle Grid Lines (Y-Axis Levels: 0, 2, 4, 6, 8, 10) */}
-                      {[10, 8, 6, 4, 2, 0].map((level) => {
-                        const y = 45 + (1 - level / 10) * 215;
-                        return (
-                          <g key={level}>
-                            <line
-                              x1="65"
-                              y1={y}
-                              x2="805"
-                              y2={y}
-                              stroke="#e2e8f0"
-                              strokeWidth="1"
-                              strokeDasharray={level === 0 || level === 10 ? "none" : "4 4"}
-                            />
-                            <text
-                              x="48"
-                              y={y + 4}
-                              textAnchor="end"
-                              fill="#475569"
-                              fontSize="13"
-                              fontWeight="800"
-                              fontFamily="monospace"
-                            >
-                              {level}
-                            </text>
-                          </g>
-                        );
-                      })}
-
-                      {/* 7.0 Benchmark Reference Line */}
-                      {(() => {
-                        const benchY = 45 + (1 - 7.0 / 10) * 215;
-                        return (
-                          <g>
-                            <line
-                              x1="65"
-                              y1={benchY}
-                              x2="805"
-                              y2={benchY}
-                              stroke="#10b981"
-                              strokeWidth="1.5"
-                              strokeDasharray="6 6"
-                              opacity="0.6"
-                            />
-                            <text
-                              x="800"
-                              y={benchY - 6}
-                              textAnchor="end"
-                              fill="#10b981"
-                              fontSize="11"
-                              fontWeight="800"
-                              letterSpacing="1"
-                              fontFamily="sans-serif"
-                            >
-                              7.0 HIGH BENCHMARK
-                            </text>
-                          </g>
-                        );
-                      })()}
-
-                      {/* Y-Axis Title */}
-                      <text
-                        x="18"
-                        y="26"
-                        fill="#64748b"
-                        fontSize="12"
-                        fontWeight="900"
-                        fontFamily="sans-serif"
-                        letterSpacing="1.5"
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 pt-1">
+                  {highlightItems.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <div
+                        key={item.label}
+                        className="bg-slate-50/90 p-4 rounded-2xl border border-slate-200/90 flex flex-col justify-between space-y-2 text-left"
                       >
-                        SCORE
-                      </text>
-
-                      {/* Gradient Fill under the line */}
-                      {(() => {
-                        const firstX = 65;
-                        const lastX = 805;
-                        const bottomY = 260;
-
-                        const linePoints = cpiLineChartData
-                          .map((param, i) => {
-                            const x = 65 + i * (740 / 6);
-                            const y = 45 + (1 - param.score / 10) * 215;
-                            return `${x},${y}`;
-                          })
-                          .join(" L ");
-
-                        const areaD = `M ${firstX},${bottomY} L ${linePoints} L ${lastX},${bottomY} Z`;
-
-                        return <path d={areaD} fill="url(#cpiAreaGradient)" />;
-                      })()}
-
-                      {/* Connecting Line across all 7 parameters */}
-                      {(() => {
-                        const pathD = cpiLineChartData
-                          .map((param, i) => {
-                            const x = 65 + i * (740 / 6);
-                            const y = 45 + (1 - param.score / 10) * 215;
-                            return `${i === 0 ? "M" : "L"} ${x} ${y}`;
-                          })
-                          .join(" ");
-
-                        return (
-                          <path
-                            d={pathD}
-                            fill="none"
-                            stroke="#f97316"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        );
-                      })()}
-
-                      {/* Data Points, Score Badges, Labels, and Interactive Touch/Hover */}
-                      {cpiLineChartData.map((param, i) => {
-                        const x = 65 + i * (740 / 6);
-                        const y = 45 + (1 - param.score / 10) * 215;
-                        const isHovered = hoveredParamIndex === i;
-
-                        // X-Axis Parameter Name split into lines
-                        const nameParts = param.name.split(" ");
-                        const line1 = nameParts[0] || param.name;
-                        const line2 = nameParts.slice(1).join(" ");
-
-                        // Status badge border color for node pill
-                        const statusColor = param.score >= 7.0 ? "#10b981" : param.score >= 5.0 ? "#f59e0b" : "#ef4444";
-
-                        return (
-                          <g
-                            key={param.name}
-                            className="cursor-pointer"
-                            onMouseEnter={() => setHoveredParamIndex(i)}
-                            onMouseLeave={() => setHoveredParamIndex(null)}
-                            onClick={() => setHoveredParamIndex(hoveredParamIndex === i ? null : i)}
-                          >
-                            {/* Invisible touch/hover hit zone */}
-                            <circle cx={x} cy={y} r="24" fill="transparent" />
-
-                            {/* Halo Ring on Hover */}
-                            {isHovered && (
-                              <circle cx={x} cy={y} r="15" fill="rgba(249, 115, 22, 0.2)" stroke="#f97316" strokeWidth="2" />
-                            )}
-
-                            {/* Node Shadow & Outer Ring */}
-                            <circle cx={x} cy={y} r="11" fill="#f97316" opacity="0.15" />
-                            <circle
-                              cx={x}
-                              cy={y}
-                              r={isHovered ? "8" : "6.5"}
-                              fill="#ffffff"
-                              stroke="#f97316"
-                              strokeWidth="3.5"
-                              filter="url(#nodeShadow)"
-                            />
-                            <circle cx={x} cy={y} r={isHovered ? "4" : "3"} fill="#ea580c" />
-
-                            {/* Floating Score Badge above node */}
-                            <g transform={`translate(${x - 25}, ${y - 36})`}>
-                              <rect
-                                x="0"
-                                y="0"
-                                width="50"
-                                height="22"
-                                rx="7"
-                                fill="#ffffff"
-                                stroke={statusColor}
-                                strokeWidth="2"
-                                filter="url(#nodeShadow)"
-                              />
-                              <text
-                                x="25"
-                                y="15.5"
-                                textAnchor="middle"
-                                fill="#0f172a"
-                                fontSize="13"
-                                fontWeight="900"
-                                fontFamily="monospace"
-                              >
-                                {param.score.toFixed(1)}
-                              </text>
-                            </g>
-
-                            {/* X-Axis Step Number Indicator */}
-                            <g transform={`translate(${x - 13}, 276)`}>
-                              <rect
-                                x="0"
-                                y="0"
-                                width="26"
-                                height="18"
-                                rx="6"
-                                fill={isHovered ? "#ffedd5" : "#f1f5f9"}
-                                stroke={isHovered ? "#fdba74" : "#cbd5e1"}
-                                strokeWidth="1.2"
-                              />
-                              <text
-                                x="13"
-                                y="13.5"
-                                textAnchor="middle"
-                                fill={isHovered ? "#ea580c" : "#334155"}
-                                fontSize="12.5"
-                                fontWeight="900"
-                                fontFamily="monospace"
-                              >
-                                {i + 1}
-                              </text>
-                            </g>
-
-                            {/* X-Axis Parameter Name Label (Prominent Extra Large Text) */}
-                            {line2 ? (
-                              <>
-                                <text
-                                  x={x}
-                                  y="314"
-                                  textAnchor="middle"
-                                  fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="15.5"
-                                  fontWeight="900"
-                                >
-                                  {line1}
-                                </text>
-                                <text
-                                  x={x}
-                                  y="333"
-                                  textAnchor="middle"
-                                  fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="15.5"
-                                  fontWeight="900"
-                                >
-                                  {line2}
-                                </text>
-                              </>
-                            ) : (
-                              <text
-                                x={x}
-                                y="324"
-                                textAnchor="middle"
-                                fill={isHovered ? "#ea580c" : "#0f172a"}
-                                fontSize="16.5"
-                                fontWeight="900"
-                              >
-                                {param.name}
-                              </text>
-                            )}
-
-                            {/* Hover / Tap Floating Tooltip */}
-                            {isHovered && (
-                              <g transform={`translate(${Math.max(10, Math.min(680, x - 85))}, ${Math.max(5, y - 68)})`}>
-                                <rect
-                                  x="0"
-                                  y="0"
-                                  width="170"
-                                  height="48"
-                                  rx="10"
-                                  fill="#0f172a"
-                                  opacity="0.96"
-                                  filter="url(#nodeShadow)"
-                                />
-                                <text
-                                  x="85"
-                                  y="20"
-                                  textAnchor="middle"
-                                  fill="#ffffff"
-                                  fontSize="12"
-                                  fontWeight="800"
-                                >
-                                  {param.name}
-                                </text>
-                                <text
-                                  x="85"
-                                  y="36"
-                                  textAnchor="middle"
-                                  fill="#f97316"
-                                  fontSize="13"
-                                  fontWeight="900"
-                                  fontFamily="monospace"
-                                >
-                                  Score: {param.score.toFixed(1)} / 10
-                                </text>
-                              </g>
-                            )}
-                          </g>
-                        );
-                      })}
-                    </svg>
-
-                    {/* Mobile 2D Line Chart (below 640px) */}
-                    <svg
-                      viewBox="0 0 860 540"
-                      className="block sm:hidden w-full h-auto overflow-visible"
-                    >
-                      <defs>
-                        <linearGradient id="cpiAreaGradientMobile" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#f97316" stopOpacity="0.20" />
-                          <stop offset="100%" stopColor="#f97316" stopOpacity="0.0" />
-                        </linearGradient>
-                        <filter id="nodeShadowMobile" x="-20%" y="-20%" width="140%" height="140%">
-                          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#0f172a" floodOpacity="0.15" />
-                        </filter>
-                      </defs>
-
-                      {/* Y-Axis Grid Lines & Levels */}
-                      {[10, 8, 6, 4, 2, 0].map((level) => {
-                        const y = 65 + (1 - level / 10) * 310;
-                        return (
-                          <g key={level}>
-                            <line
-                              x1="55"
-                              y1={y}
-                              x2="815"
-                              y2={y}
-                              stroke="#e2e8f0"
-                              strokeWidth="1.2"
-                              strokeDasharray={level === 0 || level === 10 ? "none" : "4 4"}
-                            />
-                            <text
-                              x="42"
-                              y={y + 5}
-                              textAnchor="end"
-                              fill="#475569"
-                              fontSize="16"
-                              fontWeight="900"
-                              fontFamily="monospace"
-                            >
-                              {level}
-                            </text>
-                          </g>
-                        );
-                      })}
-
-                      {/* 7.0 Benchmark Reference Line */}
-                      {(() => {
-                        const benchY = 65 + (1 - 7.0 / 10) * 310;
-                        return (
-                          <g>
-                            <line
-                              x1="55"
-                              y1={benchY}
-                              x2="815"
-                              y2={benchY}
-                              stroke="#10b981"
-                              strokeWidth="2.2"
-                              strokeDasharray="6 6"
-                              opacity="0.8"
-                            />
-                            <text
-                              x="810"
-                              y={benchY - 9}
-                              textAnchor="end"
-                              fill="#10b981"
-                              fontSize="15"
-                              fontWeight="900"
-                              letterSpacing="1"
-                              fontFamily="sans-serif"
-                            >
-                              7.0 HIGH BENCHMARK
-                            </text>
-                          </g>
-                        );
-                      })()}
-
-                      {/* Y-Axis Title */}
-                      <text
-                        x="18"
-                        y="35"
-                        fill="#64748b"
-                        fontSize="15"
-                        fontWeight="900"
-                        fontFamily="sans-serif"
-                        letterSpacing="1.5"
-                      >
-                        SCORE
-                      </text>
-
-                      {/* Gradient Fill under Line */}
-                      {(() => {
-                        const firstX = 55;
-                        const lastX = 815;
-                        const bottomY = 375;
-
-                        const linePoints = cpiLineChartData
-                          .map((param, i) => {
-                            const x = 55 + i * (760 / 6);
-                            const y = 65 + (1 - param.score / 10) * 310;
-                            return `${x},${y}`;
-                          })
-                          .join(" L ");
-
-                        const areaD = `M ${firstX},${bottomY} L ${linePoints} L ${lastX},${bottomY} Z`;
-                        return <path d={areaD} fill="url(#cpiAreaGradientMobile)" />;
-                      })()}
-
-                      {/* Connecting Line */}
-                      {(() => {
-                        const pathD = cpiLineChartData
-                          .map((param, i) => {
-                            const x = 55 + i * (760 / 6);
-                            const y = 65 + (1 - param.score / 10) * 310;
-                            return `${i === 0 ? "M" : "L"} ${x} ${y}`;
-                          })
-                          .join(" ");
-
-                        return (
-                          <path
-                            d={pathD}
-                            fill="none"
-                            stroke="#f97316"
-                            strokeWidth="4.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        );
-                      })()}
-
-                      {/* Data Points, Score Badges, Step Numbers & Labels */}
-                      {cpiLineChartData.map((param, i) => {
-                        const x = 55 + i * (760 / 6);
-                        const y = 65 + (1 - param.score / 10) * 310;
-                        const isHovered = hoveredParamIndex === i;
-
-                        const nameParts = param.name.split(" ");
-                        const line1 = nameParts[0] || param.name;
-                        const line2 = nameParts.slice(1).join(" ");
-
-                        const statusColor = param.score >= 7.0 ? "#10b981" : param.score >= 5.0 ? "#f59e0b" : "#ef4444";
-
-                        return (
-                          <g
-                            key={`mobile-${param.name}`}
-                            className="cursor-pointer"
-                            onMouseEnter={() => setHoveredParamIndex(i)}
-                            onMouseLeave={() => setHoveredParamIndex(null)}
-                            onClick={() => setHoveredParamIndex(hoveredParamIndex === i ? null : i)}
-                          >
-                            <circle cx={x} cy={y} r="30" fill="transparent" />
-
-                            {isHovered && (
-                              <circle cx={x} cy={y} r="20" fill="rgba(249, 115, 22, 0.2)" stroke="#f97316" strokeWidth="2.5" />
-                            )}
-
-                            <circle cx={x} cy={y} r="14" fill="#f97316" opacity="0.18" />
-                            <circle
-                              cx={x}
-                              cy={y}
-                              r={isHovered ? "10" : "8.5"}
-                              fill="#ffffff"
-                              stroke="#f97316"
-                              strokeWidth="4"
-                              filter="url(#nodeShadowMobile)"
-                            />
-                            <circle cx={x} cy={y} r={isHovered ? "5.5" : "4.5"} fill="#ea580c" />
-
-                            {/* Floating Score Badge */}
-                            <g transform={`translate(${x - 30}, ${y - 44})`}>
-                              <rect
-                                x="0"
-                                y="0"
-                                width="60"
-                                height="28"
-                                rx="8"
-                                fill="#ffffff"
-                                stroke={statusColor}
-                                strokeWidth="2.5"
-                                filter="url(#nodeShadowMobile)"
-                              />
-                              <text
-                                x="30"
-                                y="19.5"
-                                textAnchor="middle"
-                                fill="#0f172a"
-                                fontSize="16"
-                                fontWeight="900"
-                                fontFamily="monospace"
-                              >
-                                {param.score.toFixed(1)}
-                              </text>
-                            </g>
-
-                            {/* Step Number Badge */}
-                            <g transform={`translate(${x - 15}, 395)`}>
-                              <rect
-                                x="0"
-                                y="0"
-                                width="30"
-                                height="22"
-                                rx="7"
-                                fill={isHovered ? "#ffedd5" : "#f1f5f9"}
-                                stroke={isHovered ? "#fdba74" : "#cbd5e1"}
-                                strokeWidth="1.5"
-                              />
-                              <text
-                                x="15"
-                                y="16"
-                                textAnchor="middle"
-                                fill={isHovered ? "#ea580c" : "#334155"}
-                                fontSize="14"
-                                fontWeight="900"
-                                fontFamily="monospace"
-                              >
-                                {i + 1}
-                              </text>
-                            </g>
-
-                            {/* Parameter Name Label */}
-                            {line2 ? (
-                              <>
-                                <text
-                                  x={x}
-                                  y="442"
-                                  textAnchor="middle"
-                                  fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="20"
-                                  fontWeight="900"
-                                >
-                                  {line1}
-                                </text>
-                                <text
-                                  x={x}
-                                  y="468"
-                                  textAnchor="middle"
-                                  fill={isHovered ? "#ea580c" : "#0f172a"}
-                                  fontSize="20"
-                                  fontWeight="900"
-                                >
-                                  {line2}
-                                </text>
-                              </>
-                            ) : (
-                              <text
-                                x={x}
-                                y="455"
-                                textAnchor="middle"
-                                fill={isHovered ? "#ea580c" : "#0f172a"}
-                                fontSize="21"
-                                fontWeight="900"
-                              >
-                                {param.name}
-                              </text>
-                            )}
-
-                            {/* Floating Tooltip on Hover/Tap */}
-                            {isHovered && (
-                              <g transform={`translate(${Math.max(10, Math.min(650, x - 100))}, ${Math.max(5, y - 80)})`}>
-                                <rect
-                                  x="0"
-                                  y="0"
-                                  width="200"
-                                  height="56"
-                                  rx="12"
-                                  fill="#0f172a"
-                                  opacity="0.96"
-                                  filter="url(#nodeShadowMobile)"
-                                />
-                                <text
-                                  x="100"
-                                  y="24"
-                                  textAnchor="middle"
-                                  fill="#ffffff"
-                                  fontSize="14"
-                                  fontWeight="900"
-                                >
-                                  {param.name}
-                                </text>
-                                <text
-                                  x="100"
-                                  y="42"
-                                  textAnchor="middle"
-                                  fill="#f97316"
-                                  fontSize="15"
-                                  fontWeight="900"
-                                  fontFamily="monospace"
-                                >
-                                  Score: {param.score.toFixed(1)} / 10
-                                </text>
-                              </g>
-                            )}
-                          </g>
-                        );
-                      })}
-                    </svg>
-                  </div>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-6 h-6 rounded-lg border flex items-center justify-center font-bold shrink-0 ${item.iconBg}`}>
+                            <IconComponent className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">
+                            {item.label}
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
+                          {item.value}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })()}
