@@ -2914,17 +2914,17 @@ return (
                     return (
                       <div
                         key={item.label}
-                        className="bg-slate-50/90 p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 flex flex-col justify-between space-y-2.5 text-left transition-all shadow-2xs"
+                        className="bg-slate-50/90 p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 flex flex-col justify-between space-y-3 text-left transition-all shadow-2xs"
                       >
-                        <div className="flex items-center gap-2.5">
-                          <div className={`w-7 h-7 rounded-xl border flex items-center justify-center font-bold shrink-0 ${item.iconBg}`}>
-                            <IconComponent className="w-4 h-4" />
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-xl border flex items-center justify-center font-bold shrink-0 ${item.iconBg}`}>
+                            <IconComponent className="w-4.5 h-4.5" />
                           </div>
-                          <span className="text-xs sm:text-sm font-black text-slate-500 uppercase tracking-wider">
+                          <span className="text-xs sm:text-sm font-extrabold text-slate-500 uppercase tracking-widest whitespace-nowrap">
                             {item.label}
                           </span>
                         </div>
-                        <p className="text-sm sm:text-base font-black text-slate-900 tracking-tight leading-snug">
+                        <p className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight leading-snug">
                           {item.value}
                         </p>
                       </div>
