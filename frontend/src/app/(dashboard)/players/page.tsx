@@ -2888,34 +2888,24 @@ return (
                 }
               });
 
-              // 3 & 4: IMPROVING THE MOST & IMPROVING SLOWEST
+              // 3 & 4: FASTEST MOVER & SLOWEST MOVER
               const positiveImprovements = paramHistories
                 .filter((ph) => ph.diff > 0)
                 .sort((a, b) => b.diff - a.diff);
 
-              let improvingMostText = "Insufficient data";
-              let improvingSlowestText = "Insufficient data";
+              let fastestMoverText = "Insufficient data";
+              let slowestMoverText = "Insufficient data";
 
               if (positiveImprovements.length > 0) {
-                const mostImp = positiveImprovements[0];
-                improvingMostText = `${mostImp.name} — ↑ ${mostImp.diff.toFixed(1)}`;
+                const fastest = positiveImprovements[0];
+                fastestMoverText = `${fastest.name} — ↑ ${fastest.diff.toFixed(1)}`;
 
                 if (positiveImprovements.length >= 2) {
-                  const slowestImp = positiveImprovements[positiveImprovements.length - 1];
-                  improvingSlowestText = `${slowestImp.name} — ↑ ${slowestImp.diff.toFixed(1)}`;
+                  const slowest = positiveImprovements[positiveImprovements.length - 1];
+                  slowestMoverText = `${slowest.name} — ↑ ${slowest.diff.toFixed(1)}`;
                 } else {
-                  improvingSlowestText = `${mostImp.name} — ↑ ${mostImp.diff.toFixed(1)}`;
+                  slowestMoverText = `${fastest.name} — ↑ ${fastest.diff.toFixed(1)}`;
                 }
-              }
-
-              // 5 & 6: MOST INCONSISTENT & MOST CONSISTENT
-              let mostInconsistentText = "Insufficient data";
-              let mostConsistentText = "Insufficient data";
-
-              if (paramHistories.length >= 1) {
-                const sortedByVarDesc = [...paramHistories].sort((a, b) => b.stdDev - a.stdDev);
-                mostInconsistentText = sortedByVarDesc[0].name;
-                mostConsistentText = sortedByVarDesc[sortedByVarDesc.length - 1].name;
               }
 
               const highlightItems = [
@@ -2932,49 +2922,37 @@ return (
                   iconBg: "bg-rose-500/10 text-rose-600 border-rose-500/20"
                 },
                 {
-                  label: "IMPROVING THE MOST",
-                  value: improvingMostText,
+                  label: "FASTEST MOVER",
+                  value: fastestMoverText,
                   icon: TrendingUp,
                   iconBg: "bg-orange-500/10 text-orange-600 border-orange-500/20"
                 },
                 {
-                  label: "IMPROVING SLOWEST",
-                  value: improvingSlowestText,
+                  label: "SLOWEST MOVER",
+                  value: slowestMoverText,
                   icon: Flame,
                   iconBg: "bg-amber-500/10 text-amber-600 border-amber-500/20"
-                },
-                {
-                  label: "MOST INCONSISTENT",
-                  value: mostInconsistentText,
-                  icon: AlertTriangle,
-                  iconBg: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20"
-                },
-                {
-                  label: "MOST CONSISTENT",
-                  value: mostConsistentText,
-                  icon: ShieldCheck,
-                  iconBg: "bg-blue-500/10 text-blue-600 border-blue-500/20"
                 }
               ];
 
               return (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                   {highlightItems.map((item) => {
                     const IconComponent = item.icon;
                     return (
                       <div
                         key={item.label}
-                        className="bg-slate-50/90 p-4 rounded-2xl border border-slate-200/90 flex flex-col justify-between space-y-2 text-left"
+                        className="bg-slate-50/90 p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 flex flex-col justify-between space-y-2.5 text-left transition-all shadow-2xs"
                       >
-                        <div className="flex items-center gap-2">
-                          <div className={`w-6 h-6 rounded-lg border flex items-center justify-center font-bold shrink-0 ${item.iconBg}`}>
-                            <IconComponent className="w-3.5 h-3.5" />
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-xl border flex items-center justify-center font-bold shrink-0 ${item.iconBg}`}>
+                            <IconComponent className="w-4 h-4" />
                           </div>
-                          <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">
+                          <span className="text-xs sm:text-sm font-black text-slate-500 uppercase tracking-wider">
                             {item.label}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
+                        <p className="text-sm sm:text-base font-black text-slate-900 tracking-tight leading-snug">
                           {item.value}
                         </p>
                       </div>
