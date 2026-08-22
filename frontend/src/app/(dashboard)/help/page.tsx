@@ -344,40 +344,6 @@ export default function HelpPage() {
             </button>
           </div>
 
-          {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
-          <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">SCORE INTERPRETATION SUMMARY</h3>
-            <div className="space-y-3.5">
-              <div className="space-y-1 pb-3 border-b border-slate-200/80">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- LOW</span>
-                </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
-                  {below5}
-                </p>
-              </div>
-              <div className="space-y-1 pb-3 border-b border-slate-200/80">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- AVERAGE</span>
-                </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
-                  {between5And7}
-                </p>
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- HIGH</span>
-                </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
-                  {above7}
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Action Points Content */}
           <div className="space-y-3">
             <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
@@ -440,6 +406,40 @@ export default function HelpPage() {
                 Have a clear reason what earned the score
               </li>
             </ul>
+          </div>
+
+          {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
+          <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">SCORE INTERPRETATION SUMMARY</h3>
+            <div className="space-y-3.5">
+              <div className="space-y-1 pb-3 border-b border-slate-200/80">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- LOW</span>
+                </div>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  {below5}
+                </p>
+              </div>
+              <div className="space-y-1 pb-3 border-b border-slate-200/80">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- AVERAGE</span>
+                </div>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  {between5And7}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
+                  <span className="text-xs font-black text-slate-900 uppercase">- HIGH</span>
+                </div>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  {above7}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
