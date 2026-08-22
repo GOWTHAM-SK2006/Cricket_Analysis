@@ -1446,6 +1446,8 @@ export default function PlayersPage() {
     }
   }, [searchParams]);
 
+  const loadedHistoryPlayerIdRef = useRef<number | null>(null);
+
 // Handle auto-select and self-assessment navigation for players
 useEffect(() => {
   if (players.length > 0) {
@@ -1487,66 +1489,49 @@ useEffect(() => {
     }
 
     if (role === "player") {
-      api.get("/profile").then((profileRes) => {
-        const matchingPlayer = players.find(
-          (p) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
-        ) || players[0];
+      const savedName = localStorage.getItem("userName");
+      const matchingPlayer = savedName 
+        ? (players.find((p) => p.name.toLowerCase() === savedName.toLowerCase()) || players[0])
+        : players[0];
 
-        if (matchingPlayer) {
-          if (!selectedPlayer || selectedPlayer.id !== matchingPlayer.id) {
-            setSelectedPlayer(matchingPlayer);
-            setView("profile");
-            loadHistory(matchingPlayer.id);
-          }
-          if (searchParams.get("selfAssess") === "true") {
-            setShowSelfOverlay(true);
-          }
-        }
-      }).catch(() => {
-        if (!selectedPlayer || selectedPlayer.id !== players[0].id) {
-          setSelectedPlayer(players[0]);
+      if (matchingPlayer) {
+        if (!selectedPlayer || selectedPlayer.id !== matchingPlayer.id) {
+          setSelectedPlayer(matchingPlayer);
           setView("profile");
-          loadHistory(players[0].id);
+          loadHistory(matchingPlayer.id);
         }
         if (searchParams.get("selfAssess") === "true") {
           setShowSelfOverlay(true);
         }
-      });
+      }
     } else if (searchParams.get("selfAssess") === "true") {
-      api.get("/profile").then((profileRes) => {
-        const matchingPlayer = players.find(
-          (p) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
-        ) || players[0];
+      const savedName = localStorage.getItem("userName");
+      const matchingPlayer = savedName 
+        ? (players.find((p) => p.name.toLowerCase() === savedName.toLowerCase()) || players[0])
+        : players[0];
 
-        if (matchingPlayer) {
-          if (!selectedPlayer || selectedPlayer.id !== matchingPlayer.id) {
-            setSelectedPlayer(matchingPlayer);
-            setView("profile");
-            loadHistory(matchingPlayer.id);
-          }
-          setShowSelfOverlay(true);
-        }
-      }).catch(() => {
-        if (!selectedPlayer || selectedPlayer.id !== players[0].id) {
-          setSelectedPlayer(players[0]);
+      if (matchingPlayer) {
+        if (!selectedPlayer || selectedPlayer.id !== matchingPlayer.id) {
+          setSelectedPlayer(matchingPlayer);
           setView("profile");
-          loadHistory(players[0].id);
+          loadHistory(matchingPlayer.id);
         }
         setShowSelfOverlay(true);
-      });
+      }
     }
   } else if (!loading) {
     if (searchParams.get("id")) {
       setView("list");
     }
   }
-}, [players, role, searchParams, loading, selectedPlayer]);
+}, [players, role, searchParams, loading]);
 
-const loadHistory = async (playerId: number) => {
+const loadHistory = async (playerId: number, forceRefresh: boolean = false) => {
+  if (!forceRefresh && loadedHistoryPlayerIdRef.current === playerId && (practiceHistory.length > 0 || matchHistory.length > 0)) {
+    return;
+  }
+  loadedHistoryPlayerIdRef.current = playerId;
   setIsHistoryLoading(true);
-  setPracticeHistory([]);
-  setMatchHistory([]);
-  setSelfHistory([]);
   try {
     const [pracRes, matchRes] = await Promise.all([
       api.get(`/practice/player/${playerId}`).catch(() => ({ data: [] })),
@@ -2797,20 +2782,7 @@ return (
               </div>
             </div>
 
-            {isHistoryLoading ? (
-              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
-                  <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
-                  <span>Loading performance highlights...</span>
-                </div>
-              </div>
-            ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
-              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-                  No assessment data recorded yet for this player.
-                </span>
-              </div>
-            ) : (() => {
+            {(() => {
               // Fixed CPI parameters in order
               const fixedParams = [
                 { name: "Technique", keys: ["technicalExecution", "technique"] },
@@ -2969,21 +2941,7 @@ return (
               <Sparkles className="w-4 h-4 text-orange-500" />
               KEY PERFORMANCE AREAS — STRONGEST TO WEAKEST
             </h3>
-            {isHistoryLoading ? (
-              <div className="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                <div className="flex items-center gap-3 text-slate-500 font-bold text-xs sm:text-sm uppercase tracking-wide">
-                  <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                  <span>Loading key performance areas...</span>
-                </div>
-              </div>
-            ) : practiceHistory.length === 0 && matchHistory.length === 0 ? (
-              <div className="flex items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-                  No assessment data recorded yet for this player.
-                </span>
-              </div>
-            ) : (
-              <div className="space-y-2.5 pt-1">
+            <div className="space-y-2.5 pt-1">
                 {focusAreas.map((focus, idx) => (
                   <div
                     key={idx}
@@ -3029,7 +2987,6 @@ return (
                   </div>
                 ))}
               </div>
-            )}
           </div>
 
           {/* SECTION 7 – ASSESSMENT HISTORY */}

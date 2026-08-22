@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "match_assessments")
+@Table(name = "match_assessments", indexes = {
+    @Index(name = "idx_match_player_date", columnList = "player_id, date")
+})
 public class MatchAssessment {
 
     @Id
