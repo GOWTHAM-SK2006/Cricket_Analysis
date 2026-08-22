@@ -301,27 +301,6 @@ export default function HelpPage() {
 
         {/* Selected Parameter Details */}
         <div className="space-y-4 pt-1 border-t border-slate-100">
-          {/* BENCHMARK GUIDING PRINCIPLES SUMMARY */}
-          <div className="bg-orange-50/80 border border-orange-200 p-4 rounded-2.5xl space-y-2 text-xs">
-            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
-              SUMMARY GUIDING PRINCIPLES
-            </span>
-            <ul className="space-y-1.5 font-bold text-slate-900">
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                Watch the pattern, not the moment
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                Score the evidence, not the impression
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                Have a clear reason what earned the score
-              </li>
-            </ul>
-          </div>
-
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
             <span className="text-xs font-black text-orange-600 uppercase tracking-wider block">
               {safeName} Index Overview
@@ -440,6 +419,27 @@ export default function HelpPage() {
                 {safeLowSummary}
               </div>
             )}
+          </div>
+
+          {/* BENCHMARK GUIDING PRINCIPLES SUMMARY */}
+          <div className="bg-orange-50/80 border border-orange-200 p-4 rounded-2.5xl space-y-2 text-xs">
+            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
+              SUMMARY GUIDING PRINCIPLES
+            </span>
+            <ul className="space-y-1.5 font-bold text-slate-900">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                Watch the pattern, not the moment
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                Score the evidence, not the impression
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
+                Have a clear reason what earned the score
+              </li>
+            </ul>
           </div>
         </div>
       </div>
