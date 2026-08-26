@@ -13,9 +13,9 @@ Spring Boot (Main Backend & Database)
        ↓
 FastAPI AI Service (Microservice)
        ↓
-Groq API REST Client
+OpenRouter API Client
        ↓
-Llama 3.3 70B (Groq)
+Liquid LFM 2.5 2.6B / Fallback Models
 ```
 
 - **Spring Boot** handles business logic, authentication, PostgreSQL database storage, and assessments.
