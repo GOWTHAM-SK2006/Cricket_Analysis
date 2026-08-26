@@ -7,10 +7,10 @@ from app.utils.logger import logger
 
 # Free OpenRouter models that return clean content (NOT reasoning-only models)
 OPENROUTER_FAST_MODELS = [
+    "liquid/lfm-2.5-2.6b:free",
+    "nvidia/nemotron-3.5-lightning:free",
+    "poolside/laguna-s-2.1:free",
     "google/gemma-4-26b-a4b-it:free",
-    "google/gemma-4-31b-it:free",
-    "poolside/laguna-xs-2.1:free",
-    "inclusionai/ling-3.0-tiny:free",
 ]
 
 # Reusable HTTP client with connection pooling for speed
