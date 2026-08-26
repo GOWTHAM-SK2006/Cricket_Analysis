@@ -41,7 +41,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 15 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 100 } }
 };
 
 interface Player {
@@ -320,12 +320,21 @@ export default function DashboardPage() {
               </h1>
             </div>
             
-            {/* Top Right Live Analytics Pill */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-md">
-              <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
-              <span className="text-[9.5px] font-black tracking-widest text-slate-700 uppercase">
-                CPI HOBBY
-              </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowChatModal(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-black text-xs shadow-md shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
+              >
+                <Bot className="w-4 h-4 stroke-[2.2]" />
+                <span>AI Coach</span>
+              </button>
+
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 border border-slate-200/80 shadow-2xs backdrop-blur-md">
+                <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
+                <span className="text-[9.5px] font-black tracking-widest text-slate-700 uppercase">
+                  CPI HOBBY
+                </span>
+              </div>
             </div>
           </div>
 
@@ -627,6 +636,30 @@ export default function DashboardPage() {
 
 
 
+
+      {/* Floating AI Chatbot Launcher Button */}
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setShowChatModal(true)}
+        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-black p-3.5 sm:px-4 sm:py-3 rounded-full shadow-xl shadow-orange-500/30 border border-orange-400/60 flex items-center gap-2.5 transition-all cursor-pointer group"
+        title="Open AI Cricket Coach Assistant"
+      >
+        <div className="relative flex items-center justify-center">
+          <div className="w-7 h-7 rounded-full bg-slate-950 text-orange-400 flex items-center justify-center font-bold shadow-inner border border-orange-500/30">
+            <Bot className="w-4 h-4 stroke-[2.2] group-hover:rotate-12 transition-transform text-orange-400" />
+          </div>
+          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-slate-950 flex items-center justify-center">
+            <span className="w-1 h-1 rounded-full bg-white animate-ping opacity-75" />
+          </span>
+        </div>
+        <span className="hidden sm:inline-block text-xs font-black uppercase tracking-wider text-slate-950">
+          AI COACH
+        </span>
+        <Sparkles className="w-3.5 h-3.5 text-slate-950 fill-slate-950 animate-pulse hidden sm:inline-block" />
+      </motion.button>
 
       {/* AI Chatbot Overlay Modal Component */}
       <AIChatModal
