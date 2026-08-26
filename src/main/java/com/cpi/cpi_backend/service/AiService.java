@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 public class AiService {
 
-    @Value("${ai.service.url:https://loyal-integrity-production-47ac.up.railway.app}")
+    @Value("${ai.service.url:https://innovative-gratitude-production-1375.up.railway.app}")
     private String aiServiceUrl;
 
     private final WebClient webClient;
