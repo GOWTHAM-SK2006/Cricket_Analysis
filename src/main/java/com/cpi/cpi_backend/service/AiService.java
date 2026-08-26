@@ -148,7 +148,10 @@ public class AiService {
             requestPayload.put("context", context);
         }
 
-        String targetUrl = aiServiceUrl + "/api/v1/chat";
+        String baseUrl = aiServiceUrl != null && aiServiceUrl.endsWith("/") 
+                ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
+                : aiServiceUrl;
+        String targetUrl = baseUrl + "/api/v1/chat";
         log.info("Forwarding Chat Request to FastAPI AI Service at: {}", targetUrl);
         log.info("Request Payload: {}", requestPayload);
 
@@ -184,7 +187,10 @@ public class AiService {
     }
 
     public ResponseEntity<?> forwardRecommendationRequest(Map<String, Object> requestPayload) {
-        String targetUrl = aiServiceUrl + "/api/v1/recommendation";
+        String baseUrl = aiServiceUrl != null && aiServiceUrl.endsWith("/") 
+                ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
+                : aiServiceUrl;
+        String targetUrl = baseUrl + "/api/v1/recommendation";
         log.info("Forwarding Recommendation Request to FastAPI AI Service at: {}", targetUrl);
         log.info("Request Payload: {}", requestPayload);
 
