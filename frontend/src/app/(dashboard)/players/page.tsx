@@ -1304,8 +1304,14 @@ export default function PlayersPage() {
   const [isEditingTarget, setIsEditingTarget] = useState(false);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
 
+  // AI Technique Personalization State
+  const [techniquePersonalizedPoints, setTechniquePersonalizedPoints] = useState<Array<{ cpiAnchor: string; personalizedGuidance: string }> | null>(null);
+  const [loadingTechniquePersonalization, setLoadingTechniquePersonalization] = useState(false);
+
   useEffect(() => {
     if (selectedPlayer) {
+      setTechniquePersonalizedPoints(null);
+      setLoadingTechniquePersonalization(false);
       const storedTarget = localStorage.getItem(`player_target_cpi_${selectedPlayer.id}`);
       let val = storedTarget ? parseFloat(storedTarget) : 85;
       if (val <= 10) val = Math.round(val * 10);
@@ -1321,6 +1327,52 @@ export default function PlayersPage() {
       setIsEditingGoal(false);
     }
   }, [selectedPlayer]);
+
+  const fetchTechniquePersonalization = async (
+    player: Player,
+    avg: number,
+    approvedDirectives: string[]
+  ) => {
+    if (loadingTechniquePersonalization || techniquePersonalizedPoints) return;
+    setLoadingTechniquePersonalization(true);
+
+    const notes: string[] = [];
+    [...practiceHistory, ...matchHistory].forEach((a: any) => {
+      if (a.coachFeedback && a.coachFeedback.trim() !== "") {
+        notes.push(a.coachFeedback.trim());
+      }
+    });
+
+    const currentPpiVal = player.ppiScore && player.ppiScore > 0 ? Math.round(player.ppiScore * 10) / 10 : 0;
+    const currentMpiVal = player.mpiScore && player.mpiScore > 0 ? Math.round(player.mpiScore * 10) / 10 : 0;
+    const currentCpiVal = currentPpiVal > 0 && currentMpiVal > 0 ? Math.round(((currentPpiVal + currentMpiVal) / 2) * 10) / 10 : currentPpiVal || currentMpiVal || 0;
+
+    const cat = avg >= 7.0 ? "HIGH" : avg >= 5.0 ? "MEDIUM" : "LOW";
+
+    try {
+      const res = await api.post("/ai/personalize-coaching", {
+        playerId: player.id,
+        playerName: player.name,
+        role: player.role,
+        parameterName: "Technique",
+        score: avg,
+        scoreCategory: cat,
+        cpi: currentCpiVal,
+        ppi: currentPpiVal,
+        mpi: currentMpiVal,
+        coachNotes: notes.slice(0, 5),
+        approvedCpiSourceText: approvedDirectives
+      });
+
+      if (res.data && res.data.personalizedPoints && res.data.personalizedPoints.length > 0) {
+        setTechniquePersonalizedPoints(res.data.personalizedPoints);
+      }
+    } catch (err) {
+      console.error("Technique personalization fetch failed, falling back to static predefined source:", err);
+    } finally {
+      setLoadingTechniquePersonalization(false);
+    }
+  };
 
   const handleSaveTargetCpi = () => {
     if (!selectedPlayer) return;
@@ -2946,7 +2998,13 @@ return (
                   <div
                     key={idx}
                     className="rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden transition-all duration-300 cursor-pointer hover:border-orange-300"
-                    onClick={() => setExpandedFocus(expandedFocus === idx ? null : idx)}
+                    onClick={() => {
+                      const isExpanding = expandedFocus !== idx;
+                      setExpandedFocus(isExpanding ? idx : null);
+                      if (isExpanding && focus.title === "Technique" && !techniquePersonalizedPoints && !loadingTechniquePersonalization) {
+                        fetchTechniquePersonalization(selectedPlayer, focus.avg, focus.daryllDirectives);
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3 p-3.5">
                       <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-black text-xs shrink-0 font-mono">
@@ -2978,9 +3036,46 @@ return (
                           }`}
                       >
                         <div className="px-5 pb-5 pt-3.5 border-t border-slate-200 bg-white space-y-2">
-                          <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
-                            {focus.detail}
-                          </p>
+                          {focus.title === "Technique" && techniquePersonalizedPoints && techniquePersonalizedPoints.length > 0 ? (
+                            <div className="space-y-3 pt-1">
+                              <div className="flex items-center justify-between border-b border-orange-100 pb-2">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 font-extrabold text-[10px] uppercase tracking-wider">
+                                  <Sparkles className="w-3 h-3 text-orange-500" />
+                                  AI PERSONALIZED FOR {selectedPlayer.role.toUpperCase()}
+                                </span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                  Grounded on Daryll's CPI Framework
+                                </span>
+                              </div>
+
+                              <div className="space-y-2.5">
+                                {techniquePersonalizedPoints.map((pt, pIdx) => (
+                                  <div key={pIdx} className="bg-orange-50/40 border border-orange-200/70 rounded-xl p-3 space-y-1.5 text-left">
+                                    <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                                      {pt.personalizedGuidance}
+                                    </p>
+                                    <div className="flex items-center gap-1.5 pt-1 border-t border-orange-100 text-[10px] font-extrabold text-orange-700">
+                                      <span className="shrink-0 bg-orange-500/20 text-orange-700 px-1.5 py-0.5 rounded font-mono uppercase">
+                                        CPI ANCHOR
+                                      </span>
+                                      <span className="truncate italic font-semibold text-slate-600">
+                                        "{pt.cpiAnchor}"
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : loadingTechniquePersonalization && focus.title === "Technique" ? (
+                            <div className="py-4 flex items-center justify-center gap-2 text-xs font-bold text-orange-600">
+                              <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                              <span>Personalizing Technique guidance for {selectedPlayer.role}...</span>
+                            </div>
+                          ) : (
+                            <p className="text-xs font-semibold text-slate-800 leading-[1.75] whitespace-pre-line">
+                              {focus.detail}
+                            </p>
+                          )}
                         </div>
                       </div>
                     ) : null}

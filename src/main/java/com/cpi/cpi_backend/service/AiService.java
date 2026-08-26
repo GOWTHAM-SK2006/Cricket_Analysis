@@ -225,6 +225,44 @@ public class AiService {
         }
     }
 
+    public ResponseEntity<?> forwardPersonalizationRequest(Map<String, Object> requestPayload) {
+        String baseUrl = aiServiceUrl != null && aiServiceUrl.endsWith("/") 
+                ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
+                : aiServiceUrl;
+        String targetUrl = baseUrl + "/api/v1/recommendation/personalize";
+        log.info("Forwarding Personalization Request to FastAPI AI Service at: {}", targetUrl);
+        log.info("Request Payload: {}", requestPayload);
+
+        try {
+            Object responseBody = webClient.post()
+                    .uri(targetUrl)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(requestPayload)
+                    .retrieve()
+                    .bodyToMono(Object.class)
+                    .timeout(Duration.ofSeconds(15))
+                    .block();
+
+            log.info("FastAPI AI Personalization Status: 200 OK");
+            return ResponseEntity.ok(responseBody);
+
+        } catch (WebClientResponseException e) {
+            log.error("FastAPI Personalization HTTP Error: {} - Response: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(Map.of(
+                            "success", false,
+                            "message", "AI Personalization Error: " + e.getResponseBodyAsString()
+                    ));
+        } catch (Exception e) {
+            log.error("Error communicating with FastAPI AI Personalization Service: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(Map.of(
+                            "success", false,
+                            "message", "AI Personalization Service is temporarily unavailable."
+                    ));
+        }
+    }
+
     private Double getAverageMetric(
             java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practices,
             java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matches,

@@ -30,4 +30,10 @@ public class AiController {
         log.info("Received /api/ai/recommendation request from frontend");
         return aiService.forwardRecommendationRequest(requestPayload);
     }
+
+    @PostMapping("/personalize-coaching")
+    public ResponseEntity<?> personalizeCoaching(@RequestBody Map<String, Object> requestPayload) {
+        log.info("Received /api/ai/personalize-coaching request from frontend");
+        return aiService.forwardPersonalizationRequest(requestPayload);
+    }
 }

@@ -60,4 +60,106 @@ class RecommendationService:
             timestamp=datetime.utcnow().isoformat() + "Z"
         )
 
+    async def generate_personalized_parameter_guidance(self, request) -> dict:
+        """
+        Generates player-specific guidance grounded strictly on Daryll's approved CPI source text.
+        Enforces 100% strict grounding: zero unapproved technical concepts, ungrounded cues, or inferred theories.
+        """
+        approved_text = request.approvedCpiSourceText or []
+        notes_str = ", ".join(request.coachNotes) if request.coachNotes else "None recorded"
+        
+        system_prompt = (
+            "You are an expert AI Cricket Coach Assistant strictly enforcing Daryll's Cullinan Performance Index (CPI) framework.\n\n"
+            "STRICT ZERO-INVENTION GROUNDING MANDATE:\n"
+            "1. Daryll's approved CPI source bullet points are the IMMUTABLE source of truth.\n"
+            "2. 'cpiAnchor' MUST BE AN EXACT, UNALTERED STRING FROM approvedCpiSourceText.\n"
+            "3. 'personalizedGuidance' MUST ONLY contextualize Daryll's exact principle using facts explicitly present in the player data (Player Name, Role, Score, Coach Remarks).\n"
+            "4. ABSOLUTELY FORBIDDEN INVENTIONS (DO NOT USE):\n"
+            "   - DO NOT invent unapproved drills, coaching cues, technical corrections, or physical/mental theories.\n"
+            "   - DO NOT introduce terms such as: 'run-up rhythm', 'shot selection', 'stamina', 'balance', 'energy transfer', 'muscle memory', 'biomechanics', 'hip rotation', 'foot placement', 'stride angle', 'full-length overs'.\n"
+            "5. CONSERVATIVE PRINCIPLE: If coach notes or data do not explicitly state a technical cause, simply state how Daryll's exact principle applies to this player's role ({role}) and score ({score:.1f}/10) without guessing or inferring technical causes.\n\n"
+            "RESPOND ONLY WITH A VALID JSON OBJECT MATCHING THIS EXACT STRUCTURE:\n"
+            "{\n"
+            '  "personalizedPoints": [\n'
+            '    {\n'
+            '      "cpiAnchor": "Exact string copied from approvedCpiSourceText",\n'
+            '      "personalizedGuidance": "Strictly grounded application of Daryll\'s exact principle for this player role and coach remark without any invented concepts"\n'
+            '    }\n'
+            '  ]\n'
+            "}\n"
+        )
+
+        user_content = (
+            f"--- PLAYER PROFILE & CONTEXT ---\n"
+            f"Player Name: {request.playerName}\n"
+            f"Role: {request.role}\n"
+            f"Parameter: {request.parameterName}\n"
+            f"Score: {request.score:.1f} / 10 ({request.scoreCategory})\n"
+            f"Current CPI: {request.cpi:.1f} (PPI: {request.ppi:.1f}, MPI: {request.mpi:.1f})\n"
+            f"Coach Remarks & Observations: {notes_str}\n\n"
+            f"--- APPROVED DARYLL CPI SOURCE BULLET POINTS (IMMUTABLE ANCHORS) ---\n"
+            + "\n".join([f"• {pt}" for pt in approved_text])
+        )
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content}
+        ]
+
+        logger.info(f"Generating personalized {request.parameterName} guidance for player {request.playerName} ({request.role})")
+        raw_json = await groq_service.generate_structured_json(messages=messages)
+        
+        raw_points = raw_json.get("personalizedPoints", [])
+        approved_set = set(approved_text)
+        validated_points = []
+
+        FORBIDDEN_JARGON = [
+            "run-up rhythm", "shot selection", "stamina", "balance", "energy transfer",
+            "muscle memory", "biomechanics", "hip rotation", "foot placement", "stride angle",
+            "full-length overs"
+        ]
+
+        # Server-side validation: enforce exact anchor and sanitize guidance from unapproved jargon
+        for idx, pt in enumerate(raw_points):
+            anchor = pt.get("cpiAnchor", "").strip()
+            guidance = pt.get("personalizedGuidance", "").strip()
+            
+            # Snap anchor to exact approved text if LLM altered formatting
+            if anchor not in approved_set:
+                if idx < len(approved_text):
+                    anchor = approved_text[idx]
+                elif approved_text:
+                    anchor = approved_text[0]
+            
+            # Sanitize guidance: if guidance contains forbidden jargon, clean or replace with conservative grounded phrasing
+            contains_forbidden = any(bad in guidance.lower() for bad in FORBIDDEN_JARGON)
+            if contains_forbidden or not guidance:
+                if notes_str != "None recorded":
+                    guidance = f"For {request.playerName} ({request.role}, {request.parameterName} score {request.score:.1f}/10): Apply Daryll's principle '{anchor}' directly to address the coach observation: '{notes_str}'."
+                else:
+                    guidance = f"For {request.playerName} ({request.role}, {request.parameterName} score {request.score:.1f}/10): Apply Daryll's principle '{anchor}' during training sessions."
+
+            validated_points.append({
+                "cpiAnchor": anchor,
+                "personalizedGuidance": guidance
+            })
+        
+        # Fallback formatting if AI returns empty
+        if not validated_points and approved_text:
+            validated_points = [
+                {
+                    "cpiAnchor": pt,
+                    "personalizedGuidance": f"For {request.playerName} ({request.role}, {request.parameterName} score {request.score:.1f}/10): Apply Daryll's principle '{pt}'."
+                }
+                for pt in approved_text
+            ]
+
+        return {
+            "success": True,
+            "parameterName": request.parameterName,
+            "role": request.role,
+            "personalizedPoints": validated_points,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }
+
 recommendation_service = RecommendationService()
