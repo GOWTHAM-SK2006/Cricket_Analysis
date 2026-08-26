@@ -400,14 +400,12 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
           <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest">
             {currentStep + 1} / {steps.length}
           </span>
-          {currentStep < steps.length - 1 && (
-            <button
-              onClick={handleComplete}
-              className="text-[10px] font-black text-slate-400 hover:text-slate-700 uppercase tracking-wider transition-colors cursor-pointer"
-            >
-              Skip
-            </button>
-          )}
+          <button
+            onClick={handleComplete}
+            className="text-[10px] font-black text-slate-400 hover:text-slate-700 uppercase tracking-wider transition-colors cursor-pointer hover:underline"
+          >
+            Skip
+          </button>
         </div>
 
         {/* Icon + Title + Description */}
@@ -438,13 +436,21 @@ export default function OnboardingTour({ role, page = "dashboard", onFinish }: O
               </button>
             )}
           </div>
-          <button
-            onClick={handleNext}
-            className="bg-white hover:bg-orange-500 hover:text-black text-black px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md"
-          >
-            {currentStep === steps.length - 1 ? "Finish" : "Next"}
-            {currentStep < steps.length - 1 && <ChevronRight className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleComplete}
+              className="text-xs font-black text-slate-400 hover:text-slate-700 uppercase tracking-wider px-3 py-2 rounded-xl cursor-pointer transition-all hover:bg-slate-100 active:scale-95"
+            >
+              Skip
+            </button>
+            <button
+              onClick={handleNext}
+              className="bg-white hover:bg-orange-500 hover:text-black text-black px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md border border-slate-200"
+            >
+              {currentStep === steps.length - 1 ? "Finish" : "Next"}
+              {currentStep < steps.length - 1 && <ChevronRight className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
       </div>
     </div>
