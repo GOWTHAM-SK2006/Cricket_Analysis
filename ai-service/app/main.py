@@ -25,6 +25,16 @@ app.add_middleware(
 # Custom Logging Middleware
 app.add_middleware(RequestLoggingMiddleware)
 
+# Root & Platform Health Checks
+@app.get("/")
+@app.get("/health")
+async def root_health_check():
+    return {
+        "status": "healthy",
+        "service": settings.APP_NAME,
+        "model": settings.OPENROUTER_MODEL
+    }
+
 # Include API Routers
 app.include_router(chat.router)
 app.include_router(recommendation.router)
