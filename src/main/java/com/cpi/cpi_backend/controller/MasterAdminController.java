@@ -23,6 +23,7 @@ public class MasterAdminController {
     private final PlayerRepository playerRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
+    private final com.cpi.cpi_backend.service.AiService aiService;
 
     // Public endpoint for Coach application to read active config
     @GetMapping("/public/config")
@@ -44,7 +45,12 @@ public class MasterAdminController {
         if (request.getHelpJson() != null) existing.setHelpJson(request.getHelpJson());
         if (request.getInstructionsJson() != null) existing.setInstructionsJson(request.getInstructionsJson());
         if (request.getRecommendationsJson() != null) existing.setRecommendationsJson(request.getRecommendationsJson());
-        if (request.getAiCoachJson() != null) existing.setAiCoachJson(request.getAiCoachJson());
+        if (request.getAiCoachJson() != null) {
+            existing.setAiCoachJson(request.getAiCoachJson());
+            if (aiService != null) {
+                aiService.clearAdminDirectivesCache();
+            }
+        }
         if (request.getReportsJson() != null) existing.setReportsJson(request.getReportsJson());
         if (request.getContentJson() != null) existing.setContentJson(request.getContentJson());
         if (request.getSettingsJson() != null) existing.setSettingsJson(request.getSettingsJson());

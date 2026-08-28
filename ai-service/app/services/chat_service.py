@@ -35,23 +35,32 @@ class ChatService:
         session_id = request.sessionId
         user_message = request.message or ""
         needs_plan = self._needs_deep_analysis(user_message)
+        directives = request.adminDirectives or {}
         
-        # Build system prompt — only inject heavy plan-of-action when actually needed
+        sys_inst = directives.get("systemInstructions") or self.system_prompt or "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework."
+        tone = directives.get("coachingTone") or "Professional, encouraging, analytical, and actionable."
+        guidance = directives.get("responseGuidance") or ""
+        
+        admin_content_block = f"{sys_inst}\nCOACHING TONE: {tone}\nRESPONSE GUIDANCE: {guidance}".strip()
+
+        # Build system prompt — inject admin directives & role prompt
         if session_id not in self.sessions:
             role_prompt = self._get_role_prompt(request.userRole)
             if needs_plan:
-                system_content = f"{self.system_prompt}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"
+                system_content = f"{admin_content_block}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"
             else:
-                system_content = f"{self.system_prompt}\n\n{role_prompt}"
+                system_content = f"{admin_content_block}\n\n{role_prompt}"
             initial_messages = [
                 {"role": "system", "content": system_content}
             ]
             self.sessions[session_id] = initial_messages
         else:
-            # If this message needs the plan but session was started without it, inject it now
-            if needs_plan and "COACH PLAN OF ACTION" not in self.sessions[session_id][0]["content"]:
-                role_prompt = self._get_role_prompt(request.userRole)
-                self.sessions[session_id][0]["content"] = f"{self.system_prompt}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"
+            # Refresh system prompt with active admin directives
+            role_prompt = self._get_role_prompt(request.userRole)
+            if needs_plan:
+                self.sessions[session_id][0]["content"] = f"{admin_content_block}\n\n{role_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{self.coach_plan_of_action}"
+            else:
+                self.sessions[session_id][0]["content"] = f"{admin_content_block}\n\n{role_prompt}"
 
         messages = list(self.sessions[session_id])
         

@@ -99,11 +99,8 @@ class GroqService:
                 logger.warning(f"OpenRouter {model} failed: {e}")
                 last_error = e
 
-        logger.error(f"All OpenRouter models failed. Last: {last_error}")
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"OpenRouter API Error: {str(last_error)}"
-        )
+        logger.error(f"All OpenRouter models failed. Last: {last_error}. Returning fallback response.")
+        return "I am experiencing high traffic on the AI provider. Based on Daryll's CPI 7-parameter framework, focus on high-quality practice transfer and evaluating Technique, Skill Level, and Game Plan."
 
     async def generate_structured_json(
         self,

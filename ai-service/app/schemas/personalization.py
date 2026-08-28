@@ -17,6 +17,7 @@ class PersonalizationRequest(BaseModel):
     mpi: Optional[float] = 0.0
     coachNotes: Optional[List[str]] = []
     approvedCpiSourceText: List[str] = Field(description="Array of approved Daryll CPI bullet point strings")
+    adminDirectives: Optional[dict] = Field(default=None)
 
 class PersonalizationResponse(BaseModel):
     success: bool = True

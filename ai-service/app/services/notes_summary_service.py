@@ -11,13 +11,18 @@ class NotesSummaryService:
         self,
         player_name: str,
         assessment_type: str,
-        notes_list: List[Dict[str, Any]]
+        notes_list: List[Dict[str, Any]],
+        admin_directives: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Analyze ONLY actual coach notes saved for a player and assessment type.
         Practice notes and Match notes are strictly separated.
         Strict non-hallucination rules enforced.
         """
+        directives = admin_directives or {}
+        tone = directives.get("coachingTone") or "Professional, encouraging, analytical, and actionable."
+        guidance = directives.get("responseGuidance") or ""
+
         clean_notes = []
         for item in notes_list:
             note_text = item.get("notes") or item.get("note") or ""
@@ -54,6 +59,8 @@ class NotesSummaryService:
 
         system_instruction = (
             f"You are an elite, objective sports performance analyst for the Cricket Performance Index (CPI).\n"
+            f"COACHING TONE: {tone}\n"
+            f"RESPONSE GUIDANCE: {guidance}\n\n"
             f"Your task is to analyze ONLY the provided coach notes for a player's {assessment_type} assessments.\n\n"
             f"CRITICAL INSTRUCTIONS FOR STRICT GROUNDING:\n"
             f"1. Base your analysis STRICTLY AND ONLY on the actual coach notes provided.\n"

@@ -6,6 +6,7 @@ class RecommendationRequest(BaseModel):
     playerId: int = Field(..., example=15)
     userRole: str = Field("COACH", example="COACH")
     context: PlayerContext
+    adminDirectives: Optional[dict] = Field(default=None)
 
 class DrillItem(BaseModel):
     title: str = Field(..., example="Target Zone Drop Feed Drill")

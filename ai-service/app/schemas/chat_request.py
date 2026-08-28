@@ -22,3 +22,4 @@ class ChatRequest(BaseModel):
     playerId: Optional[int] = Field(None, example=15)
     message: str = Field(..., example="How can I improve this player's batting under pressure?")
     context: Optional[PlayerContext] = Field(default=None)
+    adminDirectives: Optional[Dict[str, Any]] = Field(default=None)

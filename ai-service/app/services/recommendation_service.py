@@ -15,6 +15,23 @@ class RecommendationService:
         context_dict = request.context.model_dump()
         formatted_context = format_player_context(context_dict)
         
+        directives = request.adminDirectives or {}
+        sys_inst = directives.get("systemInstructions") or system_prompt or "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework."
+        tone = directives.get("coachingTone") or "Professional, encouraging, analytical, and actionable."
+        rec_behaviour = directives.get("recommendationBehaviour") or ""
+        param_analysis = directives.get("parameterAnalysisInstructions") or ""
+        coach_action = directives.get("coachActionPlanDirectives") or ""
+        rec_focus = directives.get("recommendedFocusDirectives") or ""
+
+        admin_block = (
+            f"SYSTEM DIRECTIVE: {sys_inst}\n"
+            f"COACHING TONE: {tone}\n"
+            f"RECOMMENDATION DIRECTIVE: {rec_behaviour}\n"
+            f"PARAMETER ANALYSIS DIRECTIVE: {param_analysis}\n"
+            f"ACTION PLAN DIRECTIVE: {coach_action}\n"
+            f"RECOMMENDED FOCUS DIRECTIVE: {rec_focus}\n"
+        ).strip()
+        
         json_schema_prompt = (
             "Analyse the following cricket player assessment context and generate a complete performance recommendation.\n"
             "STRICT MANDATE: YOU MUST USE ONLY EXACT SENTENCES AND PHRASES COPIED CHARACTER-FOR-CHARACTER FROM THE APPROVED CPI SOURCE TEXT FILE.\n"
@@ -41,7 +58,7 @@ class RecommendationService:
         )
         
         messages = [
-            {"role": "system", "content": f"{system_prompt}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{coach_plan_of_action}\n\n{json_schema_prompt}"},
+            {"role": "system", "content": f"{admin_block}\n\nCOACH PLAN OF ACTION / GUIDELINES:\n{coach_plan_of_action}\n\n{json_schema_prompt}"},
             {"role": "user", "content": formatted_context}
         ]
 
@@ -67,9 +84,14 @@ class RecommendationService:
         """
         approved_text = request.approvedCpiSourceText or []
         notes_str = ", ".join(request.coachNotes) if request.coachNotes else "None recorded"
+        directives = request.adminDirectives or {}
+        tone = directives.get("coachingTone") or "Professional, encouraging, analytical, and actionable."
+        param_analysis = directives.get("parameterAnalysisInstructions") or ""
         
         system_prompt = (
             "You are an expert AI Cricket Coach Assistant strictly enforcing Daryll's Cullinan Performance Index (CPI) framework.\n\n"
+            f"COACHING TONE: {tone}\n"
+            f"PARAMETER ANALYSIS DIRECTIVE: {param_analysis}\n\n"
             "STRICT ZERO-INVENTION GROUNDING MANDATE:\n"
             "1. Daryll's approved CPI source bullet points are the IMMUTABLE source of truth.\n"
             "2. 'cpiAnchor' MUST BE AN EXACT, UNALTERED STRING FROM approvedCpiSourceText.\n"

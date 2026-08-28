@@ -31,6 +31,49 @@ public class AiService {
     private final CoachRepository coachRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
+    private final com.cpi.cpi_backend.repository.CpiContentConfigRepository cpiContentConfigRepository;
+
+    private static final Map<String, Object> DEFAULT_ADMIN_DIRECTIVES = Map.of(
+        "systemInstructions", "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework. DO NOT generate, display, or reference any Coach's Summary or 'THE COACH'S SUMMARY' sections anywhere.",
+        "coachingTone", "Professional, encouraging, analytical, and actionable.",
+        "responseGuidance", "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY, HOW TO COACH FOCUS, HOW TO COACH RESILIENCE). Do not generate any 'THE COACH'S SUMMARY' sections.",
+        "recommendationBehaviour", "Outputs must contain ONLY exact sentences from CPI_7_Parameters_Practice_And_Match_Separate.txt. Do not paraphrase, rewrite, or add any Coach's Summary.",
+        "parameterAnalysisInstructions", "Evaluate ONLY the approved 7 parameters (Technique, Skill Level, Game Plan, Preparation, Intensity, Focus, Resilience).",
+        "coachActionPlanDirectives", "Use the parameter coaching directives (HOW TO COACH <PARAMETER_NAME>) as the sole approved source for recommendations and reports. Do not include any 'THE COACH'S SUMMARY' text.",
+        "recommendedFocusDirectives", "Prioritize exact focus statements based on the player's lowest scores among the 7 parameters."
+    );
+
+    private volatile Map<String, Object> cachedAdminDirectives = null;
+
+    public void clearAdminDirectivesCache() {
+        this.cachedAdminDirectives = null;
+        log.info("Cleared AiService admin directives cache.");
+    }
+
+    public Map<String, Object> getLatestAdminDirectives() {
+        if (cachedAdminDirectives != null) {
+            return cachedAdminDirectives;
+        }
+        try {
+            if (cpiContentConfigRepository != null) {
+                java.util.Optional<com.cpi.cpi_backend.entity.CpiContentConfig> configOpt = cpiContentConfigRepository.findAll().stream().findFirst();
+                if (configOpt.isPresent() && configOpt.get().getAiCoachJson() != null && !configOpt.get().getAiCoachJson().trim().isEmpty()) {
+                    String jsonStr = configOpt.get().getAiCoachJson();
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> parsed = mapper.readValue(jsonStr, Map.class);
+                    if (parsed != null && !parsed.isEmpty()) {
+                        cachedAdminDirectives = parsed;
+                        return cachedAdminDirectives;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not load aiCoachJson from database, falling back to default directives: {}", e.getMessage());
+        }
+        cachedAdminDirectives = DEFAULT_ADMIN_DIRECTIVES;
+        return cachedAdminDirectives;
+    }
 
     public ResponseEntity<?> forwardChatRequest(Map<String, Object> requestPayload, com.cpi.cpi_backend.entity.Coach currentCoach) {
         // Fetch players under current coach to build database player list summary safely
@@ -152,6 +195,7 @@ public class AiService {
                 ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
                 : aiServiceUrl;
         String targetUrl = baseUrl + "/api/v1/chat";
+        requestPayload.put("adminDirectives", getLatestAdminDirectives());
         log.info("Forwarding Chat Request to FastAPI AI Service at: {}", targetUrl);
         log.info("Request Payload: {}", requestPayload);
 
@@ -162,7 +206,7 @@ public class AiService {
                     .bodyValue(requestPayload)
                     .retrieve()
                     .bodyToMono(Object.class)
-                    .timeout(Duration.ofSeconds(30))
+                    .timeout(Duration.ofSeconds(20))
                     .block();
 
             log.info("FastAPI AI Service Status: 200 OK");
@@ -191,6 +235,7 @@ public class AiService {
                 ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
                 : aiServiceUrl;
         String targetUrl = baseUrl + "/api/v1/recommendation";
+        requestPayload.put("adminDirectives", getLatestAdminDirectives());
         log.info("Forwarding Recommendation Request to FastAPI AI Service at: {}", targetUrl);
         log.info("Request Payload: {}", requestPayload);
 
@@ -230,6 +275,7 @@ public class AiService {
                 ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
                 : aiServiceUrl;
         String targetUrl = baseUrl + "/api/v1/recommendation/personalize";
+        requestPayload.put("adminDirectives", getLatestAdminDirectives());
         log.info("Forwarding Personalization Request to FastAPI AI Service at: {}", targetUrl);
         log.info("Request Payload: {}", requestPayload);
 
@@ -314,6 +360,7 @@ public class AiService {
             aiPayload.put("playerName", player.getName());
             aiPayload.put("assessmentType", "PRACTICE".equals(normalizedType) ? "Practice" : "Match");
             aiPayload.put("notesList", notesList);
+            aiPayload.put("adminDirectives", getLatestAdminDirectives());
 
             String baseUrl = aiServiceUrl != null && aiServiceUrl.endsWith("/") 
                     ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
