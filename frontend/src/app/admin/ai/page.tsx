@@ -35,7 +35,7 @@ export interface AiCoachConfig {
 const DEFAULT_GLOBAL_DIRECTIVES = {
   systemInstructions: "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework.",
   coachingTone: "Professional, encouraging, analytical, and actionable.",
-  responseGuidance: "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNICAL EXECUTION, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY, HOW TO COACH FOCUS, HOW TO COACH RESILIENCE).",
+  responseGuidance: "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY, HOW TO COACH FOCUS, HOW TO COACH RESILIENCE).",
   recommendationBehaviour: "Outputs must contain ONLY exact sentences from CPI_7_Parameters_Practice_And_Match_Separate.txt. Do not paraphrase or add new wording."
 };
 

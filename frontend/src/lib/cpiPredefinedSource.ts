@@ -21,7 +21,7 @@ export const APPROVED_CPI_7_PARAMETERS = [
 ] as const;
 
 export const DISPLAY_PARAMETER_NAMES: Record<ApprovedCpiParameter, string> = {
-  "Technique": "Technical Execution",
+  "Technique": "Technique",
   "Skill Level": "Skill Level",
   "Game Plan": "Game Plan",
   "Preparation": "Preparation",
@@ -53,7 +53,7 @@ export interface DualContextParameterWording {
 
 export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextParameterWording> = {
   "Technique": {
-    description: "Technical execution measures how effectively a player applies their skills during competitive play and practice.",
+    description: "Technique measures how effectively a player applies their skills during competitive play and practice.",
     practice: {
       high: {
         actionPoints: [
@@ -263,7 +263,7 @@ export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextPara
         actionPoints: [
           "Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless.",
           "Raise the challenge. Introduce competitive targets, time pressure, consequences and match-related scenarios that stretch the player.",
-          "Protect quality. Monitor whether technical execution and decision-making remain strong as the intensity increases.",
+          "Protect quality. Monitor whether technique and decision-making remain strong as the intensity increases.",
           "Encourage leadership. Use the player’s energy to lift standards, support teammates and create a stronger practice environment.",
           "Monitor sustainability. Make sure the player can maintain intensity throughout the session without burning out or losing discipline."
         ],
@@ -287,7 +287,7 @@ export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextPara
         actionPoints: [
           "Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless.",
           "Raise the challenge. Introduce competitive targets, time pressure, consequences and match-related scenarios that stretch the player.",
-          "Protect quality. Monitor whether technical execution and decision-making remain strong as the intensity increases.",
+          "Protect quality. Monitor whether technique and decision-making remain strong as the intensity increases.",
           "Encourage leadership. Use the player’s energy to lift standards, support teammates and create a stronger practice environment.",
           "Monitor sustainability. Make sure the player can maintain intensity throughout the session without burning out or losing discipline."
         ],

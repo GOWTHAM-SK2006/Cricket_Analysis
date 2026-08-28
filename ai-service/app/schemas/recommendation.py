@@ -16,7 +16,7 @@ class DrillItem(BaseModel):
 class RecommendationResponse(BaseModel):
     success: bool = Field(True, example=True)
     summary: str = Field(..., example="Player shows high practice intensity (PPI 80) but struggles under match pressure (MPI 68).")
-    strengths: List[str] = Field(..., example=["Solid technical execution in nets", "High practice commitment"])
+    strengths: List[str] = Field(..., example=["Solid technique in nets", "High practice commitment"])
     weaknesses: List[str] = Field(..., example=["Inconsistent strike rotation under match pressure", "Lapses in game awareness"])
     improvementAreas: List[str] = Field(..., example=["Front-foot contact point against spin", "Pacing run chases"])
     top5Drills: List[DrillItem] = Field(..., description="Top 5 recommended practical cricket drills")

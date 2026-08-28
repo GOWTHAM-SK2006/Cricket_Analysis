@@ -5,7 +5,7 @@ Source wording is reproduced exactly from the supplied documents.
 No General Health or other parameters are included.
 
 ========================================================================
-Technical Execution
+Technique
 ========================================================================
 HOW TO COACH TECHNIQUE
 IF THE TECHNIQUE SCORE IS HIGH
@@ -61,7 +61,7 @@ Intensity measures the energy, purpose and competitive effort a player brings to
 IF THE INTENSITY SCORE IS HIGH
 Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless.
 Raise the challenge. Introduce competitive targets, time pressure, consequences and match-related scenarios that stretch the player.
-Protect quality. Monitor whether technical execution and decision-making remain strong as the intensity increases.
+Protect quality. Monitor whether technique and decision-making remain strong as the intensity increases.
 Encourage leadership. Use the player’s energy to lift standards, support teammates and create a stronger practice environment.
 Monitor sustainability. Make sure the player can maintain intensity throughout the session without burning out or losing discipline.
 A high score shows that the player is prepared to work hard and compete. The coach must now help the player understand that intensity is most valuable when it is focused, controlled and repeatable.
@@ -92,18 +92,18 @@ Source wording is reproduced exactly from the supplied documents.
 No General Health or other parameters are included.
 
 ========================================================================
-Technical Execution
+Technique
 ========================================================================
 HOW TO COACH TECHNIQUE
-Technical execution measures how effectively a player applies their skills during competitive play. It is not simply whether the player succeeds or fails. It considers whether their technique remains controlled, repeatable and appropriate when facing pressure, stronger opposition, changing conditions and the consequences of a real match.
-IF THE TECHNICAL EXECUTION SCORE IS HIGH
+Technique measures how effectively a player applies their skills during competitive play. It is not simply whether the player succeeds or fails. It considers whether their technique remains controlled, repeatable and appropriate when facing pressure, stronger opposition, changing conditions and the consequences of a real match.
+IF THE TECHNIQUE SCORE IS HIGH
 Confirm the process. Identify the movements, routines and decisions that allowed the player to execute effectively under match pressure.
 Protect what works. Avoid unnecessary technical changes after a strong performance or isolated mistake.
 Increase the challenge. Expose the player to tougher challenges at practices which reinforce his technical skills and ability.
 Monitor repeatability. Assess whether good execution is sustained throughout the match, not produced only in occasional moments.
 Build self-correction. Encourage the player to recognise technical changes and make simple adjustments without waiting for the coach.
 A high score suggests that the player can transfer practice skills into competition. The coach must now help make that execution more dependable across different situations, opponents and levels of pressure.
-IF THE TECHNICAL EXECUTION SCORE IS LOW
+IF THE TECHNIQUE SCORE IS LOW
 Separate outcome from method. Establish whether the player executed poorly or produced a poor result despite having an effective technique.
 Identify the pressure point. Determine whether the breakdown occurred through technical limitation, fatigue, a mental mistake, brilliant delivery or a bad surface before taking action.
 Find the recurring fault. Focus on repeated patterns rather than reacting to every individual mistake.
