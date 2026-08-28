@@ -20,6 +20,16 @@ export const APPROVED_CPI_7_PARAMETERS = [
   "Resilience"
 ] as const;
 
+export const DISPLAY_PARAMETER_NAMES: Record<ApprovedCpiParameter, string> = {
+  "Technique": "Technical Execution",
+  "Skill Level": "Skill Level",
+  "Game Plan": "Game Plan",
+  "Preparation": "Preparation",
+  "Intensity": "Intensity",
+  "Focus": "Focus",
+  "Resilience": "Resilience"
+};
+
 export type ApprovedCpiParameter = typeof APPROVED_CPI_7_PARAMETERS[number];
 
 export interface ParameterWordingBlock {

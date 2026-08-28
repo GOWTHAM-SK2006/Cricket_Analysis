@@ -18,18 +18,14 @@ class RecommendationService:
         directives = request.adminDirectives or {}
         sys_inst = directives.get("systemInstructions") or system_prompt or "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework."
         tone = directives.get("coachingTone") or "Professional, encouraging, analytical, and actionable."
+        resp_guidance = directives.get("responseGuidance") or ""
         rec_behaviour = directives.get("recommendationBehaviour") or ""
-        param_analysis = directives.get("parameterAnalysisInstructions") or ""
-        coach_action = directives.get("coachActionPlanDirectives") or ""
-        rec_focus = directives.get("recommendedFocusDirectives") or ""
 
         admin_block = (
             f"SYSTEM DIRECTIVE: {sys_inst}\n"
             f"COACHING TONE: {tone}\n"
+            f"RESPONSE GUIDANCE: {resp_guidance}\n"
             f"RECOMMENDATION DIRECTIVE: {rec_behaviour}\n"
-            f"PARAMETER ANALYSIS DIRECTIVE: {param_analysis}\n"
-            f"ACTION PLAN DIRECTIVE: {coach_action}\n"
-            f"RECOMMENDED FOCUS DIRECTIVE: {rec_focus}\n"
         ).strip()
         
         json_schema_prompt = (
