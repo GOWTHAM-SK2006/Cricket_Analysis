@@ -1293,6 +1293,58 @@ export default function PlayersPage() {
   const [selfHistory, setSelfHistory] = useState<any[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState<boolean>(true);
 
+  // Coach Notes & AI Summary States
+  const [activeNotesTab, setActiveNotesTab] = useState<"practice" | "match">("practice");
+  const [practiceAiSummary, setPracticeAiSummary] = useState<any | null>(null);
+  const [matchAiSummary, setMatchAiSummary] = useState<any | null>(null);
+  const [generatingPracticeSummary, setGeneratingPracticeSummary] = useState(false);
+  const [generatingMatchSummary, setGeneratingMatchSummary] = useState(false);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+
+  const handleGeneratePracticeSummary = async () => {
+    if (!selectedPlayer) return;
+    setGeneratingPracticeSummary(true);
+    setSummaryError(null);
+    try {
+      const res = await api.post("/ai/coach-notes-summary", {
+        playerId: selectedPlayer.id,
+        assessmentType: "PRACTICE"
+      });
+      if (res.data && res.data.summary) {
+        setPracticeAiSummary(res.data);
+      } else {
+        setSummaryError(res.data?.message || "Failed to generate Practice AI Summary.");
+      }
+    } catch (err: any) {
+      console.error("Error generating Practice AI summary:", err);
+      setSummaryError("Unable to connect to AI Summary service. Please check your network or try again.");
+    } finally {
+      setGeneratingPracticeSummary(false);
+    }
+  };
+
+  const handleGenerateMatchSummary = async () => {
+    if (!selectedPlayer) return;
+    setGeneratingMatchSummary(true);
+    setSummaryError(null);
+    try {
+      const res = await api.post("/ai/coach-notes-summary", {
+        playerId: selectedPlayer.id,
+        assessmentType: "MATCH"
+      });
+      if (res.data && res.data.summary) {
+        setMatchAiSummary(res.data);
+      } else {
+        setSummaryError(res.data?.message || "Failed to generate Match AI Summary.");
+      }
+    } catch (err: any) {
+      console.error("Error generating Match AI summary:", err);
+      setSummaryError("Unable to connect to AI Summary service. Please check your network or try again.");
+    } finally {
+      setGeneratingMatchSummary(false);
+    }
+  };
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -1598,6 +1650,9 @@ const loadHistory = async (playerId: number, forceRefresh: boolean = false) => {
 
     setPracticeHistory(pracData);
     setMatchHistory(matchData);
+    setPracticeAiSummary(null);
+    setMatchAiSummary(null);
+    setSummaryError(null);
 
     const localSelf = localStorage.getItem(`self_assess_${playerId}`);
     const rawSelf = localSelf ? JSON.parse(localSelf) : [];
@@ -3154,6 +3209,265 @@ return (
                 )}
               </div>
             </div>
+          </div>
+
+          {/* COACH NOTES & AI SUMMARY SECTION */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-5.5 space-y-4 text-left shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
+              <h3 className="text-xs sm:text-sm font-black tracking-widest text-slate-900 uppercase flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-orange-500" />
+                COACH NOTES & AI SUMMARY
+              </h3>
+              <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setActiveNotesTab("practice")}
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    activeNotesTab === "practice"
+                      ? "bg-orange-500 text-white shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Practice Notes ({practiceHistory.filter((p: any) => p.notes && p.notes.trim()).length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveNotesTab("match")}
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    activeNotesTab === "match"
+                      ? "bg-orange-500 text-white shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Match Notes ({matchHistory.filter((m: any) => m.notes && m.notes.trim()).length})
+                </button>
+              </div>
+            </div>
+
+            {summaryError && (
+              <div className="bg-red-50 border border-red-200 text-red-600 text-xs font-semibold p-3 rounded-xl flex items-center justify-between">
+                <span>{summaryError}</span>
+                <button onClick={() => setSummaryError(null)} className="text-red-400 hover:text-red-700 text-xs font-bold">Dismiss</button>
+              </div>
+            )}
+
+            {/* PRACTICE NOTES TAB CONTENT */}
+            {activeNotesTab === "practice" && (
+              <div className="space-y-4 pt-1">
+                <div>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block mb-2">
+                    PRACTICE COACH NOTES LOG
+                  </span>
+                  {practiceHistory.filter((p: any) => p.notes && p.notes.trim()).length === 0 ? (
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 text-center">
+                      <p className="text-xs text-slate-500 font-bold uppercase">No Practice Coach Notes Saved Yet</p>
+                      <p className="text-[11px] text-slate-400 mt-1">Enter remarks while completing a Practice Assessment to save notes here.</p>
+                    </div>
+                  ) : (
+                    <div className="max-h-[220px] overflow-y-auto space-y-2 pr-1">
+                      {practiceHistory
+                        .filter((p: any) => p.notes && p.notes.trim())
+                        .map((p: any, idx: number) => (
+                          <div key={p.id || idx} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1.5">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="font-extrabold text-slate-700">{new Date(p.date || p.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                              <span className="font-extrabold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200/50">PPI {formatScoreValue(p.ppiScore)}</span>
+                            </div>
+                            <p className="text-xs text-slate-800 italic bg-white p-2.5 rounded-xl border border-slate-200/60 font-mono">
+                              "{p.notes.trim()}"
+                            </p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-slate-200">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                      <Brain className="w-3.5 h-3.5 text-orange-500" />
+                      PRACTICE AI SUMMARY
+                    </span>
+                    <button
+                      type="button"
+                      disabled={generatingPracticeSummary || practiceHistory.filter((p: any) => p.notes && p.notes.trim()).length === 0}
+                      onClick={handleGeneratePracticeSummary}
+                      className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    >
+                      {generatingPracticeSummary ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5 text-white" />
+                          {practiceAiSummary ? "Regenerate Practice AI Summary" : "Generate Practice AI Summary"}
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {practiceAiSummary ? (
+                    <div className="bg-orange-50/40 border border-orange-200/70 rounded-2xl p-4 space-y-3 animate-in fade-in duration-200">
+                      {practiceAiSummary.summary?.summaryOverview && (
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-black tracking-widest uppercase text-orange-600 block">Overview</span>
+                          <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                            {practiceAiSummary.summary.summaryOverview}
+                          </p>
+                        </div>
+                      )}
+
+                      {practiceAiSummary.summary?.keyObservations?.length > 0 && (
+                        <div className="space-y-1 pt-2 border-t border-orange-200/40">
+                          <span className="text-[10px] font-black tracking-widest uppercase text-orange-600 block">Key Observations</span>
+                          <ul className="space-y-1">
+                            {practiceAiSummary.summary.keyObservations.map((obs: string, idx: number) => (
+                              <li key={idx} className="text-xs text-slate-700 flex items-start gap-1.5">
+                                <span className="text-orange-500 font-bold">•</span>
+                                <span>{obs}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {practiceAiSummary.summary?.recurringPatterns?.length > 0 && (
+                        <div className="space-y-1 pt-2 border-t border-orange-200/40">
+                          <span className="text-[10px] font-black tracking-widest uppercase text-orange-600 block">Recurring Patterns</span>
+                          <ul className="space-y-1">
+                            {practiceAiSummary.summary.recurringPatterns.map((pat: string, idx: number) => (
+                              <li key={idx} className="text-xs text-slate-700 flex items-start gap-1.5">
+                                <span className="text-orange-500 font-bold">•</span>
+                                <span>{pat}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
+                      <p className="text-xs text-slate-500 font-medium">
+                        {practiceHistory.filter((p: any) => p.notes && p.notes.trim()).length === 0
+                          ? "Save Practice Coach Notes during assessments to generate an AI summary."
+                          : "Click 'Generate Practice AI Summary' to analyze saved practice coach notes."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* MATCH NOTES TAB CONTENT */}
+            {activeNotesTab === "match" && (
+              <div className="space-y-4 pt-1">
+                <div>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider block mb-2">
+                    MATCH COACH NOTES LOG
+                  </span>
+                  {matchHistory.filter((m: any) => m.notes && m.notes.trim()).length === 0 ? (
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 text-center">
+                      <p className="text-xs text-slate-500 font-bold uppercase">No Match Coach Notes Saved Yet</p>
+                      <p className="text-[11px] text-slate-400 mt-1">Enter remarks while completing a Match Assessment to save notes here.</p>
+                    </div>
+                  ) : (
+                    <div className="max-h-[220px] overflow-y-auto space-y-2 pr-1">
+                      {matchHistory
+                        .filter((m: any) => m.notes && m.notes.trim())
+                        .map((m: any, idx: number) => (
+                          <div key={m.id || idx} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1.5">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="font-extrabold text-slate-700">{new Date(m.date || m.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                              <span className="font-extrabold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200/50">MPI {formatScoreValue(m.mpiScore)}</span>
+                            </div>
+                            <p className="text-xs text-slate-800 italic bg-white p-2.5 rounded-xl border border-slate-200/60 font-mono">
+                              "{m.notes.trim()}"
+                            </p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-slate-200">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                      <Brain className="w-3.5 h-3.5 text-orange-500" />
+                      MATCH AI SUMMARY
+                    </span>
+                    <button
+                      type="button"
+                      disabled={generatingMatchSummary || matchHistory.filter((m: any) => m.notes && m.notes.trim()).length === 0}
+                      onClick={handleGenerateMatchSummary}
+                      className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    >
+                      {generatingMatchSummary ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5 text-white" />
+                          {matchAiSummary ? "Regenerate Match AI Summary" : "Generate Match AI Summary"}
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {matchAiSummary ? (
+                    <div className="bg-orange-50/40 border border-orange-200/70 rounded-2xl p-4 space-y-3 animate-in fade-in duration-200">
+                      {matchAiSummary.summary?.summaryOverview && (
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-black tracking-widest uppercase text-orange-600 block">Overview</span>
+                          <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                            {matchAiSummary.summary.summaryOverview}
+                          </p>
+                        </div>
+                      )}
+
+                      {matchAiSummary.summary?.keyObservations?.length > 0 && (
+                        <div className="space-y-1 pt-2 border-t border-orange-200/40">
+                          <span className="text-[10px] font-black tracking-widest uppercase text-orange-600 block">Key Observations</span>
+                          <ul className="space-y-1">
+                            {matchAiSummary.summary.keyObservations.map((obs: string, idx: number) => (
+                              <li key={idx} className="text-xs text-slate-700 flex items-start gap-1.5">
+                                <span className="text-orange-500 font-bold">•</span>
+                                <span>{obs}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {matchAiSummary.summary?.recurringPatterns?.length > 0 && (
+                        <div className="space-y-1 pt-2 border-t border-orange-200/40">
+                          <span className="text-[10px] font-black tracking-widest uppercase text-orange-600 block">Recurring Patterns</span>
+                          <ul className="space-y-1">
+                            {matchAiSummary.summary.recurringPatterns.map((pat: string, idx: number) => (
+                              <li key={idx} className="text-xs text-slate-700 flex items-start gap-1.5">
+                                <span className="text-orange-500 font-bold">•</span>
+                                <span>{pat}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
+                      <p className="text-xs text-slate-500 font-medium">
+                        {matchHistory.filter((m: any) => m.notes && m.notes.trim()).length === 0
+                          ? "Save Match Coach Notes during assessments to generate an AI summary."
+                          : "Click 'Generate Match AI Summary' to analyze saved match coach notes."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
         </div>

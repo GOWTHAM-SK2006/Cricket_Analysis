@@ -36,4 +36,13 @@ public class AiController {
         log.info("Received /api/ai/personalize-coaching request from frontend");
         return aiService.forwardPersonalizationRequest(requestPayload);
     }
+
+    @PostMapping("/coach-notes-summary")
+    public ResponseEntity<?> coachNotesSummary(
+            @RequestBody Map<String, Object> requestPayload,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.cpi.cpi_backend.entity.Coach currentCoach
+    ) {
+        log.info("Received /api/ai/coach-notes-summary request for coach: {}", currentCoach != null ? currentCoach.getEmail() : "anonymous");
+        return aiService.forwardCoachNotesSummaryRequest(requestPayload, currentCoach);
+    }
 }

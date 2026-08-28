@@ -263,6 +263,92 @@ public class AiService {
         }
     }
 
+    public ResponseEntity<?> forwardCoachNotesSummaryRequest(Map<String, Object> requestPayload, com.cpi.cpi_backend.entity.Coach currentCoach) {
+        try {
+            Object playerIdObj = requestPayload.get("playerId");
+            String assessmentType = (String) requestPayload.get("assessmentType");
+            if (playerIdObj == null || assessmentType == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "playerId and assessmentType are required."));
+            }
+
+            Long playerId = Long.parseLong(playerIdObj.toString());
+            com.cpi.cpi_backend.entity.Player player = playerRepository.findById(playerId).orElse(null);
+            if (player == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Player not found."));
+            }
+
+            java.util.List<Map<String, Object>> notesList = new java.util.ArrayList<>();
+            String normalizedType = assessmentType.trim().toUpperCase();
+
+            if ("PRACTICE".equals(normalizedType)) {
+                java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practices = practiceAssessmentRepository.findByPlayerId(playerId);
+                if (practices != null) {
+                    for (com.cpi.cpi_backend.entity.PracticeAssessment p : practices) {
+                        if (p != null && p.getNotes() != null && !p.getNotes().trim().isEmpty()) {
+                            java.util.Map<String, Object> noteMap = new java.util.HashMap<>();
+                            noteMap.put("date", p.getDate() != null ? p.getDate().toString() : "Unknown");
+                            noteMap.put("notes", p.getNotes().trim());
+                            noteMap.put("score", p.getPpiScore() != null ? p.getPpiScore() : 0.0);
+                            notesList.add(noteMap);
+                        }
+                    }
+                }
+            } else if ("MATCH".equals(normalizedType)) {
+                java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matches = matchAssessmentRepository.findByPlayerId(playerId);
+                if (matches != null) {
+                    for (com.cpi.cpi_backend.entity.MatchAssessment m : matches) {
+                        if (m != null && m.getNotes() != null && !m.getNotes().trim().isEmpty()) {
+                            java.util.Map<String, Object> noteMap = new java.util.HashMap<>();
+                            noteMap.put("date", m.getDate() != null ? m.getDate().toString() : "Unknown");
+                            noteMap.put("notes", m.getNotes().trim());
+                            noteMap.put("score", m.getMpiScore() != null ? m.getMpiScore() : 0.0);
+                            notesList.add(noteMap);
+                        }
+                    }
+                }
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Invalid assessmentType. Use 'PRACTICE' or 'MATCH'."));
+            }
+
+            Map<String, Object> aiPayload = new java.util.HashMap<>();
+            aiPayload.put("playerName", player.getName());
+            aiPayload.put("assessmentType", "PRACTICE".equals(normalizedType) ? "Practice" : "Match");
+            aiPayload.put("notesList", notesList);
+
+            String baseUrl = aiServiceUrl != null && aiServiceUrl.endsWith("/") 
+                    ? aiServiceUrl.substring(0, aiServiceUrl.length() - 1) 
+                    : aiServiceUrl;
+            String targetUrl = baseUrl + "/api/v1/notes-summary";
+            log.info("Forwarding Notes Summary Request for player '{}' ({}) to FastAPI AI Service at: {}", player.getName(), normalizedType, targetUrl);
+
+            Object responseBody = webClient.post()
+                    .uri(targetUrl)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(aiPayload)
+                    .retrieve()
+                    .bodyToMono(Object.class)
+                    .timeout(Duration.ofSeconds(20))
+                    .block();
+
+            return ResponseEntity.ok(responseBody);
+
+        } catch (WebClientResponseException e) {
+            log.error("FastAPI Notes Summary HTTP Error: {} - Response: {}", e.getStatusCode(), e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(Map.of(
+                            "success", false,
+                            "message", "AI Notes Summary Service Error: " + e.getResponseBodyAsString()
+                    ));
+        } catch (Exception e) {
+            log.error("Error communicating with FastAPI AI Notes Summary Service: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(Map.of(
+                            "success", false,
+                            "message", "AI Notes Summary Service is temporarily unavailable."
+                    ));
+        }
+    }
+
     private Double getAverageMetric(
             java.util.List<com.cpi.cpi_backend.entity.PracticeAssessment> practices,
             java.util.List<com.cpi.cpi_backend.entity.MatchAssessment> matches,
