@@ -4,6 +4,7 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci --prefer-offline
 COPY frontend/ ./
+ENV NEXT_PUBLIC_API_URL=/api
 RUN npm run build
 
 # Stage 2: Build the Spring Boot backend
