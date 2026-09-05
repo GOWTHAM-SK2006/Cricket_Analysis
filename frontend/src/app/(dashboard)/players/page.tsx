@@ -1062,6 +1062,7 @@ export default function PlayersPage() {
 
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [role, setRole] = useState<string | null>(null);
   const [currentCoachName, setCurrentCoachName] = useState<string>("");
@@ -1475,12 +1476,24 @@ export default function PlayersPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setFetchError(null);
       const res = await api.get("/players");
       const list = res.data || [];
       setPlayers(list);
       fetchLastAssessmentDates(list);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to fetch players", err);
+      if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+        setFetchError("Connection timed out while reaching backend. Please verify backend service and retry.");
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setFetchError("Authentication required. Please log in again to view your squad.");
+      } else if (err.response?.status === 404) {
+        setFetchError("Player endpoint not found (404). Please verify backend server configuration.");
+      } else if (err.response?.status >= 500) {
+        setFetchError(`Server error (${err.response.status}). Please try again later.`);
+      } else {
+        setFetchError("Unable to load player squad. Please check network connection or try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -2428,6 +2441,20 @@ return (
         {/* Player Cards list */}
         {loading ? (
           <CricketLoader message="Loading Squad..." />
+        ) : fetchError ? (
+          <div className="bg-red-50 border-2 border-red-200 rounded-3xl p-8 text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 text-red-600 mb-2">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <h4 className="text-lg font-bold text-red-900 uppercase tracking-wide">Failed to Load Squad</h4>
+            <p className="text-sm font-medium text-red-700 max-w-md mx-auto">{fetchError}</p>
+            <button
+              onClick={() => fetchData()}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer uppercase text-xs tracking-wider"
+            >
+              Retry
+            </button>
+          </div>
         ) : sortedPlayers.length === 0 ? (
           <div className="text-center py-16 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-slate-200 rounded-3xl">
             No players found
