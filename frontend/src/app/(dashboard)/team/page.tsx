@@ -699,22 +699,22 @@ export default function TeamPage() {
   const compStatsB = calcComparisonStats(teamBData);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
       {/* Top Banner Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-slate-800">
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl relative overflow-hidden border border-slate-800">
         <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-500/20 via-transparent to-transparent pointer-events-none" />
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400">
-              <Users2 className="w-6 h-6 stroke-[2.5]" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
+              <Users2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black tracking-widest text-orange-400 uppercase bg-orange-500/10 px-2.5 py-0.5 rounded-full border border-orange-500/20">
+                <span className="text-[9px] sm:text-[10px] font-black tracking-widest text-orange-400 uppercase bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">
                   COACH DASHBOARD
                 </span>
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white mt-1 uppercase">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white mt-1 uppercase truncate">
                 {team ? team.name : "TEAM MANAGEMENT"}
               </h1>
             </div>
@@ -723,10 +723,10 @@ export default function TeamPage() {
           {team && (
             <button
               onClick={generateTeamPdfReport}
-              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 self-start md:self-auto border border-orange-400/50"
+              className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 border border-orange-400/50"
             >
               <Download className="w-4 h-4 stroke-[2.5]" />
-              DOWNLOAD TEAM REPORT
+              <span>DOWNLOAD TEAM REPORT</span>
             </button>
           )}
         </div>
@@ -734,15 +734,15 @@ export default function TeamPage() {
 
       {/* STATE 1: CREATE YOUR TEAM (If coach has no team) */}
       {!team && (
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+        <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
           <div className="text-center max-w-lg mx-auto space-y-3">
-            <div className="w-16 h-16 rounded-3xl bg-orange-100 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
-              <Shield className="w-8 h-8 stroke-[2]" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-orange-100 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+              <Shield className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2]" />
             </div>
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
               CREATE YOUR TEAM
             </h2>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold leading-relaxed">
+            <p className="text-slate-500 text-xs sm:text-sm font-semibold leading-relaxed">
               Organize your players into a dedicated team squad to evaluate collective performance metrics, track CPI averages, and manage group analytics.
             </p>
           </div>
@@ -798,12 +798,12 @@ export default function TeamPage() {
 
       {/* STATE 2: TEAM DASHBOARD VIEW */}
       {team && (
-        <div className="space-y-6">
+        <div className="space-y-5 sm:space-y-6">
           {/* Sub-Navigation Bar */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm flex items-center gap-1 overflow-x-auto">
+          <div className="bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
             <button
               onClick={() => setActiveTab("OVERVIEW")}
-              className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "OVERVIEW"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
@@ -813,7 +813,7 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("7PARAMS")}
-              className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "7PARAMS"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
@@ -823,7 +823,7 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("HISTORY")}
-              className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "HISTORY"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
@@ -833,7 +833,7 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("NOTES")}
-              className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "NOTES"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
@@ -843,7 +843,7 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("COMPARISON")}
-              className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
+              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "COMPARISON"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
@@ -855,10 +855,10 @@ export default function TeamPage() {
 
           {/* TAB 1: SQUAD & OVERVIEW */}
           {activeTab === "OVERVIEW" && (
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               {/* Team Details Header Card */}
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4 relative">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-4 relative">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2.5 py-0.5 rounded-md border border-orange-200">
@@ -868,7 +868,7 @@ export default function TeamPage() {
                         Created {new Date(team.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
                       {team.name}
                     </h2>
                     {team.description && (
@@ -884,7 +884,7 @@ export default function TeamPage() {
                       className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5 text-slate-500" />
-                      EDIT DETAILS
+                      <span>EDIT DETAILS</span>
                     </button>
                   </div>
                 </div>
@@ -932,39 +932,39 @@ export default function TeamPage() {
                   </form>
                 )}
 
-                {/* Team Quick Snapshot Stats */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-center">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">TOTAL PLAYERS</span>
-                    <span className="text-xl font-black text-slate-900">{squad.length}</span>
+                {/* Team Quick Snapshot Stats (2 Columns on Mobile, 4 Columns on Tablet/Desktop) */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-2">
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 sm:p-4 text-center">
+                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">TOTAL PLAYERS</span>
+                    <span className="text-lg sm:text-2xl font-black text-slate-900">{squad.length}</span>
                   </div>
-                  <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-3 text-center">
-                    <span className="text-[10px] font-black text-orange-600 uppercase tracking-wider block">AVERAGE CPI</span>
-                    <span className="text-xl font-black text-orange-600">{teamCpi}</span>
+                  <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-3 sm:p-4 text-center">
+                    <span className="text-[10px] sm:text-xs font-black text-orange-600 uppercase tracking-wider block mb-1">AVERAGE CPI</span>
+                    <span className="text-lg sm:text-2xl font-black text-orange-600">{teamCpi}</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-center">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">AVERAGE PPI (PRACTICE)</span>
-                    <span className="text-xl font-black text-slate-800">{avgPpi}</span>
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 sm:p-4 text-center">
+                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">AVERAGE PPI</span>
+                    <span className="text-lg sm:text-2xl font-black text-slate-800">{avgPpi}</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-center">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">AVERAGE MPI (MATCH)</span>
-                    <span className="text-xl font-black text-slate-800">{avgMpi}</span>
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 sm:p-4 text-center">
+                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">AVERAGE MPI</span>
+                    <span className="text-lg sm:text-2xl font-black text-slate-800">{avgMpi}</span>
                   </div>
                 </div>
 
                 {/* Team Strengths & Development Areas Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 pt-2">
                   <div className="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-2">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
                       <span className="text-xs font-black text-emerald-800 uppercase tracking-wider">TEAM STRENGTHS</span>
                     </div>
                     {hasAssessmentData && overallParamScores.length > 0 ? (
-                      <ul className="space-y-1">
+                      <ul className="space-y-1.5">
                         {overallParamScores.slice(0, 3).map(s => (
                           <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between">
                             <span>• {s.name}</span>
-                            <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md text-[11px]">{s.avg}</span>
+                            <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md text-[11px] font-extrabold">{s.avg}</span>
                           </li>
                         ))}
                       </ul>
@@ -981,11 +981,11 @@ export default function TeamPage() {
                       <span className="text-xs font-black text-amber-800 uppercase tracking-wider">TEAM DEVELOPMENT AREAS</span>
                     </div>
                     {hasAssessmentData && overallParamScores.length > 0 ? (
-                      <ul className="space-y-1">
+                      <ul className="space-y-1.5">
                         {[...overallParamScores].reverse().slice(0, 3).map(s => (
                           <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between">
                             <span>• {s.name}</span>
-                            <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md text-[11px]">{s.avg}</span>
+                            <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md text-[11px] font-extrabold">{s.avg}</span>
                           </li>
                         ))}
                       </ul>
@@ -999,10 +999,10 @@ export default function TeamPage() {
               </div>
 
               {/* TEAM SQUAD SECTION */}
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                   <div>
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                       <span>TEAM SQUAD</span>
                       <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-extrabold">
                         {squad.length}
@@ -1018,14 +1018,14 @@ export default function TeamPage() {
                       setSelectedPlayerIds([]);
                       setShowAddModal(true);
                     }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-2.5 px-4 font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    className="w-full sm:w-auto justify-center bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-2.5 px-4 font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center gap-1.5"
                   >
                     <UserPlus className="w-4 h-4 stroke-[2.5]" />
                     <span>+ ADD PLAYERS</span>
                   </button>
                 </div>
 
-                {/* SQUAD PLAYER CARDS WITH CIRCULAR AVATARS */}
+                {/* SQUAD PLAYER CARDS (1 Card Per Row on Mobile, 2 Cards Per Row on Desktop md:) */}
                 {squad.length === 0 ? (
                   <div className="text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-6 space-y-3">
                     <Users2 className="w-10 h-10 text-slate-300 mx-auto" />
@@ -1041,11 +1041,11 @@ export default function TeamPage() {
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-wider hover:bg-orange-600 transition-all cursor-pointer shadow-sm"
                     >
                       <Plus className="w-4 h-4 stroke-[2.5]" />
-                      ADD PLAYERS NOW
+                      <span>ADD PLAYERS NOW</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
                     {squad.map((player) => {
                       const ppiDisplay = formatScore(player.ppiScore);
                       const mpiDisplay = formatScore(player.mpiScore);
@@ -1053,9 +1053,10 @@ export default function TeamPage() {
                       return (
                         <div
                           key={player.id}
-                          className="bg-white border border-slate-200 hover:border-orange-300 rounded-2xl p-4 transition-all hover:shadow-md space-y-3 relative group"
+                          className="bg-white border border-slate-200 hover:border-orange-300 rounded-2xl p-3.5 sm:p-4 transition-all hover:shadow-md space-y-3 relative group w-full"
                         >
                           <div className="flex items-start gap-3">
+                            {/* Circular Player Photo Avatar */}
                             <div className="w-12 h-12 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-lg uppercase shrink-0 overflow-hidden shadow-sm">
                               {player.imageUrl ? (
                                 <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
@@ -1065,14 +1066,14 @@ export default function TeamPage() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-black text-sm text-slate-900 truncate uppercase tracking-tight">
+                              <h4 className="font-black text-base sm:text-lg text-slate-900 truncate uppercase tracking-tight">
                                 {player.name}
                               </h4>
-                              <span className="inline-block mt-0.5 text-[10px] font-extrabold uppercase px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md">
+                              <span className="inline-block mt-0.5 text-xs font-extrabold uppercase px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-md">
                                 {player.role || "Player"}
                               </span>
                               {(player.battingStyle || player.bowlingStyle) && (
-                                <p className="text-[10px] font-semibold text-slate-400 truncate mt-1">
+                                <p className="text-xs font-medium text-slate-400 truncate mt-1">
                                   {[player.battingStyle, player.bowlingStyle].filter(Boolean).join(" • ")}
                                 </p>
                               )}
@@ -1082,7 +1083,7 @@ export default function TeamPage() {
                               onClick={() => handleRemovePlayer(player.id)}
                               disabled={removingPlayerId === player.id}
                               title="Remove player from team"
-                              className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                              className="p-2 rounded-xl text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
                             >
                               {removingPlayerId === player.id ? (
                                 <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
@@ -1093,14 +1094,14 @@ export default function TeamPage() {
                           </div>
 
                           {/* Performance Scores Row */}
-                          <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
-                            <div className="bg-slate-50 rounded-xl p-2 text-center">
-                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">PPI SCORE</span>
-                              <span className="text-xs font-black text-slate-800">{ppiDisplay}</span>
+                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                            <div className="bg-slate-50 rounded-xl p-2.5 text-center">
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">PPI SCORE</span>
+                              <span className="text-sm font-black text-slate-900">{ppiDisplay}</span>
                             </div>
-                            <div className="bg-slate-50 rounded-xl p-2 text-center">
-                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">MPI SCORE</span>
-                              <span className="text-xs font-black text-slate-800">{mpiDisplay}</span>
+                            <div className="bg-slate-50 rounded-xl p-2.5 text-center">
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">MPI SCORE</span>
+                              <span className="text-sm font-black text-slate-900">{mpiDisplay}</span>
                             </div>
                           </div>
                         </div>
@@ -1114,11 +1115,11 @@ export default function TeamPage() {
 
           {/* TAB 2: 7-PARAMETER ANALYTICS */}
           {activeTab === "7PARAMS" && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
               <div>
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <Target className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  TEAM 7-PARAMETER PERFORMANCE
+                  <span>TEAM 7-PARAMETER PERFORMANCE</span>
                 </h3>
                 <p className="text-xs font-semibold text-slate-400 mt-0.5">
                   Aggregate parameter-by-parameter analysis across all squad members. Practice & Match remain strictly separated.
@@ -1126,15 +1127,15 @@ export default function TeamPage() {
               </div>
 
               {/* Highlights Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider block">STRONGEST PARAMETER</span>
-                    <span className="text-lg font-black text-slate-900 mt-0.5 block">
+                    <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
                       {strongestParam ? strongestParam.name : "N/A"}
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-xl">
+                  <div className="text-xl sm:text-2xl font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-xl">
                     {strongestParam ? strongestParam.avg : "N/A"}
                   </div>
                 </div>
@@ -1142,11 +1143,11 @@ export default function TeamPage() {
                 <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-black text-amber-700 uppercase tracking-wider block">WEAKEST PARAMETER</span>
-                    <span className="text-lg font-black text-slate-900 mt-0.5 block">
+                    <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
                       {weakestParam ? weakestParam.name : "N/A"}
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-amber-700 bg-amber-100 px-3 py-1 rounded-xl">
+                  <div className="text-xl sm:text-2xl font-black text-amber-700 bg-amber-100 px-3 py-1 rounded-xl">
                     {weakestParam ? weakestParam.avg : "N/A"}
                   </div>
                 </div>
@@ -1167,8 +1168,8 @@ export default function TeamPage() {
                     const mPercent = mAvg !== null ? (mAvg / 100) * 100 : 0;
 
                     return (
-                      <div key={p.name} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-3">
-                        <div className="flex items-center justify-between">
+                      <div key={p.name} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3">
                           <span className="font-black text-sm text-slate-900 uppercase">{p.name}</span>
                           <div className="flex items-center gap-3 text-xs font-bold">
                             <span className="text-slate-600">
@@ -1215,19 +1216,19 @@ export default function TeamPage() {
 
           {/* TAB 3: ASSESSMENT HISTORY */}
           {activeTab === "HISTORY" && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div>
-                  <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                    TEAM ASSESSMENT HISTORY
+                    <span>TEAM ASSESSMENT HISTORY</span>
                   </h3>
                   <p className="text-xs font-semibold text-slate-400 mt-0.5">
                     Complete historical log of practice and match assessments for players in this team squad.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
                   <button
                     onClick={() => setHistoryFilter("ALL")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
@@ -1281,19 +1282,19 @@ export default function TeamPage() {
                     {filtered.map((item, idx) => (
                       <div
                         key={`${item.type}-${item.id}-${idx}`}
-                        className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 hover:bg-slate-100/60 transition-colors"
+                        className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 space-y-2 hover:bg-slate-100/60 transition-colors"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3">
-                            <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-lg ${
+                            <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-lg shrink-0 ${
                               item.type === "PRACTICE"
                                 ? "bg-orange-100 text-orange-700 border border-orange-200"
                                 : "bg-slate-900 text-white"
                             }`}>
                               {item.type}
                             </span>
-                            <div>
-                              <h5 className="font-black text-sm text-slate-900 uppercase">
+                            <div className="min-w-0">
+                              <h5 className="font-black text-sm text-slate-900 uppercase truncate">
                                 {item.player?.name || "Squad Player"}
                               </h5>
                               <span className="text-xs font-semibold text-slate-400">
@@ -1302,7 +1303,7 @@ export default function TeamPage() {
                             </div>
                           </div>
 
-                          <div className="text-right">
+                          <div className="text-right shrink-0">
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
                               {item.type === "PRACTICE" ? "PPI SCORE" : "MPI SCORE"}
                             </span>
@@ -1327,11 +1328,11 @@ export default function TeamPage() {
 
           {/* TAB 4: TEAM COACH NOTES */}
           {activeTab === "NOTES" && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
               <div>
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <FileText className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  TEAM COACH NOTES
+                  <span>TEAM COACH NOTES</span>
                 </h3>
                 <p className="text-xs font-semibold text-slate-400 mt-0.5">
                   Record and maintain team-level observations, strategy notes, and coaching feedback.
@@ -1389,22 +1390,22 @@ export default function TeamPage() {
                   <button
                     type="submit"
                     disabled={isSavingNote || !noteContent.trim()}
-                    className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl py-2 px-5 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    className="w-full sm:w-auto justify-center bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl py-2 px-5 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
                     {isSavingNote ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
-                    SAVE TEAM NOTE
+                    <span>SAVE TEAM NOTE</span>
                   </button>
                 </div>
               </form>
 
               {/* Team Notes List */}
               <div className="space-y-4 pt-2">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
                   <span className="font-black text-xs text-slate-700 uppercase tracking-wider">
                     SAVED TEAM NOTES ({teamNotes.length})
                   </span>
 
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
                     <button
                       onClick={() => setNoteFilter("ALL")}
                       className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
@@ -1446,7 +1447,7 @@ export default function TeamPage() {
                   return (
                     <div className="space-y-3">
                       {filteredNotes.map((n) => (
-                        <div key={n.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                        <div key={n.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 space-y-2">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md ${
@@ -1488,11 +1489,11 @@ export default function TeamPage() {
 
           {/* TAB 5: TEAM A VS TEAM B COMPARISON */}
           {activeTab === "COMPARISON" && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
               <div>
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <ArrowRightLeft className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  TEAM A VS TEAM B COMPARISON
+                  <span>TEAM A VS TEAM B COMPARISON</span>
                 </h3>
                 <p className="text-xs font-semibold text-slate-400 mt-0.5">
                   Select any two existing teams to compare squad size, CPI averages, 7-parameter scores, and performance side-by-side.
@@ -1500,9 +1501,9 @@ export default function TeamPage() {
               </div>
 
               {/* Team Selectors */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4">
                 <div>
-                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-2">
+                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
                     SELECT TEAM A
                   </label>
                   <select
@@ -1518,7 +1519,7 @@ export default function TeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-2">
+                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
                     SELECT TEAM B
                   </label>
                   <select
@@ -1540,14 +1541,14 @@ export default function TeamPage() {
                   <span className="text-xs font-bold text-slate-500">Loading comparison data...</span>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-5 sm:space-y-6">
                   {/* Side-by-side Snapshot Cards */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     {/* TEAM A CARD */}
-                    <div className="bg-orange-50/50 border border-orange-200 rounded-2xl p-4 space-y-3">
+                    <div className="bg-orange-50/50 border border-orange-200 rounded-2xl p-3.5 sm:p-4 space-y-3">
                       <div className="border-b border-orange-200 pb-2">
                         <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">TEAM A</span>
-                        <h4 className="font-black text-base text-slate-900 uppercase truncate">
+                        <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase truncate">
                           {teamAData ? teamAData.team.name : "Select Team A"}
                         </h4>
                       </div>
@@ -1573,10 +1574,10 @@ export default function TeamPage() {
                     </div>
 
                     {/* TEAM B CARD */}
-                    <div className="bg-slate-100/70 border border-slate-300 rounded-2xl p-4 space-y-3">
+                    <div className="bg-slate-100/70 border border-slate-300 rounded-2xl p-3.5 sm:p-4 space-y-3">
                       <div className="border-b border-slate-300 pb-2">
                         <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest block">TEAM B</span>
-                        <h4 className="font-black text-base text-slate-900 uppercase truncate">
+                        <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase truncate">
                           {teamBData ? teamBData.team.name : "Select Team B"}
                         </h4>
                       </div>
@@ -1608,7 +1609,7 @@ export default function TeamPage() {
                       7 CPI PARAMETERS COMPARISON
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 space-y-3">
                       {PARAM_DEFINITIONS.map(p => {
                         const valA = compStatsA ? compStatsA.paramsMap[p.name]?.overall : "N/A";
                         const valB = compStatsB ? compStatsB.paramsMap[p.name]?.overall : "N/A";
@@ -1653,14 +1654,14 @@ export default function TeamPage() {
 
       {/* MODAL: ADD PLAYERS TO TEAM */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             {/* Modal Header */}
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div>
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  ADD PLAYERS TO TEAM
+                  <span>ADD PLAYERS TO TEAM</span>
                 </h3>
                 <p className="text-xs font-semibold text-slate-500 mt-0.5">
                   Select players from your existing squad to add to {team?.name}.
@@ -1669,14 +1670,14 @@ export default function TeamPage() {
 
               <button
                 onClick={() => setShowAddModal(false)}
-                className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Search Filter */}
-            <div className="p-4 border-b border-slate-100 bg-white">
+            <div className="p-3 sm:p-4 border-b border-slate-100 bg-white">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -1690,7 +1691,7 @@ export default function TeamPage() {
             </div>
 
             {/* Modal Player Selection List */}
-            <div className="p-4 overflow-y-auto space-y-2 flex-1">
+            <div className="p-3 sm:p-4 overflow-y-auto space-y-2 flex-1">
               {mySquad.length === 0 ? (
                 <div className="text-center py-8 text-slate-400 font-bold text-xs">
                   No existing players found in your squad. Create players first under PLAYERS tab.
@@ -1729,7 +1730,7 @@ export default function TeamPage() {
                             : "bg-white border-slate-200 hover:border-slate-300 cursor-pointer"
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
                           <div className="w-10 h-10 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-sm uppercase shrink-0 overflow-hidden">
                             {player.imageUrl ? (
                               <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
@@ -1738,8 +1739,8 @@ export default function TeamPage() {
                             )}
                           </div>
 
-                          <div>
-                            <h5 className="font-black text-xs text-slate-900 uppercase tracking-tight">
+                          <div className="min-w-0">
+                            <h5 className="font-black text-xs text-slate-900 uppercase tracking-tight truncate">
                               {player.name}
                             </h5>
                             <span className="text-[10px] font-semibold text-slate-500 uppercase">
@@ -1749,11 +1750,11 @@ export default function TeamPage() {
                         </div>
 
                         {isAlreadyInTeam ? (
-                          <span className="text-[10px] font-black text-slate-500 bg-slate-200 px-2 py-1 rounded-md uppercase">
+                          <span className="text-[10px] font-black text-slate-500 bg-slate-200 px-2 py-1 rounded-md uppercase shrink-0">
                             IN TEAM
                           </span>
                         ) : (
-                          <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${
+                          <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
                             isSelected
                               ? "bg-orange-500 border-orange-500 text-white"
                               : "border-slate-300 bg-white"
@@ -1769,7 +1770,7 @@ export default function TeamPage() {
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+            <div className="p-3.5 sm:p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
               <span className="text-xs font-black text-slate-600">
                 {selectedPlayerIds.length} Selected
               </span>
@@ -1778,7 +1779,7 @@ export default function TeamPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all"
+                  className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all"
                 >
                   CANCEL
                 </button>
@@ -1792,12 +1793,12 @@ export default function TeamPage() {
                   {isAddingPlayers ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ADDING...
+                      <span>ADDING...</span>
                     </>
                   ) : (
                     <>
                       <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                      ADD PLAYERS
+                      <span>ADD PLAYERS</span>
                     </>
                   )}
                 </button>
