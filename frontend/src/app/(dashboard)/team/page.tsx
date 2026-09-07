@@ -431,9 +431,9 @@ export default function TeamPage() {
                       className="bg-white border border-slate-200 hover:border-orange-300 rounded-2xl p-4 transition-all hover:shadow-md space-y-3 relative group"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-lg uppercase shrink-0 overflow-hidden shadow-sm">
+                        <div className="w-12 h-12 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-lg uppercase shrink-0 overflow-hidden shadow-sm">
                           {player.imageUrl ? (
-                            <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-xl" />
+                            <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
                           ) : (
                             player.name.charAt(0).toUpperCase()
                           )}
@@ -566,9 +566,9 @@ export default function TeamPage() {
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-sm uppercase shrink-0 overflow-hidden">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-sm uppercase shrink-0 overflow-hidden">
                             {player.imageUrl ? (
-                              <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-xl" />
+                              <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
                             ) : (
                               player.name.charAt(0).toUpperCase()
                             )}
