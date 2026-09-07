@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { api } from "@/lib/api";
-import { Home, Users, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle, Bell, Trophy, Crown } from "lucide-react";
+import { Home, Users, Users2, Clock, User, LogOut, Loader2, Sun, Moon, HelpCircle, Bell, Trophy, Crown } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import OnboardingTour from "./OnboardingTour";
@@ -184,6 +184,7 @@ export default function DashboardLayout({
   const tabs = [
     { name: "HOME", path: "/dashboard", icon: Home },
     { name: "PLAYERS", path: "/players", icon: Users },
+    { name: "TEAM", path: "/team", icon: Users2 },
     { name: "LEADERBOARD", path: "/leaderboard", icon: Trophy },
     { name: "HELP", path: "/help", icon: HelpCircle },
   ];

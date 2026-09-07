@@ -24,10 +24,8 @@ public class SchemaUpdateRunner implements CommandLineRunner {
 
             // 1. Drop unused tables (reverse order of foreign keys)
             String[] tables = {
-                "player_teams",
                 "practice_sessions",
                 "match_sessions",
-                "teams",
                 "organizations"
             };
 
