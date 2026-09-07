@@ -1,15 +1,21 @@
 package com.cpi.cpi_backend.controller;
 
 import com.cpi.cpi_backend.dto.PlayerResponse;
+import com.cpi.cpi_backend.dto.TeamNoteRequest;
+import com.cpi.cpi_backend.dto.TeamNoteResponse;
 import com.cpi.cpi_backend.dto.TeamRequest;
 import com.cpi.cpi_backend.dto.TeamResponse;
 import com.cpi.cpi_backend.entity.Coach;
+import com.cpi.cpi_backend.entity.MatchAssessment;
 import com.cpi.cpi_backend.entity.Player;
+import com.cpi.cpi_backend.entity.PracticeAssessment;
 import com.cpi.cpi_backend.entity.Team;
+import com.cpi.cpi_backend.entity.TeamNote;
 import com.cpi.cpi_backend.repository.CoachRepository;
 import com.cpi.cpi_backend.repository.MatchAssessmentRepository;
 import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.PracticeAssessmentRepository;
+import com.cpi.cpi_backend.repository.TeamNoteRepository;
 import com.cpi.cpi_backend.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +38,7 @@ public class TeamController {
     private final PlayerRepository playerRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
+    private final TeamNoteRepository teamNoteRepository;
 
     private Coach getManagedCoach(Coach currentCoach) {
         if (currentCoach == null || currentCoach.getId() == null) {
@@ -106,6 +113,19 @@ public class TeamController {
                 .coachId(team.getCoach() != null ? team.getCoach().getId() : null)
                 .players(playerResponses)
                 .createdAt(team.getCreatedAt())
+                .build();
+    }
+
+    private TeamNoteResponse toTeamNoteResponse(TeamNote note) {
+        if (note == null) return null;
+        return TeamNoteResponse.builder()
+                .id(note.getId())
+                .teamId(note.getTeam() != null ? note.getTeam().getId() : null)
+                .coachName(note.getCoach() != null ? note.getCoach().getName() : "Coach")
+                .type(note.getType())
+                .date(note.getDate())
+                .content(note.getContent())
+                .createdAt(note.getCreatedAt())
                 .build();
     }
 
@@ -277,6 +297,128 @@ public class TeamController {
         }
 
         teamRepository.delete(team);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ==========================================
+    // TEAM ASSESSMENTS & TEAM COACH NOTES ENDPOINTS
+    // ==========================================
+
+    @GetMapping("/{id}/assessments")
+    @Transactional(readOnly = true)
+    public ResponseEntity<Map<String, Object>> getTeamAssessments(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Coach coach = getManagedCoach(currentCoach);
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+
+        if (team.getCoach() == null || !team.getCoach().getId().equals(coach.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to access this team's assessments");
+        }
+
+        List<Player> squad = team.getPlayers() != null ? team.getPlayers() : Collections.emptyList();
+        List<Long> playerIds = squad.stream().map(Player::getId).collect(Collectors.toList());
+
+        List<PracticeAssessment> practiceAssessments = new ArrayList<>();
+        List<MatchAssessment> matchAssessments = new ArrayList<>();
+
+        if (!playerIds.isEmpty()) {
+            for (Long pid : playerIds) {
+                practiceAssessments.addAll(practiceAssessmentRepository.findByPlayerId(pid));
+                matchAssessments.addAll(matchAssessmentRepository.findByPlayerId(pid));
+            }
+        }
+
+        // Sort assessments descending by date
+        practiceAssessments.sort(Comparator.comparing(PracticeAssessment::getDate, Comparator.nullsLast(Comparator.reverseOrder())));
+        matchAssessments.sort(Comparator.comparing(MatchAssessment::getDate, Comparator.nullsLast(Comparator.reverseOrder())));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("practiceAssessments", practiceAssessments);
+        response.put("matchAssessments", matchAssessments);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/notes")
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<TeamNoteResponse>> getTeamNotes(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Coach coach = getManagedCoach(currentCoach);
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+
+        if (team.getCoach() == null || !team.getCoach().getId().equals(coach.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to view notes for this team");
+        }
+
+        List<TeamNote> notes = teamNoteRepository.findByTeamIdOrderByDateDescCreatedAtDesc(team.getId());
+        List<TeamNoteResponse> response = notes.stream().map(this::toTeamNoteResponse).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/notes")
+    @Transactional
+    public ResponseEntity<TeamNoteResponse> createTeamNote(
+            @PathVariable Long id,
+            @RequestBody TeamNoteRequest request,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Coach coach = getManagedCoach(currentCoach);
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+
+        if (team.getCoach() == null || !team.getCoach().getId().equals(coach.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to add notes for this team");
+        }
+
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Note content cannot be empty");
+        }
+
+        String type = (request.getType() != null && request.getType().equalsIgnoreCase("MATCH")) ? "MATCH" : "PRACTICE";
+        java.time.LocalDate date = request.getDate() != null ? request.getDate() : java.time.LocalDate.now();
+
+        TeamNote note = TeamNote.builder()
+                .team(team)
+                .coach(coach)
+                .type(type)
+                .date(date)
+                .content(request.getContent().trim())
+                .build();
+
+        TeamNote saved = teamNoteRepository.save(note);
+        return ResponseEntity.ok(toTeamNoteResponse(saved));
+    }
+
+    @DeleteMapping("/{id}/notes/{noteId}")
+    @Transactional
+    public ResponseEntity<Void> deleteTeamNote(
+            @PathVariable Long id,
+            @PathVariable Long noteId,
+            @AuthenticationPrincipal Coach currentCoach
+    ) {
+        Coach coach = getManagedCoach(currentCoach);
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+
+        if (team.getCoach() == null || !team.getCoach().getId().equals(coach.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to modify notes for this team");
+        }
+
+        TeamNote note = teamNoteRepository.findById(noteId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team note not found"));
+
+        if (!note.getTeam().getId().equals(team.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Note does not belong to this team");
+        }
+
+        teamNoteRepository.delete(note);
         return ResponseEntity.noContent().build();
     }
 }
