@@ -1096,21 +1096,21 @@ export default function TeamPage() {
                           {/* Performance Scores Row */}
                           <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-2.5 border-t border-slate-100">
                             {/* PPI SCORE CARD */}
-                            <div className="bg-blue-50/70 border border-blue-200/80 rounded-xl p-2.5 text-center shadow-2xs hover:border-blue-300 transition-colors">
-                              <div className="flex items-center justify-center gap-1 text-blue-700 mb-0.5">
+                            <div className="bg-blue-50/80 border border-blue-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-blue-300 transition-colors">
+                              <div className="flex items-center justify-center gap-1 text-blue-600 mb-0.5">
                                 <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
                                 <span className="text-[10px] font-black tracking-wider uppercase">PPI SCORE</span>
                               </div>
-                              <span className="text-base sm:text-lg font-black text-blue-950 block">{ppiDisplay}</span>
+                              <span className="text-base sm:text-lg font-black text-blue-700 block">{ppiDisplay}</span>
                             </div>
 
                             {/* MPI SCORE CARD */}
-                            <div className="bg-orange-50/70 border border-orange-200/80 rounded-xl p-2.5 text-center shadow-2xs hover:border-orange-300 transition-colors">
-                              <div className="flex items-center justify-center gap-1 text-orange-700 mb-0.5">
+                            <div className="bg-amber-50/80 border border-amber-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-amber-300 transition-colors">
+                              <div className="flex items-center justify-center gap-1 text-amber-600 mb-0.5">
                                 <Flame className="w-3.5 h-3.5 stroke-[2.5]" />
                                 <span className="text-[10px] font-black tracking-wider uppercase">MPI SCORE</span>
                               </div>
-                              <span className="text-base sm:text-lg font-black text-orange-950 block">{mpiDisplay}</span>
+                              <span className="text-base sm:text-lg font-black text-amber-700 block">{mpiDisplay}</span>
                             </div>
                           </div>
                         </div>
