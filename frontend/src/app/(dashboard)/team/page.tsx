@@ -857,31 +857,31 @@ export default function TeamPage() {
           {activeTab === "OVERVIEW" && (
             <div className="space-y-5 sm:space-y-6">
               {/* Team Details Header Card */}
-              <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-4 relative">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2.5 py-0.5 rounded-md border border-orange-200">
+              <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3.5 sm:space-y-4 relative">
+                <div className="flex flex-col items-center justify-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 border-b border-slate-100 pb-3 sm:pb-4">
+                  <div className="flex flex-col items-center sm:items-start">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                      <span className="text-[10px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
                         ACTIVE TEAM
                       </span>
-                      <span className="text-xs font-bold text-slate-400">
+                      <span className="text-[11px] sm:text-xs font-bold text-slate-400">
                         Created {new Date(team.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
+                    <h2 className="text-lg sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
                       {team.name}
                     </h2>
                     {team.description && (
-                      <p className="text-slate-500 text-xs sm:text-sm font-medium mt-1">
+                      <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
                         {team.description}
                       </p>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center justify-center sm:justify-end gap-2 shrink-0 pt-0.5 sm:pt-0">
                     <button
                       onClick={() => setIsEditing(!isEditing)}
-                      className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-3 py-1.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5 text-slate-500" />
                       <span>EDIT DETAILS</span>
