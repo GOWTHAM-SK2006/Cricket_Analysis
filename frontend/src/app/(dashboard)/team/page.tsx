@@ -94,7 +94,10 @@ export default function TeamPage() {
   const [mySquad, setMySquad] = useState<Player[]>([]);
   
   // Navigation Sub-Tabs
-  const [activeTab, setActiveTab] = useState<"OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("OVERVIEW");
+  const [activeTab, setActiveTab] = useState<"MY_TEAMS" | "OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("OVERVIEW");
+
+  // Modal & Selection State
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Assessment & Notes Data
   const [practiceAssessments, setPracticeAssessments] = useState<AssessmentItem[]>([]);
@@ -235,6 +238,26 @@ export default function TeamPage() {
     loadComparison();
   }, [teamAId, teamBId, allTeams]);
 
+  const selectTeam = async (selected: Team) => {
+    try {
+      setTeam(selected);
+      setEditName(selected.name || "");
+      setEditDesc(selected.description || "");
+      setTeamAId(selected.id);
+
+      const [assessmentsRes, notesRes] = await Promise.all([
+        api.get(`/teams/${selected.id}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } })),
+        api.get(`/teams/${selected.id}/notes`).catch(() => ({ data: [] }))
+      ]);
+
+      setPracticeAssessments(assessmentsRes.data.practiceAssessments || []);
+      setMatchAssessments(assessmentsRes.data.matchAssessments || []);
+      setTeamNotes(Array.isArray(notesRes.data) ? notesRes.data : []);
+    } catch (err) {
+      console.error("Failed to load selected team data:", err);
+    }
+  };
+
   const handleCreateTeam = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!createName.trim()) return;
@@ -245,11 +268,16 @@ export default function TeamPage() {
         name: createName.trim(),
         description: createDesc.trim(),
       });
-      setTeam(res.data);
-      setAllTeams(prev => [...prev, res.data]);
+      const newTeam = res.data;
+      setAllTeams(prev => {
+        const filtered = prev.filter(t => t.id !== newTeam.id);
+        return [...filtered, newTeam];
+      });
+      await selectTeam(newTeam);
       setCreateName("");
       setCreateDesc("");
-      fetchTeamData();
+      setShowCreateModal(false);
+      setActiveTab("OVERVIEW");
     } catch (err) {
       console.error("Failed to create team", err);
       alert("Failed to create team. Please try again.");
@@ -739,93 +767,91 @@ export default function TeamPage() {
                   COACH DASHBOARD
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white mt-1 uppercase truncate">
-                {team ? team.name : "TEAM MANAGEMENT"}
-              </h1>
+              <div className="flex items-center gap-2.5 mt-1 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase truncate">
+                  {team ? team.name : "TEAM MANAGEMENT"}
+                </h1>
+                {allTeams.length > 1 && (
+                  <select
+                    value={team?.id || ""}
+                    onChange={(e) => {
+                      const selected = allTeams.find(t => t.id === Number(e.target.value));
+                      if (selected) selectTeam(selected);
+                    }}
+                    className="bg-slate-800 text-white border border-slate-700 rounded-xl px-2.5 py-1 text-xs font-bold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    {allTeams.map(t => (
+                      <option key={`switch-${t.id}`} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
             </div>
           </div>
 
-          {team && (
+          <div className="flex flex-wrap items-center gap-2.5">
             <button
-              onClick={generateTeamPdfReport}
-              className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 border border-orange-400/50"
+              onClick={() => setShowCreateModal(true)}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 border border-orange-400/50"
             >
-              <Download className="w-4 h-4 stroke-[2.5]" />
-              <span>DOWNLOAD TEAM REPORT</span>
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>ADD TEAM</span>
             </button>
-          )}
+
+            {team && (
+              <button
+                onClick={generateTeamPdfReport}
+                className="bg-slate-800 hover:bg-slate-700 text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-sm border border-slate-700 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4 stroke-[2.5]" />
+                <span>DOWNLOAD REPORT</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* STATE 1: CREATE YOUR TEAM (If coach has no team) */}
-      {!team && (
-        <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
-          <div className="text-center max-w-lg mx-auto space-y-3">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-orange-100 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
-              <Shield className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2]" />
-            </div>
+      {/* STATE 1: NO TEAMS YET (If coach has 0 teams) */}
+      {allTeams.length === 0 && !team && (
+        <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-sm space-y-5 text-center">
+          <div className="w-16 h-16 rounded-3xl bg-orange-100 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+            <Shield className="w-8 h-8 stroke-[2]" />
+          </div>
+          <div className="space-y-1.5 max-w-md mx-auto">
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
-              CREATE YOUR TEAM
+              NO TEAMS YET
             </h2>
-            <p className="text-slate-500 text-xs sm:text-sm font-semibold leading-relaxed">
-              Organize your players into a dedicated team squad to evaluate collective performance metrics, track CPI averages, and manage group analytics.
+            <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed">
+              Organize your players into dedicated team squads to evaluate collective performance metrics, track CPI averages, and manage group analytics.
             </p>
           </div>
-
-          <form onSubmit={handleCreateTeam} className="max-w-md mx-auto space-y-4 pt-2">
-            <div>
-              <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-2">
-                Team Name <span className="text-orange-600">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={createName}
-                onChange={(e) => setCreateName(e.target.value)}
-                placeholder="e.g. Senior Academy XI / U-19 Squad"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-2">
-                Team Description <span className="text-slate-400 font-medium">(Optional)</span>
-              </label>
-              <textarea
-                rows={3}
-                value={createDesc}
-                onChange={(e) => setCreateDesc(e.target.value)}
-                placeholder="e.g. Primary squad for 2026 regional championship preparation"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-sm resize-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isCreating || !createName.trim()}
-              className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-2xl py-3.5 px-6 font-black text-sm uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 hover:scale-[1.01] active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-            >
-              {isCreating ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  CREATING TEAM...
-                </>
-              ) : (
-                <>
-                  <Plus className="w-5 h-5 stroke-[2.5]" />
-                  CREATE TEAM
-                </>
-              )}
-            </button>
-          </form>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-3.5 px-8 font-black text-sm uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 cursor-pointer inline-flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5 stroke-[2.5]" />
+            <span>CREATE YOUR FIRST TEAM</span>
+          </button>
         </div>
       )}
 
       {/* STATE 2: TEAM DASHBOARD VIEW */}
-      {team && (
+      {allTeams.length > 0 && team && (
         <div className="space-y-5 sm:space-y-6">
           {/* Sub-Navigation Bar */}
           <div className="bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
+            <button
+              onClick={() => setActiveTab("MY_TEAMS")}
+              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                activeTab === "MY_TEAMS"
+                  ? "bg-orange-500 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+              }`}
+            >
+              <Users2 className="w-3.5 h-3.5" />
+              <span>MY TEAMS ({allTeams.length})</span>
+            </button>
+
             <button
               onClick={() => setActiveTab("OVERVIEW")}
               className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
@@ -877,6 +903,100 @@ export default function TeamPage() {
               TEAM COMPARISON
             </button>
           </div>
+
+          {/* TAB 0: MY TEAMS (Grid View) */}
+          {activeTab === "MY_TEAMS" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <Users2 className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+                    <span>MY TEAMS ({allTeams.length})</span>
+                  </h3>
+                  <p className="text-xs font-semibold text-slate-400 mt-0.5">
+                    Manage and select from all created team squads available to you.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-wider px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>NEW TEAM</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {allTeams.map((t) => {
+                  const isSelected = team?.id === t.id;
+                  const squadSize = t.players?.length || 0;
+                  const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
+                  const mpiList = (t.players || []).map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
+                  const ppiAvg = ppiList.length > 0 ? Math.round(ppiList.reduce((a, b) => a + b, 0) / ppiList.length) : "N/A";
+                  const mpiAvg = mpiList.length > 0 ? Math.round(mpiList.reduce((a, b) => a + b, 0) / mpiList.length) : "N/A";
+                  const teamCpi = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
+                    ? Math.round((ppiAvg + mpiAvg) / 2)
+                    : (typeof ppiAvg === "number" ? ppiAvg : (typeof mpiAvg === "number" ? mpiAvg : "N/A"));
+
+                  return (
+                    <div
+                      key={`card-${t.id}`}
+                      className={`bg-white border rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-4 transition-all shadow-sm ${
+                        isSelected
+                          ? "border-orange-500 ring-2 ring-orange-500/20"
+                          : "border-slate-200 hover:border-slate-300"
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[9px] font-black tracking-widest text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
+                              {isSelected ? "ACTIVE TEAM" : "TEAM"}
+                            </span>
+                            <h4 className="font-black text-base text-slate-900 uppercase truncate mt-1">
+                              {t.name}
+                            </h4>
+                          </div>
+                          <div className="w-10 h-10 rounded-xl bg-orange-100 border border-orange-200 text-orange-700 font-black text-sm flex items-center justify-center shrink-0 uppercase">
+                            {t.name.charAt(0)}
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-500 font-medium line-clamp-2 min-h-[32px]">
+                          {t.description || "No description provided."}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 bg-slate-50 rounded-xl p-2.5 border border-slate-100 text-center text-xs font-bold">
+                        <div>
+                          <span className="text-[10px] text-slate-400 block uppercase font-bold">PLAYERS</span>
+                          <span className="text-slate-900 font-black">{squadSize}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 block uppercase font-bold">CPI SCORE</span>
+                          <span className="text-orange-600 font-black">{teamCpi}</span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          selectTeam(t);
+                          setActiveTab("OVERVIEW");
+                        }}
+                        className={`w-full py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                          isSelected
+                            ? "bg-slate-900 text-white hover:bg-slate-800"
+                            : "bg-orange-50 text-orange-600 border border-orange-200 hover:bg-orange-100"
+                        }`}
+                      >
+                        <span>{isSelected ? "VIEWING DASHBOARD" : "VIEW TEAM →"}</span>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* TAB 1: SQUAD & OVERVIEW */}
           {activeTab === "OVERVIEW" && (
@@ -1984,6 +2104,89 @@ export default function TeamPage() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CREATE NEW TEAM */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+                  <span>CREATE NEW TEAM</span>
+                </h3>
+                <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                  Organize players into a new dedicated team squad.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateTeam} className="p-4 sm:p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
+                  Team Name <span className="text-orange-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={createName}
+                  onChange={(e) => setCreateName(e.target.value)}
+                  placeholder="e.g. Senior Academy XI / U-19 Squad"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
+                  Team Description <span className="text-slate-400 font-medium">(Optional)</span>
+                </label>
+                <textarea
+                  rows={3}
+                  value={createDesc}
+                  onChange={(e) => setCreateDesc(e.target.value)}
+                  placeholder="e.g. Primary squad for 2026 regional championship preparation"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-xs resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                >
+                  CANCEL
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={isCreating || !createName.trim()}
+                  className="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>CREATING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 stroke-[2.5]" />
+                      <span>CREATE TEAM</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
