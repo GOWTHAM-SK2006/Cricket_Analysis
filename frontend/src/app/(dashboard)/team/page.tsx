@@ -131,12 +131,13 @@ export default function TeamPage() {
   // Assessment History Filter State
   const [historyFilter, setHistoryFilter] = useState<"ALL" | "PRACTICE" | "MATCH">("ALL");
 
-  // Comparison State (Team A vs Team B)
+  // Comparison State (Team Comparison)
   const [teamAId, setTeamAId] = useState<number | null>(null);
   const [teamBId, setTeamBId] = useState<number | null>(null);
   const [teamAData, setTeamAData] = useState<{ team: Team; prac: AssessmentItem[]; match: AssessmentItem[] } | null>(null);
   const [teamBData, setTeamBData] = useState<{ team: Team; prac: AssessmentItem[]; match: AssessmentItem[] } | null>(null);
   const [loadingComparison, setLoadingComparison] = useState(false);
+  const [compParamFilter, setCompParamFilter] = useState<"OVERALL" | "PRACTICE" | "MATCH">("OVERALL");
 
   const fetchTeamData = async () => {
     try {
@@ -157,12 +158,9 @@ export default function TeamPage() {
         setEditName(primaryTeam.name || "");
         setEditDesc(primaryTeam.description || "");
 
-        // Set default teams for comparison if available
+        // Set primary team for comparison selector 1; leave selector 2 unselected initially
         setTeamAId(primaryTeam.id);
-        if (teamsList.length > 1) {
-          const second = teamsList.find((t: Team) => t.id !== primaryTeam.id);
-          if (second) setTeamBId(second.id);
-        }
+        setTeamBId(null);
 
         // Fetch team assessments and notes
         const [assessmentsRes, notesRes] = await Promise.all([
@@ -191,9 +189,13 @@ export default function TeamPage() {
 
   // Fetch comparison data when teamAId or teamBId changes
   useEffect(() => {
-    if (!teamAId && !teamBId) return;
-
     const loadComparison = async () => {
+      if (!teamAId && !teamBId) {
+        setTeamAData(null);
+        setTeamBData(null);
+        return;
+      }
+
       setLoadingComparison(true);
       try {
         if (teamAId) {
@@ -206,7 +208,10 @@ export default function TeamPage() {
               match: resA.data.matchAssessments || []
             });
           }
+        } else {
+          setTeamAData(null);
         }
+
         if (teamBId) {
           const targetB = allTeams.find(t => t.id === teamBId);
           if (targetB) {
@@ -217,6 +222,8 @@ export default function TeamPage() {
               match: resB.data.matchAssessments || []
             });
           }
+        } else {
+          setTeamBData(null);
         }
       } catch (e) {
         console.error("Error loading comparison data:", e);
@@ -642,18 +649,36 @@ export default function TeamPage() {
     ? Math.round((avgPpi + avgMpi) / 2)
     : (typeof avgPpi === "number" ? avgPpi : (typeof avgMpi === "number" ? avgMpi : "N/A"));
 
-  // Comparison helper functions for Team A vs Team B
+  // Comparison helper functions for Team Comparison
   const calcComparisonStats = (data: { team: Team; prac: AssessmentItem[]; match: AssessmentItem[] } | null) => {
     if (!data) return null;
 
     const squadList = data.team.players || [];
     const allAss = [...data.prac, ...data.match];
 
-    const ppiList = squadList.map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
-    const mpiList = squadList.map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
+    // Practice PPI
+    const pracAssScores = data.prac.map(a => a.ppiScore).filter((v): v is number => typeof v === "number" && v > 0);
+    const squadPpiList = squadList.map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
 
-    const ppiAvg = ppiList.length > 0 ? Math.round(ppiList.reduce((a, b) => a + b, 0) / ppiList.length) : "N/A";
-    const mpiAvg = mpiList.length > 0 ? Math.round(mpiList.reduce((a, b) => a + b, 0) / mpiList.length) : "N/A";
+    let ppiAvg: number | "N/A" = "N/A";
+    if (pracAssScores.length > 0) {
+      const avg = pracAssScores.reduce((a, b) => a + b, 0) / pracAssScores.length;
+      ppiAvg = Math.round(avg <= 10 ? avg * 10 : avg);
+    } else if (squadPpiList.length > 0) {
+      ppiAvg = Math.round(squadPpiList.reduce((a, b) => a + b, 0) / squadPpiList.length);
+    }
+
+    // Match MPI
+    const matchAssScores = data.match.map(a => a.mpiScore).filter((v): v is number => typeof v === "number" && v > 0);
+    const squadMpiList = squadList.map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
+
+    let mpiAvg: number | "N/A" = "N/A";
+    if (matchAssScores.length > 0) {
+      const avg = matchAssScores.reduce((a, b) => a + b, 0) / matchAssScores.length;
+      mpiAvg = Math.round(avg <= 10 ? avg * 10 : avg);
+    } else if (squadMpiList.length > 0) {
+      mpiAvg = Math.round(squadMpiList.reduce((a, b) => a + b, 0) / squadMpiList.length);
+    }
 
     const cpiVal = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
       ? Math.round((ppiAvg + mpiAvg) / 2)
@@ -691,7 +716,7 @@ export default function TeamPage() {
       paramsMap,
       strengths,
       devAreas,
-      hasData: allAss.length > 0
+      hasData: allAss.length > 0 || squadList.length > 0
     };
   };
 
@@ -849,7 +874,7 @@ export default function TeamPage() {
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              TEAM A VS TEAM B
+              TEAM COMPARISON
             </button>
           </div>
 
@@ -1496,16 +1521,16 @@ export default function TeamPage() {
             </div>
           )}
 
-          {/* TAB 5: TEAM A VS TEAM B COMPARISON */}
+          {/* TAB 5: TEAM COMPARISON */}
           {activeTab === "COMPARISON" && (
             <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <ArrowRightLeft className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  <span>TEAM A VS TEAM B COMPARISON</span>
+                  <span>TEAM COMPARISON</span>
                 </h3>
                 <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                  Select any two existing teams to compare squad size, CPI averages, 7-parameter scores, and performance side-by-side.
+                  Select any two existing teams created by you to compare squad size, CPI averages, 7-parameter scores, and performance side-by-side.
                 </p>
               </div>
 
@@ -1513,14 +1538,20 @@ export default function TeamPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4">
                 <div>
                   <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                    SELECT TEAM A
+                    SELECT TEAM
                   </label>
                   <select
                     value={teamAId || ""}
-                    onChange={(e) => setTeamAId(Number(e.target.value))}
+                    onChange={(e) => {
+                      const selectedId = Number(e.target.value);
+                      setTeamAId(selectedId);
+                      if (teamBId === selectedId) {
+                        setTeamBId(null);
+                      }
+                    }}
                     className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer"
                   >
-                    <option value="" disabled>-- Select Team A --</option>
+                    <option value="" disabled>-- Select Team --</option>
                     {allTeams.map(t => (
                       <option key={`a-${t.id}`} value={t.id}>{t.name}</option>
                     ))}
@@ -1529,122 +1560,262 @@ export default function TeamPage() {
 
                 <div>
                   <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                    SELECT TEAM B
+                    COMPARE WITH
                   </label>
                   <select
                     value={teamBId || ""}
-                    onChange={(e) => setTeamBId(Number(e.target.value))}
+                    onChange={(e) => setTeamBId(e.target.value ? Number(e.target.value) : null)}
                     className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer"
                   >
-                    <option value="" disabled>-- Select Team B --</option>
-                    {allTeams.map(t => (
-                      <option key={`b-${t.id}`} value={t.id}>{t.name}</option>
-                    ))}
+                    <option value="">-- Select Team to Compare --</option>
+                    {allTeams
+                      .filter(t => t.id !== teamAId)
+                      .map(t => (
+                        <option key={`b-${t.id}`} value={t.id}>{t.name}</option>
+                      ))}
                   </select>
                 </div>
               </div>
 
               {loadingComparison ? (
-                <div className="text-center py-10">
+                <div className="text-center py-12">
                   <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
                   <span className="text-xs font-bold text-slate-500">Loading comparison data...</span>
                 </div>
+              ) : (!teamAId || !teamBId || !teamAData || !teamBData || teamAId === teamBId) ? (
+                /* Empty / Initial State Card */
+                <div className="bg-gradient-to-b from-slate-50 to-white border border-slate-200 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center space-y-3">
+                  <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+                    <ArrowRightLeft className="w-7 h-7 stroke-[2]" />
+                  </div>
+                  <h4 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight">
+                    Select another team to compare performance.
+                  </h4>
+                  <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-md mx-auto leading-relaxed">
+                    {allTeams.length <= 1
+                      ? "You currently have 1 team created. Create additional teams under the SQUAD & OVERVIEW tab to enable side-by-side team performance comparisons."
+                      : "Choose a second team from the 'COMPARE WITH' dropdown above to view side-by-side squad analytics, CPI averages, and 7-parameter parameter comparisons."
+                    }
+                  </p>
+                </div>
               ) : (
+                /* Dynamic Comparison View */
                 <div className="space-y-5 sm:space-y-6">
-                  {/* Side-by-side Snapshot Cards */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                    {/* TEAM A CARD */}
-                    <div className="bg-orange-50/50 border border-orange-200 rounded-2xl p-3.5 sm:p-4 space-y-3">
-                      <div className="border-b border-orange-200 pb-2">
-                        <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">TEAM A</span>
-                        <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase truncate">
-                          {teamAData ? teamAData.team.name : "Select Team A"}
-                        </h4>
+                  {/* Dynamic Team Names Header */}
+                  <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-md border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                      <span className="text-[10px] font-black tracking-widest text-orange-400 bg-orange-500/20 px-2.5 py-1 rounded-lg border border-orange-500/30 uppercase">
+                        SELECTED TEAM
+                      </span>
+                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px]">
+                        {teamAData.team.name}
+                      </h4>
+                    </div>
+
+                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                      COMPARING
+                    </div>
+
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px] text-right">
+                        {teamBData.team.name}
+                      </h4>
+                      <span className="text-[10px] font-black tracking-widest text-indigo-400 bg-indigo-500/20 px-2.5 py-1 rounded-lg border border-indigo-500/30 uppercase">
+                        COMPARED WITH
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Side-by-side Overview Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* TEAM 1 CARD */}
+                    <div className="bg-orange-50/40 border border-orange-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                      <div className="border-b border-orange-200/80 pb-3 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
+                            SELECTED TEAM
+                          </span>
+                          <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate">
+                            {teamAData.team.name}
+                          </h4>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
+                          <span className="text-xl font-black text-orange-600">
+                            {compStatsA ? compStatsA.cpi : "N/A"}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="space-y-2 text-xs font-bold">
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Total Players:</span>
-                          <span className="text-slate-900">{compStatsA ? compStatsA.squadSize : "N/A"}</span>
+                      <div className="grid grid-cols-3 gap-2 bg-white/80 rounded-xl p-3 border border-orange-100 text-center shadow-xs">
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PLAYERS</span>
+                          <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.squadSize : "N/A"}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Average CPI:</span>
-                          <span className="text-orange-600 font-black">{compStatsA ? compStatsA.cpi : "N/A"}</span>
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PRACTICE PPI</span>
+                          <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.ppi : "N/A"}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Practice PPI:</span>
-                          <span className="text-slate-900">{compStatsA ? compStatsA.ppi : "N/A"}</span>
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">MATCH MPI</span>
+                          <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.mpi : "N/A"}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Match MPI:</span>
-                          <span className="text-slate-900">{compStatsA ? compStatsA.mpi : "N/A"}</span>
+                      </div>
+
+                      <div className="space-y-3 text-xs font-semibold text-slate-700">
+                        <div>
+                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
+                          {compStatsA && compStatsA.strengths.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {compStatsA.strengths.map((s, i) => (
+                                <span key={i} className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-orange-200">
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                          )}
+                        </div>
+
+                        <div>
+                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
+                          {compStatsA && compStatsA.devAreas.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {compStatsA.devAreas.map((d, i) => (
+                                <span key={i} className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-200">
+                                  {d}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                          )}
                         </div>
                       </div>
                     </div>
 
-                    {/* TEAM B CARD */}
-                    <div className="bg-slate-100/70 border border-slate-300 rounded-2xl p-3.5 sm:p-4 space-y-3">
-                      <div className="border-b border-slate-300 pb-2">
-                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest block">TEAM B</span>
-                        <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase truncate">
-                          {teamBData ? teamBData.team.name : "Select Team B"}
-                        </h4>
+                    {/* TEAM 2 CARD */}
+                    <div className="bg-slate-100/60 border border-slate-300 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                      <div className="border-b border-slate-300/80 pb-3 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest block">
+                            COMPARED WITH
+                          </span>
+                          <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate">
+                            {teamBData.team.name}
+                          </h4>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
+                          <span className="text-xl font-black text-indigo-600">
+                            {compStatsB ? compStatsB.cpi : "N/A"}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="space-y-2 text-xs font-bold">
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Total Players:</span>
-                          <span className="text-slate-900">{compStatsB ? compStatsB.squadSize : "N/A"}</span>
+                      <div className="grid grid-cols-3 gap-2 bg-white/80 rounded-xl p-3 border border-slate-200 text-center shadow-xs">
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PLAYERS</span>
+                          <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.squadSize : "N/A"}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Average CPI:</span>
-                          <span className="text-slate-900 font-black">{compStatsB ? compStatsB.cpi : "N/A"}</span>
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PRACTICE PPI</span>
+                          <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.ppi : "N/A"}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Practice PPI:</span>
-                          <span className="text-slate-900">{compStatsB ? compStatsB.ppi : "N/A"}</span>
+                        <div>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">MATCH MPI</span>
+                          <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.mpi : "N/A"}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Match MPI:</span>
-                          <span className="text-slate-900">{compStatsB ? compStatsB.mpi : "N/A"}</span>
+                      </div>
+
+                      <div className="space-y-3 text-xs font-semibold text-slate-700">
+                        <div>
+                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
+                          {compStatsB && compStatsB.strengths.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {compStatsB.strengths.map((s, i) => (
+                                <span key={i} className="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-indigo-200">
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                          )}
+                        </div>
+
+                        <div>
+                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
+                          {compStatsB && compStatsB.devAreas.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {compStatsB.devAreas.map((d, i) => (
+                                <span key={i} className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-200">
+                                  {d}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* 7 Parameter Side-by-side Table */}
+                  {/* 7 CPI Parameters Comparison Table */}
                   <div className="space-y-3 pt-2">
-                    <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
-                      7 CPI PARAMETERS COMPARISON
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                      <div className="font-black text-xs text-slate-700 uppercase tracking-wider">
+                        7 CPI PARAMETERS COMPARISON
+                      </div>
+
+                      {/* Practice vs Match vs Overall Filter Pills */}
+                      <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                        {(["OVERALL", "PRACTICE", "MATCH"] as const).map((filterKey) => (
+                          <button
+                            key={filterKey}
+                            onClick={() => setCompParamFilter(filterKey)}
+                            className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer ${
+                              compParamFilter === filterKey
+                                ? "bg-white text-slate-900 shadow-sm"
+                                : "text-slate-500 hover:text-slate-900"
+                            }`}
+                          >
+                            {filterKey === "OVERALL" ? "ALL (OVERALL)" : filterKey}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 space-y-3">
-                      {PARAM_DEFINITIONS.map(p => {
-                        const valA = compStatsA ? compStatsA.paramsMap[p.name]?.overall : "N/A";
-                        const valB = compStatsB ? compStatsB.paramsMap[p.name]?.overall : "N/A";
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-5 space-y-3.5">
+                      {PARAM_DEFINITIONS.map((p) => {
+                        const key = compParamFilter === "PRACTICE" ? "prac" : compParamFilter === "MATCH" ? "match" : "overall";
+                        const valA = compStatsA ? compStatsA.paramsMap[p.name]?.[key] : "N/A";
+                        const valB = compStatsB ? compStatsB.paramsMap[p.name]?.[key] : "N/A";
 
                         const numA = valA !== "N/A" ? Number(valA) : 0;
                         const numB = valB !== "N/A" ? Number(valB) : 0;
 
                         return (
-                          <div key={`comp-${p.name}`} className="space-y-1.5 border-b border-slate-200/50 pb-2.5 last:border-0 last:pb-0">
+                          <div key={`comp-${p.name}`} className="space-y-1.5 border-b border-slate-200/50 pb-3 last:border-0 last:pb-0">
                             <div className="flex items-center justify-between text-xs font-bold">
-                              <span className="text-orange-600 font-black">{valA}</span>
-                              <span className="font-black text-slate-900 uppercase">{p.name}</span>
-                              <span className="text-slate-700 font-black">{valB}</span>
+                              <span className="text-orange-600 font-black text-sm">{valA}</span>
+                              <span className="font-black text-slate-900 uppercase text-xs tracking-wider">{p.name}</span>
+                              <span className="text-indigo-600 font-black text-sm">{valB}</span>
                             </div>
 
                             {/* Dual Bar Comparison */}
-                            <div className="grid grid-cols-2 gap-2 h-2.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
-                              <div className="flex justify-end bg-slate-200 rounded-full overflow-hidden">
+                            <div className="grid grid-cols-2 gap-2 h-3 bg-slate-200/80 rounded-full overflow-hidden p-0.5">
+                              <div className="flex justify-end bg-slate-200/60 rounded-full overflow-hidden">
                                 <div
                                   className="bg-orange-500 h-full rounded-full transition-all duration-300"
                                   style={{ width: `${Math.min(100, Math.max(0, (numA / 100) * 100))}%` }}
                                 />
                               </div>
-                              <div className="flex justify-start bg-slate-200 rounded-full overflow-hidden">
+                              <div className="flex justify-start bg-slate-200/60 rounded-full overflow-hidden">
                                 <div
-                                  className="bg-slate-800 h-full rounded-full transition-all duration-300"
+                                  className="bg-indigo-600 h-full rounded-full transition-all duration-300"
                                   style={{ width: `${Math.min(100, Math.max(0, (numB / 100) * 100))}%` }}
                                 />
                               </div>
