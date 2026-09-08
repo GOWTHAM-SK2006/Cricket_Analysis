@@ -1001,7 +1001,7 @@ export default function TeamPage() {
                               : "bg-orange-50 text-orange-600 border border-orange-200 hover:bg-orange-100"
                           }`}
                         >
-                          <span>{isSelected ? "VIEWING DASHBOARD" : "VIEW TEAM →"}</span>
+                          <span>VIEW TEAM →</span>
                         </button>
                       </div>
                     </div>
