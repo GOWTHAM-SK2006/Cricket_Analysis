@@ -96,7 +96,31 @@ public class PlayerController {
                         org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found"
                 ));
 
-        List<Player> allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
+        List<Player> allPlayers;
+        String queryMethod;
+        if (managedCoach.getRole() == Role.ADMIN) {
+            allPlayers = new ArrayList<>(playerRepository.findAll());
+            queryMethod = "playerRepository.findAll() [ADMIN]";
+        } else {
+            allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
+            queryMethod = "playerRepository.findByCreatorCoachId(" + managedCoach.getId() + ")";
+            
+            // Fallback for players or newly registered coach users if database contains existing players
+            if (allPlayers.isEmpty() && playerRepository.count() > 0) {
+                // Try matching by player name / invitation code first
+                java.util.Optional<Player> matchedByInvite = playerRepository.findAll().stream()
+                        .filter(p -> p.getName().equalsIgnoreCase(managedCoach.getName()))
+                        .findFirst();
+                if (matchedByInvite.isPresent() && matchedByInvite.get().getCreatorCoach() != null) {
+                    Long parentCoachId = matchedByInvite.get().getCreatorCoach().getId();
+                    allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(parentCoachId));
+                    queryMethod = "playerRepository.findByCreatorCoachId(" + parentCoachId + ") [Parent Coach Match]";
+                } else {
+                    allPlayers = new ArrayList<>(playerRepository.findAll());
+                    queryMethod = "playerRepository.findAll() [System Fallback]";
+                }
+            }
+        }
 
         boolean hasDirtyCode = false;
         for (Player p : allPlayers) {
@@ -132,6 +156,11 @@ public class PlayerController {
         List<PlayerResponse> responseList = allPlayers.stream()
                 .map(p -> toPlayerResponse(p, practiceDateMap.get(p.getId()), matchDateMap.get(p.getId())))
                 .collect(Collectors.toList());
+
+        System.out.println(String.format(
+            "[DIAGNOSTIC LOG] Endpoint: GET /api/players | User Email: %s | Coach ID: %d | Repository: %s | Records Returned: %d",
+            managedCoach.getEmail(), managedCoach.getId(), queryMethod, responseList.size()
+        ));
 
         return ResponseEntity.ok(responseList);
     }

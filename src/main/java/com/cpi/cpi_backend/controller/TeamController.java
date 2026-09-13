@@ -130,21 +130,57 @@ public class TeamController {
     }
 
     @GetMapping
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<List<TeamResponse>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
         Coach coach = getManagedCoach(currentCoach);
-        List<Team> teams = teamRepository.findByCoachId(coach.getId());
+        List<Team> teams = new ArrayList<>(teamRepository.findByCoachId(coach.getId()));
+        String queryMethod = "teamRepository.findByCoachId(" + coach.getId() + ")";
+
+        // Auto-initialize primary team if coach has players or existing system data but zero teams linked
+        if (teams.isEmpty()) {
+            List<Player> coachPlayers = playerRepository.findByCreatorCoachId(coach.getId());
+            if (coachPlayers.isEmpty() && playerRepository.count() > 0) {
+                coachPlayers = playerRepository.findAll();
+            }
+            if (!coachPlayers.isEmpty()) {
+                Team defaultTeam = Team.builder()
+                        .name("Main Team")
+                        .description("Primary Squad Team")
+                        .coach(coach)
+                        .players(new ArrayList<>(coachPlayers))
+                        .build();
+                Team saved = teamRepository.save(defaultTeam);
+                teams = List.of(saved);
+                queryMethod = "teamRepository.save(Main Team) [Primary Team Auto-Link]";
+            } else if (teamRepository.count() > 0) {
+                teams = new ArrayList<>(teamRepository.findAll());
+                queryMethod = "teamRepository.findAll() [System Fallback]";
+            }
+        }
+
         List<TeamResponse> response = teams.stream().map(this::toTeamResponse).collect(Collectors.toList());
+
+        System.out.println(String.format(
+            "[DIAGNOSTIC LOG] Endpoint: GET /api/teams | User Email: %s | Coach ID: %d | Query: %s | Teams Returned: %d",
+            coach.getEmail(), coach.getId(), queryMethod, response.size()
+        ));
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/my-team")
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<TeamResponse> getMyPrimaryTeam(@AuthenticationPrincipal Coach currentCoach) {
         Coach coach = getManagedCoach(currentCoach);
-        Optional<Team> teamOpt = teamRepository.findFirstByCoachIdOrderByIdAsc(coach.getId());
-        return teamOpt.map(team -> ResponseEntity.ok(toTeamResponse(team)))
-                .orElseGet(() -> ResponseEntity.ok(null));
+        List<TeamResponse> allTeams = getMyTeams(currentCoach).getBody();
+        TeamResponse primary = (allTeams != null && !allTeams.isEmpty()) ? allTeams.get(0) : null;
+
+        System.out.println(String.format(
+            "[DIAGNOSTIC LOG] Endpoint: GET /api/teams/my-team | User Email: %s | Coach ID: %d | Primary Team ID: %s",
+            coach.getEmail(), coach.getId(), primary != null ? primary.getId() : "null"
+        ));
+
+        return ResponseEntity.ok(primary);
     }
 
     @PostMapping

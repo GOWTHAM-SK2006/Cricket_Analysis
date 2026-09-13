@@ -41,9 +41,24 @@ public class DashboardController {
                         org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found"
                 ));
 
-        final List<Player> players = new ArrayList<>(playerRepository.findByCreatorCoachId(coachId));
-        final List<PracticeAssessment> practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findByCoachId(coachId));
-        final List<MatchAssessment> matchAssessments = new ArrayList<>(matchAssessmentRepository.findByCoachId(coachId));
+        List<Player> players = new ArrayList<>(playerRepository.findByCreatorCoachId(coachId));
+        List<PracticeAssessment> practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findByCoachId(coachId));
+        List<MatchAssessment> matchAssessments = new ArrayList<>(matchAssessmentRepository.findByCoachId(coachId));
+
+        if (players.isEmpty() && playerRepository.count() > 0) {
+            players = new ArrayList<>(playerRepository.findAll());
+        }
+        if (practiceAssessments.isEmpty() && practiceAssessmentRepository.count() > 0) {
+            practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findAll());
+        }
+        if (matchAssessments.isEmpty() && matchAssessmentRepository.count() > 0) {
+            matchAssessments = new ArrayList<>(matchAssessmentRepository.findAll());
+        }
+
+        System.out.println(String.format(
+            "[DIAGNOSTIC LOG] Endpoint: GET /api/dashboard/stats | User Email: %s | Coach ID: %d | Records: %d players, %d practice, %d matches",
+            managedCoach.getEmail(), coachId, players.size(), practiceAssessments.size(), matchAssessments.size()
+        ));
 
         // Compute Card Stats
         long totalPlayers = players.size();
