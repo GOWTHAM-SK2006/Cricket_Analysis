@@ -10,10 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cpi.cpi_backend.config.CacheNames;
+import org.springframework.cache.annotation.Cacheable;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,6 +33,7 @@ public class DashboardController {
     private final CoachRepository coachRepository;
 
     @GetMapping("/stats")
+    @Cacheable(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
     public ResponseEntity<DashboardStatsResponse> getDashboardStats(
             @AuthenticationPrincipal Coach currentCoach
     ) {
@@ -91,18 +98,23 @@ public class DashboardController {
         // Trend Chart Data (Format: Jun 19)
         DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM dd");
 
-        // Find all unique dates from practice and match assessments, sorted chronologically
-        List<java.time.LocalDate> uniqueDates = new java.util.ArrayList<>();
+        Map<java.time.LocalDate, List<Double>> practiceByDate = new HashMap<>();
         for (PracticeAssessment pa : practiceAssessments) {
-            if (pa.getDate() != null && !uniqueDates.contains(pa.getDate())) {
-                uniqueDates.add(pa.getDate());
+            if (pa.getDate() != null && pa.getPpiScore() != null) {
+                practiceByDate.computeIfAbsent(pa.getDate(), k -> new ArrayList<>()).add(pa.getPpiScore());
             }
         }
+
+        Map<java.time.LocalDate, List<Double>> matchByDate = new HashMap<>();
         for (MatchAssessment ma : matchAssessments) {
-            if (ma.getDate() != null && !uniqueDates.contains(ma.getDate())) {
-                uniqueDates.add(ma.getDate());
+            if (ma.getDate() != null && ma.getMpiScore() != null) {
+                matchByDate.computeIfAbsent(ma.getDate(), k -> new ArrayList<>()).add(ma.getMpiScore());
             }
         }
+
+        Set<java.time.LocalDate> allDatesSet = new HashSet<>(practiceByDate.keySet());
+        allDatesSet.addAll(matchByDate.keySet());
+        List<java.time.LocalDate> uniqueDates = new ArrayList<>(allDatesSet);
         uniqueDates.sort(Comparator.naturalOrder());
 
         List<DashboardStatsResponse.TrendDto> practiceTrend = new ArrayList<>();
@@ -115,30 +127,19 @@ public class DashboardController {
         for (java.time.LocalDate date : uniqueDates) {
             String label = date.format(df);
 
-            // Calculate average PPI on this date
-            List<PracticeAssessment> pasOnDate = practiceAssessments.stream()
-                    .filter(pa -> date.equals(pa.getDate()))
-                    .collect(Collectors.toList());
-            if (!pasOnDate.isEmpty()) {
-                double avgP = pasOnDate.stream().mapToDouble(PracticeAssessment::getPpiScore).average().orElse(0.0);
-                lastPpi = avgP;
+            List<Double> pList = practiceByDate.get(date);
+            if (pList != null && !pList.isEmpty()) {
+                lastPpi = pList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
             }
 
-            // Calculate average MPI on this date
-            List<MatchAssessment> masOnDate = matchAssessments.stream()
-                    .filter(ma -> date.equals(ma.getDate()))
-                    .collect(Collectors.toList());
-            if (!masOnDate.isEmpty()) {
-                double avgM = masOnDate.stream().mapToDouble(MatchAssessment::getMpiScore).average().orElse(0.0);
-                lastMpi = avgM;
+            List<Double> mList = matchByDate.get(date);
+            if (mList != null && !mList.isEmpty()) {
+                lastMpi = mList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
             }
 
-            // Add PPI Trend
             practiceTrend.add(new DashboardStatsResponse.TrendDto(label, lastPpi != null ? lastPpi : 0.0));
-            // Add MPI Trend
             matchTrend.add(new DashboardStatsResponse.TrendDto(label, lastMpi != null ? lastMpi : 0.0));
 
-            // Calculate CPI Trend
             double cpiVal = 0.0;
             if (lastPpi != null && lastMpi != null) {
                 cpiVal = (lastPpi + lastMpi) / 2.0;

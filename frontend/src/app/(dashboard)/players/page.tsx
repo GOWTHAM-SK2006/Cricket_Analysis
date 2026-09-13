@@ -1545,16 +1545,17 @@ export default function PlayersPage() {
 
     fetchData();
 
-    const savedUserName = localStorage.getItem("userName");
-    if (savedUserName) {
-      setCurrentCoachName(savedUserName);
+    const cachedProfile = sessionStorage.getItem("cpi_user_profile");
+    if (cachedProfile) {
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        if (parsed.name) setCurrentCoachName(parsed.name);
+      } catch (e) {}
     } else {
-      api.get("/profile").then((res) => {
-        if (res.data && res.data.name) {
-          setCurrentCoachName(res.data.name);
-          localStorage.setItem("userName", res.data.name);
-        }
-      }).catch(() => { });
+      const savedUserName = localStorage.getItem("userName");
+      if (savedUserName) {
+        setCurrentCoachName(savedUserName);
+      }
     }
 
     // URL direct navigation check

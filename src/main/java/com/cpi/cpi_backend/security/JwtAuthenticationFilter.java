@@ -24,6 +24,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    
+    private static class CachedUser {
+        final UserDetails userDetails;
+        final long timestamp;
+        CachedUser(UserDetails userDetails) {
+            this.userDetails = userDetails;
+            this.timestamp = System.currentTimeMillis();
+        }
+        boolean isExpired() {
+            return (System.currentTimeMillis() - timestamp) > 300_000; // 5-minute TTL
+        }
+    }
+    
+    private final java.util.Map<String, CachedUser> userCache = new java.util.concurrent.ConcurrentHashMap<>();
+
+    private UserDetails getCachedUser(String userEmail) {
+        CachedUser cached = userCache.get(userEmail);
+        if (cached != null && !cached.isExpired()) {
+            return cached.userDetails;
+        }
+        UserDetails fresh = this.userDetailsService.loadUserByUsername(userEmail);
+        if (fresh != null) {
+            userCache.put(userEmail, new CachedUser(fresh));
+        }
+        return fresh;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -56,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             userEmail = jwtService.extractUsername(jwt);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails = getCachedUser(userEmail);
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,

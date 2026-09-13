@@ -155,18 +155,23 @@ export default function DashboardPage() {
     const storedRole = localStorage.getItem("userRole") || "coach";
     setRole(storedRole === "player" ? "player" : "coach");
 
+    const cachedProfile = sessionStorage.getItem("cpi_user_profile");
+    if (cachedProfile) {
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        setCoachName(parsed.name || "");
+      } catch (e) {}
+    } else {
+      setCoachName(localStorage.getItem("userName") || "");
+    }
+
     const loadDashboardData = async () => {
       try {
-        const [profileRes, statsRes, playersRes] = await Promise.all([
-          api.get("/profile"),
+        const [statsRes, playersRes] = await Promise.all([
           api.get("/dashboard/stats"),
           api.get("/players")
         ]);
 
-        setCoachName(profileRes.data.name);
-        if (profileRes.data.name) {
-          localStorage.setItem("userName", profileRes.data.name);
-        }
         setStats(statsRes.data);
         const playerList = playersRes.data || [];
         setPlayers(playerList);

@@ -17,7 +17,11 @@ import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.PracticeAssessmentRepository;
 import com.cpi.cpi_backend.repository.TeamNoteRepository;
 import com.cpi.cpi_backend.repository.TeamRepository;
+import com.cpi.cpi_backend.config.CacheNames;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -78,23 +82,31 @@ public class TeamController {
                 .build();
     }
 
-    private TeamResponse toTeamResponse(Team team) {
-        if (team == null) return null;
+    private List<TeamResponse> toTeamResponseList(List<Team> teams) {
+        if (teams == null || teams.isEmpty()) return Collections.emptyList();
 
-        List<Player> players = team.getPlayers() != null ? team.getPlayers() : Collections.emptyList();
-        List<Long> playerIds = players.stream().map(Player::getId).collect(Collectors.toList());
+        Set<Long> allPlayerIds = new HashSet<>();
+        for (Team t : teams) {
+            if (t.getPlayers() != null) {
+                for (Player p : t.getPlayers()) {
+                    if (p != null && p.getId() != null) {
+                        allPlayerIds.add(p.getId());
+                    }
+                }
+            }
+        }
 
         Map<Long, String> practiceDateMap = new HashMap<>();
         Map<Long, String> matchDateMap = new HashMap<>();
 
-        if (!playerIds.isEmpty()) {
-            List<Object[]> pracList = practiceAssessmentRepository.findMaxDatesByPlayerIds(playerIds);
+        if (!allPlayerIds.isEmpty()) {
+            List<Object[]> pracList = practiceAssessmentRepository.findMaxDatesByPlayerIds(new ArrayList<>(allPlayerIds));
             for (Object[] row : pracList) {
                 if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
                     practiceDateMap.put((Long) row[0], row[1].toString());
                 }
             }
-            List<Object[]> matchList = matchAssessmentRepository.findMaxDatesByPlayerIds(playerIds);
+            List<Object[]> matchList = matchAssessmentRepository.findMaxDatesByPlayerIds(new ArrayList<>(allPlayerIds));
             for (Object[] row : matchList) {
                 if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
                     matchDateMap.put((Long) row[0], row[1].toString());
@@ -102,18 +114,30 @@ public class TeamController {
             }
         }
 
-        List<PlayerResponse> playerResponses = players.stream()
-                .map(p -> toPlayerResponse(p, practiceDateMap, matchDateMap))
-                .collect(Collectors.toList());
+        List<TeamResponse> responseList = new ArrayList<>();
+        for (Team team : teams) {
+            if (team == null) continue;
+            List<Player> players = team.getPlayers() != null ? team.getPlayers() : Collections.emptyList();
+            List<PlayerResponse> playerResponses = players.stream()
+                    .map(p -> toPlayerResponse(p, practiceDateMap, matchDateMap))
+                    .collect(Collectors.toList());
 
-        return TeamResponse.builder()
-                .id(team.getId())
-                .name(team.getName())
-                .description(team.getDescription())
-                .coachId(team.getCoach() != null ? team.getCoach().getId() : null)
-                .players(playerResponses)
-                .createdAt(team.getCreatedAt())
-                .build();
+            responseList.add(TeamResponse.builder()
+                    .id(team.getId())
+                    .name(team.getName())
+                    .description(team.getDescription())
+                    .coachId(team.getCoach() != null ? team.getCoach().getId() : null)
+                    .players(playerResponses)
+                    .createdAt(team.getCreatedAt())
+                    .build());
+        }
+        return responseList;
+    }
+
+    private TeamResponse toTeamResponse(Team team) {
+        if (team == null) return null;
+        List<TeamResponse> list = toTeamResponseList(Collections.singletonList(team));
+        return list.isEmpty() ? null : list.get(0);
     }
 
     private TeamNoteResponse toTeamNoteResponse(TeamNote note) {
@@ -131,6 +155,7 @@ public class TeamController {
 
     @GetMapping
     @Transactional
+    @Cacheable(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id")
     public ResponseEntity<List<TeamResponse>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
         Coach coach = getManagedCoach(currentCoach);
         List<Team> teams = new ArrayList<>(teamRepository.findByCoachId(coach.getId()));
@@ -158,7 +183,7 @@ public class TeamController {
             }
         }
 
-        List<TeamResponse> response = teams.stream().map(this::toTeamResponse).collect(Collectors.toList());
+        List<TeamResponse> response = toTeamResponseList(teams);
 
         System.out.println(String.format(
             "[DIAGNOSTIC LOG] Endpoint: GET /api/teams | User Email: %s | Coach ID: %d | Query: %s | Teams Returned: %d",
@@ -185,6 +210,10 @@ public class TeamController {
 
     @PostMapping
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<TeamResponse> createTeam(
             @RequestBody TeamRequest request,
             @AuthenticationPrincipal Coach currentCoach
@@ -220,6 +249,10 @@ public class TeamController {
 
     @PutMapping("/{id}")
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<TeamResponse> updateTeam(
             @PathVariable Long id,
             @RequestBody TeamRequest request,
@@ -259,6 +292,10 @@ public class TeamController {
 
     @PostMapping("/{id}/players")
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<TeamResponse> addPlayersToTeam(
             @PathVariable Long id,
             @RequestBody TeamRequest request,
@@ -296,6 +333,10 @@ public class TeamController {
 
     @DeleteMapping("/{id}/players/{playerId}")
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<TeamResponse> removePlayerFromTeam(
             @PathVariable Long id,
             @PathVariable Long playerId,
@@ -320,6 +361,10 @@ public class TeamController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<Void> deleteTeam(
             @PathVariable Long id,
             @AuthenticationPrincipal Coach currentCoach

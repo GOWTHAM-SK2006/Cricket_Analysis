@@ -93,8 +93,22 @@ export default function DashboardLayout({
       return;
     }
 
+    // Check sessionStorage cache for instantaneous UI rendering on tab navigation
+    const cachedProfileStr = sessionStorage.getItem("cpi_user_profile");
+    if (cachedProfileStr) {
+      try {
+        const cached = JSON.parse(cachedProfileStr);
+        setStatus(cached.approvalStatus || "APPROVED");
+        setOrgName(cached.organization?.name || "the Academy");
+        setUserName(cached.name || "");
+        setRole(cached.role === "player" ? "player" : "coach");
+        setLoading(false);
+      } catch (e) {}
+    }
+
     api.get("/profile")
       .then((res) => {
+        sessionStorage.setItem("cpi_user_profile", JSON.stringify(res.data));
         const userEmail = (res.data.email || "").toLowerCase();
         if (res.data.role === "ADMIN" && (userEmail === "cpi@admin.com" || userEmail === "cpicoach@cpi.com")) {
           localStorage.setItem("cpi_admin_token", token);
@@ -119,15 +133,17 @@ export default function DashboardLayout({
           } catch (e) {}
         }
         
-        localStorage.setItem("userRole", "coach");
-        setRole("coach");
+        localStorage.setItem("userRole", res.data.role === "player" ? "player" : "coach");
+        setRole(res.data.role === "player" ? "player" : "coach");
         setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load profile", err);
-        localStorage.removeItem("token");
-        localStorage.removeItem("userRole");
-        router.push("/login");
+        if (!sessionStorage.getItem("cpi_user_profile")) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
+          router.push("/login");
+        }
       });
   }, [router]);
 

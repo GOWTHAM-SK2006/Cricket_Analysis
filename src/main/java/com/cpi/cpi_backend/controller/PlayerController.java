@@ -10,6 +10,10 @@ import com.cpi.cpi_backend.repository.CoachRepository;
 import com.cpi.cpi_backend.repository.PracticeAssessmentRepository;
 import com.cpi.cpi_backend.repository.MatchAssessmentRepository;
 import lombok.RequiredArgsConstructor;
+import com.cpi.cpi_backend.config.CacheNames;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +89,7 @@ public class PlayerController {
 
     @GetMapping
     @Transactional
+    @Cacheable(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id")
     public ResponseEntity<List<PlayerResponse>> getMyPlayers(@AuthenticationPrincipal Coach currentCoach) {
         if (currentCoach == null || currentCoach.getId() == null) {
             throw new org.springframework.web.server.ResponseStatusException(
@@ -193,6 +198,11 @@ public class PlayerController {
 
     @PostMapping
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<PlayerResponse> createPlayer(
             @RequestBody PlayerRequest request,
             @AuthenticationPrincipal Coach currentCoach
@@ -224,6 +234,11 @@ public class PlayerController {
 
     @PutMapping("/{id}")
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<PlayerResponse> updatePlayer(
             @PathVariable Long id,
             @RequestBody PlayerRequest request,
@@ -246,6 +261,11 @@ public class PlayerController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<Void> deletePlayer(
             @PathVariable Long id,
             @AuthenticationPrincipal Coach currentCoach

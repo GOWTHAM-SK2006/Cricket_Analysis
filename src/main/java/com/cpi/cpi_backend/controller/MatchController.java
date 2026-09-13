@@ -8,6 +8,9 @@ import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.MatchAssessmentRepository;
 import com.cpi.cpi_backend.repository.CoachRepository;
 import lombok.RequiredArgsConstructor;
+import com.cpi.cpi_backend.config.CacheNames;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,11 @@ public class MatchController {
 
     @PostMapping
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+    })
     public ResponseEntity<MatchAssessment> saveAssessment(
             @RequestBody MatchAssessmentRequest request,
             @AuthenticationPrincipal Coach currentCoach

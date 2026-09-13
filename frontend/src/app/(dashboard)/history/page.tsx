@@ -42,17 +42,18 @@ export default function HistoryPage() {
         setPlayers(list);
 
         if (list.length > 0) {
-          // If player role, select matching profile player, else select first player
-          api.get("/profile").then((profileRes) => {
-            const match = list.find(
-              (p) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
-            ) || list[0];
-            setSelectedPlayerId(match.id);
-            fetchPlayerHistory(match.id);
-          }).catch(() => {
-            setSelectedPlayerId(list[0].id);
-            fetchPlayerHistory(list[0].id);
-          });
+          let userName = "";
+          const cached = sessionStorage.getItem("cpi_user_profile");
+          if (cached) {
+            try { userName = JSON.parse(cached).name || ""; } catch (e) {}
+          }
+          if (!userName) userName = localStorage.getItem("userName") || "";
+
+          const match = list.find(
+            (p) => p.name.toLowerCase() === userName.toLowerCase()
+          ) || list[0];
+          setSelectedPlayerId(match.id);
+          fetchPlayerHistory(match.id);
         } else {
           setLoading(false);
         }
