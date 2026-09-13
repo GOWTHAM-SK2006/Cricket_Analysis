@@ -10,6 +10,8 @@ export const api = axios.create({
   },
 });
 
+const getCache = new Map<string, { data: any; timestamp: number }>();
+
 api.interceptors.request.use((config) => {
   (config as any).meta = { startTime: Date.now() };
   if (typeof window !== 'undefined') {
@@ -18,12 +20,22 @@ api.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
   }
+
+  const method = config.method?.toLowerCase();
+  if (method === 'post' || method === 'put' || method === 'delete') {
+    getCache.clear();
+  }
+
   console.log(`[API Diagnostic Request] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
   return config;
 });
 
 api.interceptors.response.use(
   (response) => {
+    const method = response.config.method?.toLowerCase();
+    if (method === 'get' && response.config.url) {
+      getCache.set(response.config.url, { data: response.data, timestamp: Date.now() });
+    }
     const duration = Date.now() - ((response.config as any).meta?.startTime || Date.now());
     const recordCount = Array.isArray(response.data) ? response.data.length : (response.data ? 1 : 0);
     console.log(`[API Diagnostic Response] ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status} (${duration}ms) - Records: ${recordCount}`);
