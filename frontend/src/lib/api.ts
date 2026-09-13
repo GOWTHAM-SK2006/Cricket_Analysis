@@ -11,6 +11,29 @@ export const api = axios.create({
 });
 
 const getCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL_MS = 120_000; // 2 minutes in-memory client cache
+
+const originalGet = api.get.bind(api);
+api.get = function <T = any, R = axios.AxiosResponse<T>, D = any>(url: string, config?: axios.AxiosRequestConfig<D>): Promise<R> {
+  const cached = getCache.get(url);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
+    // Background revalidation
+    originalGet<T, R, D>(url, config).then((res) => {
+      getCache.set(url, { data: res.data, timestamp: Date.now() });
+    }).catch(() => {});
+
+    // Instant 0ms response
+    return Promise.resolve({
+      data: cached.data,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: config || {},
+    } as unknown as R);
+  }
+
+  return originalGet<T, R, D>(url, config);
+} as any;
 
 api.interceptors.request.use((config) => {
   (config as any).meta = { startTime: Date.now() };

@@ -266,6 +266,7 @@ export default function DashboardLayout({
               key={tab.path}
               id={`nav-${tab.name.toLowerCase()}`}
               href={tab.path}
+              prefetch={true}
               className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all ${
                 isActive ? "text-orange-600 font-black" : "text-slate-400 font-bold hover:text-slate-600"
               }`}
