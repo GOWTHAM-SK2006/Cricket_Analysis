@@ -54,8 +54,14 @@ public class SchemaUpdateRunner implements CommandLineRunner {
 
     private void dropColumn(String table, String column, String cascade) {
         try {
-            jdbcTemplate.execute("ALTER TABLE " + table + " DROP COLUMN IF EXISTS " + column + cascade);
-            System.out.println("Dropped column " + column + " from table " + table);
+            Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = ? AND column_name = ?",
+                Integer.class, table, column
+            );
+            if (count != null && count > 0) {
+                jdbcTemplate.execute("ALTER TABLE " + table + " DROP COLUMN IF EXISTS " + column + cascade);
+                System.out.println("Dropped column " + column + " from table " + table);
+            }
         } catch (Exception e) {
             System.out.println("Drop column " + column + " from table " + table + " failed/ignored: " + e.getMessage());
         }

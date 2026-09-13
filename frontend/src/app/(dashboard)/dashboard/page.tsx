@@ -113,44 +113,36 @@ export default function DashboardPage() {
     return score < 5.0;
   });
 
-  const fetchLastAssessmentDates = async (playerList: Player[]) => {
+  const fetchLastAssessmentDates = (playerList: Player[]) => {
     const datesMap: Record<string, string> = {};
-    await Promise.all(playerList.map(async (p) => {
-      try {
-        const [pracRes, matchRes] = await Promise.all([
-          api.get(`/practice/player/${p.id}`).catch(() => ({ data: [] })),
-          api.get(`/matches/player/${p.id}`).catch(() => ({ data: [] }))
-        ]);
-        
-        const allDates = [
-          ...(pracRes.data || []).map((x: any) => x.date),
-          ...(matchRes.data || []).map((x: any) => x.date)
-        ];
-        
-        // Check for self-assessment in local storage
-        const localSelf = localStorage.getItem(`self_assess_${p.id}`);
-        if (localSelf) {
+    playerList.forEach((p) => {
+      const allDates: string[] = [];
+      if ((p as any).lastPracticeDate) allDates.push((p as any).lastPracticeDate);
+      if ((p as any).lastMatchDate) allDates.push((p as any).lastMatchDate);
+
+      // Check for self-assessment in local storage
+      const localSelf = localStorage.getItem(`self_assess_${p.id}`);
+      if (localSelf) {
+        try {
           const selfList = JSON.parse(localSelf);
           selfList.forEach((x: any) => {
             if (x.date) allDates.push(x.date);
           });
-        }
+        } catch (e) {}
+      }
 
-        if (allDates.length > 0) {
-          const sorted = allDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-          const latestDate = new Date(sorted[0]);
-          datesMap[p.name.toLowerCase()] = latestDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
-          });
-        } else {
-          datesMap[p.name.toLowerCase()] = "No assessments";
-        }
-      } catch (e) {
+      if (allDates.length > 0) {
+        const sorted = allDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+        const latestDate = new Date(sorted[0]);
+        datesMap[p.name.toLowerCase()] = latestDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+      } else {
         datesMap[p.name.toLowerCase()] = "No assessments";
       }
-    }));
+    });
     setLastAssessmentDates(datesMap);
   };
 

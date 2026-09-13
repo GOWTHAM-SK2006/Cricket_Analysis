@@ -98,17 +98,16 @@ public class PlayerController {
 
         List<Player> allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
 
-        // Generate invitation codes for any players missing one
+        boolean hasDirtyCode = false;
         for (Player p : allPlayers) {
             if (p.getInvitationCode() == null || p.getInvitationCode().trim().isEmpty()) {
-                String code;
-                do {
-                    code = generateInvitationCode();
-                } while (playerRepository.findByInvitationCode(code).isPresent());
-                p.setInvitationCode(code);
+                p.setInvitationCode(generateInvitationCode());
                 p.setInvitationCodeActivated(false);
-                playerRepository.save(p);
+                hasDirtyCode = true;
             }
+        }
+        if (hasDirtyCode) {
+            playerRepository.saveAll(allPlayers);
         }
 
         List<Long> playerIds = allPlayers.stream().map(Player::getId).collect(Collectors.toList());
