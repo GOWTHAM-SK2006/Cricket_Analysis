@@ -94,7 +94,7 @@ export default function TeamPage() {
   const [mySquad, setMySquad] = useState<Player[]>([]);
   
   // Navigation Sub-Tabs
-  const [activeTab, setActiveTab] = useState<"MY_TEAMS" | "OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("OVERVIEW");
+  const [activeTab, setActiveTab] = useState<"MY_TEAMS" | "OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("MY_TEAMS");
 
   // Modal & Selection State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -754,21 +754,20 @@ export default function TeamPage() {
   return (
     <div className="space-y-4 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
       {/* Top Banner Header */}
-      <div className="bg-slate-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl relative overflow-hidden border border-slate-800">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-500/20 via-transparent to-transparent pointer-events-none" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
-              <Users2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 shadow-sm relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0 shadow-2xs">
+              <Users2 className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-[9px] sm:text-[10px] font-black tracking-widest text-orange-400 uppercase bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">
+                <span className="text-[9px] font-black tracking-widest text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/60">
                   COACH DASHBOARD
                 </span>
               </div>
-              <div className="flex items-center gap-3 mt-1 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase truncate">
+              <div className="flex items-center gap-2.5 mt-1 flex-wrap">
+                <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 uppercase truncate">
                   {team ? team.name : "TEAM MANAGEMENT"}
                 </h1>
                 {allTeams.length > 0 && (
@@ -779,23 +778,23 @@ export default function TeamPage() {
                         const selected = allTeams.find(t => t.id === Number(e.target.value));
                         if (selected) selectTeam(selected);
                       }}
-                      className="bg-slate-800 text-white border border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-xs font-bold focus:outline-none focus:border-orange-500 appearance-none cursor-pointer shadow-xs"
+                      className="bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-lg pl-2.5 pr-7 py-1 text-xs font-bold focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer transition-colors shadow-2xs"
                     >
                       {allTeams.map(t => (
                         <option key={`switch-${t.id}`} value={t.id}>{t.name}</option>
                       ))}
                     </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 pointer-events-none" />
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 pointer-events-none" />
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-2 self-stretch sm:self-auto">
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 border border-orange-400/50"
+              className="flex-1 sm:flex-initial bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider py-2 px-3.5 rounded-xl shadow-xs hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
               <span>ADD TEAM</span>
@@ -804,7 +803,7 @@ export default function TeamPage() {
             {team && (
               <button
                 onClick={generateTeamPdfReport}
-                className="bg-slate-800 hover:bg-slate-700 text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-sm border border-slate-700 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 sm:flex-initial bg-orange-50 hover:bg-orange-100 text-orange-600 font-black text-xs uppercase tracking-wider py-2 px-3.5 rounded-xl border border-orange-200/80 transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
               >
                 <Download className="w-4 h-4 stroke-[2.5]" />
                 <span>DOWNLOAD REPORT</span>
@@ -842,12 +841,12 @@ export default function TeamPage() {
       {allTeams.length > 0 && team && (
         <div className="space-y-5 sm:space-y-6">
           {/* Sub-Navigation Bar */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
+          <div className="bg-white border border-slate-200/80 rounded-xl p-1 shadow-2xs flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full">
             <button
               onClick={() => setActiveTab("MY_TEAMS")}
-              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "MY_TEAMS"
-                  ? "bg-orange-500 text-white shadow-sm"
+                  ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
@@ -857,9 +856,9 @@ export default function TeamPage() {
 
             <button
               onClick={() => setActiveTab("OVERVIEW")}
-              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "OVERVIEW"
-                  ? "bg-orange-500 text-white shadow-sm"
+                  ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
@@ -867,9 +866,9 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("7PARAMS")}
-              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "7PARAMS"
-                  ? "bg-orange-500 text-white shadow-sm"
+                  ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
@@ -877,9 +876,9 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("HISTORY")}
-              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "HISTORY"
-                  ? "bg-orange-500 text-white shadow-sm"
+                  ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
@@ -887,9 +886,9 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("NOTES")}
-              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "NOTES"
-                  ? "bg-orange-500 text-white shadow-sm"
+                  ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
@@ -897,9 +896,9 @@ export default function TeamPage() {
             </button>
             <button
               onClick={() => setActiveTab("COMPARISON")}
-              className={`px-3.5 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 rounded-lg font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap ${
                 activeTab === "COMPARISON"
-                  ? "bg-orange-500 text-white shadow-sm"
+                  ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
@@ -909,11 +908,11 @@ export default function TeamPage() {
 
           {/* TAB 0: MY TEAMS (Grid View) */}
           {activeTab === "MY_TEAMS" && (
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Users2 className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
+                    <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5]" />
                     <span>MY TEAMS ({allTeams.length})</span>
                   </h3>
                   <p className="text-xs font-semibold text-slate-400 mt-0.5">
@@ -922,14 +921,14 @@ export default function TeamPage() {
                 </div>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-black uppercase tracking-wider px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                  className="bg-orange-50 hover:bg-orange-100 text-orange-600 text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 border border-orange-200/80 cursor-pointer shrink-0 self-start sm:self-auto"
                 >
-                  <Plus className="w-3.5 h-3.5 stroke-[3] text-orange-600" />
+                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
                   <span>+ NEW TEAM</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                 {allTeams.map((t) => {
                   const isSelected = team?.id === t.id;
                   const squadSize = t.players?.length || 0;
@@ -944,66 +943,67 @@ export default function TeamPage() {
                   return (
                     <div
                       key={`card-${t.id}`}
-                      className={`bg-white border rounded-2xl sm:rounded-3xl p-5 flex flex-col justify-between space-y-4 transition-all duration-200 shadow-sm hover:shadow-md ${
+                      className={`bg-white border rounded-xl p-3.5 sm:p-4 flex flex-col justify-between space-y-3 transition-all duration-200 shadow-xs hover:shadow-md ${
                         isSelected
-                          ? "border-orange-500 ring-2 ring-orange-500/20 bg-gradient-to-b from-orange-50/20 via-white to-white"
-                          : "border-slate-200 hover:border-slate-300"
+                          ? "border-orange-500 ring-2 ring-orange-500/15 bg-gradient-to-b from-orange-50/20 to-white"
+                          : "border-slate-200/80 hover:border-slate-300"
                       }`}
                     >
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="w-12 h-12 rounded-2xl bg-orange-500 text-white font-black text-lg flex items-center justify-center shrink-0 uppercase shadow-xs">
-                            {t.name.charAt(0)}
-                          </div>
-                          <div className="text-right">
+                      <div className="flex items-start gap-3">
+                        <div className={`w-10 h-10 rounded-xl font-black text-sm flex items-center justify-center shrink-0 uppercase shadow-2xs ${
+                          isSelected
+                            ? "bg-orange-500 text-white"
+                            : "bg-orange-50 text-orange-600 border border-orange-200/60"
+                        }`}>
+                          {t.name.charAt(0)}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase truncate leading-tight">
+                              {t.name}
+                            </h4>
                             {isSelected ? (
-                              <span className="text-[9px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200 inline-block">
-                                ACTIVE TEAM
+                              <span className="text-[9px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded border border-orange-200 shrink-0">
+                                ACTIVE
                               </span>
                             ) : (
-                              <span className="text-[9px] font-black tracking-wider text-slate-500 uppercase bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 inline-block">
+                              <span className="text-[9px] font-black tracking-wider text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shrink-0">
                                 TEAM
                               </span>
                             )}
                           </div>
-                        </div>
-
-                        <div>
-                          <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate">
-                            {t.name}
-                          </h4>
-                          <p className="text-xs text-slate-500 font-medium line-clamp-2 min-h-[36px] mt-1 leading-relaxed">
-                            {t.description || "No description provided."}
+                          <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                            {t.description || "No description"}
                           </p>
                         </div>
                       </div>
 
-                      <div className="space-y-3 pt-2">
-                        <div className="border-t border-slate-100 pt-3 grid grid-cols-2 gap-2 text-center">
-                          <div className="bg-slate-50 rounded-xl p-2 border border-slate-100">
-                            <span className="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">PLAYERS</span>
-                            <span className="text-slate-900 font-black text-base mt-0.5 block">{squadSize}</span>
-                          </div>
-                          <div className="bg-orange-50/50 rounded-xl p-2 border border-orange-100">
-                            <span className="text-[10px] text-orange-600 block uppercase font-bold tracking-wider">CPI SCORE</span>
-                            <span className="text-orange-600 font-black text-base mt-0.5 block">{teamCpi}</span>
-                          </div>
+                      <div className="bg-slate-50 rounded-lg p-2 border border-slate-100 flex items-center justify-around text-center">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Players:</span>
+                          <span className="text-xs sm:text-sm font-black text-slate-900">{squadSize}</span>
                         </div>
-
-                        <button
-                          onClick={() => {
-                            selectTeam(t);
-                            setActiveTab("OVERVIEW");
-                          }}
-                          className={`w-full py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs ${
-                            isSelected
-                              ? "bg-slate-900 text-white hover:bg-slate-800"
-                              : "bg-orange-50 text-orange-600 border border-orange-200 hover:bg-orange-100"
-                          }`}
-                        >
-                          <span>VIEW TEAM →</span>
-                        </button>
+                        <div className="h-3.5 w-px bg-slate-200" />
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-extrabold text-orange-600 uppercase tracking-wider">CPI:</span>
+                          <span className="text-xs sm:text-sm font-black text-orange-600">{teamCpi}</span>
+                        </div>
                       </div>
+
+                      <button
+                        onClick={() => {
+                          selectTeam(t);
+                          setActiveTab("OVERVIEW");
+                        }}
+                        className={`w-full py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs ${
+                          isSelected
+                            ? "bg-orange-500 hover:bg-orange-600 text-white"
+                            : "bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200/80"
+                        }`}
+                      >
+                        <span>VIEW TEAM →</span>
+                      </button>
                     </div>
                   );
                 })}
@@ -1254,12 +1254,12 @@ export default function TeamPage() {
                           {/* Performance Scores Row */}
                           <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-2.5 border-t border-slate-100">
                             {/* PPI SCORE CARD */}
-                            <div className="bg-blue-50/80 border border-blue-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-blue-300 transition-colors">
-                              <div className="flex items-center justify-center gap-1 text-blue-600 mb-0.5">
+                            <div className="bg-orange-50/80 border border-orange-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-orange-300 transition-colors">
+                              <div className="flex items-center justify-center gap-1 text-orange-600 mb-0.5">
                                 <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
                                 <span className="text-[10px] font-black tracking-wider uppercase">PPI SCORE</span>
                               </div>
-                              <span className="text-base sm:text-lg font-black text-blue-700 block">{ppiDisplay}</span>
+                              <span className="text-base sm:text-lg font-black text-orange-700 block">{ppiDisplay}</span>
                             </div>
 
                             {/* MPI SCORE CARD */}
@@ -1366,7 +1366,7 @@ export default function TeamPage() {
                             <span className="w-16 shrink-0 uppercase">MATCH</span>
                             <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
                               <div
-                                className="bg-slate-800 h-full rounded-full transition-all duration-300"
+                                className="bg-amber-500 h-full rounded-full transition-all duration-300"
                                 style={{ width: `${Math.min(100, Math.max(0, mPercent))}%` }}
                               />
                             </div>
@@ -1415,7 +1415,7 @@ export default function TeamPage() {
                   <button
                     onClick={() => setHistoryFilter("MATCH")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "MATCH" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500"
+                      historyFilter === "MATCH" ? "bg-orange-500 text-white shadow-xs" : "text-slate-500"
                     }`}
                   >
                     MATCH
@@ -1456,7 +1456,7 @@ export default function TeamPage() {
                             <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-lg shrink-0 ${
                               item.type === "PRACTICE"
                                 ? "bg-orange-100 text-orange-700 border border-orange-200"
-                                : "bg-slate-900 text-white"
+                                : "bg-amber-100 text-amber-700 border border-amber-200"
                             }`}>
                               {item.type}
                             </span>
@@ -1592,7 +1592,7 @@ export default function TeamPage() {
                     <button
                       onClick={() => setNoteFilter("MATCH")}
                       className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "MATCH" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500"
+                        noteFilter === "MATCH" ? "bg-orange-500 text-white shadow-xs" : "text-slate-500"
                       }`}
                     >
                       MATCH
@@ -1620,7 +1620,7 @@ export default function TeamPage() {
                               <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md ${
                                 n.type === "PRACTICE"
                                   ? "bg-orange-100 text-orange-700 border border-orange-200"
-                                  : "bg-slate-900 text-white"
+                                  : "bg-amber-100 text-amber-700 border border-amber-200"
                               }`}>
                                 {n.type} TEAM NOTE
                               </span>
@@ -1735,25 +1735,25 @@ export default function TeamPage() {
                 /* Dynamic Comparison View */
                 <div className="space-y-5 sm:space-y-6">
                   {/* Dynamic Team Names Header */}
-                  <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-md border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="bg-white text-slate-900 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
-                      <span className="text-[10px] font-black tracking-widest text-orange-400 bg-orange-500/20 px-2.5 py-1 rounded-lg border border-orange-500/30 uppercase">
+                      <span className="text-[10px] font-black tracking-widest text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200/60 uppercase">
                         SELECTED TEAM
                       </span>
-                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px]">
+                      <h4 className="text-base sm:text-lg font-black uppercase text-slate-900 truncate max-w-[200px] sm:max-w-[260px]">
                         {teamAData.team.name}
                       </h4>
                     </div>
 
-                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-black text-slate-500 uppercase tracking-widest">
                       COMPARING
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px] text-right">
+                      <h4 className="text-base sm:text-lg font-black uppercase text-slate-900 truncate max-w-[200px] sm:max-w-[260px] text-right">
                         {teamBData.team.name}
                       </h4>
-                      <span className="text-[10px] font-black tracking-widest text-indigo-400 bg-indigo-500/20 px-2.5 py-1 rounded-lg border border-indigo-500/30 uppercase">
+                      <span className="text-[10px] font-black tracking-widest text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60 uppercase">
                         COMPARED WITH
                       </span>
                     </div>
@@ -1832,7 +1832,7 @@ export default function TeamPage() {
                     <div className="bg-slate-100/60 border border-slate-300 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
                       <div className="border-b border-slate-300/80 pb-3 flex items-center justify-between">
                         <div>
-                          <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest block">
+                          <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest block">
                             COMPARED WITH
                           </span>
                           <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate">
@@ -1841,7 +1841,7 @@ export default function TeamPage() {
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
-                          <span className="text-xl font-black text-indigo-600">
+                          <span className="text-xl font-black text-amber-700">
                             {compStatsB ? compStatsB.cpi : "N/A"}
                           </span>
                         </div>
@@ -1868,7 +1868,7 @@ export default function TeamPage() {
                           {compStatsB && compStatsB.strengths.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {compStatsB.strengths.map((s, i) => (
-                                <span key={i} className="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-indigo-200">
+                                <span key={i} className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">
                                   {s}
                                 </span>
                               ))}
@@ -1935,7 +1935,7 @@ export default function TeamPage() {
                             <div className="flex items-center justify-between text-xs font-bold">
                               <span className="text-orange-600 font-black text-sm">{valA}</span>
                               <span className="font-black text-slate-900 uppercase text-xs tracking-wider">{p.name}</span>
-                              <span className="text-indigo-600 font-black text-sm">{valB}</span>
+                              <span className="text-amber-700 font-black text-sm">{valB}</span>
                             </div>
 
                             {/* Dual Bar Comparison */}
@@ -1948,7 +1948,7 @@ export default function TeamPage() {
                               </div>
                               <div className="flex justify-start bg-slate-200/60 rounded-full overflow-hidden">
                                 <div
-                                  className="bg-indigo-600 h-full rounded-full transition-all duration-300"
+                                  className="bg-amber-500 h-full rounded-full transition-all duration-300"
                                   style={{ width: `${Math.min(100, Math.max(0, (numB / 100) * 100))}%` }}
                                 />
                               </div>
@@ -1967,7 +1967,7 @@ export default function TeamPage() {
 
       {/* MODAL: ADD PLAYERS TO TEAM */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
@@ -2123,7 +2123,7 @@ export default function TeamPage() {
 
       {/* MODAL: CREATE NEW TEAM */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
             <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div>
