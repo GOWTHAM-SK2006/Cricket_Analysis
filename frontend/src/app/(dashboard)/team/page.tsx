@@ -97,10 +97,6 @@ export default function TeamPage() {
   // Navigation Sub-Tabs
   const [activeTab, setActiveTab] = useState<"MY_TEAMS" | "OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("MY_TEAMS");
 
-  // Search & Sort State for MY TEAMS Tab
-  const [teamSearchQuery, setTeamSearchQuery] = useState("");
-  const [teamSortBy, setTeamSortBy] = useState<"NAME_ASC" | "NAME_DESC" | "PLAYERS_DESC" | "CPI_DESC">("NAME_ASC");
-
   // Modal & Selection State
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -756,35 +752,6 @@ export default function TeamPage() {
   const compStatsA = calcComparisonStats(teamAData);
   const compStatsB = calcComparisonStats(teamBData);
 
-  const filteredAndSortedTeams = allTeams
-    .filter((t) => {
-      if (!teamSearchQuery.trim()) return true;
-      const q = teamSearchQuery.toLowerCase();
-      return (
-        t.name.toLowerCase().includes(q) ||
-        (t.description && t.description.toLowerCase().includes(q))
-      );
-    })
-    .sort((a, b) => {
-      if (teamSortBy === "NAME_ASC") return a.name.localeCompare(b.name);
-      if (teamSortBy === "NAME_DESC") return b.name.localeCompare(a.name);
-      if (teamSortBy === "PLAYERS_DESC") return (b.players?.length || 0) - (a.players?.length || 0);
-      if (teamSortBy === "CPI_DESC") {
-        const getCpi = (t: Team) => {
-          const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
-          const mpiList = (t.players || []).map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
-          const ppiAvg = ppiList.length > 0 ? ppiList.reduce((x, y) => x + y, 0) / ppiList.length : null;
-          const mpiAvg = mpiList.length > 0 ? mpiList.reduce((x, y) => x + y, 0) / mpiList.length : null;
-          if (ppiAvg !== null && mpiAvg !== null) return (ppiAvg + mpiAvg) / 2;
-          if (ppiAvg !== null) return ppiAvg;
-          if (mpiAvg !== null) return mpiAvg;
-          return 0;
-        };
-        return getCpi(b) - getCpi(a);
-      }
-      return 0;
-    });
-
   return (
     <div className="space-y-4 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
       {/* Top Banner Header Card */}
@@ -986,56 +953,9 @@ export default function TeamPage() {
                 </button>
               </div>
 
-              {/* Search & Sort Controls (Matching Image 2) */}
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                <div className="relative flex-1 w-full">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <input
-                    type="text"
-                    value={teamSearchQuery}
-                    onChange={(e) => setTeamSearchQuery(e.target.value)}
-                    placeholder="Search team by name..."
-                    className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 shadow-2xs transition-all"
-                  />
-                  {teamSearchQuery && (
-                    <button
-                      onClick={() => setTeamSearchQuery("")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-
-                <div className="relative inline-flex items-center w-full sm:w-auto shrink-0">
-                  <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 shadow-2xs w-full sm:w-auto">
-                    <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span className="text-slate-400 uppercase text-[10px] font-extrabold tracking-wider mr-1">Sort</span>
-                    <select
-                      value={teamSortBy}
-                      onChange={(e) => setTeamSortBy(e.target.value as any)}
-                      className="bg-transparent text-slate-800 font-bold focus:outline-none appearance-none pr-6 cursor-pointer text-xs"
-                    >
-                      <option value="NAME_ASC">A-Z (Name)</option>
-                      <option value="NAME_DESC">Z-A (Name)</option>
-                      <option value="PLAYERS_DESC">Most Players</option>
-                      <option value="CPI_DESC">Highest CPI</option>
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Team Cards List (Matching Image 2) */}
+              {/* Team Cards List */}
               <div className="space-y-3.5 sm:space-y-4">
-                {filteredAndSortedTeams.length === 0 ? (
-                  <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-8 text-center space-y-2">
-                    <Users2 className="w-8 h-8 text-slate-300 mx-auto" />
-                    <div className="font-black text-slate-700 text-sm uppercase">No teams found matching search</div>
-                    <p className="text-xs text-slate-400 font-medium">Try searching for a different team name or clear your search query.</p>
-                  </div>
-                ) : (
-                  filteredAndSortedTeams.map((t) => {
+                {allTeams.map((t) => {
                     const isSelected = team?.id === t.id;
                     const squadSize = t.players?.length || 0;
                     const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
@@ -1135,8 +1055,7 @@ export default function TeamPage() {
                         </div>
                       </div>
                     );
-                  })
-                )}
+                  })}
               </div>
 
               {/* Bottom Action Card Banner matching Image 2 */}
