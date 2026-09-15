@@ -755,20 +755,20 @@ export default function TeamPage() {
   return (
     <div className="space-y-4 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
       {/* Top Banner Header Card */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden bg-gradient-to-tr from-white via-white to-orange-50/40">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-500 shrink-0 shadow-2xs">
-              <Users2 className="w-6 h-6 stroke-[2.2]" />
+      <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-xs relative overflow-hidden bg-gradient-to-tr from-white via-white to-orange-50/40">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 relative z-10">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-500 shrink-0 shadow-2xs mt-0.5 sm:mt-0">
+              <Users2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black tracking-widest text-orange-600 uppercase bg-orange-50 px-2.5 py-0.5 rounded-md border border-orange-200/60">
+                <span className="text-[9px] sm:text-[10px] font-black tracking-widest text-orange-600 uppercase bg-orange-50 px-2 sm:px-2.5 py-0.5 rounded-md border border-orange-200/60">
                   COACH DASHBOARD
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate">
+                <h1 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate">
                   {team ? team.name : "TEAM MANAGEMENT"}
                 </h1>
                 {allTeams.length > 0 && (
@@ -779,28 +779,28 @@ export default function TeamPage() {
                         const selected = allTeams.find(t => t.id === Number(e.target.value));
                         if (selected) selectTeam(selected);
                       }}
-                      className="bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-lg pl-2.5 pr-7 py-1 text-xs font-bold focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer transition-colors shadow-2xs"
+                      className="bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-lg pl-2 pr-6 py-0.5 text-[11px] sm:text-xs font-bold focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer transition-colors shadow-2xs"
                     >
                       {allTeams.map(t => (
                         <option key={`switch-${t.id}`} value={t.id}>{t.name}</option>
                       ))}
                     </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 pointer-events-none" />
+                    <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 pointer-events-none" />
                   </div>
                 )}
               </div>
               {team?.description && (
-                <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">
                   {team.description}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 self-stretch sm:self-auto">
+          <div className="flex items-center gap-2 self-stretch sm:self-auto pt-1 sm:pt-0">
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex-1 sm:flex-initial bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider py-2.5 px-5 rounded-2xl shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+              className="flex-1 sm:flex-initial bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 sm:px-5 rounded-xl sm:rounded-2xl shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
               <span>ADD TEAM</span>
@@ -809,10 +809,10 @@ export default function TeamPage() {
             {team && (
               <button
                 onClick={generateTeamPdfReport}
-                className="flex-1 sm:flex-initial bg-orange-50/80 hover:bg-orange-100 text-orange-600 font-black text-xs uppercase tracking-wider py-2.5 px-5 rounded-2xl border border-orange-200/90 transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                className="flex-1 sm:flex-initial bg-orange-50/80 hover:bg-orange-100 text-orange-600 font-black text-xs uppercase tracking-wider py-2.5 px-3.5 sm:px-5 rounded-xl sm:rounded-2xl border border-orange-200/90 transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap"
               >
                 <Download className="w-4 h-4 stroke-[2.5]" />
-                <span>DOWNLOAD REPORT</span>
+                <span className="hidden xs:inline sm:inline">DOWNLOAD </span>REPORT
               </button>
             )}
 
@@ -823,7 +823,7 @@ export default function TeamPage() {
                   setIsEditing(true);
                 }
               }}
-              className="w-10 h-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0 shadow-2xs"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0 shadow-2xs"
               title="Team Options"
             >
               <MoreVertical className="w-4 h-4" />
@@ -858,225 +858,227 @@ export default function TeamPage() {
 
       {/* STATE 2: TEAM DASHBOARD VIEW */}
       {allTeams.length > 0 && team && (
-        <div className="space-y-5 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Sub-Navigation Bar matching Image 2 */}
-          <div className="bg-white/90 backdrop-blur-xs border border-slate-200/90 rounded-2xl p-1.5 shadow-2xs flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
+          <div className="bg-white/90 backdrop-blur-xs border border-slate-200/90 rounded-2xl p-1 sm:p-1.5 shadow-2xs flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-w-full">
             <button
               onClick={() => setActiveTab("MY_TEAMS")}
-              className={`px-4 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "MY_TEAMS"
                   ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <Users2 className="w-4 h-4" />
+              <Users2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>MY TEAMS ({allTeams.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab("OVERVIEW")}
-              className={`px-4 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "OVERVIEW"
                   ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <BarChart2 className="w-4 h-4" />
+              <BarChart2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>SQUAD & OVERVIEW</span>
             </button>
             <button
               onClick={() => setActiveTab("7PARAMS")}
-              className={`px-4 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "7PARAMS"
                   ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <TrendingUp className="w-4 h-4" />
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>7-PARAMETER ANALYTICS</span>
             </button>
             <button
               onClick={() => setActiveTab("HISTORY")}
-              className={`px-4 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "HISTORY"
                   ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <Clock className="w-4 h-4" />
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>ASSESSMENT HISTORY</span>
             </button>
             <button
               onClick={() => setActiveTab("NOTES")}
-              className={`px-4 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "NOTES"
                   ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <FileText className="w-4 h-4" />
+              <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>TEAM COACH NOTES</span>
             </button>
             <button
               onClick={() => setActiveTab("COMPARISON")}
-              className={`px-4 py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === "COMPARISON"
                   ? "bg-orange-500 text-white shadow-2xs"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <ArrowRightLeft className="w-4 h-4" />
+              <ArrowRightLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>TEAM COMPARISON</span>
             </button>
           </div>
 
-          {/* TAB 0: MY TEAMS (Grid View matching Image 2) */}
+          {/* TAB 0: MY TEAMS (Mobile-Optimized Grid & Clean Card Alignment) */}
           {activeTab === "MY_TEAMS" && (
             <div className="space-y-4">
               {/* Section Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Users2 className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+              <div className="flex flex-row items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
+                    <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5] shrink-0" />
                     <span>MY TEAMS ({allTeams.length})</span>
                   </h3>
-                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                    Select a team to open its squad dashboard, assessments, and analytics.
+                  <p className="text-[11px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
+                    Select a team to open its squad dashboard & analytics.
                   </p>
                 </div>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="bg-orange-50/80 hover:bg-orange-100 text-orange-600 text-xs font-black uppercase tracking-wider px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 border border-orange-200/90 cursor-pointer shrink-0 self-start sm:self-auto shadow-2xs"
+                  className="bg-orange-50/80 hover:bg-orange-100 text-orange-600 text-[11px] sm:text-xs font-black uppercase tracking-wider px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-all flex items-center gap-1 border border-orange-200/90 cursor-pointer shrink-0 shadow-2xs"
                 >
-                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
                   <span>+ NEW TEAM</span>
                 </button>
               </div>
 
               {/* Team Cards List */}
-              <div className="space-y-3.5 sm:space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {allTeams.map((t) => {
-                    const isSelected = team?.id === t.id;
-                    const squadSize = t.players?.length || 0;
-                    const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
-                    const mpiList = (t.players || []).map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
-                    const ppiAvg = ppiList.length > 0 ? Math.round(ppiList.reduce((a, b) => a + b, 0) / ppiList.length) : "N/A";
-                    const mpiAvg = mpiList.length > 0 ? Math.round(mpiList.reduce((a, b) => a + b, 0) / mpiList.length) : "N/A";
-                    const teamCpi = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
-                      ? Math.round((ppiAvg + mpiAvg) / 2)
-                      : (typeof ppiAvg === "number" ? ppiAvg : (typeof mpiAvg === "number" ? mpiAvg : "N/A"));
+                  const isSelected = team?.id === t.id;
+                  const squadSize = t.players?.length || 0;
+                  const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
+                  const mpiList = (t.players || []).map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
+                  const ppiAvg = ppiList.length > 0 ? Math.round(ppiList.reduce((a, b) => a + b, 0) / ppiList.length) : "N/A";
+                  const mpiAvg = mpiList.length > 0 ? Math.round(mpiList.reduce((a, b) => a + b, 0) / mpiList.length) : "N/A";
+                  const teamCpi = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
+                    ? Math.round((ppiAvg + mpiAvg) / 2)
+                    : (typeof ppiAvg === "number" ? ppiAvg : (typeof mpiAvg === "number" ? mpiAvg : "N/A"));
 
-                    return (
-                      <div
-                        key={`card-${t.id}`}
-                        className={`bg-white border rounded-2xl p-4 sm:p-5 transition-all duration-200 space-y-3.5 shadow-2xs hover:shadow-md ${
-                          isSelected
-                            ? "border-orange-300 ring-2 ring-orange-500/15 bg-gradient-to-b from-orange-50/15 via-white to-white"
-                            : "border-slate-200/90 hover:border-slate-300"
-                        }`}
-                      >
-                        {/* Card Top Header */}
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-3.5 min-w-0">
-                            <div className={`w-12 h-12 rounded-xl font-black text-base flex items-center justify-center shrink-0 uppercase shadow-2xs ${
-                              isSelected
-                                ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-xs"
-                                : "bg-amber-100/90 border border-amber-200/70 text-amber-800"
-                            }`}>
-                              {t.name.charAt(0)}
-                            </div>
-
-                            <div className="min-w-0">
-                              <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate leading-tight">
-                                {t.name}
-                              </h4>
-                              <p className="text-xs text-slate-500 font-semibold truncate mt-0.5">
-                                {t.description || "Junior National"}
-                              </p>
-                            </div>
+                  return (
+                    <div
+                      key={`card-${t.id}`}
+                      className={`bg-white border rounded-2xl p-3.5 sm:p-5 transition-all duration-200 space-y-3 sm:space-y-4 shadow-2xs hover:shadow-md ${
+                        isSelected
+                          ? "border-orange-300 ring-2 ring-orange-500/15 bg-gradient-to-b from-orange-50/15 via-white to-white"
+                          : "border-slate-200/90 hover:border-slate-300"
+                      }`}
+                    >
+                      {/* Card Top Header */}
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl font-black text-base flex items-center justify-center shrink-0 uppercase shadow-2xs ${
+                            isSelected
+                              ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-xs"
+                              : "bg-amber-100/90 border border-amber-200/70 text-amber-800"
+                          }`}>
+                            {t.name.charAt(0)}
                           </div>
 
-                          <div className="flex items-center gap-2 shrink-0">
-                            {isSelected ? (
-                              <span className="text-[10px] font-extrabold tracking-wider text-emerald-700 uppercase bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/80 flex items-center gap-1.5 shadow-2xs">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                ACTIVE
-                              </span>
-                            ) : (
-                              <span className="text-[10px] font-extrabold tracking-wider text-slate-500 uppercase bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
-                                TEAM
-                              </span>
-                            )}
-                            <ChevronRight className="w-4 h-4 text-slate-400" />
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate leading-tight">
+                              {t.name}
+                            </h4>
+                            <p className="text-[11px] sm:text-xs text-slate-500 font-semibold truncate mt-0.5">
+                              {t.description || "Junior National"}
+                            </p>
                           </div>
                         </div>
 
-                        {/* Card Middle Box - Stats & Action */}
-                        <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3 flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-4 sm:gap-6">
-                            {/* Players Stat */}
-                            <div className="flex items-center gap-2.5">
-                              <div className="w-8 h-8 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center text-slate-400 shrink-0">
-                                <Users2 className="w-4 h-4 text-slate-500" />
-                              </div>
-                              <div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">PLAYERS</span>
-                                <span className="text-base font-black text-slate-900 leading-none">{squadSize}</span>
-                              </div>
-                            </div>
-
-                            <div className="h-7 w-px bg-slate-200/80" />
-
-                            {/* CPI Score Stat */}
-                            <div className="flex items-center gap-2.5">
-                              <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-500 shrink-0">
-                                <BarChart2 className="w-4 h-4 text-orange-600" />
-                              </div>
-                              <div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">CPI SCORE</span>
-                                <span className="text-base font-black text-orange-600 leading-none">{teamCpi}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <button
-                            onClick={() => {
-                              selectTeam(t);
-                              setActiveTab("OVERVIEW");
-                            }}
-                            className={`py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs ml-auto shrink-0 ${
-                              isSelected
-                                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-xs"
-                                : "bg-orange-50/90 hover:bg-orange-100 text-orange-600 border border-orange-200/80"
-                            }`}
-                          >
-                            <span>VIEW TEAM →</span>
-                          </button>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {isSelected ? (
+                            <span className="text-[9px] sm:text-[10px] font-extrabold tracking-wider text-emerald-700 uppercase bg-emerald-50 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-200/80 flex items-center gap-1 shadow-2xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              ACTIVE
+                            </span>
+                          ) : (
+                            <span className="text-[9px] sm:text-[10px] font-extrabold tracking-wider text-slate-500 uppercase bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md border border-slate-200">
+                              TEAM
+                            </span>
+                          )}
+                          <ChevronRight className="w-4 h-4 text-slate-400" />
                         </div>
                       </div>
-                    );
-                  })}
+
+                      {/* Card Middle & Action: Mobile Stacked, Desktop Flex Row */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 bg-slate-50/80 border border-slate-100 rounded-xl p-2.5 sm:p-3">
+                        {/* Stats Section */}
+                        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-6">
+                          {/* Players Stat */}
+                          <div className="flex items-center gap-2 bg-white sm:bg-transparent p-2 sm:p-0 rounded-lg border sm:border-0 border-slate-200/70 shadow-2xs sm:shadow-none">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 sm:bg-white border border-slate-200/80 flex items-center justify-center text-slate-500 shrink-0">
+                              <Users2 className="w-3.5 h-3.5 text-slate-600" />
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-wider block leading-none mb-0.5">PLAYERS</span>
+                              <span className="text-sm sm:text-base font-black text-slate-900 leading-none">{squadSize}</span>
+                            </div>
+                          </div>
+
+                          <div className="hidden sm:block h-7 w-px bg-slate-200/80" />
+
+                          {/* CPI Score Stat */}
+                          <div className="flex items-center gap-2 bg-white sm:bg-transparent p-2 sm:p-0 rounded-lg border sm:border-0 border-slate-200/70 shadow-2xs sm:shadow-none">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-500 shrink-0">
+                              <BarChart2 className="w-3.5 h-3.5 text-orange-600" />
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-wider block leading-none mb-0.5">CPI SCORE</span>
+                              <span className="text-sm sm:text-base font-black text-orange-600 leading-none">{teamCpi}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Button */}
+                        <button
+                          onClick={() => {
+                            selectTeam(t);
+                            setActiveTab("OVERVIEW");
+                          }}
+                          className={`w-full sm:w-auto py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs mt-0.5 sm:mt-0 ${
+                            isSelected
+                              ? "bg-orange-500 hover:bg-orange-600 text-white shadow-xs"
+                              : "bg-orange-50/90 hover:bg-orange-100 text-orange-600 border border-orange-200/80"
+                          }`}
+                        >
+                          <span>VIEW TEAM →</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* Bottom Action Card Banner matching Image 2 */}
+              {/* Bottom Action Card Banner */}
               <div
                 onClick={() => setShowCreateModal(true)}
-                className="bg-white border border-slate-200/90 hover:border-orange-300 hover:bg-orange-50/15 rounded-2xl p-4 sm:p-5 flex items-center justify-between cursor-pointer transition-all shadow-2xs group"
+                className="bg-white border border-slate-200/90 hover:border-orange-300 hover:bg-orange-50/15 rounded-2xl p-3.5 sm:p-5 flex items-center justify-between cursor-pointer transition-all shadow-2xs group"
               >
-                <div className="flex items-center gap-3.5">
-                  <div className="w-11 h-11 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
                     <Plus className="w-5 h-5 stroke-[3]" />
                   </div>
-                  <div>
-                    <span className="font-black text-sm sm:text-base text-slate-900 block group-hover:text-orange-600 transition-colors">
+                  <div className="min-w-0 flex-1">
+                    <span className="font-black text-xs sm:text-base text-slate-900 block group-hover:text-orange-600 transition-colors truncate">
                       Create another team
                     </span>
-                    <span className="text-xs text-slate-500 font-medium block mt-0.5">
+                    <span className="text-[11px] sm:text-xs text-slate-500 font-medium block mt-0.5 truncate">
                       Add a new team to track player performance.
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
               </div>
             </div>
           )}
