@@ -785,16 +785,6 @@ export default function TeamPage() {
               <span>ADD TEAM</span>
             </button>
 
-            {team && (
-              <button
-                onClick={generateTeamPdfReport}
-                className="flex-1 sm:flex-initial bg-orange-50/80 hover:bg-orange-100 text-orange-600 font-black text-xs uppercase tracking-wider py-2.5 px-3.5 sm:px-5 rounded-xl sm:rounded-2xl border border-orange-200/90 transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap"
-              >
-                <Download className="w-4 h-4 stroke-[2.5]" />
-                <span className="hidden xs:inline sm:inline">DOWNLOAD </span>REPORT
-              </button>
-            )}
-
             <button
               onClick={() => {
                 if (team) {
@@ -909,27 +899,18 @@ export default function TeamPage() {
             </button>
           </div>
 
-          {/* TAB 0: MY TEAMS (Mobile-Optimized Grid & Clean Card Alignment) */}
+          {/* TAB 0: MY TEAMS (Uniform Cards & Clean Alignment) */}
           {activeTab === "MY_TEAMS" && (
             <div className="space-y-4">
               {/* Section Header */}
-              <div className="flex flex-row items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
-                    <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5] shrink-0" />
-                    <span>MY TEAMS ({allTeams.length})</span>
-                  </h3>
-                  <p className="text-[11px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
-                    Select a team to open its squad dashboard & analytics.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="bg-orange-50/80 hover:bg-orange-100 text-orange-600 text-[11px] sm:text-xs font-black uppercase tracking-wider px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-all flex items-center gap-1 border border-orange-200/90 cursor-pointer shrink-0 shadow-2xs"
-                >
-                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>+ NEW TEAM</span>
-                </button>
+              <div className="border-b border-slate-100 pb-3">
+                <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
+                  <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5] shrink-0" />
+                  <span>MY TEAMS ({allTeams.length})</span>
+                </h3>
+                <p className="text-[11px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
+                  Select a team to open its squad dashboard & analytics.
+                </p>
               </div>
 
               {/* Team Cards List */}
@@ -948,20 +929,12 @@ export default function TeamPage() {
                   return (
                     <div
                       key={`card-${t.id}`}
-                      className={`bg-white border rounded-2xl p-3.5 sm:p-5 transition-all duration-200 space-y-3 sm:space-y-4 shadow-2xs hover:shadow-md ${
-                        isSelected
-                          ? "border-orange-300 ring-2 ring-orange-500/15 bg-gradient-to-b from-orange-50/15 via-white to-white"
-                          : "border-slate-200/90 hover:border-slate-300"
-                      }`}
+                      className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-2xl p-3.5 sm:p-5 transition-all duration-200 space-y-3 sm:space-y-4 shadow-2xs hover:shadow-md"
                     >
                       {/* Card Top Header */}
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
-                          <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl font-black text-base flex items-center justify-center shrink-0 uppercase shadow-2xs ${
-                            isSelected
-                              ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-xs"
-                              : "bg-amber-100/90 border border-amber-200/70 text-amber-800"
-                          }`}>
+                          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-amber-100/90 border border-amber-200/70 text-amber-800 font-black text-base flex items-center justify-center shrink-0 uppercase shadow-2xs">
                             {t.name.charAt(0)}
                           </div>
 
@@ -1025,11 +998,7 @@ export default function TeamPage() {
                             selectTeam(t);
                             setActiveTab("OVERVIEW");
                           }}
-                          className={`w-full sm:w-auto py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs mt-0.5 sm:mt-0 ${
-                            isSelected
-                              ? "bg-orange-500 hover:bg-orange-600 text-white shadow-xs"
-                              : "bg-orange-50/90 hover:bg-orange-100 text-orange-600 border border-orange-200/80"
-                          }`}
+                          className="w-full sm:w-auto py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs mt-0.5 sm:mt-0 bg-orange-50/90 hover:bg-orange-100 text-orange-600 border border-orange-200/80"
                         >
                           <span>VIEW TEAM →</span>
                         </button>
