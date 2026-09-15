@@ -767,33 +767,12 @@ export default function TeamPage() {
                   COACH DASHBOARD
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <h1 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate">
-                  {team ? team.name : "TEAM MANAGEMENT"}
-                </h1>
-                {allTeams.length > 0 && (
-                  <div className="relative inline-flex items-center">
-                    <select
-                      value={team?.id || ""}
-                      onChange={(e) => {
-                        const selected = allTeams.find(t => t.id === Number(e.target.value));
-                        if (selected) selectTeam(selected);
-                      }}
-                      className="bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-lg pl-2 pr-6 py-0.5 text-[11px] sm:text-xs font-bold focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer transition-colors shadow-2xs"
-                    >
-                      {allTeams.map(t => (
-                        <option key={`switch-${t.id}`} value={t.id}>{t.name}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 pointer-events-none" />
-                  </div>
-                )}
-              </div>
-              {team?.description && (
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">
-                  {team.description}
-                </p>
-              )}
+              <h1 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate mt-1">
+                TEAM MANAGEMENT
+              </h1>
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">
+                Manage your squads & performance
+              </p>
             </div>
           </div>
 
