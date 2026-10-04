@@ -1976,11 +1976,21 @@ const handlePracticeSubmit = async (e: React.FormEvent) => {
   setSaving(true);
   setError("");
   try {
+    const formattedForm = {
+      technicalExecution: Math.round(Number(practiceForm.technicalExecution)),
+      skillsLevel: Math.round(Number(practiceForm.skillsLevel)),
+      gamePlan: Math.round(Number(practiceForm.gamePlan)),
+      preparation: Math.round(Number(practiceForm.preparation)),
+      intensity: Math.round(Number(practiceForm.intensity)),
+      focus: Math.round(Number(practiceForm.focus)),
+      resilience: Math.round(Number(practiceForm.resilience)),
+      notes: practiceForm.notes
+    };
     await api.post("/practice", {
       playerId: selectedPlayer.id,
       date: new Date().toISOString().split("T")[0],
-      concentration: practiceForm.focus,
-      ...practiceForm
+      concentration: formattedForm.focus,
+      ...formattedForm
     });
     setShowPracticeOverlay(false);
     triggerSuccess("Practice Assessment Saved!");
@@ -2006,11 +2016,21 @@ const handleMatchSubmit = async (e: React.FormEvent) => {
   setSaving(true);
   setError("");
   try {
+    const formattedForm = {
+      technicalExecution: Math.round(Number(matchForm.technicalExecution)),
+      skillsLevel: Math.round(Number(matchForm.skillsLevel)),
+      gamePlan: Math.round(Number(matchForm.gamePlan)),
+      preparation: Math.round(Number(matchForm.preparation)),
+      intensity: Math.round(Number(matchForm.intensity)),
+      focus: Math.round(Number(matchForm.focus)),
+      resilience: Math.round(Number(matchForm.resilience)),
+      notes: matchForm.notes
+    };
     await api.post("/matches", {
       playerId: selectedPlayer.id,
       date: new Date().toISOString().split("T")[0],
-      concentration: matchForm.focus,
-      ...matchForm
+      concentration: formattedForm.focus,
+      ...formattedForm
     });
     setShowMatchOverlay(false);
     triggerSuccess("Match Assessment Saved!");
@@ -2035,9 +2055,18 @@ const handleSelfSubmit = (e: React.FormEvent) => {
   if (!selectedPlayer) return;
   setSaving(true);
 
+  const formattedSelf = {
+    sleep: Math.round(Number(selfForm.sleep)),
+    nutrition: Math.round(Number(selfForm.nutrition)),
+    preparation: Math.round(Number(selfForm.preparation)),
+    health: Math.round(Number(selfForm.health)),
+    mental: Math.round(Number(selfForm.mental)),
+    fitness: Math.round(Number(selfForm.fitness))
+  };
+
   const newAssessment = {
     date: new Date().toISOString().split("T")[0],
-    ...selfForm
+    ...formattedSelf
   };
 
   const existing = localStorage.getItem(`self_assess_${selectedPlayer.id}`);
@@ -3575,21 +3604,25 @@ return (
                   <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                   <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                 </div>
-                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(practiceForm as any)[metric.key]}</span>
+                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">
+                  {Math.round(Number((practiceForm as any)[metric.key]))}
+                </span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="10"
+                step="0.01"
                 value={(practiceForm as any)[metric.key]}
                 onPointerDown={handleSliderInteraction}
                 onTouchStart={handleSliderInteraction}
                 onFocus={handleSliderInteraction}
                 onChange={(e) => {
                   handleSliderInteraction();
-                  setPracticeForm({ ...practiceForm, [metric.key]: parseInt(e.target.value) });
+                  setPracticeForm({ ...practiceForm, [metric.key]: parseFloat(e.target.value) });
                 }}
-                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                style={{ touchAction: "none" }}
+                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500 touch-none"
               />
             </div>
           ))}
@@ -3688,21 +3721,25 @@ return (
                   <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                   <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                 </div>
-                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(matchForm as any)[metric.key]}</span>
+                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">
+                  {Math.round(Number((matchForm as any)[metric.key]))}
+                </span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="10"
+                step="0.01"
                 value={(matchForm as any)[metric.key]}
                 onPointerDown={handleSliderInteraction}
                 onTouchStart={handleSliderInteraction}
                 onFocus={handleSliderInteraction}
                 onChange={(e) => {
                   handleSliderInteraction();
-                  setMatchForm({ ...matchForm, [metric.key]: parseInt(e.target.value) });
+                  setMatchForm({ ...matchForm, [metric.key]: parseFloat(e.target.value) });
                 }}
-                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                style={{ touchAction: "none" }}
+                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500 touch-none"
               />
             </div>
           ))}
@@ -3756,21 +3793,25 @@ return (
                   <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
                   <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
                 </div>
-                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">{(selfForm as any)[metric.key]}</span>
+                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">
+                  {Math.round(Number((selfForm as any)[metric.key]))}
+                </span>
               </div>
               <input
                 type="range"
                 min="1"
                 max="10"
+                step="0.01"
                 value={(selfForm as any)[metric.key]}
                 onPointerDown={handleSliderInteraction}
                 onTouchStart={handleSliderInteraction}
                 onFocus={handleSliderInteraction}
                 onChange={(e) => {
                   handleSliderInteraction();
-                  setSelfForm({ ...selfForm, [metric.key]: parseInt(e.target.value) });
+                  setSelfForm({ ...selfForm, [metric.key]: parseFloat(e.target.value) });
                 }}
-                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                style={{ touchAction: "none" }}
+                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500 touch-none"
               />
             </div>
           ))}
