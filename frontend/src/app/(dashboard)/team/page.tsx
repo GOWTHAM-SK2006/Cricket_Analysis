@@ -753,58 +753,94 @@ export default function TeamPage() {
   const compStatsB = calcComparisonStats(teamBData);
 
   return (
-    <div className="space-y-4 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
-      {/* Top Banner Header Card */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-xs relative overflow-hidden bg-gradient-to-tr from-white via-white to-orange-50/40">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 relative z-10">
-          <div className="flex items-start sm:items-center gap-3 min-w-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-500 shrink-0 shadow-2xs mt-0.5 sm:mt-0">
-              <Users2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] sm:text-[10px] font-black tracking-widest text-orange-600 uppercase bg-orange-50 px-2 sm:px-2.5 py-0.5 rounded-md border border-orange-200/60">
-                  COACH DASHBOARD
-                </span>
-              </div>
-              <h1 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate mt-1">
-                TEAM MANAGEMENT
-              </h1>
-              <p className="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">
-                Manage your squads & performance
-              </p>
-            </div>
+    <div className="space-y-4 sm:space-y-5 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
+      {/* ------------------ 1. COMPACT HEADER ------------------ */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+        <div className="space-y-0.5 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0" />
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate">
+              TEAM MANAGEMENT
+            </h1>
           </div>
+          <p className="text-xs sm:text-sm text-slate-500 font-medium truncate">
+            Manage your squads and team performance
+          </p>
+        </div>
 
-          <div className="flex items-center gap-2 self-stretch sm:self-auto pt-1 sm:pt-0">
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex-1 sm:flex-initial bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 sm:px-5 rounded-xl sm:rounded-2xl shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap"
-            >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              <span>ADD TEAM</span>
-            </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 sm:px-5 rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <Plus className="w-4 h-4 stroke-[3]" />
+            <span>CREATE TEAM</span>
+          </button>
 
+          {team && (
             <button
-              onClick={() => {
-                if (team) {
-                  setActiveTab("OVERVIEW");
-                  setIsEditing(true);
-                }
-              }}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shrink-0 shadow-2xs"
-              title="Team Options"
+              onClick={() => generateTeamPdfReport()}
+              className="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Download Team PDF Report"
             >
-              <MoreVertical className="w-4 h-4" />
+              <Download className="w-4 h-4 text-slate-600" />
+              <span className="hidden sm:inline">REPORT</span>
             </button>
+          )}
+        </div>
+      </div>
+
+      {/* ------------------ 2. TEAM PERFORMANCE SUMMARY METRICS ------------------ */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        {/* Metric 1: Total Teams */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
+          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0">
+            <Shield className="w-5 h-5 stroke-[2.2]" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAMS</span>
+            <span className="text-base sm:text-lg font-black text-slate-900">{allTeams.length} {allTeams.length === 1 ? "Team" : "Teams"}</span>
+          </div>
+        </div>
+
+        {/* Metric 2: Total Squad Players */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-600 shrink-0">
+            <Users2 className="w-5 h-5 stroke-[2.2]" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TOTAL PLAYERS</span>
+            <span className="text-base sm:text-lg font-black text-slate-900">{mySquad.length} {mySquad.length === 1 ? "Player" : "Players"}</span>
+          </div>
+        </div>
+
+        {/* Metric 3: Average Team CPI */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
+          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0">
+            <Award className="w-5 h-5 stroke-[2.2]" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAM CPI</span>
+            <span className="text-base sm:text-lg font-black text-orange-600 font-mono">{teamCpi}</span>
+          </div>
+        </div>
+
+        {/* Metric 4: Active Team */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-600 shrink-0">
+            <CheckCircle2 className="w-5 h-5 stroke-[2.2]" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">ACTIVE TEAM</span>
+            <span className="text-xs sm:text-sm font-black text-slate-900 truncate block">{team ? team.name : "None"}</span>
           </div>
         </div>
       </div>
 
-      {/* STATE 1: NO TEAMS YET (If coach has 0 teams) */}
+      {/* STATE 1: NO TEAMS YET */}
       {allTeams.length === 0 && !team && (
-        <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-sm space-y-5 text-center">
-          <div className="w-16 h-16 rounded-3xl bg-orange-100 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+        <div className="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xs space-y-5 text-center">
+          <div className="w-16 h-16 rounded-3xl bg-orange-50 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center">
             <Shield className="w-8 h-8 stroke-[2]" />
           </div>
           <div className="space-y-1.5 max-w-md mx-auto">
@@ -817,9 +853,9 @@ export default function TeamPage() {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-3.5 px-8 font-black text-sm uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 cursor-pointer inline-flex items-center gap-2"
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer inline-flex items-center gap-2"
           >
-            <Plus className="w-5 h-5 stroke-[2.5]" />
+            <Plus className="w-4 h-4 stroke-[3]" />
             <span>CREATE YOUR FIRST TEAM</span>
           </button>
         </div>
@@ -827,94 +863,53 @@ export default function TeamPage() {
 
       {/* STATE 2: TEAM DASHBOARD VIEW */}
       {allTeams.length > 0 && team && (
-        <div className="space-y-4 sm:space-y-6">
-          {/* Sub-Navigation Bar matching Image 2 */}
-          <div className="bg-white/90 backdrop-blur-xs border border-slate-200/90 rounded-2xl p-1 sm:p-1.5 shadow-2xs flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-w-full">
-            <button
-              onClick={() => setActiveTab("MY_TEAMS")}
-              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === "MY_TEAMS"
-                  ? "bg-orange-500 text-white shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <Users2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>MY TEAMS ({allTeams.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("OVERVIEW")}
-              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === "OVERVIEW"
-                  ? "bg-orange-500 text-white shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <BarChart2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>SQUAD & OVERVIEW</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("7PARAMS")}
-              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === "7PARAMS"
-                  ? "bg-orange-500 text-white shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>7-PARAMETER ANALYTICS</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("HISTORY")}
-              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === "HISTORY"
-                  ? "bg-orange-500 text-white shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>ASSESSMENT HISTORY</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("NOTES")}
-              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === "NOTES"
-                  ? "bg-orange-500 text-white shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>TEAM COACH NOTES</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("COMPARISON")}
-              className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-black text-[11px] sm:text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === "COMPARISON"
-                  ? "bg-orange-500 text-white shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <ArrowRightLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>TEAM COMPARISON</span>
-            </button>
+        <div className="space-y-4 sm:space-y-5">
+          {/* ------------------ 3. SEGMENTED NAVIGATION TABS ------------------ */}
+          <div className="bg-slate-100/90 border border-slate-200/80 rounded-xl p-1 flex items-center gap-1 overflow-x-auto no-scrollbar scroll-smooth max-w-full">
+            {[
+              { id: "MY_TEAMS", label: `MY TEAMS (${allTeams.length})`, icon: Users2 },
+              { id: "OVERVIEW", label: "SQUAD OVERVIEW", icon: BarChart2 },
+              { id: "7PARAMS", label: "7-PARAMETER ANALYTICS", icon: TrendingUp },
+              { id: "HISTORY", label: "ASSESSMENT HISTORY", icon: Clock },
+              { id: "NOTES", label: "TEAM COACH NOTES", icon: FileText },
+              { id: "COMPARISON", label: "TEAM COMPARISON", icon: ArrowRightLeft }
+            ].map((t) => {
+              const Icon = t.icon;
+              const isActive = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTab(t.id as any)}
+                  className={`px-3.5 py-2 rounded-lg font-extrabold text-[11px] uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                    isActive
+                      ? "bg-orange-500 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 stroke-[2.2]" />
+                  <span>{t.label}</span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* TAB 0: MY TEAMS (Uniform Cards & Clean Alignment) */}
+          {/* ------------------ 4. TAB: MY TEAMS (Clean Redesigned Team Profile Cards) ------------------ */}
           {activeTab === "MY_TEAMS" && (
             <div className="space-y-4">
-              {/* Section Header */}
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
-                  <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5] shrink-0" />
-                  <span>MY TEAMS ({allTeams.length})</span>
-                </h3>
-                <p className="text-[11px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
-                  Select a team to open its squad dashboard & analytics.
-                </p>
+              <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5]" />
+                    <span>MY TEAMS ({allTeams.length})</span>
+                  </h3>
+                  <p className="text-[11px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
+                    Select a team to view its squad dashboard and performance analytics.
+                  </p>
+                </div>
               </div>
 
-              {/* Team Cards List */}
-              <div className="space-y-3 sm:space-y-4">
+              {/* Team Profile Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {allTeams.map((t) => {
                   const isSelected = team?.id === t.id;
                   const squadSize = t.players?.length || 0;
@@ -922,85 +917,119 @@ export default function TeamPage() {
                   const mpiList = (t.players || []).map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
                   const ppiAvg = ppiList.length > 0 ? Math.round(ppiList.reduce((a, b) => a + b, 0) / ppiList.length) : "N/A";
                   const mpiAvg = mpiList.length > 0 ? Math.round(mpiList.reduce((a, b) => a + b, 0) / mpiList.length) : "N/A";
-                  const teamCpi = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
+                  const cardTeamCpi = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
                     ? Math.round((ppiAvg + mpiAvg) / 2)
                     : (typeof ppiAvg === "number" ? ppiAvg : (typeof mpiAvg === "number" ? mpiAvg : "N/A"));
+
+                  const numCpi = typeof cardTeamCpi === "number" ? cardTeamCpi : 0;
 
                   return (
                     <div
                       key={`card-${t.id}`}
-                      className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-2xl p-3.5 sm:p-5 transition-all duration-200 space-y-3 sm:space-y-4 shadow-2xs hover:shadow-md"
+                      className="bg-white border border-slate-200/80 hover:border-orange-300/80 rounded-2xl p-5 transition-all shadow-xs hover:shadow-md space-y-4"
                     >
-                      {/* Card Top Header */}
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-amber-100/90 border border-amber-200/70 text-amber-800 font-black text-base flex items-center justify-center shrink-0 uppercase shadow-2xs">
+                      {/* Top Row: Avatar, Name, Description, Status */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-600 font-black text-lg flex items-center justify-center shrink-0 uppercase">
                             {t.name.charAt(0)}
                           </div>
 
-                          <div className="min-w-0 flex-1">
+                          <div className="min-w-0">
                             <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate leading-tight">
                               {t.name}
                             </h4>
-                            <p className="text-[11px] sm:text-xs text-slate-500 font-semibold truncate mt-0.5">
-                              {t.description || "Junior National"}
+                            <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                              {t.description || "Junior National Squad"}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="shrink-0">
                           {isSelected ? (
-                            <span className="text-[9px] sm:text-[10px] font-extrabold tracking-wider text-emerald-700 uppercase bg-emerald-50 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-200/80 flex items-center gap-1 shadow-2xs">
+                            <span className="text-[10px] font-extrabold tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full flex items-center gap-1.5">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                              ACTIVE
+                              Active
                             </span>
                           ) : (
-                            <span className="text-[9px] sm:text-[10px] font-extrabold tracking-wider text-slate-500 uppercase bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md border border-slate-200">
-                              TEAM
+                            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full">
+                              Inactive
                             </span>
                           )}
-                          <ChevronRight className="w-4 h-4 text-slate-400" />
                         </div>
                       </div>
 
-                      {/* Card Middle & Action: Mobile Stacked, Desktop Flex Row */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 bg-slate-50/80 border border-slate-100 rounded-xl p-2.5 sm:p-3">
-                        {/* Stats Section */}
-                        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-6">
-                          {/* Players Stat */}
-                          <div className="flex items-center gap-2 bg-white sm:bg-transparent p-2 sm:p-0 rounded-lg border sm:border-0 border-slate-200/70 shadow-2xs sm:shadow-none">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 sm:bg-white border border-slate-200/80 flex items-center justify-center text-slate-500 shrink-0">
-                              <Users2 className="w-3.5 h-3.5 text-slate-600" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-wider block leading-none mb-0.5">PLAYERS</span>
-                              <span className="text-sm sm:text-base font-black text-slate-900 leading-none">{squadSize}</span>
-                            </div>
+                      {/* Middle Row: CPI Progress Ring + Player Count */}
+                      <div className="border-t border-slate-100 pt-3.5 grid grid-cols-2 gap-4 items-center">
+                        {/* CPI Radial Progress Visualization */}
+                        <div className="flex items-center gap-3">
+                          <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
+                            <svg className="w-11 h-11 transform -rotate-90" viewBox="0 0 36 36">
+                              <path
+                                className="text-slate-100"
+                                strokeWidth="3.5"
+                                stroke="currentColor"
+                                fill="none"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                              <path
+                                className="text-orange-500"
+                                strokeDasharray={`${numCpi}, 100`}
+                                strokeWidth="3.5"
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="none"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                            </svg>
+                            <span className="absolute font-black text-xs text-orange-600 font-mono">
+                              {cardTeamCpi}
+                            </span>
                           </div>
-
-                          <div className="hidden sm:block h-7 w-px bg-slate-200/80" />
-
-                          {/* CPI Score Stat */}
-                          <div className="flex items-center gap-2 bg-white sm:bg-transparent p-2 sm:p-0 rounded-lg border sm:border-0 border-slate-200/70 shadow-2xs sm:shadow-none">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-500 shrink-0">
-                              <BarChart2 className="w-3.5 h-3.5 text-orange-600" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-wider block leading-none mb-0.5">CPI SCORE</span>
-                              <span className="text-sm sm:text-base font-black text-orange-600 leading-none">{teamCpi}</span>
-                            </div>
+                          <div>
+                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAM CPI</span>
+                            <span className="text-[11px] font-bold text-slate-700">
+                              {typeof cardTeamCpi === 'number' ? (cardTeamCpi >= 75 ? 'High Perform' : 'Standard') : 'Not Scored'}
+                            </span>
                           </div>
                         </div>
 
-                        {/* Action Button */}
+                        {/* Player Count */}
+                        <div className="flex items-center gap-2.5 justify-end">
+                          <div className="text-right">
+                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">PLAYERS</span>
+                            <span className="text-sm font-black text-slate-900">{squadSize}</span>
+                          </div>
+                          <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                            <Users2 className="w-4 h-4 stroke-[2]" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Action Footer */}
+                      <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-100">
+                        <button
+                          onClick={() => {
+                            selectTeam(t);
+                            setIsEditing(true);
+                            setActiveTab("OVERVIEW");
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                          title="Edit Team"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+
                         <button
                           onClick={() => {
                             selectTeam(t);
                             setActiveTab("OVERVIEW");
                           }}
-                          className="w-full sm:w-auto py-2.5 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs mt-0.5 sm:mt-0 bg-orange-50/90 hover:bg-orange-100 text-orange-600 border border-orange-200/80"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer border border-orange-200/80 active:scale-98"
                         >
-                          <span>VIEW TEAM →</span>
+                          <span>View Team</span>
+                          <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                         </button>
                       </div>
                     </div>
@@ -1008,21 +1037,21 @@ export default function TeamPage() {
                 })}
               </div>
 
-              {/* Bottom Action Card Banner */}
+              {/* Bottom Action Card */}
               <div
                 onClick={() => setShowCreateModal(true)}
-                className="bg-white border border-slate-200/90 hover:border-orange-300 hover:bg-orange-50/15 rounded-2xl p-3.5 sm:p-5 flex items-center justify-between cursor-pointer transition-all shadow-2xs group"
+                className="bg-white border border-slate-200/80 hover:border-orange-300 hover:bg-orange-50/20 rounded-2xl p-4 sm:p-5 flex items-center justify-between cursor-pointer transition-all shadow-xs group"
               >
-                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
                     <Plus className="w-5 h-5 stroke-[3]" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="font-black text-xs sm:text-base text-slate-900 block group-hover:text-orange-600 transition-colors truncate">
+                    <span className="font-black text-sm sm:text-base text-slate-900 block group-hover:text-orange-600 transition-colors truncate">
                       Create another team
                     </span>
-                    <span className="text-[11px] sm:text-xs text-slate-500 font-medium block mt-0.5 truncate">
-                      Add a new team to track player performance.
+                    <span className="text-xs text-slate-500 font-medium block mt-0.5 truncate">
+                      Add a new squad to evaluate team CPI analytics.
                     </span>
                   </div>
                 </div>
