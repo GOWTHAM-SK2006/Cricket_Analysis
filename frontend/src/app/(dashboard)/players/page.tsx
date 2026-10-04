@@ -3533,118 +3533,202 @@ return (
 
     {/* ------------------ OVERLAY: PRACTICE ASSESSMENT ------------------ */}
     {showPracticeOverlay && selectedPlayer && (
-      <div className="fixed inset-0 bg-white z-50 overflow-y-auto p-6 space-y-6 text-left select-none pb-10">
-        <div className="flex justify-between items-center pb-4 border-b border-slate-200">
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold uppercase tracking-wider text-slate-900">PRACTICE GRADES</h3>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Player:</span>
-              <div className="relative inline-block">
-                <select
-                  value={selectedPlayer.id}
-                  onChange={(e) => {
-                    const nextPlayer = players.find(p => p.id === Number(e.target.value));
-                    if (nextPlayer) {
-                      setSelectedPlayer(nextPlayer);
-                      loadHistory(nextPlayer.id);
-                      setPracticeForm({
-                        technicalExecution: 7,
-                        skillsLevel: 7,
-                        gamePlan: 7,
-                        preparation: 7,
-                        intensity: 7,
-                        focus: 7,
-                        resilience: 7,
-                        notes: ""
-                      });
-                      setError("");
-                      window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
-                    }
-                  }}
-                  className="appearance-none bg-white border border-slate-200 hover:border-orange-500 text-orange-500 font-bold text-xs rounded-xl pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none transition-all uppercase tracking-wider font-mono min-w-[120px]"
-                >
-                  {players.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-mono">
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-orange-500">
-                  <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
+      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-6 text-left select-none pb-12">
+        <div className="max-w-2xl mx-auto space-y-5">
+          {/* Header Card */}
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+            <div className="flex justify-between items-start">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
+                  <h3 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase">
+                    PRACTICE ASSESSMENT
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                  Evaluate the player&apos;s training performance across 7 core metrics
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPracticeOverlay(false)}
+                className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              {/* Player Selector */}
+              <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200/80 rounded-xl px-3 py-1.5">
+                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">PLAYER:</span>
+                <div className="relative inline-block">
+                  <select
+                    value={selectedPlayer.id}
+                    onChange={(e) => {
+                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                      if (nextPlayer) {
+                        setSelectedPlayer(nextPlayer);
+                        loadHistory(nextPlayer.id);
+                        setPracticeForm({
+                          technicalExecution: 7,
+                          skillsLevel: 7,
+                          gamePlan: 7,
+                          preparation: 7,
+                          intensity: 7,
+                          focus: 7,
+                          resilience: 7,
+                          notes: ""
+                        });
+                        setError("");
+                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
+                      }
+                    }}
+                    className="appearance-none bg-transparent font-black text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-mono"
+                  >
+                    {players.map((p) => (
+                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-mono">
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-orange-600">
+                    <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
+
+              {/* Live PPI Score Preview */}
+              {(() => {
+                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"] as const;
+                const sum = keys.reduce((acc, k) => acc + Number((practiceForm as any)[k] || 0), 0);
+                const avg = (sum / keys.length).toFixed(1);
+                const ppi = Math.round((sum / keys.length) * 10);
+                return (
+                  <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-xl px-3 py-1.5">
+                    <span className="text-[10px] font-extrabold text-orange-600/80 uppercase tracking-wider">LIVE PPI PREVIEW:</span>
+                    <span className="text-xs font-black text-orange-600 font-mono">{ppi} <span className="text-[10px] font-normal text-orange-500">({avg}/10)</span></span>
+                  </div>
+                );
+              })()}
             </div>
           </div>
-          <button onClick={() => setShowPracticeOverlay(false)} className="text-zinc-500 hover:text-slate-900 p-1">
-            <X className="w-7 h-7" />
-          </button>
-        </div>
 
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-bold p-4 rounded-xl uppercase tracking-wider">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handlePracticeSubmit} className="space-y-6">
-          {[
-            { label: "TECHNIQUE", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
-            { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
-            { label: "GAME PLAN", key: "gamePlan", desc: "Tactical strategy, role clarity, and game plan execution" },
-            { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
-            { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" },
-            { label: "FOCUS", key: "focus", desc: "Mental focus, engagement, and attention to detail" },
-            { label: "RESILIENCE", key: "resilience", desc: "Bouncing back from mistakes, mental toughness, and adaptability" }
-          ].map((metric) => (
-            <div key={metric.key} className="space-y-2 bg-white p-4 border border-slate-200 rounded-2xl">
-              <div className="flex justify-between items-start">
-                <div>
-                  <label className="text-sm font-bold tracking-widest text-slate-900 uppercase">{metric.label}</label>
-                  <p className="text-sm text-zinc-500 font-semibold">{metric.desc}</p>
+          <form onSubmit={handlePracticeSubmit} className="space-y-4">
+            {[
+              { label: "TECHNIQUE", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
+              { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
+              { label: "GAME PLAN", key: "gamePlan", desc: "Tactical strategy, role clarity, and game plan execution" },
+              { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
+              { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" },
+              { label: "FOCUS", key: "focus", desc: "Mental focus, engagement, and attention to detail" },
+              { label: "RESILIENCE", key: "resilience", desc: "Bouncing back from mistakes, mental toughness, and adaptability" }
+            ].map((metric) => {
+              const numVal = Number((practiceForm as any)[metric.key]);
+              const intScore = Math.round(numVal);
+              const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
+
+              let tierLabel = "DEVELOPMENT";
+              let tierColor = "text-slate-600 bg-slate-100 border-slate-200";
+              if (intScore >= 9) {
+                tierLabel = "ELITE";
+                tierColor = "text-purple-700 bg-purple-50 border-purple-200";
+              } else if (intScore >= 7) {
+                tierLabel = "STRONG";
+                tierColor = "text-emerald-700 bg-emerald-50 border-emerald-200";
+              } else if (intScore >= 4) {
+                tierLabel = "DEVELOPING";
+                tierColor = "text-amber-700 bg-amber-50 border-amber-200";
+              }
+
+              return (
+                <div
+                  key={metric.key}
+                  className="bg-white p-5 border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all space-y-4"
+                >
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <label className="text-sm font-black tracking-wider text-slate-900 uppercase">
+                          {metric.label}
+                        </label>
+                        <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierColor}`}>
+                          {tierLabel}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                        {metric.desc}
+                      </p>
+                    </div>
+
+                    <div className="flex items-baseline gap-1 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-xl shrink-0">
+                      <span className="text-2xl font-black text-orange-600 font-mono leading-none">
+                        {intScore}
+                      </span>
+                      <span className="text-xs font-bold text-orange-400">/ 10</span>
+                    </div>
+                  </div>
+
+                  <div className="relative pt-1">
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      step="0.01"
+                      value={(practiceForm as any)[metric.key]}
+                      onPointerDown={handleSliderInteraction}
+                      onTouchStart={handleSliderInteraction}
+                      onFocus={handleSliderInteraction}
+                      onChange={(e) => {
+                        handleSliderInteraction();
+                        setPracticeForm({ ...practiceForm, [metric.key]: parseFloat(e.target.value) });
+                      }}
+                      style={{
+                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`,
+                        touchAction: "none"
+                      }}
+                      className="w-full h-2.5 rounded-full appearance-none cursor-pointer accent-orange-500 touch-none focus:outline-none"
+                    />
+                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold px-0.5 pt-1.5">
+                      <span>0</span>
+                      <span>5</span>
+                      <span>10</span>
+                    </div>
+                  </div>
                 </div>
-                <span className="text-xl font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-lg">
-                  {Math.round(Number((practiceForm as any)[metric.key]))}
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                step="0.01"
-                value={(practiceForm as any)[metric.key]}
-                onPointerDown={handleSliderInteraction}
-                onTouchStart={handleSliderInteraction}
-                onFocus={handleSliderInteraction}
-                onChange={(e) => {
-                  handleSliderInteraction();
-                  setPracticeForm({ ...practiceForm, [metric.key]: parseFloat(e.target.value) });
-                }}
-                style={{ touchAction: "none" }}
-                className="w-full h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-orange-500 touch-none"
+              );
+            })}
+
+            <div className="bg-white p-5 border border-slate-200/80 rounded-2xl shadow-sm space-y-2">
+              <label className="text-xs font-black tracking-wider text-slate-700 uppercase flex items-center gap-1.5">
+                <span>COACH REMARKS & NOTES</span>
+                <span className="text-[10px] font-normal text-slate-400 lowercase">(optional)</span>
+              </label>
+              <textarea
+                value={practiceForm.notes}
+                onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
+                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24"
+                placeholder="Record specific training observations, technical cues, or drill outcomes..."
               />
             </div>
-          ))}
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold tracking-widest text-zinc-400">NOTES</label>
-            <textarea
-              value={practiceForm.notes}
-              onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
-              className="w-full bg-white border-2 border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:border-orange-500 resize-none h-20"
-              placeholder="Optional coach remarks..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-4.5 text-xl font-bold transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-xl active:scale-98"
-          >
-            {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-4 text-base sm:text-lg font-black tracking-wide transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-lg shadow-orange-500/25 disabled:opacity-50"
+            >
+              {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
+            </button>
+          </form>
+        </div>
       </div>
     )}
 
