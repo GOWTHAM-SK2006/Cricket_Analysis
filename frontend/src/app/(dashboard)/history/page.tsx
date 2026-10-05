@@ -322,9 +322,7 @@ export default function HistoryPage() {
                   { label: "SKILL LEVEL", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique, desc: "Precision & core skill execution" },
                   { label: "GAME PLAN", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking, desc: "Tactical strategy & role clarity" },
                   { label: "PREPARATION", val: selectedAssessmentDetail.data.preparation, desc: "Readiness & routine" },
-                  { label: "INTENSITY", val: selectedAssessmentDetail.data.intensity, desc: "Competitive energy & effort" },
-                  { label: "FOCUS", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration, desc: "Mental focus & composure" },
-                  { label: "RESILIENCE", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability, desc: "Bouncing back from pressure" }
+                  { label: "INTENSITY", val: selectedAssessmentDetail.data.intensity, desc: "Competitive energy & effort" }
                 ].map((item, idx) => {
                   const numVal = item.val !== undefined && item.val !== null ? Number(item.val) : 7;
                   const intScore = Math.round(numVal);

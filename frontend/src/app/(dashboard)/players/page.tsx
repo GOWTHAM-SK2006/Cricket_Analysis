@@ -3546,7 +3546,7 @@ return (
                   </h3>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-                  Evaluate the player&apos;s training performance across 7 core metrics
+                  Evaluate the player&apos;s training performance across 5 core metrics
                 </p>
               </div>
               <button
@@ -3602,7 +3602,7 @@ return (
 
               {/* Live PPI Score Preview */}
               {(() => {
-                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"] as const;
+                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
                 const sum = keys.reduce((acc, k) => acc + Number((practiceForm as any)[k] || 0), 0);
                 const avg = (sum / keys.length).toFixed(1);
                 const ppi = Math.round((sum / keys.length) * 10);
@@ -3628,9 +3628,7 @@ return (
               { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
               { label: "GAME PLAN", key: "gamePlan", desc: "Tactical strategy, role clarity, and game plan execution" },
               { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
-              { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" },
-              { label: "FOCUS", key: "focus", desc: "Mental focus, engagement, and attention to detail" },
-              { label: "RESILIENCE", key: "resilience", desc: "Bouncing back from mistakes, mental toughness, and adaptability" }
+              { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" }
             ].map((metric) => {
               const numVal = Number((practiceForm as any)[metric.key]);
               const intScore = Math.round(numVal);
@@ -3704,6 +3702,62 @@ return (
               );
             })}
 
+            {/* Calculated PPI Score Card */}
+            {(() => {
+              const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
+              const sum = keys.reduce((acc, k) => acc + Number((practiceForm as any)[k] || 0), 0);
+              const calcScore = Number((sum / keys.length).toFixed(1));
+
+              let tierTitle = "Solid Performer";
+              let tierBadgeStyle = "bg-amber-50 text-amber-800 border-amber-200/80";
+              let tierDesc = "Good physical and technical foundation with scope for further improvement in intensity and game plan execution.";
+              if (calcScore >= 8.5) {
+                tierTitle = "Elite Tier";
+                tierBadgeStyle = "bg-purple-50 text-purple-800 border-purple-200/80";
+                tierDesc = "Exceptional technical execution, tactical clarity, and competitive intensity across all core training metrics.";
+              } else if (calcScore >= 7.0) {
+                tierTitle = "First-Class / Academy Tier";
+                tierBadgeStyle = "bg-emerald-50 text-emerald-800 border-emerald-200/80";
+                tierDesc = "Solid technical foundation with high growth potential in tactical decision-making and execution.";
+              } else if (calcScore < 5.0) {
+                tierTitle = "Developmental Tier";
+                tierBadgeStyle = "bg-rose-50 text-rose-800 border-rose-200/80";
+                tierDesc = "Fundamental stance, technique, and session preparation adjustments needed to elevate performance consistency.";
+              }
+
+              return (
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3 font-montserrat">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest block">
+                      CALCULATED PPI SCORE
+                    </span>
+                    <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600 shadow-2xs">
+                      <Activity className="w-5 h-5 stroke-[2.5]" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-4xl sm:text-5xl font-black text-orange-600 font-montserrat leading-none">
+                        {calcScore}
+                      </span>
+                      <span className="text-sm sm:text-base font-bold text-slate-500">/ 10</span>
+                    </div>
+
+                    <div>
+                      <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
+                        {tierTitle}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-600 font-medium leading-relaxed pt-1">
+                      {tierDesc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
             <div className="bg-white p-4.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-sm space-y-2 font-montserrat">
               <label className="text-xs font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1.5">
                 <span>COACH REMARKS & NOTES</span>
@@ -3744,7 +3798,7 @@ return (
                   </h3>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-                  Evaluate the player&apos;s competitive match performance across 7 core metrics
+                  Evaluate the player&apos;s competitive match performance across 5 core metrics
                 </p>
               </div>
               <button
@@ -3800,7 +3854,7 @@ return (
 
               {/* Live MPI Score Preview */}
               {(() => {
-                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"] as const;
+                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
                 const sum = keys.reduce((acc, k) => acc + Number((matchForm as any)[k] || 0), 0);
                 const avg = (sum / keys.length).toFixed(1);
                 const mpi = Math.round((sum / keys.length) * 10);
@@ -3826,9 +3880,7 @@ return (
               { label: "SKILL LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
               { label: "GAME PLAN", key: "gamePlan", desc: "Adherence to match plan, tactical discipline, and situational awareness" },
               { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" },
-              { label: "INTENSITY", key: "intensity", desc: "Competitive intensity, effort, and match urgency" },
-              { label: "FOCUS", key: "focus", desc: "Focus under pressure, game situation awareness, and composure" },
-              { label: "RESILIENCE", key: "resilience", desc: "Pressure handling, fighting spirit, and overcoming set-backs" }
+              { label: "INTENSITY", key: "intensity", desc: "Competitive intensity, effort, and match urgency" }
             ].map((metric) => {
               const numVal = Number((matchForm as any)[metric.key]);
               const intScore = Math.round(numVal);
@@ -3901,6 +3953,62 @@ return (
                 </div>
               );
             })}
+
+            {/* Calculated MPI Score Card */}
+            {(() => {
+              const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
+              const sum = keys.reduce((acc, k) => acc + Number((matchForm as any)[k] || 0), 0);
+              const calcScore = Number((sum / keys.length).toFixed(1));
+
+              let tierTitle = "Solid Performer";
+              let tierBadgeStyle = "bg-amber-50 text-amber-800 border-amber-200/80";
+              let tierDesc = "Good physical and technical foundation with scope for further improvement in intensity and game plan execution.";
+              if (calcScore >= 8.5) {
+                tierTitle = "Elite Tier";
+                tierBadgeStyle = "bg-purple-50 text-purple-800 border-purple-200/80";
+                tierDesc = "Exceptional technical execution, tactical clarity, and competitive intensity across all match conditions.";
+              } else if (calcScore >= 7.0) {
+                tierTitle = "First-Class / Academy Tier";
+                tierBadgeStyle = "bg-emerald-50 text-emerald-800 border-emerald-200/80";
+                tierDesc = "Solid technical foundation with high growth potential in match decision-making and execution.";
+              } else if (calcScore < 5.0) {
+                tierTitle = "Developmental Tier";
+                tierBadgeStyle = "bg-rose-50 text-rose-800 border-rose-200/80";
+                tierDesc = "Fundamental stance, technique, and match preparation adjustments needed to elevate performance under pressure.";
+              }
+
+              return (
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3 font-montserrat">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest block">
+                      CALCULATED MPI SCORE
+                    </span>
+                    <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600 shadow-2xs">
+                      <Flame className="w-5 h-5 stroke-[2.5]" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-4xl sm:text-5xl font-black text-orange-600 font-montserrat leading-none">
+                        {calcScore}
+                      </span>
+                      <span className="text-sm sm:text-base font-bold text-slate-500">/ 10</span>
+                    </div>
+
+                    <div>
+                      <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
+                        {tierTitle}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-600 font-medium leading-relaxed pt-1">
+                      {tierDesc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
 
             <div className="bg-white p-4.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-sm space-y-2 font-montserrat">
               <label className="text-xs font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1.5">
