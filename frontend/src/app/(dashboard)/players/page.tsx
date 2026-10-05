@@ -3649,7 +3649,7 @@ return (
               return (
                 <div
                   key={metric.key}
-                  className="bg-white p-4 sm:p-4.5 border border-orange-100/90 hover:border-orange-300/80 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(249,115,22,0.06)] transition-all space-y-3 font-montserrat"
+                  className="bg-white p-4 sm:p-4.5 border border-slate-200/80 hover:border-slate-300 rounded-2xl shadow-xs transition-all space-y-3 font-montserrat"
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1">
@@ -3847,7 +3847,7 @@ return (
               return (
                 <div
                   key={metric.key}
-                  className="bg-white p-4 sm:p-4.5 border border-orange-100/90 hover:border-orange-300/80 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(249,115,22,0.06)] transition-all space-y-3 font-montserrat"
+                  className="bg-white p-4 sm:p-4.5 border border-slate-200/80 hover:border-slate-300 rounded-2xl shadow-xs transition-all space-y-3 font-montserrat"
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1">

@@ -341,7 +341,7 @@ export default function HistoryPage() {
                   }
 
                   return (
-                    <div key={idx} className="bg-white p-3.5 rounded-xl border border-orange-100/90 shadow-2xs space-y-2">
+                    <div key={idx} className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-2">
                       <div className="flex justify-between items-start gap-2">
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-1.5 flex-wrap">
