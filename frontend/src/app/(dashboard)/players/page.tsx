@@ -7,7 +7,7 @@ import { uploadPlayerImage } from "@/lib/supabase";
 import {
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck,
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap, AlertTriangle
+  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap, AlertTriangle, Activity
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
