@@ -312,25 +312,55 @@ export default function HistoryPage() {
             </div>
 
             {/* Parameter Ratings (7 Parameters) */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold tracking-widest text-slate-900 uppercase border-b border-slate-100 pb-1">
-                Parameter Ratings (Out of 10)
+            <div className="space-y-3 font-montserrat">
+              <h4 className="text-xs font-extrabold tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-1">
+                {selectedAssessmentDetail.type === "Practice" ? "Practice PPI Breakdown" : "Match MPI Breakdown"}
               </h4>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  { label: "Technique", val: selectedAssessmentDetail.data.technicalExecution },
-                  { label: "Skill Level", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique },
-                  { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
-                  { label: "Preparation", val: selectedAssessmentDetail.data.preparation },
-                  { label: "Intensity", val: selectedAssessmentDetail.data.intensity },
-                  { label: "Focus", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration },
-                  { label: "Resilience", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability }
-                ].map((item, idx) => (
-                  <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                    <span className="font-semibold text-slate-700">{item.label}</span>
-                    <span className="font-bold text-slate-900 tracking-tight">{item.val !== undefined && item.val !== null ? `${item.val}/10` : "N/A"}</span>
-                  </div>
-                ))}
+                  { label: "TECHNIQUE", val: selectedAssessmentDetail.data.technicalExecution, desc: "Mechanics & physical execution" },
+                  { label: "SKILL LEVEL", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique, desc: "Precision & core skill execution" },
+                  { label: "GAME PLAN", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking, desc: "Tactical strategy & role clarity" },
+                  { label: "PREPARATION", val: selectedAssessmentDetail.data.preparation, desc: "Readiness & routine" },
+                  { label: "INTENSITY", val: selectedAssessmentDetail.data.intensity, desc: "Competitive energy & effort" },
+                  { label: "FOCUS", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration, desc: "Mental focus & composure" },
+                  { label: "RESILIENCE", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability, desc: "Bouncing back from pressure" }
+                ].map((item, idx) => {
+                  const numVal = item.val !== undefined && item.val !== null ? Number(item.val) : 7;
+                  const intScore = Math.round(numVal);
+                  const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
+
+                  let statusLabel = "DEVELOPMENTAL";
+                  let statusBadgeColor = "text-rose-700 bg-rose-50 border-rose-200/80";
+                  if (intScore >= 7) {
+                    statusLabel = "STRONG";
+                    statusBadgeColor = "text-emerald-700 bg-emerald-50 border-emerald-200/80";
+                  } else if (intScore >= 4) {
+                    statusLabel = "MODERATE";
+                    statusBadgeColor = "text-amber-700 bg-amber-50 border-amber-200/80";
+                  }
+
+                  return (
+                    <div key={idx} className="bg-white p-3.5 rounded-xl border border-orange-100/90 shadow-2xs space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-extrabold text-xs text-slate-900 uppercase tracking-wider">{item.label}</span>
+                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${statusBadgeColor}`}>{statusLabel}</span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium">{item.desc}</p>
+                        </div>
+                        <div className="bg-orange-50/90 border border-orange-200/80 px-2 py-1 rounded-lg flex items-baseline gap-0.5 shrink-0 shadow-2xs">
+                          <span className="font-black text-sm text-orange-600 font-montserrat leading-none">{intScore}</span>
+                          <span className="text-[10px] font-bold text-orange-500/80">/10</span>
+                        </div>
+                      </div>
+                      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden p-0.5">
+                        <div className="h-full bg-orange-500 rounded-full transition-all duration-300" style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

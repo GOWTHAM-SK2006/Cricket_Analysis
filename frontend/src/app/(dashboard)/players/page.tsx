@@ -3533,19 +3533,19 @@ return (
 
     {/* ------------------ OVERLAY: PRACTICE ASSESSMENT ------------------ */}
     {showPracticeOverlay && selectedPlayer && (
-      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-6 text-left select-none pb-12">
-        <div className="max-w-2xl mx-auto space-y-5">
+      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-5 text-left select-none pb-12 font-montserrat">
+        <div className="max-w-xl sm:max-w-2xl mx-auto space-y-4">
           {/* Header Card */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-            <div className="flex justify-between items-start">
+          <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3.5">
+            <div className="flex justify-between items-start gap-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
-                  <h3 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase">
+                  <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
                     PRACTICE ASSESSMENT
                   </h3>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                   Evaluate the player&apos;s training performance across 7 core metrics
                 </p>
               </div>
@@ -3560,7 +3560,7 @@ return (
 
             <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
               {/* Player Selector */}
-              <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200/80 rounded-xl px-3 py-1.5">
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-1.5">
                 <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">PLAYER:</span>
                 <div className="relative inline-block">
                   <select
@@ -3584,10 +3584,10 @@ return (
                         window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
                       }
                     }}
-                    className="appearance-none bg-transparent font-black text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-mono"
+                    className="appearance-none bg-transparent font-extrabold text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-montserrat"
                   >
                     {players.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-mono">
+                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-montserrat">
                         {p.name}
                       </option>
                     ))}
@@ -3607,9 +3607,9 @@ return (
                 const avg = (sum / keys.length).toFixed(1);
                 const ppi = Math.round((sum / keys.length) * 10);
                 return (
-                  <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-xl px-3 py-1.5">
+                  <div className="flex items-center gap-2 bg-orange-50 border border-orange-200/80 rounded-xl px-3 py-1.5 shadow-2xs">
                     <span className="text-[10px] font-extrabold text-orange-600/80 uppercase tracking-wider">LIVE PPI PREVIEW:</span>
-                    <span className="text-xs font-black text-orange-600 font-mono">{ppi} <span className="text-[10px] font-normal text-orange-500">({avg}/10)</span></span>
+                    <span className="text-xs font-black text-orange-600 font-montserrat">{ppi} <span className="text-[10px] font-bold text-orange-500">({avg}/10)</span></span>
                   </div>
                 );
               })()}
@@ -3617,12 +3617,12 @@ return (
           </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider font-montserrat">
               {error}
             </div>
           )}
 
-          <form onSubmit={handlePracticeSubmit} className="space-y-4">
+          <form onSubmit={handlePracticeSubmit} className="space-y-3.5">
             {[
               { label: "TECHNIQUE", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
               { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
@@ -3636,32 +3636,29 @@ return (
               const intScore = Math.round(numVal);
               const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
 
-              let tierLabel = "DEVELOPMENT";
-              let tierColor = "text-slate-600 bg-slate-100 border-slate-200";
-              if (intScore >= 9) {
-                tierLabel = "ELITE";
-                tierColor = "text-purple-700 bg-purple-50 border-purple-200";
-              } else if (intScore >= 7) {
-                tierLabel = "STRONG";
-                tierColor = "text-emerald-700 bg-emerald-50 border-emerald-200";
+              let statusLabel = "DEVELOPMENTAL";
+              let statusBadgeColor = "text-rose-700 bg-rose-50 border-rose-200/80";
+              if (intScore >= 7) {
+                statusLabel = "STRONG";
+                statusBadgeColor = "text-emerald-700 bg-emerald-50 border-emerald-200/80";
               } else if (intScore >= 4) {
-                tierLabel = "DEVELOPING";
-                tierColor = "text-amber-700 bg-amber-50 border-amber-200";
+                statusLabel = "MODERATE";
+                statusBadgeColor = "text-amber-700 bg-amber-50 border-amber-200/80";
               }
 
               return (
                 <div
                   key={metric.key}
-                  className="bg-white p-5 border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all space-y-4"
+                  className="bg-white p-4 sm:p-4.5 border border-orange-100/90 hover:border-orange-300/80 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(249,115,22,0.06)] transition-all space-y-3 font-montserrat"
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="text-sm font-black tracking-wider text-slate-900 uppercase">
+                        <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
                           {metric.label}
                         </label>
-                        <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierColor}`}>
-                          {tierLabel}
+                        <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
+                          {statusLabel}
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 font-medium leading-relaxed">
@@ -3669,11 +3666,11 @@ return (
                       </p>
                     </div>
 
-                    <div className="flex items-baseline gap-1 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-xl shrink-0">
-                      <span className="text-2xl font-black text-orange-600 font-mono leading-none">
+                    <div className="flex items-baseline gap-1 bg-orange-50/90 border border-orange-200/80 px-2.5 sm:px-3 py-1.5 rounded-xl shrink-0 shadow-2xs">
+                      <span className="text-xl sm:text-2xl font-black text-orange-600 font-montserrat leading-none">
                         {intScore}
                       </span>
-                      <span className="text-xs font-bold text-orange-400">/ 10</span>
+                      <span className="text-xs font-bold text-orange-500/80">/ 10</span>
                     </div>
                   </div>
 
@@ -3695,9 +3692,9 @@ return (
                         background: `linear-gradient(to right, #f97316 0%, #f97316 ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`,
                         touchAction: "none"
                       }}
-                      className="w-full h-2.5 rounded-full appearance-none cursor-pointer accent-orange-500 touch-none focus:outline-none"
+                      className="ppi-mpi-slider w-full h-2.5 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
                     />
-                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold px-0.5 pt-1.5">
+                    <div className="flex justify-between items-center text-[10px] font-montserrat text-slate-400 font-bold px-0.5 pt-1.5">
                       <span>0</span>
                       <span>5</span>
                       <span>10</span>
@@ -3707,15 +3704,15 @@ return (
               );
             })}
 
-            <div className="bg-white p-5 border border-slate-200/80 rounded-2xl shadow-sm space-y-2">
-              <label className="text-xs font-black tracking-wider text-slate-700 uppercase flex items-center gap-1.5">
+            <div className="bg-white p-4.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-sm space-y-2 font-montserrat">
+              <label className="text-xs font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1.5">
                 <span>COACH REMARKS & NOTES</span>
                 <span className="text-[10px] font-normal text-slate-400 lowercase">(optional)</span>
               </label>
               <textarea
                 value={practiceForm.notes}
                 onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
-                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24"
+                className="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-3.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24 font-montserrat"
                 placeholder="Record specific training observations, technical cues, or drill outcomes..."
               />
             </div>
@@ -3723,7 +3720,7 @@ return (
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-4 text-base sm:text-lg font-black tracking-wide transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-lg shadow-orange-500/25 disabled:opacity-50"
+              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-3.5 sm:py-4 text-sm sm:text-base font-extrabold tracking-wider transition-all flex items-center justify-center cursor-pointer border border-orange-500 shadow-md shadow-orange-500/20 disabled:opacity-50 font-montserrat uppercase"
             >
               {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
             </button>
@@ -3734,19 +3731,19 @@ return (
 
     {/* ------------------ OVERLAY: MATCH ASSESSMENT ------------------ */}
     {showMatchOverlay && selectedPlayer && (
-      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-6 text-left select-none pb-12">
-        <div className="max-w-2xl mx-auto space-y-5">
+      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-5 text-left select-none pb-12 font-montserrat">
+        <div className="max-w-xl sm:max-w-2xl mx-auto space-y-4">
           {/* Header Card */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-            <div className="flex justify-between items-start">
+          <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3.5">
+            <div className="flex justify-between items-start gap-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
-                  <h3 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase">
+                  <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
                     MATCH ASSESSMENT
                   </h3>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                   Evaluate the player&apos;s competitive match performance across 7 core metrics
                 </p>
               </div>
@@ -3761,7 +3758,7 @@ return (
 
             <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
               {/* Player Selector */}
-              <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200/80 rounded-xl px-3 py-1.5">
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-1.5">
                 <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">PLAYER:</span>
                 <div className="relative inline-block">
                   <select
@@ -3785,10 +3782,10 @@ return (
                         window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
                       }
                     }}
-                    className="appearance-none bg-transparent font-black text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-mono"
+                    className="appearance-none bg-transparent font-extrabold text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-montserrat"
                   >
                     {players.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-mono">
+                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-montserrat">
                         {p.name}
                       </option>
                     ))}
@@ -3808,9 +3805,9 @@ return (
                 const avg = (sum / keys.length).toFixed(1);
                 const mpi = Math.round((sum / keys.length) * 10);
                 return (
-                  <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-xl px-3 py-1.5">
+                  <div className="flex items-center gap-2 bg-orange-50 border border-orange-200/80 rounded-xl px-3 py-1.5 shadow-2xs">
                     <span className="text-[10px] font-extrabold text-orange-600/80 uppercase tracking-wider">LIVE MPI PREVIEW:</span>
-                    <span className="text-xs font-black text-orange-600 font-mono">{mpi} <span className="text-[10px] font-normal text-orange-500">({avg}/10)</span></span>
+                    <span className="text-xs font-black text-orange-600 font-montserrat">{mpi} <span className="text-[10px] font-bold text-orange-500">({avg}/10)</span></span>
                   </div>
                 );
               })()}
@@ -3818,12 +3815,12 @@ return (
           </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider font-montserrat">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleMatchSubmit} className="space-y-4">
+          <form onSubmit={handleMatchSubmit} className="space-y-3.5">
             {[
               { label: "TECHNIQUE", key: "technicalExecution", desc: "Fundamentals under pressure and match execution" },
               { label: "SKILL LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
@@ -3837,32 +3834,29 @@ return (
               const intScore = Math.round(numVal);
               const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
 
-              let tierLabel = "DEVELOPMENT";
-              let tierColor = "text-slate-600 bg-slate-100 border-slate-200";
-              if (intScore >= 9) {
-                tierLabel = "ELITE";
-                tierColor = "text-purple-700 bg-purple-50 border-purple-200";
-              } else if (intScore >= 7) {
-                tierLabel = "STRONG";
-                tierColor = "text-emerald-700 bg-emerald-50 border-emerald-200";
+              let statusLabel = "DEVELOPMENTAL";
+              let statusBadgeColor = "text-rose-700 bg-rose-50 border-rose-200/80";
+              if (intScore >= 7) {
+                statusLabel = "STRONG";
+                statusBadgeColor = "text-emerald-700 bg-emerald-50 border-emerald-200/80";
               } else if (intScore >= 4) {
-                tierLabel = "DEVELOPING";
-                tierColor = "text-amber-700 bg-amber-50 border-amber-200";
+                statusLabel = "MODERATE";
+                statusBadgeColor = "text-amber-700 bg-amber-50 border-amber-200/80";
               }
 
               return (
                 <div
                   key={metric.key}
-                  className="bg-white p-5 border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all space-y-4"
+                  className="bg-white p-4 sm:p-4.5 border border-orange-100/90 hover:border-orange-300/80 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(249,115,22,0.06)] transition-all space-y-3 font-montserrat"
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="text-sm font-black tracking-wider text-slate-900 uppercase">
+                        <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
                           {metric.label}
                         </label>
-                        <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierColor}`}>
-                          {tierLabel}
+                        <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
+                          {statusLabel}
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 font-medium leading-relaxed">
@@ -3870,11 +3864,11 @@ return (
                       </p>
                     </div>
 
-                    <div className="flex items-baseline gap-1 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-xl shrink-0">
-                      <span className="text-2xl font-black text-orange-600 font-mono leading-none">
+                    <div className="flex items-baseline gap-1 bg-orange-50/90 border border-orange-200/80 px-2.5 sm:px-3 py-1.5 rounded-xl shrink-0 shadow-2xs">
+                      <span className="text-xl sm:text-2xl font-black text-orange-600 font-montserrat leading-none">
                         {intScore}
                       </span>
-                      <span className="text-xs font-bold text-orange-400">/ 10</span>
+                      <span className="text-xs font-bold text-orange-500/80">/ 10</span>
                     </div>
                   </div>
 
@@ -3896,9 +3890,9 @@ return (
                         background: `linear-gradient(to right, #f97316 0%, #f97316 ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`,
                         touchAction: "none"
                       }}
-                      className="w-full h-2.5 rounded-full appearance-none cursor-pointer accent-orange-500 touch-none focus:outline-none"
+                      className="ppi-mpi-slider w-full h-2.5 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
                     />
-                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold px-0.5 pt-1.5">
+                    <div className="flex justify-between items-center text-[10px] font-montserrat text-slate-400 font-bold px-0.5 pt-1.5">
                       <span>0</span>
                       <span>5</span>
                       <span>10</span>
@@ -3908,15 +3902,15 @@ return (
               );
             })}
 
-            <div className="bg-white p-5 border border-slate-200/80 rounded-2xl shadow-sm space-y-2">
-              <label className="text-xs font-black tracking-wider text-slate-700 uppercase flex items-center gap-1.5">
+            <div className="bg-white p-4.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-sm space-y-2 font-montserrat">
+              <label className="text-xs font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1.5">
                 <span>COACH REMARKS & NOTES</span>
                 <span className="text-[10px] font-normal text-slate-400 lowercase">(optional)</span>
               </label>
               <textarea
                 value={matchForm.notes}
                 onChange={(e) => setMatchForm({ ...matchForm, notes: e.target.value })}
-                className="w-full bg-slate-50/50 border border-slate-200 rounded-xl p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24"
+                className="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-3.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24 font-montserrat"
                 placeholder="Record specific match performance details, opponent tactics, or situational highlights..."
               />
             </div>
@@ -3924,7 +3918,7 @@ return (
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-4 text-base sm:text-lg font-black tracking-wide transition-all flex items-center justify-center cursor-pointer border-2 border-orange-500 shadow-lg shadow-orange-500/25 disabled:opacity-50"
+              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-3.5 sm:py-4 text-sm sm:text-base font-extrabold tracking-wider transition-all flex items-center justify-center cursor-pointer border border-orange-500 shadow-md shadow-orange-500/20 disabled:opacity-50 font-montserrat uppercase"
             >
               {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
             </button>
