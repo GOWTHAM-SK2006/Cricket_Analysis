@@ -44,48 +44,64 @@ html.dark,
 }
 
 /* ------------------ PREMIUM PPI / MPI SLIDER STYLES ------------------ */
+.ppi-mpi-slider {
+  height: 12px !important;
+  border-radius: 9999px !important;
+}
+
+.ppi-mpi-slider::-webkit-slider-runnable-track {
+  height: 12px !important;
+  border-radius: 9999px !important;
+}
+
+.ppi-mpi-slider::-moz-range-track {
+  height: 12px !important;
+  border-radius: 9999px !important;
+}
+
 .ppi-mpi-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #f97316;
-  border: 2.5px solid #ffffff;
-  box-shadow: 0 1px 4px rgba(249, 115, 22, 0.4), 0 0 0 1px rgba(249, 115, 22, 0.2);
+  width: 22px !important;
+  height: 22px !important;
+  margin-top: -5px !important;
+  border-radius: 50% !important;
+  background: #f97316 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.45), 0 0 0 1px rgba(249, 115, 22, 0.2) !important;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .ppi-mpi-slider::-webkit-slider-thumb:hover {
   transform: scale(1.12);
-  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.5), 0 0 0 3px rgba(249, 115, 22, 0.2);
+  box-shadow: 0 3px 8px rgba(249, 115, 22, 0.55), 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
 }
 
 .ppi-mpi-slider::-webkit-slider-thumb:active {
   transform: scale(1.18);
-  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25) !important;
 }
 
 .ppi-mpi-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #f97316;
-  border: 2.5px solid #ffffff;
-  box-shadow: 0 1px 4px rgba(249, 115, 22, 0.4), 0 0 0 1px rgba(249, 115, 22, 0.2);
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  background: #f97316 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.45), 0 0 0 1px rgba(249, 115, 22, 0.2) !important;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .ppi-mpi-slider::-moz-range-thumb:hover {
   transform: scale(1.12);
-  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.5), 0 0 0 3px rgba(249, 115, 22, 0.2);
+  box-shadow: 0 3px 8px rgba(249, 115, 22, 0.55), 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
 }
 
 .ppi-mpi-slider::-moz-range-thumb:active {
   transform: scale(1.18);
-  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25) !important;
 }
 
 /* ------------------ GLOBAL DARK MODE OVERRIDES ------------------ */
