@@ -35,36 +35,28 @@ export const ROLE_CONTEXT_MAP: Record<SupportedRole, Record<ApprovedCpiParameter
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
-    "Intensity": getSourceWordingForParam("Intensity"),
-    "Focus": getSourceWordingForParam("Focus"),
-    "Resilience": getSourceWordingForParam("Resilience")
+    "Intensity": getSourceWordingForParam("Intensity")
   },
   Bowler: {
     "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
-    "Intensity": getSourceWordingForParam("Intensity"),
-    "Focus": getSourceWordingForParam("Focus"),
-    "Resilience": getSourceWordingForParam("Resilience")
+    "Intensity": getSourceWordingForParam("Intensity")
   },
   Wicketkeeper: {
     "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
-    "Intensity": getSourceWordingForParam("Intensity"),
-    "Focus": getSourceWordingForParam("Focus"),
-    "Resilience": getSourceWordingForParam("Resilience")
+    "Intensity": getSourceWordingForParam("Intensity")
   },
   Fielder: {
     "Technique": getSourceWordingForParam("Technique"),
     "Skill Level": getSourceWordingForParam("Skill Level"),
     "Game Plan": getSourceWordingForParam("Game Plan"),
     "Preparation": getSourceWordingForParam("Preparation"),
-    "Intensity": getSourceWordingForParam("Intensity"),
-    "Focus": getSourceWordingForParam("Focus"),
-    "Resilience": getSourceWordingForParam("Resilience")
+    "Intensity": getSourceWordingForParam("Intensity")
   }
 };
 

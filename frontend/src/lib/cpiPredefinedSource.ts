@@ -1,23 +1,20 @@
 /**
- * STRICT CPI 7 PARAMETERS SOURCE WORDING MODULE
+ * STRICT CPI 5 PARAMETERS SOURCE WORDING MODULE
  * 
- * Contains EXACT character-for-character statements extracted from:
- * CPI_7_Parameters_Practice_And_Match_Separate.txt
+ * Contains EXACT character-for-character statements extracted from CPI Framework
  * 
  * Rules:
- * 1. Only the 7 approved CPI parameters are present.
+ * 1. Only the 5 approved CPI parameters are present.
  * 2. Exact wording is preserved with zero paraphrasing, zero word changes, and zero AI additions.
  * 3. Both Practice and Match versions are specified separately.
  */
 
-export const APPROVED_CPI_7_PARAMETERS = [
+export const APPROVED_CPI_5_PARAMETERS = [
   "Technique",
   "Skill Level",
   "Game Plan",
   "Preparation",
-  "Intensity",
-  "Focus",
-  "Resilience"
+  "Intensity"
 ] as const;
 
 export const DISPLAY_PARAMETER_NAMES: Record<ApprovedCpiParameter, string> = {
@@ -25,12 +22,10 @@ export const DISPLAY_PARAMETER_NAMES: Record<ApprovedCpiParameter, string> = {
   "Skill Level": "Skill Level",
   "Game Plan": "Game Plan",
   "Preparation": "Preparation",
-  "Intensity": "Intensity",
-  "Focus": "Focus",
-  "Resilience": "Resilience"
+  "Intensity": "Intensity"
 };
 
-export type ApprovedCpiParameter = typeof APPROVED_CPI_7_PARAMETERS[number];
+export type ApprovedCpiParameter = typeof APPROVED_CPI_5_PARAMETERS[number];
 
 export interface ParameterWordingBlock {
   high: {
@@ -306,123 +301,19 @@ export const CPI_PREDEFINED_SOURCE: Record<ApprovedCpiParameter, DualContextPara
       overview: "The Intensity Index helps the coach distinguish between genuine competitive effort and meaningless activity.",
       goal: "The goal is not maximum intensity at every moment. The goal is the right intensity, for the right task, maintained for the right length of time."
     }
-  },
-  "Focus": {
-    description: "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches.",
-    practice: {
-      high: {
-        actionPoints: [
-          "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.",
-          "Increase the challenge. Use longer, more demanding drills and match scenarios in practice that test concentration.",
-          "Reinforce reset habits. Encourage simple routines between balls, overs or repetitions.",
-          "Protect calm thinking. Make sure strong focus does not become tension or overthinking.",
-          "Monitor consistency. Check whether the player can stay focused when tired, frustrated or under pressure."
-        ],
-        summary: "reinforce, challenge and sustain."
-      },
-      low: {
-        actionPoints: [
-          "Identify the cause. Is the player distracted, tired, anxious, bored or unclear about what matters?",
-          "Simplify the task. Give one clear focus point rather than too many instructions.",
-          "Teach a reset. Use a simple routine to help the player reconnect after mistakes or distractions.",
-          "Create shorter challenges. Break practice into smaller, purposeful blocks.",
-          "Review the pattern. Look for when focus drops and what tends to trigger it."
-        ],
-        summary: "simplify, reset and rebuild."
-      },
-      overview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      goal: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
-    },
-    match: {
-      high: {
-        actionPoints: [
-          "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.",
-          "Increase the challenge. Use longer, more demanding drills and match scenarios in practice that test concentration.",
-          "Reinforce reset habits. Encourage simple routines between balls, overs or repetitions.",
-          "Protect calm thinking. Make sure strong focus does not become tension or overthinking.",
-          "Monitor consistency. Check whether the player can stay focused when tired, frustrated or under pressure."
-        ],
-        summary: "reinforce, challenge and sustain."
-      },
-      low: {
-        actionPoints: [
-          "Identify the cause. Is the player distracted, tired, anxious, bored or unclear about what matters?",
-          "Simplify the task. Give one clear focus point rather than too many instructions.",
-          "Teach a reset. Use a simple routine to help the player reconnect after mistakes or distractions.",
-          "Create shorter challenges. Break practice into smaller, purposeful blocks.",
-          "Review the pattern. Look for when focus drops and what tends to trigger it."
-        ],
-        summary: "simplify, reset and rebuild."
-      },
-      overview: "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.",
-      goal: "The goal is simple: stay present, reset quickly and give the next ball your full attention."
-    }
-  },
-  "Resilience": {
-    description: "Resilience measures how well a player responds to mistakes, pressure, disappointment and setbacks in both practice and matches.",
-    practice: {
-      high: {
-        actionPoints: [
-          "Confirm what worked. Ask the player how they recovered after a mistake or difficult moment.",
-          "Reinforce the reset routine. Encourage simple habits such as breathing, refocusing and committing to the next ball.",
-          "Increase the challenge. Use tougher practice scenarios and more competitive situations to test the response.",
-          "Develop leadership. Encourage the player to stay composed and help teammates recover from setbacks.",
-          "Monitor consistency. Make sure the player can respond well in both practice and matches, not only when things are going their way."
-        ],
-        summary: "reinforce, challenge and lead."
-      },
-      low: {
-        actionPoints: [
-          "Identify the trigger. Find out whether the player struggles most after mistakes, criticism, poor decisions, umpiring calls or pressure.",
-          "Keep one moment in perspective. Help the player understand that one bad ball, shot or error does not define the whole performance.",
-          "Teach a simple reset. Give the player a routine they can use after every setback.",
-          "Practise recovery. Create scenarios where mistakes and pressure are part of the session, then coach the response.",
-          "Review the comeback. Focus on how quickly the player recovered, not only on what went wrong."
-        ],
-        summary: "understand, reset and rebuild."
-      },
-      overview: "The Resilience Index is not about whether the player makes mistakes. It is about what they do next.",
-      goal: "The goal is simple: do not let the last ball or moment control the next one."
-    },
-    match: {
-      high: {
-        actionPoints: [
-          "Confirm what worked. Ask the player how they recovered after a mistake or difficult moment.",
-          "Reinforce the reset routine. Encourage simple habits such as breathing, refocusing and committing to the next ball.",
-          "Increase the challenge. Use tougher practice scenarios and more competitive situations to test the response.",
-          "Develop leadership. Encourage the player to stay composed and help teammates recover from setbacks.",
-          "Monitor consistency. Make sure the player can respond well in both practice and matches, not only when things are going their way."
-        ],
-        summary: "reinforce, challenge and lead."
-      },
-      low: {
-        actionPoints: [
-          "Identify the trigger. Find out whether the player struggles most after mistakes, criticism, poor decisions, umpiring calls or pressure.",
-          "Keep one moment in perspective. Help the player understand that one bad ball, shot or error does not define the whole performance.",
-          "Teach a simple reset. Give the player a routine they can use after every setback.",
-          "Practise recovery. Create scenarios where mistakes and pressure are part of the session, then coach the response.",
-          "Review the comeback. Focus on how quickly the player recovered, not only on what went wrong."
-        ],
-        summary: "understand, reset and rebuild."
-      },
-      overview: "The Resilience Index is not about whether the player makes mistakes. It is about what they do next.",
-      goal: "The goal is simple: do not let the last ball or moment control the next one."
-    }
   }
 };
 
 /**
- * Standardizes any input parameter name string to the exact 7 approved CPI parameter names.
+ * Standardizes any input parameter name string to the exact 5 approved CPI parameter names.
  */
 export function normalizeCpiParameterName(inputName: string): ApprovedCpiParameter {
   const lower = (inputName || "").trim().toLowerCase();
   if (lower.includes("tech")) return "Technique";
   if (lower.includes("skill")) return "Skill Level";
-  if (lower.includes("game")) return "Game Plan";
+  if (lower.includes("game") || lower.includes("plan")) return "Game Plan";
   if (lower.includes("prep")) return "Preparation";
   if (lower.includes("intens")) return "Intensity";
-  if (lower.includes("foc") || lower.includes("concentr")) return "Focus";
-  if (lower.includes("resil")) return "Resilience";
   return "Technique";
 }
 

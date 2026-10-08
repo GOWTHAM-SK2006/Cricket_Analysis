@@ -17,15 +17,13 @@ interface ParameterItem {
   recommendation: string;
 }
 
-const buildDefault7Parameters = (): ParameterItem[] => {
+const buildDefault5Parameters = (): ParameterItem[] => {
   const ids: Record<ApprovedCpiParameter, number> = {
     "Technique": 1,
     "Skill Level": 2,
     "Game Plan": 3,
     "Preparation": 4,
-    "Intensity": 5,
-    "Focus": 6,
-    "Resilience": 7
+    "Intensity": 5
   };
 
   return (Object.keys(CPI_PREDEFINED_SOURCE) as ApprovedCpiParameter[]).map((name) => {
@@ -42,13 +40,13 @@ const buildDefault7Parameters = (): ParameterItem[] => {
   });
 };
 
-const DEFAULT_7_PARAMETERS: ParameterItem[] = buildDefault7Parameters();
+const DEFAULT_5_PARAMETERS: ParameterItem[] = buildDefault5Parameters();
 
 export default function AdminCpiFrameworkPage() {
   const { showToast } = useAdminToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [parameters, setParameters] = useState<ParameterItem[]>(DEFAULT_7_PARAMETERS);
+  const [parameters, setParameters] = useState<ParameterItem[]>(DEFAULT_5_PARAMETERS);
   const [activeParamId, setActiveParamId] = useState<number>(1);
   const [fullConfigRaw, setFullConfigRaw] = useState<any>({});
 
@@ -113,7 +111,7 @@ export default function AdminCpiFrameworkPage() {
 
       if (!res.ok) throw new Error("Failed to save CPI Framework configuration");
 
-      showToast("7 CPI Performance Parameters updated successfully!", "success");
+      showToast("5 CPI Performance Parameters updated successfully!", "success");
     } catch (err: any) {
       showToast(err.message || "Failed to save parameters", "error");
     } finally {
@@ -135,7 +133,7 @@ export default function AdminCpiFrameworkPage() {
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-black text-slate-900 tracking-tight">CPI Framework Governance</h1>
             <span className="px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 text-[10px] font-bold">
-              Exactly 7 Core Parameters
+              Exactly 5 Core Parameters
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -145,7 +143,7 @@ export default function AdminCpiFrameworkPage() {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setParameters(DEFAULT_7_PARAMETERS)}
+            onClick={() => setParameters(DEFAULT_5_PARAMETERS)}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
           >
             <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
@@ -162,12 +160,12 @@ export default function AdminCpiFrameworkPage() {
         </div>
       </div>
 
-      {/* Grid: 7 Parameters Sidebar + Form Editor */}
+      {/* Grid: 5 Parameters Sidebar + Form Editor */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left 7 Parameters Selector */}
+        {/* Left 5 Parameters Selector */}
         <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-2">
           <div className="px-3 py-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
-            Select Core Parameter (1 of 7)
+            Select Core Parameter (1 of 5)
           </div>
           {parameters.map((p, index) => {
             const isActive = p.id === activeParamId;

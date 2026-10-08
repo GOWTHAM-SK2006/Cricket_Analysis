@@ -98,7 +98,7 @@ export default function MasterAdminDashboardPage() {
     { title: "Global Players", desc: "Platform-wide player directory, CPI, PPI & MPI metrics", path: "/admin/players", icon: UserCheck, badge: `${metrics.totalPlayers ?? 11} Players` },
     { title: "Assessments Log", desc: "Global assessment records & performance filters", path: "/admin/assessments", icon: ClipboardList, badge: `${(totalAss).toLocaleString()} Logs` },
     { title: "Platform Analytics", desc: "Usage curves, performance metrics & coach engagement", path: "/admin/analytics", icon: BarChart3, badge: "Live Analytics" },
-    { title: "CPI Framework", desc: "Manage the 7 core CPI parameters, rating rules & guidance", path: "/admin/cpi-framework", icon: Sliders, badge: "7 Parameters" },
+    { title: "CPI Framework", desc: "Manage the 5 core CPI parameters, rating rules & guidance", path: "/admin/cpi-framework", icon: Sliders, badge: "5 Parameters" },
     { title: "AI Management", desc: "Configure AI instructions, coaching tone & recommendation rules", path: "/admin/ai", icon: Bot, badge: "Active Directives" },
     { title: "Reports Manager", desc: "Report wording, templates & Section 3 Strongest→Weakest preview", path: "/admin/reports", icon: FileText, badge: "Live Preview" },
   ];

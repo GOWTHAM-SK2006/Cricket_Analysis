@@ -14,9 +14,9 @@ interface VersionItem {
 }
 
 const DEFAULT_VERSIONS: VersionItem[] = [
-  { version: "v2.5", section: "CPI Framework", changedBy: "cpi@admin.com", date: "2026-08-08", time: "21:04", summary: "Updated 7 CPI core parameter guidance notes & ratings" },
+  { version: "v2.5", section: "CPI Framework", changedBy: "cpi@admin.com", date: "2026-08-08", time: "21:04", summary: "Updated 5 CPI core parameter guidance notes & ratings" },
   { version: "v2.4", section: "AI Directives", changedBy: "cpi@admin.com", date: "2026-08-08", time: "20:45", summary: "Configured AI Coach system prompt & tone directives" },
-  { version: "v2.3", section: "Reports Generator", changedBy: "cpi@admin.com", date: "2026-08-07", time: "18:20", summary: "Set Section 3 to rank 1 to 7 Strongest to Weakest" },
+  { version: "v2.3", section: "Reports Generator", changedBy: "cpi@admin.com", date: "2026-08-07", time: "18:20", summary: "Set Section 3 to rank 1 to 5 Strongest to Weakest" },
   { version: "v2.0", section: "Initial Seed", changedBy: "System Seeder", date: "2026-06-20", time: "12:14", summary: "Initial default CPI content configuration template" }
 ];
 

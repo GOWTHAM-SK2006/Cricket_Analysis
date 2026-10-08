@@ -57,7 +57,7 @@ interface MockParamScore {
 const buildMockPlayerScores = (): MockParamScore[] => {
   return (Object.keys(CPI_PREDEFINED_SOURCE) as ApprovedCpiParameter[]).map((name, i) => {
     const src = CPI_PREDEFINED_SOURCE[name];
-    const scores = [8.8, 8.6, 8.3, 8.1, 7.9, 7.5, 7.2];
+    const scores = [8.8, 8.6, 8.3, 8.1, 7.9];
     const score = scores[i] || 7.5;
     const block = score >= 7.0 ? src.practice.high : src.practice.low;
     return {
@@ -214,7 +214,7 @@ export default function AdminReportsPage() {
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-black text-slate-900 tracking-tight">Report Content & Live Preview</h1>
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-              7 Parameters Ranked 1 to 7
+              5 Parameters Ranked 1 to 5
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1 font-medium">
@@ -296,7 +296,7 @@ export default function AdminReportsPage() {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Section 3 Title (All 7 Parameters)
+                Section 3 Title (All 5 Parameters)
               </label>
               <input
                 type="text"
@@ -338,7 +338,7 @@ export default function AdminReportsPage() {
                 <HelpCircle className="w-4 h-4 text-sky-600" />
                 <span>2. Help & Information Content Editor</span>
               </h2>
-              <span className="px-2 py-0.5 rounded bg-sky-50 text-sky-700 text-[10px] font-bold">7 Parameters Info</span>
+              <span className="px-2 py-0.5 rounded bg-sky-50 text-sky-700 text-[10px] font-bold">5 Parameters Info</span>
             </div>
 
             {/* Select parameter */}
@@ -459,7 +459,7 @@ export default function AdminReportsPage() {
               </div>
             </div>
 
-            {/* SECTION 3: ALL 7 PARAMETERS RANKED STRONGEST → WEAKEST */}
+            {/* SECTION 3: ALL 5 PARAMETERS RANKED STRONGEST → WEAKEST */}
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                 <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
@@ -473,7 +473,7 @@ export default function AdminReportsPage() {
                 {reportConfig.strengthWeaknessWording}
               </p>
 
-              {/* 1 to 7 Parameters List */}
+              {/* 1 to 5 Parameters List */}
               <div className="space-y-2.5">
                 {sortedScores.map((item, index) => (
                   <div
@@ -486,7 +486,7 @@ export default function AdminReportsPage() {
                           className={`w-5 h-5 rounded-md text-[11px] font-black flex items-center justify-center ${
                             index === 0
                               ? "bg-emerald-600 text-white"
-                              : index === 6
+                              : index === 4
                               ? "bg-rose-600 text-white"
                               : "bg-slate-800 text-white"
                           }`}

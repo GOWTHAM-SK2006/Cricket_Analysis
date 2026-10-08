@@ -55,11 +55,11 @@ interface TermsConfig {
 
 const DEFAULT_CONTENT: SystemContent = {
   homepageTitle: "Cricket Performance Index (CPI) Platform",
-  homepageSubtitle: "Comprehensive 7-Parameter Evaluation & AI Coach Longitudinal Tracking",
+  homepageSubtitle: "Comprehensive 5-Parameter Evaluation & AI Coach Longitudinal Tracking",
   faqItem1: "What is the Cricket Performance Index (CPI)?",
   faqAnswer1: "CPI is a normalized 10-point evaluation metric combining Practice (PPI) and Match (MPI) performance parameters.",
   tooltipPpi: "Practice Performance Index: Evaluates mechanics, execution rate, and effort during net drills.",
-  tooltipMpi: "Match Performance Index: Evaluates tactical awareness, game plan adherence, and resilience under pressure.",
+  tooltipMpi: "Match Performance Index: Evaluates tactical awareness, game plan adherence, and execution under pressure.",
   tooltipCpi: "Cricket Performance Index: Normalized aggregate of PPI and MPI on a 10-point scale.",
   footerText: "© 2026 CPI – Cricket Performance Index. All rights reserved."
 };

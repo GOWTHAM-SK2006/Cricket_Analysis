@@ -34,10 +34,10 @@ public class AiService {
     private final com.cpi.cpi_backend.repository.CpiContentConfigRepository cpiContentConfigRepository;
 
     private static final Map<String, Object> DEFAULT_ADMIN_DIRECTIVES = Map.of(
-        "systemInstructions", "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework. DO NOT generate, display, or reference any Coach's Summary or 'THE COACH'S SUMMARY' sections anywhere.",
+        "systemInstructions", "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 5-parameter framework. DO NOT generate, display, or reference any Coach's Summary or 'THE COACH'S SUMMARY' sections anywhere.",
         "coachingTone", "Professional, encouraging, analytical, and actionable.",
-        "responseGuidance", "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY, HOW TO COACH FOCUS, HOW TO COACH RESILIENCE). Do not generate any 'THE COACH'S SUMMARY' sections.",
-        "recommendationBehaviour", "Outputs must contain ONLY exact sentences from CPI_7_Parameters_Practice_And_Match_Separate.txt. Do not paraphrase, rewrite, or add any Coach's Summary."
+        "responseGuidance", "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY). Do not generate any 'THE COACH'S SUMMARY' sections.",
+        "recommendationBehaviour", "Outputs must contain ONLY exact sentences from CPI Framework. Do not paraphrase, rewrite, or add any Coach's Summary."
     );
 
     private volatile Map<String, Object> cachedAdminDirectives = null;
@@ -141,17 +141,6 @@ public class AiService {
                             context.put("gamePlan", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getGamePlan, com.cpi.cpi_backend.entity.MatchAssessment::getGamePlan));
                             context.put("preparation", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getPreparation, com.cpi.cpi_backend.entity.MatchAssessment::getPreparation));
                             context.put("intensity", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getIntensity, com.cpi.cpi_backend.entity.MatchAssessment::getIntensity));
-                            context.put("focus", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getFocus, com.cpi.cpi_backend.entity.MatchAssessment::getFocus));
-                            context.put("resilience", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getResilience, com.cpi.cpi_backend.entity.MatchAssessment::getResilience));
-                            context.put("concentration", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getConcentration, com.cpi.cpi_backend.entity.MatchAssessment::getConcentration));
-                            context.put("decisionMaking", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDecisionMaking, com.cpi.cpi_backend.entity.MatchAssessment::getDecisionMaking));
-                            context.put("gameAwareness", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getGameAwareness, com.cpi.cpi_backend.entity.MatchAssessment::getGameAwareness));
-                            context.put("adaptability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getAdaptability, com.cpi.cpi_backend.entity.MatchAssessment::getAdaptability));
-                            context.put("discipline", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getDiscipline, com.cpi.cpi_backend.entity.MatchAssessment::getDiscipline));
-                            context.put("teamwork", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getTeamwork, com.cpi.cpi_backend.entity.MatchAssessment::getTeamwork));
-                            context.put("coachability", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getCoachability, com.cpi.cpi_backend.entity.MatchAssessment::getCoachability));
-                            context.put("workEthic", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getWorkEthic, com.cpi.cpi_backend.entity.MatchAssessment::getWorkEthic));
-                            context.put("emotionalControl", getAverageMetric(practiceAssessments, matchAssessments, com.cpi.cpi_backend.entity.PracticeAssessment::getEmotionalControl, com.cpi.cpi_backend.entity.MatchAssessment::getEmotionalControl));
 
                             java.util.List<Double> practiceHistory = practiceAssessments.stream()
                                     .filter(a -> a != null)

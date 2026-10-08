@@ -51,9 +51,6 @@ interface AssessmentItem {
   gamePlan?: number;
   preparation?: number;
   intensity?: number;
-  focus?: number;
-  concentration?: number;
-  resilience?: number;
   ppiScore?: number;
   mpiScore?: number;
   notes?: string;
@@ -83,9 +80,7 @@ const PARAM_DEFINITIONS = [
   { name: "Skill Level", getVal: (a: AssessmentItem) => a.skillsLevel },
   { name: "Game Plan", getVal: (a: AssessmentItem) => a.gamePlan },
   { name: "Preparation", getVal: (a: AssessmentItem) => a.preparation },
-  { name: "Intensity", getVal: (a: AssessmentItem) => a.intensity },
-  { name: "Focus", getVal: (a: AssessmentItem) => a.focus ?? a.concentration },
-  { name: "Resilience", getVal: (a: AssessmentItem) => a.resilience }
+  { name: "Intensity", getVal: (a: AssessmentItem) => a.intensity }
 ];
 
 export default function TeamPage() {
@@ -473,11 +468,11 @@ export default function TeamPage() {
 
     y += 22;
 
-    // 7 CPI Parameter Performance Section
+    // 5 CPI Parameter Performance Section
     doc.setFontSize(9.5);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(15, 23, 42);
-    doc.text("TEAM 7-PARAMETER PERFORMANCE", 14, y);
+    doc.text("TEAM 5-PARAMETER PERFORMANCE", 14, y);
 
     y += 5;
 
@@ -646,7 +641,7 @@ export default function TeamPage() {
   const allAssessments = [...practiceAssessments, ...matchAssessments];
   const hasAssessmentData = allAssessments.length > 0;
 
-  // Calculate 7 Parameter Averages for Practice & Match
+  // Calculate 5 Parameter Averages for Practice & Match
   const practiceParamScores = PARAM_DEFINITIONS.map(p => ({
     name: p.name,
     avg: getParamAverage(practiceAssessments, p.getVal)
@@ -1369,10 +1364,10 @@ export default function TeamPage() {
                 </div>
               </div>
 
-              {/* 7 Parameters Grid Breakdown */}
+              {/* 5 Parameters Grid Breakdown */}
               <div className="space-y-4 pt-2">
                 <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
-                  7 CPI PARAMETERS (PRACTICE VS MATCH)
+                  5 CPI PARAMETERS (PRACTICE VS MATCH)
                 </div>
 
                 <div className="grid grid-cols-1 gap-3">
@@ -1945,11 +1940,11 @@ export default function TeamPage() {
                     </div>
                   </div>
 
-                  {/* 7 CPI Parameters Comparison Table */}
+                  {/* 5 CPI Parameters Comparison Table */}
                   <div className="space-y-3 pt-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
                       <div className="font-black text-xs text-slate-700 uppercase tracking-wider">
-                        7 CPI PARAMETERS COMPARISON
+                        5 CPI PARAMETERS COMPARISON
                       </div>
 
                       {/* Practice vs Match vs Overall Filter Pills */}

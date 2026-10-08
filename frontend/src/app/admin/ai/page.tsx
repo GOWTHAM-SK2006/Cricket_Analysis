@@ -6,7 +6,7 @@ import { useAdminToast } from "../layout";
 import CricketLoader from "@/components/CricketLoader";
 import { 
   CPI_PREDEFINED_SOURCE, 
-  APPROVED_CPI_7_PARAMETERS, 
+  APPROVED_CPI_5_PARAMETERS, 
   ApprovedCpiParameter, 
   DISPLAY_PARAMETER_NAMES 
 } from "@/lib/cpiPredefinedSource";
@@ -33,15 +33,15 @@ export interface AiCoachConfig {
 }
 
 const DEFAULT_GLOBAL_DIRECTIVES = {
-  systemInstructions: "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework.",
+  systemInstructions: "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 5-parameter framework.",
   coachingTone: "Professional, encouraging, analytical, and actionable.",
-  responseGuidance: "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY, HOW TO COACH FOCUS, HOW TO COACH RESILIENCE).",
-  recommendationBehaviour: "Outputs must contain ONLY exact sentences from CPI_7_Parameters_Practice_And_Match_Separate.txt. Do not paraphrase or add new wording."
+  responseGuidance: "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY).",
+  recommendationBehaviour: "Outputs must contain ONLY exact sentences from CPI Framework. Do not paraphrase or add new wording."
 };
 
 const buildDefaultParameterMap = (context: "practice" | "match"): Record<ApprovedCpiParameter, ParameterEditorItem> => {
   const map: any = {};
-  APPROVED_CPI_7_PARAMETERS.forEach((param) => {
+  APPROVED_CPI_5_PARAMETERS.forEach((param) => {
     const src = CPI_PREDEFINED_SOURCE[param];
     const block = src[context];
     map[param] = {
@@ -78,7 +78,7 @@ const parseAiConfig = (jsonStr: any): AiCoachConfig => {
       const matchParams = parsed.matchParameters || buildDefaultParameterMap("match");
 
       // Sanitize all parameters to ensure key completeness
-      APPROVED_CPI_7_PARAMETERS.forEach((p) => {
+      APPROVED_CPI_5_PARAMETERS.forEach((p) => {
         if (!practiceParams[p]) practiceParams[p] = fallback.practiceParameters[p];
         if (!matchParams[p]) matchParams[p] = fallback.matchParameters[p];
       });
@@ -244,7 +244,7 @@ export default function AdminAiPage() {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1 font-medium">
-            Configure system prompts, tone of voice, output guidelines, and Daryll Sir’s word-for-word 7-parameter Practice and Match content.
+            Configure system prompts, tone of voice, output guidelines, and Daryll Sir’s word-for-word 5-parameter Practice and Match content.
           </p>
         </div>
 
@@ -295,7 +295,7 @@ export default function AdminAiPage() {
           }`}
         >
           <Award className="w-4 h-4" />
-          <span>PRACTICE CPI PARAMETERS (7)</span>
+          <span>PRACTICE CPI PARAMETERS (5)</span>
         </button>
 
         <button
@@ -308,7 +308,7 @@ export default function AdminAiPage() {
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>MATCH CPI PARAMETERS (7)</span>
+          <span>MATCH CPI PARAMETERS (5)</span>
         </button>
       </div>
 
@@ -375,9 +375,9 @@ export default function AdminAiPage() {
           {/* Parameter Selector Sidebar */}
           <div className="md:col-span-1 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-1">
             <div className="px-3 py-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-              {activeTab.toUpperCase()} PARAMETERS (7)
+              {activeTab.toUpperCase()} PARAMETERS (5)
             </div>
-            {APPROVED_CPI_7_PARAMETERS.map((param) => {
+            {APPROVED_CPI_5_PARAMETERS.map((param) => {
               const displayName = DISPLAY_PARAMETER_NAMES[param];
               const isSelected = selectedParam === param;
               return (

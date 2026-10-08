@@ -75,10 +75,10 @@ export default function HelpPage() {
     "Welcome to the Cricket Performance Index (CPI) platform. This guide explains how our index works, how to interpret scores on an out-of-10 scale, and provides the complete Coach’s Plan of Action for player development."
   );
   const [ppiDesc, setPpiDesc] = useState<string>(
-    "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation."
+    "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across the 5 core parameters on a 0 – 10 scale: technique, skill level, game plan, preparation, and intensity."
   );
   const [mpiDesc, setMpiDesc] = useState<string>(
-    "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technique, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation."
+    "The Match Performance Index (MPI) is a structured coaching tool used to assess how effectively a young cricketer performs during competitive play on a 0 – 10 scale. It measures performance across the 5 core parameters on a 0 – 10 scale: technique, skill level, game plan, preparation, and intensity."
   );
   const [cpiDesc, setCpiDesc] = useState<string>(
     "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back."
@@ -275,7 +275,7 @@ export default function HelpPage() {
           <div>
             <h3 className="text-base font-black text-slate-900 uppercase leading-snug">HOW TO SCORE A PLAYER</h3>
             <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block mt-0.5">
-              THE 7 KEY PERFORMANCE AREAS
+              THE 5 KEY PERFORMANCE AREAS
             </span>
           </div>
         </div>

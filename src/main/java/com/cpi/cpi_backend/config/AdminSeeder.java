@@ -81,9 +81,7 @@ public class AdminSeeder implements CommandLineRunner {
                   {"id": 2, "name": "Skill Level", "description": "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches.", "ratingDescription": "The Skill Level Index helps the coach understand whether the player has the range and quality of skills needed to meet the demands of practice and competition.", "guidance": "The goal is simple: develop the right skills, then make sure the player can use them when the game demands them.", "instructions": "Evaluate skill level on a 1-10 scale based on approved CPI parameters.", "recommendation": "Identify the strengths. Understand which skills the player performs consistently and confidently."},
                   {"id": 3, "name": "Game Plan", "description": "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it in both practice and matches.", "ratingDescription": "The Game Plan Index helps the coach understand whether the player is performing with clear purpose or simply reacting to what happens.", "guidance": "The goal is simple: every player should know what they are trying to do, why they are doing it and when the game requires them to change.", "instructions": "Evaluate game plan execution on a 1-10 scale based on approved CPI parameters.", "recommendation": "Confirm the thinking. Ask the player what their plan was and why they chose it."},
                   {"id": 4, "name": "Preparation", "description": "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches.", "ratingDescription": "The Preparation Index helps the coach identify whether the player is giving themselves a genuine opportunity to improve.", "guidance": "The goal is not simply to arrive at practice. It is to arrive ready physically, mentally and practically to make the session count.", "instructions": "Evaluate preparation on a 1-10 scale based on approved CPI parameters.", "recommendation": "Reinforce the routine. Help the player identify the habits and routines that allow them to arrive organised, focused and ready to perform."},
-                  {"id": 5, "name": "Intensity", "description": "Intensity measures the energy, purpose and competitive effort a player brings to practice and matches.", "ratingDescription": "The Intensity Index helps the coach distinguish between genuine competitive effort and meaningless activity.", "guidance": "The goal is not maximum intensity at every moment. The goal is the right intensity, for the right task, maintained for the right length of time.", "instructions": "Evaluate intensity on a 1-10 scale based on approved CPI parameters.", "recommendation": "Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless."},
-                  {"id": 6, "name": "Focus", "description": "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches.", "ratingDescription": "The Focus Index helps the coach understand whether the player is mentally present or only physically involved.", "guidance": "The goal is simple: stay present, reset quickly and give the next ball your full attention.", "instructions": "Evaluate focus on a 1-10 scale based on approved CPI parameters.", "recommendation": "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy."},
-                  {"id": 7, "name": "Resilience", "description": "Resilience measures how well a player responds to mistakes, pressure, disappointment and setbacks in both practice and matches.", "ratingDescription": "The Resilience Index is not about whether the player makes mistakes. It is about what they do next.", "guidance": "The goal is simple: do not let the last ball or moment control the next one.", "instructions": "Evaluate resilience on a 1-10 scale based on approved CPI parameters.", "recommendation": "Confirm what worked. Ask the player how they recovered after a mistake or difficult moment."}
+                  {"id": 5, "name": "Intensity", "description": "Intensity measures the energy, purpose and competitive effort a player brings to practice and matches.", "ratingDescription": "The Intensity Index helps the coach distinguish between genuine competitive effort and meaningless activity.", "guidance": "The goal is not maximum intensity at every moment. The goal is the right intensity, for the right task, maintained for the right length of time.", "instructions": "Evaluate intensity on a 1-10 scale based on approved CPI parameters.", "recommendation": "Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless."}
                 ]
                 """;
 
@@ -270,82 +268,9 @@ public class AdminSeeder implements CommandLineRunner {
                         "low": "Inconsistent effort, energy drops easily under fatigue, requiring external motivation.",
                         "goal": "Maintain self-driven competitive intent and high intensity throughout every session and match."
                       }
-                    },
-                    {
-                      "id": "focus",
-                      "name": "Focus",
-                      "description": "The Focus Index measures the player’s ability to stay mentally present despite setbacks or distractions during practices and matches.",
-                      "highPoints": [
-                        { "title": "Present Ball by Ball", "detail": "Present Ball by Ball" },
-                        { "title": "Resets Quickly", "detail": "Resets Quickly" },
-                        { "title": "Filters Distractions", "detail": "Filters Distractions" },
-                        { "title": "Focus Lasts", "detail": "Focus Lasts" },
-                        { "title": "Self-Manages Attention", "detail": "Self-Manages Attention" }
-                      ],
-                      "highSummary": "An elite score (7–10) shows present ball-by-ball concentration, fast mental resets, and total filtering of external distractions.",
-                      "mediumPoints": [
-                        { "title": "Focus Is Generally Good", "detail": "Focus Is Generally Good" },
-                        { "title": "Concentration Can Drift", "detail": "Concentration Can Drift" },
-                        { "title": "Reset Takes Time", "detail": "Reset Takes Time" },
-                        { "title": "Pressure Tests Attention", "detail": "Pressure Tests Attention" },
-                        { "title": "Routines Are Developing", "detail": "Routines Are Developing" }
-                      ],
-                      "mediumSummary": "A developing score (5–7) shows generally good focus with developing reset routines, though concentration can drift under pressure.",
-                      "lowPoints": [
-                        { "title": "Attention Regularly Drifts", "detail": "Attention Regularly Drifts" },
-                        { "title": "Previous Moments Carry Over", "detail": "Previous Moments Carry Over" },
-                        { "title": "Reads Situation Poorly", "detail": "Reads Situation Poorly" },
-                        { "title": "Distractions Take Over", "detail": "Distractions Take Over" },
-                        { "title": "Needs Frequent Reminders", "detail": "Needs Frequent Reminders" }
-                      ],
-                      "lowSummary": "A score needing attention (0–5) shows regular attention drift, distraction, and carrying errors from previous balls.",
-                      "coachSummary": {
-                        "overview": "The Focus Index measures the player’s ability to stay mentally present despite setbacks or distractions during practices and matches.",
-                        "high": "Present ball by ball, resets quickly, filters distractions, and self-manages attention.",
-                        "medium": "Generally good focus with developing routines, though reset after error takes time.",
-                        "low": "Attention regularly drifts, previous moments carry over, and distractions take over.",
-                        "goal": "Stay mentally present ball by ball, filter distractions, and reset instantly after every error."
-                      }
-                    },
-                    {
-                      "id": "resilience",
-                      "name": "Resilience",
-                      "description": "The Resilience Index measures how well a player responds when things don't go their way during practices and matches.",
-                      "highPoints": [
-                        { "title": "Responds Constructively", "detail": "Responds Constructively" },
-                        { "title": "Composure Holds", "detail": "Composure Holds" },
-                        { "title": "Confidence Remains Stable", "detail": "Confidence Remains Stable" },
-                        { "title": "Next Moment Is Protected", "detail": "Next Moment Is Protected" },
-                        { "title": "Recovers Independently", "detail": "Recovers Independently" }
-                      ],
-                      "highSummary": "An elite score (7–10) shows constructive response to adversity, holding composure and stable confidence while protecting the next moment independently.",
-                      "mediumPoints": [
-                        { "title": "Usually Recovers", "detail": "Usually Recovers" },
-                        { "title": "Temporary Drop-Off", "detail": "Temporary Drop-Off" },
-                        { "title": "Reset Habits Are Emerging", "detail": "Reset Habits Are Emerging" },
-                        { "title": "Certain Triggers Remain", "detail": "Certain Triggers Remain" },
-                        { "title": "Returns to the Contest", "detail": "Returns to the Contest" }
-                      ],
-                      "mediumSummary": "A developing score (5–7) shows the player usually recovers from setbacks with emerging reset habits, returning to the contest after temporary drop-offs.",
-                      "lowPoints": [
-                        { "title": "Setbacks Have a Visible Effect", "detail": "Setbacks Have a Visible Effect" },
-                        { "title": "Confidence Drops", "detail": "Confidence Drops" },
-                        { "title": "Mistakes Compound", "detail": "Mistakes Compound" },
-                        { "title": "Recovery Is Slow", "detail": "Recovery Is Slow" },
-                        { "title": "Needs External Support", "detail": "Needs External Support" }
-                      ],
-                      "lowSummary": "A score needing attention (0–5) shows visible emotional drop-off after setbacks, compounding errors, and slow recovery.",
-                      "coachSummary": {
-                        "overview": "The Resilience Index measures how well a player responds when things don't go their way during practices and matches.",
-                        "high": "Responds constructively, composure holds, confidence remains stable, and recovers independently.",
-                        "medium": "Usually recovers with emerging reset habits, returning to the contest after temporary drop-offs.",
-                        "low": "Setbacks have a visible effect, confidence drops, mistakes compound, and recovery is slow.",
-                        "goal": "Respond constructively to adversity, maintain emotional composure, and protect the next moment."
-                      }
-                    }
                   ],
-                  "ppiDescription": "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across key areas on a 0 – 10 scale: technique, intensity, execution, adaptability, discipline, concentration, coachability and preparation.",
-                  "mpiDescription": "The Match Performance Index is a structured coaching tool used to assess how effectively a young cricketer performs and responds during competitive play on a 0 – 10 scale. It measures key areas such as technique, decision making, game awareness, resilience, emotional control, teamwork, match impact and preparation.",
+                  "ppiDescription": "The Practice Performance Index (PPI) is a structured coaching tool used to assess how effectively a young cricketer trains and develops during practice. It measures performance across the 5 core parameters on a 0 – 10 scale: technique, skill level, game plan, preparation, and intensity.",
+                  "mpiDescription": "The Match Performance Index (MPI) is a structured coaching tool used to assess how effectively a young cricketer performs during competitive play on a 0 – 10 scale. It measures performance across the 5 core parameters on a 0 – 10 scale: technique, skill level, game plan, preparation, and intensity.",
                   "cpiDescription": "The Cricket Performance Index (CPI) is a structured coaching tool built around one simple truth: how you practise is how you will play. By measuring key performance areas in both practice and matches on a 0 – 10 scale, the CPI shows what is transferring, where performance is breaking down and what is holding a player back.",
                   "below5Text": "Performance is being limited in one or more key areas. Identify the main cause and make it a coaching priority.",
                   "between5And7Text": "There are positive signs, but performance is still inconsistent. Focus on improving consistency and transfer into matches.",
@@ -368,7 +293,7 @@ public class AdminSeeder implements CommandLineRunner {
                 {
                   "general": "Ensure all player assessments are submitted within 24 hours of session completion to maintain longitudinal tracking accuracy.",
                   "practice": "Focus practice ratings strictly on execution consistency, technical mechanics, and effort level during net drills.",
-                  "match": "Evaluate match ratings based on real-time situational execution, tactical adherence, and emotional resilience under competitive pressure."
+                  "match": "Evaluate match ratings based on real-time situational execution, tactical adherence, and competitive effort under pressure."
                 }
                 """;
 
@@ -378,37 +303,33 @@ public class AdminSeeder implements CommandLineRunner {
                   {"parameter": "Skill Level", "high": "Identify the strengths. Understand which skills the player performs consistently and confidently.", "avg": "High score: challenge, expand and apply.", "low": "Identify the gap. Establish which important skills are missing, inconsistent or limiting performance."},
                   {"parameter": "Game Plan", "high": "Confirm the thinking. Ask the player what their plan was and why they chose it.", "avg": "High score: confirm, challenge and adapt.", "low": "Establish whether there is a plan. Ask the player what they were trying to do and listen for clarity or uncertainty."},
                   {"parameter": "Preparation", "high": "Reinforce the routine. Help the player identify the habits and routines that allow them to arrive organised, focused and ready to perform.", "avg": "High score: reinforce, connect and transfer.", "low": "Identify what is missing. Establish whether the problem is poor organisation, unclear expectations, tiredness, lack of support, low motivation or simple forgetfulness."},
-                  {"parameter": "Intensity", "high": "Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless.", "avg": "High score: channel, challenge and sustain.", "low": "Identify the reason. Establish whether the low intensity is caused by fatigue, poor health, low confidence, boredom, unclear expectations or a lack of motivation."},
-                  {"parameter": "Focus", "high": "Confirm the routine. Identify what helps the player stay present, mentally switched on and preserving their concentration energy.", "avg": "High score: reinforce, challenge and sustain.", "low": "Identify the cause. Is the player distracted, tired, anxious, bored or unclear about what matters?"},
-                  {"parameter": "Resilience", "high": "Confirm what worked. Ask the player how they recovered after a mistake or difficult moment.", "avg": "High score: reinforce, challenge and lead.", "low": "Identify the trigger. Find out whether the player struggles most after mistakes, criticism, poor decisions, umpiring calls or pressure."}
+                  {"parameter": "Intensity", "high": "Channel the energy. Ensure the player’s effort remains controlled and purposeful rather than rushed, emotional or reckless.", "avg": "High score: channel, challenge and sustain.", "low": "Identify the reason. Establish whether the low intensity is caused by fatigue, poor health, low confidence, boredom, unclear expectations or a lack of motivation."}
                 ]
                 """;
 
             String defaultAiCoach = """
                 {
-                  "systemInstructions": "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 7-parameter framework. DO NOT generate, display, or reference any Coach's Summary or 'THE COACH'S SUMMARY' sections anywhere.",
+                  "systemInstructions": "You are the CPI AI Head Performance Analyst. Provide objective, evidence-based performance feedback for cricket players using ONLY the exact wording from the CPI 5-parameter framework. DO NOT generate, display, or reference any Coach's Summary or 'THE COACH'S SUMMARY' sections anywhere.",
                   "coachingTone": "Professional, encouraging, analytical, and actionable.",
-                  "responseGuidance": "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY, HOW TO COACH FOCUS, HOW TO COACH RESILIENCE). Do not generate any 'THE COACH'S SUMMARY' sections.",
-                  "recommendationBehaviour": "Outputs must contain ONLY exact sentences from CPI_7_Parameters_Practice_And_Match_Separate.txt. Do not paraphrase, rewrite, or add any Coach's Summary."
+                  "responseGuidance": "Format outputs clearly using exact parameter headings (HOW TO COACH TECHNIQUE, HOW TO COACH SKILL LEVEL, HOW TO COACH GAME PLAN, HOW TO COACH PREPARATION, HOW TO COACH INTENSITY). Do not generate any 'THE COACH'S SUMMARY' sections.",
+                  "recommendationBehaviour": "Outputs must contain ONLY exact sentences from CPI Framework. Do not paraphrase, rewrite, or add any Coach's Summary."
                 }
                 """;
 
             String defaultReports = """
                 {
                   "heading": "CPI Comprehensive Player Performance Assessment Report",
-                  "subheading": "Detailed 7-Parameter Evaluation & AI Coach Performance Breakdown",
+                  "subheading": "Detailed 5-Parameter Evaluation & AI Coach Performance Breakdown",
                   "section3Title": "Complete Parameter Performance Breakdown (Strongest → Weakest)",
                   "recommendationWording": "Targeted Development Plan based on current CPI Parameter Scores:",
-                  "strengthWeaknessWording": "Full 7-Parameter Spectrum Analysis:",
+                  "strengthWeaknessWording": "Full 5-Parameter Spectrum Analysis:",
                   "scoreFormatNote": "All scores normalized to 10-point CPI scale (e.g. 7.7 / 10)",
                   "helpItems": [
                     {"parameter": "Technique", "explanation": "Technique measures how effectively a player applies their skills during competitive play and practice.", "rangeHigh": "Scores 7.0-10.0: High score: protect, challenge and refine.", "rangeAvg": "Scores 5.0-6.9: A high score tells you that the player's technique is currently a strength.", "rangeLow": "Scores 0.0-4.9: Low score: diagnose, simplify and rebuild."},
                     {"parameter": "Skill Level", "explanation": "Skill Level measures how effectively a player applies their range of cricket-specific skills in both practice and matches.", "rangeHigh": "Scores 7.0-10.0: High score: challenge, expand and apply.", "rangeAvg": "Scores 5.0-6.9: The Skill Level Index helps the coach understand whether the player has the range and quality of skills.", "rangeLow": "Scores 0.0-4.9: Low score: identify, build and repeat."},
                     {"parameter": "Game Plan", "explanation": "Game Plan measures how clearly a player understands what they are trying to achieve and how they intend to go about it.", "rangeHigh": "Scores 7.0-10.0: High score: confirm, challenge and adapt.", "rangeAvg": "Scores 5.0-6.9: The Game Plan Index helps the coach understand whether the player is performing with clear purpose.", "rangeLow": "Scores 0.0-4.9: Low score: clarify, simplify and rehearse."},
                     {"parameter": "Preparation", "explanation": "Preparation measures how physically, mentally and practically ready a player is to perform in both practice and matches.", "rangeHigh": "Scores 7.0-10.0: High score: reinforce, connect and transfer.", "rangeAvg": "Scores 5.0-6.9: The Preparation Index helps the coach identify whether the player is giving themselves a genuine opportunity to improve.", "rangeLow": "Scores 0.0-4.9: Low score: clarify, organise and build responsibility."},
-                    {"parameter": "Intensity", "explanation": "Intensity measures the energy, purpose and competitive effort a player brings to practice and matches.", "rangeHigh": "Scores 7.0-10.0: High score: channel, challenge and sustain.", "rangeAvg": "Scores 5.0-6.9: The Intensity Index helps the coach distinguish between genuine competitive effort and meaningless activity.", "rangeLow": "Scores 0.0-4.9: Low score: investigate, engage and rebuild."},
-                    {"parameter": "Focus", "explanation": "Focus measures how well a player stays mentally present, attentive and connected to the task in both practice and matches.", "rangeHigh": "Scores 7.0-10.0: High score: reinforce, challenge and sustain.", "rangeAvg": "Scores 5.0-6.9: The Focus Index helps the coach understand whether the player is mentally present or only physically involved.", "rangeLow": "Scores 0.0-4.9: Low score: simplify, reset and rebuild."},
-                    {"parameter": "Resilience", "explanation": "Resilience measures how well a player responds to mistakes, pressure, disappointment and setbacks in both practice and matches.", "rangeHigh": "Scores 7.0-10.0: High score: reinforce, challenge and lead.", "rangeAvg": "Scores 5.0-6.9: The Resilience Index is not about whether the player makes mistakes. It is about what they do next.", "rangeLow": "Scores 0.0-4.9: Low score: understand, reset and rebuild."}
+                    {"parameter": "Intensity", "explanation": "Intensity measures the energy, purpose and competitive effort a player brings to practice and matches.", "rangeHigh": "Scores 7.0-10.0: High score: channel, challenge and sustain.", "rangeAvg": "Scores 5.0-6.9: The Intensity Index helps the coach distinguish between genuine competitive effort and meaningless activity.", "rangeLow": "Scores 0.0-4.9: Low score: investigate, engage and rebuild."}
                   ]
                 }
                 """;

@@ -311,7 +311,7 @@ export default function HistoryPage() {
               </div>
             </div>
 
-            {/* Parameter Ratings (7 Parameters) */}
+            {/* Parameter Ratings (5 Parameters) */}
             <div className="space-y-3 font-montserrat">
               <h4 className="text-xs font-extrabold tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-1">
                 {selectedAssessmentDetail.type === "Practice" ? "Practice PPI Breakdown" : "Match MPI Breakdown"}

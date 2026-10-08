@@ -201,8 +201,7 @@ export default function DashboardPage() {
               if (typeof session.ppiScore === "number" && session.ppiScore > 0) return session.ppiScore;
               const vals = [
                 session.technicalExecution, session.skillsLevel, session.gamePlan,
-                session.preparation, session.intensity, session.focus || session.concentration,
-                session.resilience, session.decisionMaking, session.gameAwareness
+                session.preparation, session.intensity
               ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
               return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             };
@@ -211,8 +210,7 @@ export default function DashboardPage() {
               if (typeof session.mpiScore === "number" && session.mpiScore > 0) return session.mpiScore;
               const vals = [
                 session.technicalExecution, session.skillsLevel, session.gamePlan,
-                session.preparation, session.intensity, session.focus || session.concentration,
-                session.resilience, session.decisionMaking, session.gameAwareness
+                session.preparation, session.intensity
               ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
               return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             };

@@ -63,24 +63,13 @@ public class MatchController {
             );
         }
 
-        // Calculate MPI across all non-null parameters
+        // Calculate MPI across the 5 core CPI parameters
         java.util.List<Integer> metrics = java.util.Arrays.asList(
                 request.getTechnicalExecution(),
                 request.getSkillsLevel(),
                 request.getGamePlan(),
                 request.getPreparation(),
-                request.getIntensity(),
-                request.getFocus() != null ? request.getFocus() : request.getConcentration(),
-                request.getResilience(),
-                request.getConcentration(),
-                request.getDecisionMaking(),
-                request.getGameAwareness(),
-                request.getAdaptability(),
-                request.getDiscipline(),
-                request.getTeamwork(),
-                request.getCoachability(),
-                request.getWorkEthic(),
-                request.getEmotionalControl()
+                request.getIntensity()
         );
         double sum = 0;
         int count = 0;

@@ -240,11 +240,9 @@ const computeFocusAreasForPlayer = (
   const paramDefs: { name: string; keys: string[] }[] = [
     { name: "Technique", keys: ["technicalExecution", "technique"] },
     { name: "Skill Level", keys: ["skillsLevel", "skillLevel"] },
-    { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
+    { name: "Game Plan", keys: ["gamePlan"] },
     { name: "Preparation", keys: ["preparation"] },
-    { name: "Intensity", keys: ["intensity"] },
-    { name: "Focus", keys: ["focus", "concentration"] },
-    { name: "Resilience", keys: ["resilience", "emotionalControl", "adaptability"] }
+    { name: "Intensity", keys: ["intensity"] }
   ];
 
   const practiceList = practiceHistory || [];
@@ -291,12 +289,12 @@ const computeFocusAreasForPlayer = (
     } else {
       const availableScores: number[] = [];
       practiceList.forEach((s: any) => {
-        ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"].forEach((k) => {
+        ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"].forEach((k) => {
           if (typeof s[k] === "number" && s[k] > 0) availableScores.push(s[k]);
         });
       });
       matchList.forEach((s: any) => {
-        ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity", "focus", "resilience"].forEach((k) => {
+        ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"].forEach((k) => {
           if (typeof s[k] === "number" && s[k] > 0) availableScores.push(s[k]);
         });
       });
@@ -318,9 +316,7 @@ const computeFocusAreasForPlayer = (
       "Skill Level": "HOW TO COACH SKILL LEVEL",
       "Game Plan": "HOW TO COACH GAME PLAN",
       "Preparation": "HOW TO COACH PREPARATION",
-      "Intensity": "HOW TO COACH INTENSITY",
-      "Focus": "HOW TO COACH FOCUS",
-      "Resilience": "HOW TO COACH RESILIENCE"
+      "Intensity": "HOW TO COACH INTENSITY"
     };
     const planHeader = planHeadings[normName] || `HOW TO COACH ${normName.toUpperCase()}`;
 
@@ -417,7 +413,7 @@ const generatePlayerPdfReport = async (
   };
 
   // ==========================================
-  // PAGE 1: Header, Player Information, 1. Summary, 2. 7 Key Performance Areas, 3. Strengths & 4. Improvements
+  // PAGE 1: Header, Player Information, 1. Summary, 2. 5 Key Performance Areas, 3. Strengths & 4. Improvements
   // ==========================================
 
   // HEADER (CPI Logo, Cricket Performance Index, Player Performance Report, Report Date, Coach Name)
@@ -570,11 +566,11 @@ const generatePlayerPdfReport = async (
 
   y += 25;
 
-  // 2. 7 KEY PERFORMANCE AREAS
+  // 2. 5 KEY PERFORMANCE AREAS
   doc.setFontSize(9.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text("2. 7 KEY PERFORMANCE AREAS", 14, y);
+  doc.text("2. 5 KEY PERFORMANCE AREAS", 14, y);
 
   y += 5.0;
 
@@ -609,9 +605,7 @@ const generatePlayerPdfReport = async (
     { name: "Skill Level", key: "skillsLevel" },
     { name: "Game Plan", key: "gamePlan" },
     { name: "Preparation", key: "preparation" },
-    { name: "Intensity", key: "intensity" },
-    { name: "Focus", key: "focus" },
-    { name: "Resilience", key: "resilience" }
+    { name: "Intensity", key: "intensity" }
   ];
 
   const paramData = paramDefs.map(p => {
@@ -1149,8 +1143,7 @@ export default function PlayersPage() {
         }
         const metrics = [
           s.technicalExecution, s.skillsLevel, s.gamePlan,
-          s.preparation, s.intensity, s.focus || s.concentration,
-          s.resilience, s.decisionMaking, s.gameAwareness
+          s.preparation, s.intensity
         ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
         if (metrics.length > 0) {
           const avg = metrics.reduce((a, b) => a + b, 0) / metrics.length;
@@ -1171,8 +1164,7 @@ export default function PlayersPage() {
         }
         const metrics = [
           s.technicalExecution, s.skillsLevel, s.gamePlan,
-          s.preparation, s.intensity, s.focus || s.concentration,
-          s.resilience, s.decisionMaking, s.gameAwareness
+          s.preparation, s.intensity
         ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
         if (metrics.length > 0) {
           const avg = metrics.reduce((a, b) => a + b, 0) / metrics.length;
@@ -1261,8 +1253,6 @@ export default function PlayersPage() {
     gamePlan: 7,
     preparation: 7,
     intensity: 7,
-    focus: 7,
-    resilience: 7,
     notes: ""
   });
 
@@ -1273,8 +1263,6 @@ export default function PlayersPage() {
     gamePlan: 7,
     preparation: 7,
     intensity: 7,
-    focus: 7,
-    resilience: 7,
     notes: ""
   });
 
@@ -1982,14 +1970,11 @@ const handlePracticeSubmit = async (e: React.FormEvent) => {
       gamePlan: Math.round(Number(practiceForm.gamePlan)),
       preparation: Math.round(Number(practiceForm.preparation)),
       intensity: Math.round(Number(practiceForm.intensity)),
-      focus: Math.round(Number(practiceForm.focus)),
-      resilience: Math.round(Number(practiceForm.resilience)),
       notes: practiceForm.notes
     };
     await api.post("/practice", {
       playerId: selectedPlayer.id,
       date: new Date().toISOString().split("T")[0],
-      concentration: formattedForm.focus,
       ...formattedForm
     });
     setShowPracticeOverlay(false);
@@ -2022,14 +2007,11 @@ const handleMatchSubmit = async (e: React.FormEvent) => {
       gamePlan: Math.round(Number(matchForm.gamePlan)),
       preparation: Math.round(Number(matchForm.preparation)),
       intensity: Math.round(Number(matchForm.intensity)),
-      focus: Math.round(Number(matchForm.focus)),
-      resilience: Math.round(Number(matchForm.resilience)),
       notes: matchForm.notes
     };
     await api.post("/matches", {
       playerId: selectedPlayer.id,
       date: new Date().toISOString().split("T")[0],
-      concentration: formattedForm.focus,
       ...formattedForm
     });
     setShowMatchOverlay(false);
@@ -2577,7 +2559,7 @@ return (
 
     {/* ------------------ VIEW: PLAYER PROFILE ------------------ */}
     {view === "profile" && selectedPlayer && (() => {
-      // Dynamically generate focus areas from the 7 CPI parameters ranked Strongest to Weakest
+      // Dynamically generate focus areas from the 5 CPI parameters ranked Strongest to Weakest
       const focusAreas = computeFocusAreasForPlayer(selectedPlayer, practiceHistory, matchHistory);
 
 
@@ -2650,9 +2632,7 @@ return (
         { name: "Skill Level", val: latestPractice ? (latestPractice.skillsLevel ?? latestPractice.skillLevel ?? "7.0") : "7.0" },
         { name: "Game Plan", val: latestPractice ? (latestPractice.gamePlan ?? "7.0") : "7.0" },
         { name: "Preparation", val: latestPractice ? (latestPractice.preparation ?? "7.0") : "7.0" },
-        { name: "Intensity", val: latestPractice ? (latestPractice.intensity ?? "7.0") : "7.0" },
-        { name: "Focus", val: latestPractice ? (latestPractice.focus ?? latestPractice.concentration ?? "7.0") : "7.0" },
-        { name: "Resilience", val: latestPractice ? (latestPractice.resilience ?? "7.0") : "7.0" }
+        { name: "Intensity", val: latestPractice ? (latestPractice.intensity ?? "7.0") : "7.0" }
       ];
 
       return (
@@ -2776,8 +2756,6 @@ return (
                       gamePlan: 7,
                       preparation: 7,
                       intensity: 7,
-                      focus: 7,
-                      resilience: 7,
                       notes: ""
                     });
                     setError("");
@@ -2797,8 +2775,6 @@ return (
                       gamePlan: 7,
                       preparation: 7,
                       intensity: 7,
-                      focus: 7,
-                      resilience: 7,
                       notes: ""
                     });
                     setError("");
@@ -2951,11 +2927,9 @@ return (
               const fixedParams = [
                 { name: "Technique", keys: ["technicalExecution", "technique"] },
                 { name: "Skill Level", keys: ["skillsLevel", "skillLevel"] },
-                { name: "Game Plan", keys: ["gamePlan", "decisionMaking", "gameAwareness"] },
+                { name: "Game Plan", keys: ["gamePlan"] },
                 { name: "Preparation", keys: ["preparation"] },
-                { name: "Intensity", keys: ["intensity"] },
-                { name: "Focus", keys: ["focus", "concentration"] },
-                { name: "Resilience", keys: ["resilience", "emotionalControl", "adaptability"] }
+                { name: "Intensity", keys: ["intensity"] }
               ];
 
               // 1 & 2: Current scores for STRONGEST and WEAKEST
@@ -3576,8 +3550,6 @@ return (
                           gamePlan: 7,
                           preparation: 7,
                           intensity: 7,
-                          focus: 7,
-                          resilience: 7,
                           notes: ""
                         });
                         setError("");
@@ -3828,8 +3800,6 @@ return (
                           gamePlan: 7,
                           preparation: 7,
                           intensity: 7,
-                          focus: 7,
-                          resilience: 7,
                           notes: ""
                         });
                         setError("");
@@ -4278,11 +4248,9 @@ return (
               {[
                 { label: "Technique", val: selectedAssessmentDetail.data.technicalExecution },
                 { label: "Skill Level", val: selectedAssessmentDetail.data.skillsLevel || selectedAssessmentDetail.data.technique },
-                { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan || selectedAssessmentDetail.data.decisionMaking },
+                { label: "Game Plan", val: selectedAssessmentDetail.data.gamePlan },
                 { label: "Preparation", val: selectedAssessmentDetail.data.preparation },
-                { label: "Intensity", val: selectedAssessmentDetail.data.intensity },
-                { label: "Focus", val: selectedAssessmentDetail.data.focus || selectedAssessmentDetail.data.concentration },
-                { label: "Resilience", val: selectedAssessmentDetail.data.resilience || selectedAssessmentDetail.data.emotionalControl || selectedAssessmentDetail.data.adaptability }
+                { label: "Intensity", val: selectedAssessmentDetail.data.intensity }
               ].map((item, idx) => (
                 <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-700">{item.label}</span>
