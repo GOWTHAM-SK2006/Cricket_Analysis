@@ -57,6 +57,9 @@ interface DashboardStats {
   avgPpi: number;
   avgMpi: number;
   avgCpi: number;
+  bestCount?: number;
+  avgCount?: number;
+  lowCount?: number;
   playersNeedingAttention: Array<{
     name: string;
     cpi: number;
@@ -90,61 +93,10 @@ export default function DashboardPage() {
   const coachMpi = (stats?.recentAssessments || []).filter(a => a.assessmentType === "MATCH").slice(0, 5);
   const coachPpi = (stats?.recentAssessments || []).filter(a => a.assessmentType === "PRACTICE").slice(0, 5);
 
-  // Player list (to lookup IDs)
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [lastAssessmentDates, setLastAssessmentDates] = useState<Record<string, string>>({});
-
-  const getPlayerCpiScore = (p: Player) => {
-    let ppi = p.ppiScore ? (p.ppiScore > 10 ? p.ppiScore / 10 : p.ppiScore) : 0;
-    let mpi = p.mpiScore ? (p.mpiScore > 10 ? p.mpiScore / 10 : p.mpiScore) : 0;
-    if (ppi > 0 && mpi > 0) return Math.round((ppi * 0.4 + mpi * 0.6) * 10) / 10;
-    if (ppi > 0) return Math.round(ppi * 10) / 10;
-    if (mpi > 0) return Math.round(mpi * 10) / 10;
-    return 0;
-  };
-
-  const bestCategoryPlayers = players.filter((p) => getPlayerCpiScore(p) > 7.0);
-  const avgCategoryPlayers = players.filter((p) => {
-    const score = getPlayerCpiScore(p);
-    return score >= 5.0 && score <= 7.0;
-  });
-  const lowCategoryPlayers = players.filter((p) => {
-    const score = getPlayerCpiScore(p);
-    return score < 5.0;
-  });
-
-  const fetchLastAssessmentDates = (playerList: Player[]) => {
-    const datesMap: Record<string, string> = {};
-    playerList.forEach((p) => {
-      const allDates: string[] = [];
-      if ((p as any).lastPracticeDate) allDates.push((p as any).lastPracticeDate);
-      if ((p as any).lastMatchDate) allDates.push((p as any).lastMatchDate);
-
-      // Check for self-assessment in local storage
-      const localSelf = localStorage.getItem(`self_assess_${p.id}`);
-      if (localSelf) {
-        try {
-          const selfList = JSON.parse(localSelf);
-          selfList.forEach((x: any) => {
-            if (x.date) allDates.push(x.date);
-          });
-        } catch (e) {}
-      }
-
-      if (allDates.length > 0) {
-        const sorted = allDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-        const latestDate = new Date(sorted[0]);
-        datesMap[p.name.toLowerCase()] = latestDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric"
-        });
-      } else {
-        datesMap[p.name.toLowerCase()] = "No assessments";
-      }
-    });
-    setLastAssessmentDates(datesMap);
-  };
+  const totalCount = stats?.totalPlayers || 0;
+  const bestCount = stats?.bestCount ?? 0;
+  const avgCount = stats?.avgCount ?? 0;
+  const lowCount = stats?.lowCount ?? 0;
 
   // Player specific state for dashboard
   const [coachFeedback, setCoachFeedback] = useState<string[]>([]);
@@ -167,72 +119,8 @@ export default function DashboardPage() {
 
     const loadDashboardData = async () => {
       try {
-        const [statsRes, playersRes] = await Promise.all([
-          api.get("/dashboard/stats"),
-          api.get("/players")
-        ]);
-
+        const statsRes = await api.get("/dashboard/stats");
         setStats(statsRes.data);
-        const playerList = playersRes.data || [];
-        setPlayers(playerList);
-
-        fetchLastAssessmentDates(playerList);
-
-        if (storedRole === "player") {
-          const matchedPlayer = playerList.find(
-            (p: any) => p.name.toLowerCase() === profileRes.data.name.toLowerCase()
-          );
-
-          if (matchedPlayer) {
-            const [pracRes, matchRes] = await Promise.all([
-              api.get(`/practice/player/${matchedPlayer.id}`).catch(() => ({ data: [] })),
-              api.get(`/matches/player/${matchedPlayer.id}`).catch(() => ({ data: [] }))
-            ]);
-
-            const pHistory = (pracRes.data || []).sort(
-              (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            );
-            const mHistory = (matchRes.data || []).sort(
-              (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            );
-
-            // Calculate scores for PPI (practice) and MPI (match)
-            const calculatePpiScore = (session: any) => {
-              if (typeof session.ppiScore === "number" && session.ppiScore > 0) return session.ppiScore;
-              const vals = [
-                session.technicalExecution, session.skillsLevel, session.gamePlan,
-                session.preparation, session.intensity
-              ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
-              return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-            };
-
-            const calculateMpiScore = (session: any) => {
-              if (typeof session.mpiScore === "number" && session.mpiScore > 0) return session.mpiScore;
-              const vals = [
-                session.technicalExecution, session.skillsLevel, session.gamePlan,
-                session.preparation, session.intensity
-              ].filter((v) => typeof v === "number" && !isNaN(v) && v > 0);
-              return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-            };
-
-            setLastFivePpi(pHistory.slice(0, 5).map((s: any) => ({ date: s.date, score: calculatePpiScore(s) })));
-            setLastFiveMpi(mHistory.slice(0, 5).map((s: any) => ({ date: s.date, score: calculateMpiScore(s) })));
-
-            // Extract feedback from recent assessments
-            const feedback: string[] = [];
-            const allAssessments = [...pHistory, ...mHistory].sort(
-              (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            );
-            
-            for (const a of allAssessments) {
-              if (a.coachFeedback && a.coachFeedback.trim() !== "") {
-                feedback.push(a.coachFeedback.trim());
-              }
-              if (feedback.length >= 3) break;
-            }
-            setCoachFeedback(feedback);
-          }
-        }
       } catch (err) {
         console.error("Failed to load dashboard data", err);
       } finally {
@@ -543,27 +431,27 @@ export default function DashboardPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider text-slate-800">
               <span>CPI DISTRIBUTION</span>
-              <span className="text-slate-600 font-mono">{players.length} TOTAL PLAYERS</span>
+              <span className="text-slate-600 font-mono">{totalCount} TOTAL PLAYERS</span>
             </div>
 
             {/* Segmented Progress Bar */}
             <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex p-0.5 border border-slate-200/80">
-              {players.length > 0 ? (
+              {totalCount > 0 ? (
                 <>
                   <div
-                    style={{ width: `${(bestCategoryPlayers.length / players.length) * 100}%` }}
+                    style={{ width: `${(bestCount / totalCount) * 100}%` }}
                     className="bg-emerald-500 h-full rounded-l-full transition-all duration-500"
-                    title={`Best: ${bestCategoryPlayers.length}`}
+                    title={`Best: ${bestCount}`}
                   />
                   <div
-                    style={{ width: `${(avgCategoryPlayers.length / players.length) * 100}%` }}
+                    style={{ width: `${(avgCount / totalCount) * 100}%` }}
                     className="bg-amber-400 h-full transition-all duration-500"
-                    title={`Average: ${avgCategoryPlayers.length}`}
+                    title={`Average: ${avgCount}`}
                   />
                   <div
-                    style={{ width: `${(lowCategoryPlayers.length / players.length) * 100}%` }}
+                    style={{ width: `${(lowCount / totalCount) * 100}%` }}
                     className="bg-rose-500 h-full rounded-r-full transition-all duration-500"
-                    title={`Low: ${lowCategoryPlayers.length}`}
+                    title={`Low: ${lowCount}`}
                   />
                 </>
               ) : (
@@ -584,10 +472,10 @@ export default function DashboardPage() {
                 &gt; 70 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
-                {bestCategoryPlayers.length}
+                {bestCount}
               </p>
               <span className="text-[9px] font-bold text-slate-600 block uppercase">
-                {players.length > 0 ? Math.round((bestCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
+                {totalCount > 0 ? Math.round((bestCount / totalCount) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
@@ -601,10 +489,10 @@ export default function DashboardPage() {
                 50 - 70 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
-                {avgCategoryPlayers.length}
+                {avgCount}
               </p>
               <span className="text-[9px] font-bold text-slate-600 block uppercase">
-                {players.length > 0 ? Math.round((avgCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
+                {totalCount > 0 ? Math.round((avgCount / totalCount) * 100) : 0}% OF SQUAD
               </span>
             </div>
 
@@ -618,10 +506,10 @@ export default function DashboardPage() {
                 &lt; 50 CPI
               </span>
               <p className="text-xl font-black text-slate-900 font-mono pt-0.5">
-                {lowCategoryPlayers.length}
+                {lowCount}
               </p>
               <span className="text-[9px] font-bold text-slate-600 block uppercase">
-                {players.length > 0 ? Math.round((lowCategoryPlayers.length / players.length) * 100) : 0}% OF SQUAD
+                {totalCount > 0 ? Math.round((lowCount / totalCount) * 100) : 0}% OF SQUAD
               </span>
             </div>
           </div>

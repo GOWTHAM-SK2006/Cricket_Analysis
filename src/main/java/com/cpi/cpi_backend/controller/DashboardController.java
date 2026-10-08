@@ -320,6 +320,31 @@ public class DashboardController {
             coachInsights = coachInsights.subList(0, 4);
         }
 
+        long bestCount = 0;
+        long avgCount = 0;
+        long lowCount = 0;
+
+        for (Player p : players) {
+            double ppi = p.getPpiScore() != null ? (p.getPpiScore() > 10 ? p.getPpiScore() / 10.0 : p.getPpiScore()) : 0.0;
+            double mpi = p.getMpiScore() != null ? (p.getMpiScore() > 10 ? p.getMpiScore() / 10.0 : p.getMpiScore()) : 0.0;
+            double score = 0.0;
+            if (ppi > 0 && mpi > 0) {
+                score = Math.round((ppi * 0.4 + mpi * 0.6) * 10.0) / 10.0;
+            } else if (ppi > 0) {
+                score = Math.round(ppi * 10.0) / 10.0;
+            } else if (mpi > 0) {
+                score = Math.round(mpi * 10.0) / 10.0;
+            }
+
+            if (score > 7.0) {
+                bestCount++;
+            } else if (score >= 5.0) {
+                avgCount++;
+            } else {
+                lowCount++;
+            }
+        }
+
         DashboardStatsResponse response = DashboardStatsResponse.builder()
                 .totalTeams(0L)
                 .totalPlayers(totalPlayers)
@@ -328,6 +353,9 @@ public class DashboardController {
                 .avgPpi(avgPpi)
                 .avgMpi(avgMpi)
                 .avgCpi(avgCpi)
+                .bestCount(bestCount)
+                .avgCount(avgCount)
+                .lowCount(lowCount)
                 .playersAssessedToday(playersAssessedToday)
                 .practicesToday(practicesToday)
                 .matchesToday(matchesToday)

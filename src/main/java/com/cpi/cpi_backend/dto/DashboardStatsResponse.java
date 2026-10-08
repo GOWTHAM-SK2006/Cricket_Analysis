@@ -26,6 +26,11 @@ public class DashboardStatsResponse {
     private long practicesToday;
     private long matchesToday;
 
+    // CPI Distribution Counts
+    private long bestCount;
+    private long avgCount;
+    private long lowCount;
+
     private List<RecentAssessmentDto> recentAssessments;
     private List<PlayerPerformanceDto> playersNeedingAttention;
     private List<PlayerPerformanceDto> topPerformers;
