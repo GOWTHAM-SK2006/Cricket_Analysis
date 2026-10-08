@@ -104,39 +104,28 @@ public class PlayerController {
         List<Player> allPlayers;
         String queryMethod;
         if (managedCoach.getRole() == Role.ADMIN) {
-            allPlayers = new ArrayList<>(playerRepository.findAll());
-            queryMethod = "playerRepository.findAll() [ADMIN]";
+            allPlayers = new ArrayList<>(playerRepository.findAllWithCoach());
+            queryMethod = "playerRepository.findAllWithCoach() [ADMIN]";
         } else {
-            allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(managedCoach.getId()));
-            queryMethod = "playerRepository.findByCreatorCoachId(" + managedCoach.getId() + ")";
+            allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachIdWithCoach(managedCoach.getId()));
+            queryMethod = "playerRepository.findByCreatorCoachIdWithCoach(" + managedCoach.getId() + ")";
             
-            // Fallback for players or newly registered coach users if database contains existing players
-            if (allPlayers.isEmpty() && playerRepository.count() > 0) {
-                // Try matching by player name / invitation code first
-                java.util.Optional<Player> matchedByInvite = playerRepository.findAll().stream()
-                        .filter(p -> p.getName().equalsIgnoreCase(managedCoach.getName()))
-                        .findFirst();
+            // Fallback for players or newly registered coach users
+            if (allPlayers.isEmpty()) {
+                java.util.Optional<Player> matchedByInvite = playerRepository.findFirstByNameIgnoreCase(managedCoach.getName());
                 if (matchedByInvite.isPresent() && matchedByInvite.get().getCreatorCoach() != null) {
                     Long parentCoachId = matchedByInvite.get().getCreatorCoach().getId();
-                    allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachId(parentCoachId));
-                    queryMethod = "playerRepository.findByCreatorCoachId(" + parentCoachId + ") [Parent Coach Match]";
-                } else {
-                    allPlayers = new ArrayList<>(playerRepository.findAll());
-                    queryMethod = "playerRepository.findAll() [System Fallback]";
+                    allPlayers = new ArrayList<>(playerRepository.findByCreatorCoachIdWithCoach(parentCoachId));
+                    queryMethod = "playerRepository.findByCreatorCoachIdWithCoach(" + parentCoachId + ") [Parent Coach Match]";
                 }
             }
         }
 
-        boolean hasDirtyCode = false;
         for (Player p : allPlayers) {
             if (p.getInvitationCode() == null || p.getInvitationCode().trim().isEmpty()) {
                 p.setInvitationCode(generateInvitationCode());
                 p.setInvitationCodeActivated(false);
-                hasDirtyCode = true;
             }
-        }
-        if (hasDirtyCode) {
-            playerRepository.saveAll(allPlayers);
         }
 
         List<Long> playerIds = allPlayers.stream().map(Player::getId).collect(Collectors.toList());

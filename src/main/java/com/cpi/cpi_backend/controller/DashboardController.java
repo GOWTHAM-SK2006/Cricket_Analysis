@@ -48,18 +48,28 @@ public class DashboardController {
                         org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found"
                 ));
 
-        List<Player> players = new ArrayList<>(playerRepository.findByCreatorCoachId(coachId));
-        List<PracticeAssessment> practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findByCoachId(coachId));
-        List<MatchAssessment> matchAssessments = new ArrayList<>(matchAssessmentRepository.findByCoachId(coachId));
+        List<Player> players;
+        List<PracticeAssessment> practiceAssessments;
+        List<MatchAssessment> matchAssessments;
 
-        if (players.isEmpty() && playerRepository.count() > 0) {
-            players = new ArrayList<>(playerRepository.findAll());
-        }
-        if (practiceAssessments.isEmpty() && practiceAssessmentRepository.count() > 0) {
-            practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findAll());
-        }
-        if (matchAssessments.isEmpty() && matchAssessmentRepository.count() > 0) {
-            matchAssessments = new ArrayList<>(matchAssessmentRepository.findAll());
+        if (managedCoach.getRole() == Role.ADMIN) {
+            players = playerRepository.findAllWithCoach();
+            practiceAssessments = practiceAssessmentRepository.findAllWithPlayerAndCoach();
+            matchAssessments = matchAssessmentRepository.findAllWithPlayerAndCoach();
+        } else {
+            players = playerRepository.findByCreatorCoachIdWithCoach(coachId);
+            practiceAssessments = practiceAssessmentRepository.findByCoachIdWithPlayerAndCoach(coachId);
+            matchAssessments = matchAssessmentRepository.findByCoachIdWithPlayerAndCoach(coachId);
+
+            if (players.isEmpty()) {
+                java.util.Optional<Player> matchedByInvite = playerRepository.findFirstByNameIgnoreCase(managedCoach.getName());
+                if (matchedByInvite.isPresent() && matchedByInvite.get().getCreatorCoach() != null) {
+                    Long parentCoachId = matchedByInvite.get().getCreatorCoach().getId();
+                    players = playerRepository.findByCreatorCoachIdWithCoach(parentCoachId);
+                    practiceAssessments = practiceAssessmentRepository.findByCoachIdWithPlayerAndCoach(parentCoachId);
+                    matchAssessments = matchAssessmentRepository.findByCoachIdWithPlayerAndCoach(parentCoachId);
+                }
+            }
         }
 
         System.out.println(String.format(

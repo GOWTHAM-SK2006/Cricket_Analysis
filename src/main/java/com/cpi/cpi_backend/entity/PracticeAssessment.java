@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "practice_assessments", indexes = {
-    @Index(name = "idx_prac_player_date", columnList = "player_id, session_date")
+    @Index(name = "idx_prac_player_date", columnList = "player_id, session_date"),
+    @Index(name = "idx_prac_coach", columnList = "coach_id")
 })
 public class PracticeAssessment {
 

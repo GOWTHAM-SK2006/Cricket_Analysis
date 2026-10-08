@@ -13,6 +13,12 @@ public interface MatchAssessmentRepository extends JpaRepository<MatchAssessment
     List<MatchAssessment> findByPlayerId(Long playerId);
     List<MatchAssessment> findByCoachId(Long coachId);
 
+    @Query("SELECT DISTINCT m FROM MatchAssessment m LEFT JOIN FETCH m.player LEFT JOIN FETCH m.coach WHERE m.coach.id = :coachId")
+    List<MatchAssessment> findByCoachIdWithPlayerAndCoach(@Param("coachId") Long coachId);
+
+    @Query("SELECT DISTINCT m FROM MatchAssessment m LEFT JOIN FETCH m.player LEFT JOIN FETCH m.coach")
+    List<MatchAssessment> findAllWithPlayerAndCoach();
+
     @Query("SELECT m.player.id, MAX(m.date) FROM MatchAssessment m WHERE m.player.id IN :playerIds GROUP BY m.player.id")
     List<Object[]> findMaxDatesByPlayerIds(@Param("playerIds") List<Long> playerIds);
 }

@@ -12,4 +12,11 @@ import java.util.List;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     List<Player> findByCreatorCoachId(Long coachId);
     java.util.Optional<Player> findByInvitationCode(String invitationCode);
+    java.util.Optional<Player> findFirstByNameIgnoreCase(String name);
+
+    @Query("SELECT DISTINCT p FROM Player p LEFT JOIN FETCH p.creatorCoach WHERE p.creatorCoach.id = :coachId")
+    List<Player> findByCreatorCoachIdWithCoach(@Param("coachId") Long coachId);
+
+    @Query("SELECT DISTINCT p FROM Player p LEFT JOIN FETCH p.creatorCoach")
+    List<Player> findAllWithCoach();
 }

@@ -23,7 +23,7 @@ public class ProfileController {
             return ResponseEntity.status(401).build();
         }
 
-        Coach coach = coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
+        Coach coach = (currentCoach.getName() != null) ? currentCoach : coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
 
         Map<String, Object> response = new HashMap<>();
         response.put("id", coach.getId());
