@@ -40,6 +40,12 @@ public class RedisConfig implements CachingConfigurer {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
+        org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration clientConfig =
+                org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration.builder()
+                        .commandTimeout(Duration.ofMillis(200))
+                        .shutdownTimeout(Duration.ofMillis(200))
+                        .build();
+
         if (redisUrl != null && !redisUrl.isBlank()) {
             try {
                 java.net.URI uri = java.net.URI.create(redisUrl);
@@ -55,7 +61,7 @@ public class RedisConfig implements CachingConfigurer {
                     }
                 }
                 log.info("Connecting Redis via REDIS_URL to host {}:{}", config.getHostName(), config.getPort());
-                return new LettuceConnectionFactory(config);
+                return new LettuceConnectionFactory(config, clientConfig);
             } catch (Exception e) {
                 log.warn("Failed to parse REDIS_URL, falling back to host/port: {}", e.getMessage());
             }
@@ -68,21 +74,52 @@ public class RedisConfig implements CachingConfigurer {
             config.setPassword(redisPassword);
         }
         log.info("Connecting Redis to host {}:{}", redisHost, redisPort);
-        return new LettuceConnectionFactory(config);
+        return new LettuceConnectionFactory(config, clientConfig);
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10))
-                .disableCachingNullValues()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    @org.springframework.context.annotation.Primary
+    public org.springframework.cache.CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        boolean redisAvailable = false;
+        try {
+            if (redisUrl != null && !redisUrl.isBlank()) {
+                redisAvailable = true;
+            } else if (!"127.0.0.1".equals(redisHost) && !"localhost".equals(redisHost)) {
+                redisAvailable = true;
+            } else {
+                try (java.net.Socket socket = new java.net.Socket()) {
+                    socket.connect(new java.net.InetSocketAddress(redisHost, redisPort), 100);
+                    redisAvailable = true;
+                } catch (Exception e) {
+                    log.info("Local Redis server not reachable at {}:{}. Using high-performance in-memory JVM cache fallback.", redisHost, redisPort);
+                    redisAvailable = false;
+                }
+            }
+        } catch (Exception e) {
+            redisAvailable = false;
+        }
 
-        return RedisCacheManager.builder(connectionFactory)
-                .cacheDefaults(config)
-                .transactionAware()
-                .build();
+        if (redisAvailable) {
+            try {
+                RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10))
+                        .disableCachingNullValues()
+                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+
+                return RedisCacheManager.builder(connectionFactory)
+                        .cacheDefaults(config)
+                        .transactionAware()
+                        .build();
+            } catch (Exception e) {
+                log.warn("Failed to initialize RedisCacheManager ({}), using in-memory cache", e.getMessage());
+            }
+        }
+
+        log.info("Using in-memory ConcurrentMapCacheManager for instant caching.");
+        return new org.springframework.cache.concurrent.ConcurrentMapCacheManager(
+                CacheNames.DASHBOARD_STATS, CacheNames.PLAYERS, CacheNames.TEAMS
+        );
     }
 
     @Override
