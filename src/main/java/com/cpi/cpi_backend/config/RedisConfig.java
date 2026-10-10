@@ -118,7 +118,7 @@ public class RedisConfig implements CachingConfigurer {
 
         log.info("Using in-memory ConcurrentMapCacheManager for instant caching.");
         return new org.springframework.cache.concurrent.ConcurrentMapCacheManager(
-                CacheNames.DASHBOARD_STATS, CacheNames.PLAYERS, CacheNames.TEAMS
+                CacheNames.DASHBOARD_STATS, CacheNames.PLAYERS, CacheNames.TEAMS, CacheNames.ASSESSMENTS, CacheNames.PROFILES
         );
     }
 

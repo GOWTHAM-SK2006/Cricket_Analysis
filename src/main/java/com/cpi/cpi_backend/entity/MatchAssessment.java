@@ -32,6 +32,7 @@ public class MatchAssessment {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "authorities"})
     private Coach coach;
 
     @Column(nullable = false)

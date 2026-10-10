@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
-import jsPDF from "jspdf";
 import { getRoleContextForParameter } from "@/lib/roleContext";
 import { CPI_PREDEFINED_SOURCE, ApprovedCpiParameter, normalizeCpiParameterName } from "@/lib/cpiPredefinedSource";
 
@@ -398,6 +397,7 @@ const generatePlayerPdfReport = async (
   coachNameStr?: string
 ) => {
   const logoDataUrl = await loadHighResLogo();
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -1054,8 +1054,24 @@ export default function PlayersPage() {
     }
   };
 
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [players, setPlayers] = useState<Player[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = sessionStorage.getItem("cpi_cached_players");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return [];
+  });
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = sessionStorage.getItem("cpi_cached_players");
+        if (saved && JSON.parse(saved).length > 0) return false;
+      } catch (e) {}
+    }
+    return true;
+  });
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [role, setRole] = useState<string | null>(null);
@@ -1072,18 +1088,48 @@ export default function PlayersPage() {
         return "profile";
       }
       const params = new URLSearchParams(window.location.search);
-      if (params.has("id")) {
+      if (params.has("id") || params.get("action") === "practice" || params.get("action") === "match") {
         return "profile";
       }
     }
     return "list";
   });
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = sessionStorage.getItem("cpi_cached_players");
+        if (saved) {
+          const list = JSON.parse(saved);
+          const params = new URLSearchParams(window.location.search);
+          const idParam = params.get("id");
+          if (idParam) {
+            return list.find((p: Player) => p.id === Number(idParam)) || null;
+          }
+          if (params.get("action") === "practice" || params.get("action") === "match") {
+            return list[0] || null;
+          }
+        }
+      } catch (e) {}
+    }
+    return null;
+  });
 
   // Modals / Overlays
   const [showAddForm, setShowAddForm] = useState(false);
-  const [showPracticeOverlay, setShowPracticeOverlay] = useState(false);
-  const [showMatchOverlay, setShowMatchOverlay] = useState(false);
+  const [showPracticeOverlay, setShowPracticeOverlay] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("action") === "practice";
+    }
+    return false;
+  });
+  const [showMatchOverlay, setShowMatchOverlay] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("action") === "match";
+    }
+    return false;
+  });
   const [showSelfOverlay, setShowSelfOverlay] = useState(false);
   const [showHistoryOverlay, setShowHistoryOverlay] = useState(false);
   const [selectedAssessmentDetail, setSelectedAssessmentDetail] = useState<{ type: "Practice" | "Match"; data: any } | null>(null);
@@ -1463,11 +1509,16 @@ export default function PlayersPage() {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      if (players.length === 0) {
+        setLoading(true);
+      }
       setFetchError(null);
       const res = await api.get("/players");
       const list = res.data || [];
       setPlayers(list);
+      try {
+        sessionStorage.setItem("cpi_cached_players", JSON.stringify(list));
+      } catch (e) {}
       fetchLastAssessmentDates(list);
     } catch (err: any) {
       console.error("Failed to fetch players", err);
@@ -1553,6 +1604,7 @@ export default function PlayersPage() {
   }, [searchParams]);
 
   const loadedHistoryPlayerIdRef = useRef<number | null>(null);
+  const inFlightHistoryRef = useRef<number | null>(null);
 
 // Handle auto-select and self-assessment navigation for players
 useEffect(() => {
@@ -1633,9 +1685,15 @@ useEffect(() => {
 }, [players, role, searchParams, loading]);
 
 const loadHistory = async (playerId: number, forceRefresh: boolean = false) => {
-  if (!forceRefresh && loadedHistoryPlayerIdRef.current === playerId && (practiceHistory.length > 0 || matchHistory.length > 0)) {
-    return;
+  if (!forceRefresh) {
+    if (inFlightHistoryRef.current === playerId) {
+      return;
+    }
+    if (loadedHistoryPlayerIdRef.current === playerId && (practiceHistory.length > 0 || matchHistory.length > 0)) {
+      return;
+    }
   }
+  inFlightHistoryRef.current = playerId;
   loadedHistoryPlayerIdRef.current = playerId;
   setIsHistoryLoading(true);
   try {
@@ -1665,6 +1723,7 @@ const loadHistory = async (playerId: number, forceRefresh: boolean = false) => {
   } catch (err) {
     console.error("Failed to load assessments history", err);
   } finally {
+    inFlightHistoryRef.current = null;
     setIsHistoryLoading(false);
   }
 };
@@ -1986,7 +2045,7 @@ const handlePracticeSubmit = async (e: React.FormEvent) => {
     setPlayers(updatedPlayers);
     const updated = updatedPlayers.find((p: Player) => p.id === selectedPlayer.id);
     if (updated) setSelectedPlayer(updated);
-    loadHistory(selectedPlayer.id);
+    loadHistory(selectedPlayer.id, true);
     fetchLastAssessmentDates(updatedPlayers);
   } catch (err: any) {
     setError(err.response?.data?.message || "Failed to save practice assessment.");
@@ -2023,7 +2082,7 @@ const handleMatchSubmit = async (e: React.FormEvent) => {
     setPlayers(updatedPlayers);
     const updated = updatedPlayers.find((p: Player) => p.id === selectedPlayer.id);
     if (updated) setSelectedPlayer(updated);
-    loadHistory(selectedPlayer.id);
+    loadHistory(selectedPlayer.id, true);
     fetchLastAssessmentDates(updatedPlayers);
   } catch (err: any) {
     setError(err.response?.data?.message || "Failed to save match assessment.");

@@ -253,7 +253,8 @@ public class PlayerController {
     @Caching(evict = {
         @CacheEvict(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id"),
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
-        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.ASSESSMENTS, allEntries = true)
     })
     public ResponseEntity<Void> deletePlayer(
             @PathVariable Long id,

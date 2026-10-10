@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "coaches")
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties(value = {"password", "authorities"}, ignoreUnknown = true)
 public class Coach implements UserDetails {
 
     @Id
@@ -31,6 +32,7 @@ public class Coach implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)

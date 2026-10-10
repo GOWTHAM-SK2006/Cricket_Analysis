@@ -11,6 +11,10 @@ import java.util.List;
 @Repository
 public interface MatchAssessmentRepository extends JpaRepository<MatchAssessment, Long> {
     List<MatchAssessment> findByPlayerId(Long playerId);
+    
+    @Query("SELECT m FROM MatchAssessment m LEFT JOIN FETCH m.player LEFT JOIN FETCH m.coach WHERE m.player.id = :playerId ORDER BY m.date DESC, m.id DESC")
+    List<MatchAssessment> findByPlayerIdWithPlayerAndCoach(@Param("playerId") Long playerId);
+    
     List<MatchAssessment> findByCoachId(Long coachId);
 
     @Query("SELECT DISTINCT m FROM MatchAssessment m LEFT JOIN FETCH m.player LEFT JOIN FETCH m.coach WHERE m.coach.id = :coachId")

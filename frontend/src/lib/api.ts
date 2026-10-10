@@ -11,6 +11,7 @@ export const api = axios.create({
 });
 
 const getCache = new Map<string, { data: any; timestamp: number }>();
+const inFlightRequests = new Map<string, Promise<any>>();
 const CACHE_TTL_MS = 120_000; // 2 minutes in-memory client cache
 
 const originalGet = api.get.bind(api);
@@ -18,9 +19,18 @@ api.get = function <T = any, R = axios.AxiosResponse<T>, D = any>(url: string, c
   const cached = getCache.get(url);
   if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
     // Background revalidation
-    originalGet<T, R, D>(url, config).then((res) => {
-      getCache.set(url, { data: res.data, timestamp: Date.now() });
-    }).catch(() => {});
+    if (!inFlightRequests.has(url)) {
+      const revalidatePromise = originalGet<T, R, D>(url, config)
+        .then((res) => {
+          getCache.set(url, { data: res.data, timestamp: Date.now() });
+          return res;
+        })
+        .catch(() => {})
+        .finally(() => {
+          inFlightRequests.delete(url);
+        });
+      inFlightRequests.set(url, revalidatePromise);
+    }
 
     // Instant 0ms response
     return Promise.resolve({
@@ -32,7 +42,22 @@ api.get = function <T = any, R = axios.AxiosResponse<T>, D = any>(url: string, c
     } as unknown as R);
   }
 
-  return originalGet<T, R, D>(url, config);
+  // Deduplicate concurrent in-flight requests to the same URL
+  if (inFlightRequests.has(url)) {
+    return inFlightRequests.get(url)!;
+  }
+
+  const reqPromise = originalGet<T, R, D>(url, config)
+    .then((res) => {
+      getCache.set(url, { data: res.data, timestamp: Date.now() });
+      return res;
+    })
+    .finally(() => {
+      inFlightRequests.delete(url);
+    });
+
+  inFlightRequests.set(url, reqPromise);
+  return reqPromise as Promise<R>;
 } as any;
 
 api.interceptors.request.use((config) => {
@@ -47,6 +72,7 @@ api.interceptors.request.use((config) => {
   const method = config.method?.toLowerCase();
   if (method === 'post' || method === 'put' || method === 'delete') {
     getCache.clear();
+    inFlightRequests.clear();
   }
 
   console.log(`[API Diagnostic Request] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);

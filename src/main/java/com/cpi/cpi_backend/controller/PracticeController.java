@@ -32,7 +32,8 @@ public class PracticeController {
     @Caching(evict = {
         @CacheEvict(value = CacheNames.PLAYERS, key = "'coach:' + #currentCoach.id"),
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
-        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.ASSESSMENTS, key = "'prac:coach:' + #currentCoach.id + ':player:' + #request.playerId")
     })
     public ResponseEntity<PracticeAssessment> saveAssessment(
             @RequestBody PracticeAssessmentRequest request,
@@ -120,6 +121,11 @@ public class PracticeController {
     }
 
     @GetMapping("/player/{playerId}")
+    @Transactional(readOnly = true)
+    @org.springframework.cache.annotation.Cacheable(
+            value = CacheNames.ASSESSMENTS,
+            key = "'prac:coach:' + #currentCoach.id + ':player:' + #playerId"
+    )
     public ResponseEntity<List<PracticeAssessment>> getPlayerAssessments(
             @PathVariable Long playerId,
             @AuthenticationPrincipal Coach currentCoach
@@ -135,18 +141,17 @@ public class PracticeController {
                         org.springframework.http.HttpStatus.NOT_FOUND, "Player not found."
                 ));
 
-        Coach managedCoach = coachRepository.findById(currentCoach.getId())
-                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.NOT_FOUND, "Coach not found."
-                ));
-
-        boolean authorized = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
+        boolean authorized = player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(currentCoach.getId());
+        if (!authorized) {
+            Coach managedCoach = coachRepository.findById(currentCoach.getId()).orElse(null);
+            authorized = managedCoach != null && player.getCreatorCoach() != null && player.getCreatorCoach().getId().equals(managedCoach.getId());
+        }
         if (!authorized) {
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.FORBIDDEN, "You are not authorized to view assessments for this player."
             );
         }
 
-        return ResponseEntity.ok(practiceAssessmentRepository.findByPlayerId(playerId));
+        return ResponseEntity.ok(practiceAssessmentRepository.findByPlayerIdWithPlayerAndCoach(playerId));
     }
 }
