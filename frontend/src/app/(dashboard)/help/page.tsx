@@ -1,11 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  HelpCircle, ChevronRight, Clipboard, ShieldCheck, TrendingUp, 
-  Target, Sparkles, Flame, CheckCircle2, AlertTriangle, BookOpen, Layers
+import {
+  HelpCircle,
+  ChevronRight,
+  Clipboard,
+  ShieldCheck,
+  TrendingUp,
+  Target,
+  Sparkles,
+  Flame,
+  CheckCircle2,
+  AlertTriangle,
+  BookOpen,
+  Layers,
+  RotateCcw,
+  User,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import CricketLoader from "@/components/CricketLoader";
 
 import { CPI_PREDEFINED_SOURCE, ApprovedCpiParameter } from "@/lib/cpiPredefinedSource";
@@ -39,7 +53,7 @@ const buildCoachPlanDataFromSource = (): CoachPlanItem[] => {
     const src = CPI_PREDEFINED_SOURCE[paramName];
     const pHigh = src.practice.high;
     const pLow = src.practice.low;
-    
+
     return {
       id: paramName.toLowerCase().replace(/\s+/g, "_"),
       name: paramName,
@@ -58,13 +72,37 @@ const buildCoachPlanDataFromSource = (): CoachPlanItem[] => {
         overview: src.practice.overview,
         high: pHigh.summary,
         low: pLow.summary,
-        goal: src.practice.goal
-      }
+        goal: src.practice.goal,
+      },
     };
   });
 };
 
 const coachPlanData: CoachPlanItem[] = buildCoachPlanDataFromSource();
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.07,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 120,
+      damping: 14,
+    },
+  },
+};
 
 export default function HelpPage() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -121,7 +159,15 @@ export default function HelpPage() {
                 const isOldPts = (pts: any[]) => {
                   if (!Array.isArray(pts) || pts.length !== 5) return true;
                   const t = String(pts[0]?.title || "").toUpperCase();
-                  return t.includes("PRESSURE") || t.includes("IDENTIFY") || t.includes("REFINE") || t.includes("EXPAND") || t.includes("CONSOLIDATE") || t.includes("AUTOMATE") || t.includes("CHANNEL");
+                  return (
+                    t.includes("PRESSURE") ||
+                    t.includes("IDENTIFY") ||
+                    t.includes("REFINE") ||
+                    t.includes("EXPAND") ||
+                    t.includes("CONSOLIDATE") ||
+                    t.includes("AUTOMATE") ||
+                    t.includes("CHANNEL")
+                  );
                 };
 
                 return {
@@ -131,21 +177,21 @@ export default function HelpPage() {
                   highPoints: !isOldPts(item?.highPoints)
                     ? item.highPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.highPoints[pIdx]?.title || "Benchmark Point"),
-                        detail: String(pt?.detail || fallback.highPoints[pIdx]?.detail || "")
+                        detail: String(pt?.detail || fallback.highPoints[pIdx]?.detail || ""),
                       }))
                     : fallback.highPoints,
                   highSummary: String(item?.highSummary || item?.rangeHigh || fallback.highSummary),
                   mediumPoints: !isOldPts(item?.mediumPoints)
                     ? item.mediumPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.mediumPoints?.[pIdx]?.title || "Benchmark Point"),
-                        detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || "")
+                        detail: String(pt?.detail || fallback.mediumPoints?.[pIdx]?.detail || ""),
                       }))
                     : fallback.mediumPoints || [],
                   mediumSummary: String(item?.mediumSummary || fallback.mediumSummary || ""),
                   lowPoints: !isOldPts(item?.lowPoints)
                     ? item.lowPoints.map((pt: any, pIdx: number) => ({
                         title: String(pt?.title || fallback.lowPoints[pIdx]?.title || "Benchmark Point"),
-                        detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || "")
+                        detail: String(pt?.detail || fallback.lowPoints[pIdx]?.detail || ""),
                       }))
                     : fallback.lowPoints,
                   lowSummary: String(item?.lowSummary || item?.rangeLow || fallback.lowSummary || ""),
@@ -154,8 +200,8 @@ export default function HelpPage() {
                     high: String(item?.coachSummary?.high || fallback.coachSummary.high),
                     medium: String(item?.coachSummary?.medium || fallback.coachSummary.medium || "refine and stabilize"),
                     low: String(item?.coachSummary?.low || fallback.coachSummary.low),
-                    goal: String(item?.coachSummary?.goal || fallback.coachSummary.goal)
-                  }
+                    goal: String(item?.coachSummary?.goal || fallback.coachSummary.goal),
+                  },
                 };
               });
               setPlans(sanitized);
@@ -192,89 +238,140 @@ export default function HelpPage() {
   const safeHighSummary = currentPlan?.highSummary || coachPlanData[selectedPlanIndex]?.highSummary || "";
   const safeMediumSummary = currentPlan?.mediumSummary || coachPlanData[selectedPlanIndex]?.mediumSummary || coachPlanData[0]?.mediumSummary || "";
   const safeLowSummary = currentPlan?.lowSummary || coachPlanData[selectedPlanIndex]?.lowSummary || "";
-  const safeCoachSummary = currentPlan?.coachSummary || {
-    overview: "Overview of parameter performance.",
-    high: "protect and refine.",
-    medium: "refine and stabilize.",
-    low: "identify and rebuild.",
-    goal: "develop consistent performance under pressure."
-  };
 
   return (
-    <div className="space-y-6 pb-12 text-left select-none max-w-lg mx-auto">
-      
-      {/* HEADER BANNER */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 sm:p-6 space-y-4 text-left shadow-sm">
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 font-extrabold text-[10px] tracking-widest uppercase border border-orange-500/20">
-            FRAMEWORK AND ASSESSMENT GUIDE
-          </span>
-        </div>
-        <h1 className="text-xl sm:text-2xl font-black text-[#0f172a] uppercase tracking-tight leading-snug">
-          WELCOME TO THE CRICKET PERFORMANCE INDEX (CPI)
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-100 pt-3">
-          {welcomeText}
-        </p>
-      </div>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="relative space-y-6 pb-20 text-left select-none max-w-lg mx-auto px-3 sm:px-0"
+    >
+      {/* Ambient Depth Lighting */}
+      <div className="absolute -top-16 -right-16 w-72 h-72 bg-[radial-gradient(circle,rgba(212,175,55,0.14)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-1/3 -left-20 w-80 h-80 bg-[radial-gradient(circle,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
 
-      {/* PPI Details */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-            <Clipboard className="w-5 h-5" />
+      {/* ── 1. HEADER BANNER ── */}
+      <motion.div
+        variants={itemVariants}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#181B27] via-[#12141D] to-[#0A0C12] border border-[#D4AF37]/35 shadow-2xl shadow-[#D4AF37]/10 p-5 sm:p-6 space-y-4 backdrop-blur-xl group"
+      >
+        {/* Subtle Gold Shimmer Sweep Top Border */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-90" />
+
+        {/* Ambient Radial Flare in corner */}
+        <div className="absolute -top-14 -right-14 w-48 h-48 bg-[radial-gradient(circle,rgba(212,175,55,0.22)_0%,transparent_70%)] pointer-events-none" />
+
+        <div className="space-y-2 z-10 relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F5BA4E] text-[9.5px] font-black tracking-widest uppercase">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
+            </span>
+            <span>FRAMEWORK AND ASSESSMENT GUIDE</span>
+          </div>
+
+          <h1 className="text-xl sm:text-2xl font-black uppercase tracking-tight leading-snug text-white pt-0.5">
+            WELCOME TO THE{" "}
+            <span className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] bg-clip-text text-transparent">
+              CRICKET PERFORMANCE INDEX (CPI)
+            </span>
+          </h1>
+
+          <p className="text-xs sm:text-[13px] text-zinc-300 font-medium leading-relaxed border-t border-white/8 pt-3">
+            {welcomeText}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── 2. PPI DETAILS ── */}
+      <motion.div
+        variants={itemVariants}
+        whileHover={{ y: -3, scale: 1.01 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-5 space-y-3.5 shadow-xl hover:shadow-2xl hover:shadow-[#D4AF37]/10 transition-all duration-300 group"
+      >
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-sm">
+            <Clipboard className="w-5 h-5 stroke-[2.3]" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Practice Performance Index (PPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Practice Assessment Index</p>
+            <h3 className="text-base font-black text-white uppercase group-hover:text-[#F5BA4E] transition-colors leading-tight">
+              Practice Performance Index (PPI)
+            </h3>
+            <p className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-wider mt-0.5">
+              Practice Assessment Index
+            </p>
           </div>
         </div>
-        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
+        <p className="text-xs sm:text-[13px] font-medium text-zinc-300 leading-relaxed">
           {ppiDesc}
         </p>
-      </div>
+      </motion.div>
 
-      {/* MPI Details */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-            <ShieldCheck className="w-5 h-5" />
+      {/* ── 3. MPI DETAILS ── */}
+      <motion.div
+        variants={itemVariants}
+        whileHover={{ y: -3, scale: 1.01 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-5 space-y-3.5 shadow-xl hover:shadow-2xl hover:shadow-[#D4AF37]/10 transition-all duration-300 group"
+      >
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-sm">
+            <ShieldCheck className="w-5 h-5 stroke-[2.3]" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Match Performance Index (MPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Match Assessment Index</p>
+            <h3 className="text-base font-black text-white uppercase group-hover:text-[#F5BA4E] transition-colors leading-tight">
+              Match Performance Index (MPI)
+            </h3>
+            <p className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-wider mt-0.5">
+              Match Assessment Index
+            </p>
           </div>
         </div>
-        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
+        <p className="text-xs sm:text-[13px] font-medium text-zinc-300 leading-relaxed">
           {mpiDesc}
         </p>
-      </div>
+      </motion.div>
 
-      {/* CPI Details */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-            <TrendingUp className="w-5 h-5" />
+      {/* ── 4. CPI DETAILS ── */}
+      <motion.div
+        variants={itemVariants}
+        whileHover={{ y: -3, scale: 1.01 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-[#D4AF37]/35 hover:border-[#D4AF37]/70 p-5 space-y-3.5 shadow-xl hover:shadow-2xl hover:shadow-[#D4AF37]/15 transition-all duration-300 group"
+      >
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37]/45 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-md shadow-[#D4AF37]/20">
+            <TrendingUp className="w-5 h-5 stroke-[2.3]" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase">Cricket Performance Index (CPI)</h3>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-wider">Overall Player Rating Index</p>
+            <h3 className="text-base font-black text-white uppercase group-hover:text-[#F5BA4E] transition-colors leading-tight">
+              Cricket Performance Index (CPI)
+            </h3>
+            <p className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-wider mt-0.5">
+              Overall Player Rating Index
+            </p>
           </div>
         </div>
-        <p className="text-xs font-semibold text-slate-900 leading-relaxed">
+        <p className="text-xs sm:text-[13px] font-medium text-zinc-300 leading-relaxed">
           {cpiDesc}
         </p>
-      </div>
+      </motion.div>
 
-      {/* THE COACH’S PLAN OF ACTION */}
-      <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 space-y-5">
-        <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
-            <BookOpen className="w-5 h-5" />
+      {/* ── 5. THE COACH’S PLAN OF ACTION (HOW TO SCORE A PLAYER) ── */}
+      <motion.div
+        variants={itemVariants}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 p-5 sm:p-6 space-y-5 shadow-2xl backdrop-blur-xl"
+      >
+        <div className="flex items-center gap-3.5 border-b border-white/8 pb-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 flex items-center justify-center text-[#D4AF37] shrink-0 shadow-sm">
+            <BookOpen className="w-5 h-5 stroke-[2.3]" />
           </div>
           <div>
-            <h3 className="text-base font-black text-slate-900 uppercase leading-snug">HOW TO SCORE A PLAYER</h3>
-            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block mt-0.5">
+            <h3 className="text-base font-black text-white uppercase leading-snug">
+              HOW TO SCORE A PLAYER
+            </h3>
+            <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-widest block mt-0.5">
               THE 5 KEY PERFORMANCE AREAS
             </span>
           </div>
@@ -282,15 +379,18 @@ export default function HelpPage() {
 
         {/* Parameter Selector Tabs */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="bg-[#0E1017] p-1.5 rounded-2xl border border-white/10 flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
             {plans.map((plan, idx) => (
               <button
                 key={plan.id}
-                onClick={() => { setSelectedPlanIndex(idx); setScoreTab("high"); }}
-                className={`px-4 py-2.5 rounded-2xl text-xs font-black uppercase whitespace-nowrap transition-all cursor-pointer border ${
+                onClick={() => {
+                  setSelectedPlanIndex(idx);
+                  setScoreTab("high");
+                }}
+                className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase whitespace-nowrap transition-all cursor-pointer border ${
                   selectedPlanIndex === idx
-                    ? "bg-orange-500 text-black border-orange-500 shadow-md scale-[1.02]"
-                    : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300"
+                    ? "bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] border-[#D4AF37]/60 shadow-lg shadow-[#D4AF37]/25 scale-[1.02]"
+                    : "bg-transparent text-zinc-400 hover:text-white hover:bg-white/5 border-transparent"
                 }`}
               >
                 {plan.name}
@@ -300,70 +400,90 @@ export default function HelpPage() {
         </div>
 
         {/* Selected Parameter Details */}
-        <div className="space-y-4 pt-1 border-t border-slate-100">
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
-            <span className="text-xs font-black text-orange-600 uppercase tracking-wider block">
+        <div className="space-y-4 pt-1 border-t border-white/8">
+          <div className="bg-[#0E1017] p-4.5 rounded-2xl border border-white/10 space-y-1.5">
+            <span className="text-xs font-black text-[#F5BA4E] uppercase tracking-wider block flex items-center gap-1.5">
+              <Star className="w-3.5 h-3.5 text-[#D4AF37] fill-[#D4AF37]" />
               {safeName} Index Overview
             </span>
-            <p className="text-xs font-semibold text-slate-800 leading-relaxed">
+            <p className="text-xs sm:text-[13px] font-medium text-zinc-300 leading-relaxed">
               {safeDescription}
             </p>
           </div>
 
           {/* High vs Medium vs Low Score Action Toggle */}
-          <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1 sm:gap-1.5">
+          <div className="flex bg-[#0E1017] p-1.5 rounded-2xl border border-white/10 gap-1.5">
             <button
               onClick={() => setScoreTab("high")}
-              className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
+              className={`flex-1 py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center ${
                 scoreTab === "high"
-                  ? "bg-emerald-500 text-white shadow-sm"
-                  : "text-slate-800 hover:text-slate-900"
+                  ? "bg-emerald-500 text-[#090A0E] shadow-md shadow-emerald-500/25"
+                  : "text-zinc-400 hover:text-emerald-400 hover:bg-white/5"
               }`}
             >
-              A SCORE (&gt;7)
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>A SCORE (&gt;7)</span>
             </button>
             <button
               onClick={() => setScoreTab("medium")}
-              className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
+              className={`flex-1 py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center ${
                 scoreTab === "medium"
-                  ? "bg-amber-500 text-white shadow-sm"
-                  : "text-slate-800 hover:text-slate-900"
+                  ? "bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] text-[#090A0E] shadow-md shadow-[#D4AF37]/25"
+                  : "text-zinc-400 hover:text-[#F5BA4E] hover:bg-white/5"
               }`}
             >
-              A SCORE (5-7)
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+              <span>A SCORE (5-7)</span>
             </button>
             <button
               onClick={() => setScoreTab("low")}
-              className={`flex-1 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1 cursor-pointer text-center ${
+              className={`flex-1 py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center ${
                 scoreTab === "low"
-                  ? "bg-rose-500 text-white shadow-sm"
-                  : "text-slate-800 hover:text-slate-900"
+                  ? "bg-rose-500 text-white shadow-md shadow-rose-500/25"
+                  : "text-zinc-400 hover:text-rose-400 hover:bg-white/5"
               }`}
             >
-              A SCORE (&lt;5)
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+              <span>A SCORE (&lt;5)</span>
             </button>
           </div>
 
           {/* Action Points Content */}
           <div className="space-y-3">
-            <span className="text-xs font-black uppercase tracking-wider block text-slate-800">
-              {scoreTab === "high" ? `STRONG ${safeName.toUpperCase()} BENCHMARKS:` : scoreTab === "medium" ? "AVERAGE" : `LOW ${safeName.toUpperCase()} BENCHMARKS:`}
+            <span className="text-xs font-black uppercase tracking-wider block text-white">
+              {scoreTab === "high"
+                ? `STRONG ${safeName.toUpperCase()} BENCHMARKS:`
+                : scoreTab === "medium"
+                ? "AVERAGE BENCHMARKS:"
+                : `LOW ${safeName.toUpperCase()} BENCHMARKS:`}
             </span>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {activePoints.map((pt, i) => (
-                <div key={i} className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex gap-3 items-start text-xs">
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center font-mono font-black text-[10px] shrink-0 mt-0.5 ${
-                    scoreTab === "high" ? "bg-emerald-100 text-emerald-800 border border-emerald-300" :
-                    scoreTab === "medium" ? "bg-amber-100 text-amber-800 border border-amber-300" :
-                    "bg-rose-100 text-rose-800 border border-rose-300"
-                  }`}>
+                <div
+                  key={i}
+                  className="bg-[#0E1017] p-3.5 rounded-2xl border border-white/10 flex gap-3.5 items-start text-xs hover:border-white/20 transition-colors"
+                >
+                  <span
+                    className={`w-5.5 h-5.5 rounded-full flex items-center justify-center font-mono font-black text-[10px] shrink-0 mt-0.5 ${
+                      scoreTab === "high"
+                        ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                        : scoreTab === "medium"
+                        ? "bg-[#D4AF37]/15 text-[#F5BA4E] border border-[#D4AF37]/30"
+                        : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
+                    }`}
+                  >
                     {i + 1}
                   </span>
                   <div>
-                    <span className="font-black text-slate-900 block uppercase">{pt.title}</span>
-                    {pt.detail && pt.detail.trim().toLowerCase() !== pt.title.trim().toLowerCase() && (
-                      <span className="font-medium text-slate-700 leading-relaxed">{pt.detail}</span>
-                    )}
+                    <span className="font-black text-white block uppercase leading-tight">
+                      {pt.title}
+                    </span>
+                    {pt.detail &&
+                      pt.detail.trim().toLowerCase() !== pt.title.trim().toLowerCase() && (
+                        <span className="font-medium text-zinc-300 leading-relaxed mt-1 block">
+                          {pt.detail}
+                        </span>
+                      )}
                   </div>
                 </div>
               ))}
@@ -371,99 +491,126 @@ export default function HelpPage() {
 
             {/* High/Medium/Low Summary Banner */}
             {scoreTab === "high" && safeHighSummary && (
-              <div className="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 text-xs font-semibold text-emerald-950 leading-relaxed italic">
+              <div className="bg-emerald-950/30 p-4 rounded-2xl border border-emerald-500/30 text-xs font-semibold text-emerald-300 leading-relaxed italic shadow-sm">
                 {safeHighSummary}
               </div>
             )}
             {scoreTab === "medium" && safeMediumSummary && (
-              <div className="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200 text-xs font-semibold text-amber-950 leading-relaxed italic">
+              <div className="bg-[#D4AF37]/10 p-4 rounded-2xl border border-[#D4AF37]/30 text-xs font-semibold text-[#F5BA4E] leading-relaxed italic shadow-sm">
                 {safeMediumSummary}
               </div>
             )}
             {scoreTab === "low" && safeLowSummary && (
-              <div className="bg-rose-50/80 p-3.5 rounded-2xl border border-rose-200 text-xs font-semibold text-rose-950 leading-relaxed italic">
+              <div className="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/30 text-xs font-semibold text-rose-300 leading-relaxed italic shadow-sm">
                 {safeLowSummary}
               </div>
             )}
           </div>
 
           {/* BENCHMARK GUIDING PRINCIPLES SUMMARY */}
-          <div className="bg-orange-50/80 border border-orange-200 p-4 rounded-2.5xl space-y-2 text-xs">
-            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
+          <div className="bg-gradient-to-br from-[#D4AF37]/15 via-[#181B27] to-[#12141D] border border-[#D4AF37]/35 p-5 rounded-2.5xl space-y-2.5 text-xs shadow-md">
+            <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-widest block flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
               SUMMARY GUIDING PRINCIPLES
             </span>
-            <ul className="space-y-1.5 font-bold text-slate-900">
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                Watch the pattern, not the moment
+            <ul className="space-y-2 font-bold text-white">
+              <li className="flex items-center gap-2.5">
+                <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37] shrink-0" />
+                <span>Watch the pattern, not the moment</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                Score the evidence, not the impression
+              <li className="flex items-center gap-2.5">
+                <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37] shrink-0" />
+                <span>Score the evidence, not the impression</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" />
-                Have a clear reason what earned the score
+              <li className="flex items-center gap-2.5">
+                <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37] shrink-0" />
+                <span>Have a clear reason what earned the score</span>
               </li>
             </ul>
           </div>
 
           {/* HOW TO INTERPRET CPI SCORES (OUT OF 10) */}
-          <div className="bg-slate-50/80 p-4.5 rounded-2.5xl border border-slate-200 space-y-3.5 shadow-xs">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">SCORE INTERPRETATION SUMMARY</h3>
+          <div className="bg-[#0E1017] p-5 rounded-2.5xl border border-white/10 space-y-4 shadow-sm">
+            <h3 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+              <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+              SCORE INTERPRETATION SUMMARY
+            </h3>
             <div className="space-y-3.5">
-              <div className="space-y-1 pb-3 border-b border-slate-200/80">
+              <div className="space-y-1.5 pb-3 border-b border-white/8">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-red-500 uppercase tracking-wider">BELOW 5.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- LOW</span>
+                  <span className="text-xs font-black text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                    BELOW 5.0
+                  </span>
+                  <span className="text-xs font-black text-white uppercase">- LOW</span>
                 </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                <p className="text-xs font-medium text-zinc-300 leading-relaxed">
                   {below5}
                 </p>
               </div>
-              <div className="space-y-1 pb-3 border-b border-slate-200/80">
+
+              <div className="space-y-1.5 pb-3 border-b border-white/8">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-amber-500 uppercase tracking-wider">5.0 TO 7.0</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- AVERAGE</span>
+                  <span className="text-xs font-black text-[#F5BA4E] bg-[#D4AF37]/15 border border-[#D4AF37]/30 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                    5.0 TO 7.0
+                  </span>
+                  <span className="text-xs font-black text-white uppercase">- AVERAGE</span>
                 </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                <p className="text-xs font-medium text-zinc-300 leading-relaxed">
                   {between5And7}
                 </p>
               </div>
-              <div className="space-y-1">
+
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-emerald-500 uppercase tracking-wider">7.0 AND ABOVE</span>
-                  <span className="text-xs font-black text-slate-900 uppercase">- HIGH</span>
+                  <span className="text-xs font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                    7.0 AND ABOVE
+                  </span>
+                  <span className="text-xs font-black text-white uppercase">- HIGH</span>
                 </div>
-                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                <p className="text-xs font-medium text-zinc-300 leading-relaxed">
                   {above7}
                 </p>
               </div>
             </div>
           </div>
         </div>
+      </motion.div>
+
+      {/* ── 6. ACTION BUTTONS ── */}
+      <motion.div variants={itemVariants} className="space-y-3 pt-2">
+        {/* Restart Tour */}
+        <motion.button
+          whileHover={{ scale: 1.015, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {
+            localStorage.setItem("cpi_onboarding_completed", "false");
+            localStorage.setItem("cpi_players_tour_completed", "false");
+            window.location.href = "/dashboard";
+          }}
+          className="w-full bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] hover:to-[#C69212] text-[#090A0E] rounded-2xl py-4 text-sm font-black flex items-center justify-center gap-2 shadow-xl shadow-[#D4AF37]/25 border border-[#D4AF37]/50 cursor-pointer uppercase tracking-wider active:scale-98 transition-all"
+        >
+          <RotateCcw className="w-4 h-4 stroke-[2.8]" />
+          <span>RESTART TOUR</span>
+        </motion.button>
+
+        {/* Back to Profile */}
+        <motion.div whileHover={{ scale: 1.01, y: -1 }} whileTap={{ scale: 0.98 }}>
+          <Link
+            href="/profile"
+            className="w-full bg-[#12141D]/90 hover:bg-[#181B27] text-zinc-300 hover:text-white rounded-2xl py-4 text-sm font-black flex items-center justify-center gap-2 border border-white/10 hover:border-[#D4AF37]/40 shadow-sm cursor-pointer uppercase tracking-wider text-center block transition-all"
+          >
+            <User className="w-4 h-4 text-[#D4AF37]" />
+            <span>BACK TO PROFILE</span>
+          </Link>
+        </motion.div>
+      </motion.div>
+
+      {/* Footer Copyright */}
+      <div className="text-center pt-2 pb-2">
+        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+          © 2026 CPI – Cricket Performance Index. All rights reserved.
+        </p>
       </div>
-
-      {/* Restart Tour */}
-      <button
-        onClick={() => {
-          localStorage.setItem("cpi_onboarding_completed", "false");
-          localStorage.setItem("cpi_players_tour_completed", "false");
-          window.location.href = "/dashboard";
-        }}
-        className="w-full bg-orange-500 hover:bg-orange-600 text-black rounded-2xl py-4.5 text-base font-black flex items-center justify-center gap-2 transition-all border border-orange-450 cursor-pointer uppercase"
-      >
-        Restart Tour
-      </button>
-
-      {/* Back to Profile */}
-      <Link
-        href="/profile"
-        className="w-full bg-slate-100 hover:bg-slate-100 text-slate-900 rounded-2xl py-4.5 text-base font-extrabold flex items-center justify-center gap-2 transition-all border border-slate-200 cursor-pointer text-center block"
-      >
-        BACK TO PROFILE
-      </Link>
-
-    </div>
+    </motion.div>
   );
 }
