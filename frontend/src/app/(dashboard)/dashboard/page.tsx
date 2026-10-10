@@ -438,16 +438,16 @@ export default function DashboardPage() {
               whileHover={{ scale: 1.015, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => router.push("/players?action=match")}
-              className="w-full h-13 bg-gradient-to-b from-[#181B27] to-[#12141D] hover:from-[#1F2333] hover:to-[#181B27] text-white rounded-2xl px-4 sm:px-5 text-sm font-black flex items-center justify-between border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 shadow-md cursor-pointer uppercase tracking-wider transition-all duration-200 group"
+              className="w-full h-13 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] hover:to-[#C69212] text-[#090A0E] rounded-2xl px-4 sm:px-5 text-sm font-black flex items-center justify-between cursor-pointer uppercase tracking-wider shadow-lg shadow-[#D4AF37]/20 border border-[#D4AF37]/40 transition-all duration-200 group"
             >
               <span className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center">
-                  <Activity className="w-4 h-4 text-[#D4AF37] stroke-[2.5]" />
+                <div className="w-8 h-8 rounded-xl bg-[#090A0E]/15 flex items-center justify-center">
+                  <Activity className="w-4 h-4 text-[#090A0E] stroke-[2.5]" />
                 </div>
                 <span>Start Match Assessment</span>
               </span>
-              <div className="w-7 h-7 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+              <div className="w-7 h-7 rounded-xl bg-[#090A0E]/10 flex items-center justify-center group-hover:bg-[#090A0E]/20 transition-colors">
+                <ChevronRight className="w-4 h-4 text-[#090A0E] stroke-[2.5] group-hover:translate-x-0.5 transition-transform" />
               </div>
             </motion.button>
 
