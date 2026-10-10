@@ -7,8 +7,9 @@ import {
   Edit2, Check, X, Shield, Sparkles, User, AlertCircle,
   FileText, Download, TrendingUp, TrendingDown, ArrowRightLeft,
   Calendar, CheckCircle2, Award, Target, Flame, ChevronDown,
-  ChevronRight, BarChart2, Clock, MoreVertical, ArrowUpDown
+  ChevronRight, BarChart2, Clock, MoreVertical, ArrowUpDown, Zap
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import CricketLoader from "@/components/CricketLoader";
 
 interface Player {
@@ -81,6 +82,20 @@ const PARAM_DEFINITIONS = [
   { name: "Preparation", getVal: (a: AssessmentItem) => a.preparation },
   { name: "Intensity", getVal: (a: AssessmentItem) => a.intensity }
 ];
+
+const getCpiTier = (score: number | string | null | undefined): { label: string; color: string; bg: string; border: string; glow: string } => {
+  if (score === null || score === undefined || score === "N/A") {
+    return { label: "Unrated", color: "text-slate-400", bg: "bg-slate-100", border: "border-slate-200", glow: "from-slate-400 to-slate-500" };
+  }
+  const num = typeof score === "number" ? score : Number(score);
+  if (isNaN(num) || num <= 0) {
+    return { label: "Unrated", color: "text-slate-400", bg: "bg-slate-100", border: "border-slate-200", glow: "from-slate-400 to-slate-500" };
+  }
+  if (num >= 85) return { label: "Elite", color: "text-amber-700", bg: "bg-amber-100", border: "border-amber-300", glow: "from-amber-400 to-orange-500" };
+  if (num >= 70) return { label: "High Perform", color: "text-orange-700", bg: "bg-orange-100", border: "border-orange-300", glow: "from-orange-500 to-amber-500" };
+  if (num >= 55) return { label: "Standard", color: "text-emerald-700", bg: "bg-emerald-100", border: "border-emerald-300", glow: "from-emerald-400 to-teal-500" };
+  return { label: "Developing", color: "text-blue-700", bg: "bg-blue-100", border: "border-blue-300", glow: "from-blue-400 to-cyan-500" };
+};
 
 export default function TeamPage() {
   const [loading, setLoading] = useState<boolean>(() => {
@@ -898,121 +913,210 @@ export default function TeamPage() {
   const compStatsB = calcComparisonStats(teamBData);
 
   return (
-    <div className="space-y-4 sm:space-y-5 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
-      {/* ------------------ 1. COMPACT HEADER ------------------ */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
-        <div className="space-y-0.5 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0" />
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase truncate">
+    <div className="relative space-y-5 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
+      {/* Ambient background performance glow accents */}
+      <div className="absolute -top-24 -right-20 w-96 h-96 bg-gradient-to-br from-orange-500/10 via-amber-400/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-96 -left-28 w-80 h-80 bg-gradient-to-tr from-amber-500/8 via-orange-400/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+
+      {/* ------------------ 1. GLASSO-HERO HEADER ------------------ */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="glass-surface border border-slate-200/90 rounded-3xl p-4 sm:p-6 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden"
+      >
+        <div className="space-y-1 min-w-0 z-10">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black tracking-widest uppercase shadow-2xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
+            </span>
+            <span>ELITE SQUAD ANALYTICS</span>
+          </div>
+
+          <div className="flex items-center gap-2.5 pt-0.5">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 uppercase truncate">
               TEAM MANAGEMENT
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium truncate">
-            Manage your squads and team performance
+
+          <p className="text-xs sm:text-sm text-slate-500 font-medium truncate flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+            <span>Manage squads, evaluate CPI benchmarks, and track collective performance</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
-          <button
+        <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0 z-10">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setShowCreateModal(true)}
-            className="bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white font-black text-xs uppercase tracking-wider py-2.5 px-4 sm:px-5 rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            className="group relative overflow-hidden bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs uppercase tracking-wider py-3 px-5 sm:px-6 rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            <Plus className="w-4 h-4 stroke-[3]" />
+            <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
+              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            </div>
             <span>CREATE TEAM</span>
-          </button>
+          </motion.button>
 
           {team && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => generateTeamPdfReport()}
-              className="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-extrabold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="px-4 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200/90 shadow-xs hover:border-slate-300"
               title="Download Team PDF Report"
             >
-              <Download className="w-4 h-4 text-slate-600" />
+              <Download className="w-4 h-4 text-slate-600 group-hover:translate-y-0.5 transition-transform" />
               <span className="hidden sm:inline">REPORT</span>
-            </button>
+            </motion.button>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* ------------------ 2. TEAM PERFORMANCE SUMMARY METRICS ------------------ */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Metric 1: Total Teams */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
-          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0">
-            <Shield className="w-5 h-5 stroke-[2.2]" />
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          whileHover={{ y: -3 }}
+          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/15 to-amber-500/10 border border-orange-500/25 flex items-center justify-center text-orange-600 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-xs">
+            <Shield className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAMS</span>
-            <span className="text-base sm:text-lg font-black text-slate-900">{allTeams.length} {allTeams.length === 1 ? "Team" : "Teams"}</span>
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAMS REGISTERED</span>
+            <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight block">
+              {allTeams.length} <span className="text-xs font-bold text-slate-500">{allTeams.length === 1 ? "Squad" : "Squads"}</span>
+            </span>
+            <span className="text-[10px] font-bold text-orange-600/90 bg-orange-50 border border-orange-200/60 px-1.5 py-0.2 rounded-md inline-block mt-0.5">
+              Active Roster
+            </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Metric 2: Total Squad Players */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-600 shrink-0">
-            <Users2 className="w-5 h-5 stroke-[2.2]" />
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          whileHover={{ y: -3 }}
+          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/15 to-indigo-500/10 border border-blue-500/25 flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-xs">
+            <Users2 className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TOTAL PLAYERS</span>
-            <span className="text-base sm:text-lg font-black text-slate-900">{mySquad.length} {mySquad.length === 1 ? "Player" : "Players"}</span>
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SQUAD PLAYERS</span>
+            <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight block">
+              {mySquad.length} <span className="text-xs font-bold text-slate-500">{mySquad.length === 1 ? "Athlete" : "Athletes"}</span>
+            </span>
+            <span className="text-[10px] font-bold text-blue-600/90 bg-blue-50 border border-blue-200/60 px-1.5 py-0.2 rounded-md inline-block mt-0.5">
+              Available
+            </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Metric 3: Average Team CPI */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
-          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0">
-            <Award className="w-5 h-5 stroke-[2.2]" />
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
+          whileHover={{ y: -3 }}
+          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-xs">
+            <Award className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAM CPI</span>
-            <span className="text-base sm:text-lg font-black text-orange-600 font-mono">{teamCpi}</span>
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">COLLECTIVE CPI</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-lg sm:text-xl font-black text-orange-600 font-mono tracking-tight">
+                {teamCpi}
+              </span>
+              {(() => {
+                const tier = getCpiTier(teamCpi);
+                return (
+                  <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.2 rounded-md border ${tier.color} ${tier.bg} ${tier.border}`}>
+                    {tier.label}
+                  </span>
+                );
+              })()}
+            </div>
+            <span className="text-[10px] font-bold text-slate-400 block mt-0.5">
+              Team Index
+            </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Metric 4: Active Team */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-2xs">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-600 shrink-0">
-            <CheckCircle2 className="w-5 h-5 stroke-[2.2]" />
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          whileHover={{ y: -3 }}
+          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform shadow-xs relative">
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+            </span>
+            <CheckCircle2 className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">ACTIVE TEAM</span>
-            <span className="text-xs sm:text-sm font-black text-slate-900 truncate block">{team ? team.name : "None"}</span>
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">ACTIVE SQUAD</span>
+            <span className="text-xs sm:text-sm font-black text-slate-900 truncate block">
+              {team ? team.name : "None"}
+            </span>
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded-md inline-block mt-0.5">
+              In Focus
+            </span>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* STATE 1: NO TEAMS YET */}
       {allTeams.length === 0 && !team && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xs space-y-5 text-center">
-          <div className="w-16 h-16 rounded-3xl bg-orange-50 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center">
-            <Shield className="w-8 h-8 stroke-[2]" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.35 }}
+          className="glass-surface border border-slate-200/80 rounded-3xl p-8 sm:p-12 shadow-sm space-y-6 text-center relative overflow-hidden"
+        >
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-500/15 to-amber-500/10 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+            <Shield className="w-10 h-10 stroke-[2]" />
           </div>
-          <div className="space-y-1.5 max-w-md mx-auto">
+          <div className="space-y-2 max-w-md mx-auto">
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
-              NO TEAMS YET
+              NO TEAMS CREATED YET
             </h2>
             <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed">
               Organize your players into dedicated team squads to evaluate collective performance metrics, track CPI averages, and manage group analytics.
             </p>
           </div>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => setShowCreateModal(true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer inline-flex items-center gap-2"
+            className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-orange-500/25 cursor-pointer inline-flex items-center gap-2"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>CREATE YOUR FIRST TEAM</span>
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
 
       {/* STATE 2: TEAM DASHBOARD VIEW */}
       {allTeams.length > 0 && team && (
         <div className="space-y-4 sm:space-y-5">
           {/* ------------------ 3. SEGMENTED NAVIGATION TABS ------------------ */}
-          <div className="bg-slate-100/90 border border-slate-200/80 rounded-xl p-1 flex items-center gap-1 overflow-x-auto no-scrollbar scroll-smooth max-w-full">
+          <div className="glass-surface border border-slate-200/80 rounded-2xl p-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-w-full shadow-2xs">
             {[
-              { id: "MY_TEAMS", label: `MY TEAMS (${allTeams.length})`, icon: Users2 },
+              { id: "MY_TEAMS", label: "MY TEAMS", count: allTeams.length, icon: Users2 },
               { id: "OVERVIEW", label: "SQUAD OVERVIEW", icon: BarChart2 },
               { id: "7PARAMS", label: "7-PARAMETER ANALYTICS", icon: TrendingUp },
               { id: "HISTORY", label: "ASSESSMENT HISTORY", icon: Clock },
@@ -1025,14 +1129,25 @@ export default function TeamPage() {
                 <button
                   key={t.id}
                   onClick={() => setActiveTab(t.id as any)}
-                  className={`px-3.5 py-2 rounded-lg font-extrabold text-[11px] uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`relative px-4 py-2.5 rounded-xl font-extrabold text-[11px] uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
                     isActive
-                      ? "bg-orange-500 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                      ? "bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white shadow-md shadow-orange-500/25"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 stroke-[2.2]" />
+                  <Icon className={`w-3.5 h-3.5 stroke-[2.2] transition-transform ${isActive ? "scale-110" : ""}`} />
                   <span>{t.label}</span>
+                  {t.count !== undefined && (
+                    <span
+                      className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
+                        isActive
+                          ? "bg-white/25 text-white"
+                          : "bg-slate-200 text-slate-700"
+                      }`}
+                    >
+                      {t.count}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -1041,7 +1156,7 @@ export default function TeamPage() {
           {/* ------------------ 4. TAB: MY TEAMS (Clean Redesigned Team Profile Cards) ------------------ */}
           {activeTab === "MY_TEAMS" && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+              <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
                 <div>
                   <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                     <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5]" />
@@ -1054,8 +1169,8 @@ export default function TeamPage() {
               </div>
 
               {/* Team Profile Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {allTeams.map((t) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                {allTeams.map((t, idx) => {
                   const isSelected = team?.id === t.id;
                   const squadSize = t.players?.length || 0;
                   const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
@@ -1067,16 +1182,26 @@ export default function TeamPage() {
                     : (typeof ppiAvg === "number" ? ppiAvg : (typeof mpiAvg === "number" ? mpiAvg : "N/A"));
 
                   const numCpi = typeof cardTeamCpi === "number" ? cardTeamCpi : 0;
+                  const tier = getCpiTier(cardTeamCpi);
 
                   return (
-                    <div
+                    <motion.div
                       key={`card-${t.id}`}
-                      className="bg-white border border-slate-200/80 hover:border-orange-300/80 rounded-2xl p-5 transition-all shadow-xs hover:shadow-md space-y-4"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 }}
+                      whileHover={{ y: -4 }}
+                      className={`relative rounded-3xl p-5 sm:p-6 transition-all duration-300 space-y-4 border ${
+                        isSelected
+                          ? "bg-gradient-to-b from-orange-500/[0.04] via-white to-white border-orange-500/80 ring-2 ring-orange-500/20 shadow-xl shadow-orange-500/10"
+                          : "bg-white border-slate-200/90 hover:border-orange-300/80 shadow-xs hover:shadow-xl"
+                      }`}
                     >
-                      {/* Top Row: Avatar, Name, Description, Status */}
+                      {/* Top Row: Athletic Crest, Name, Description, Status */}
                       <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-600 font-black text-lg flex items-center justify-center shrink-0 uppercase">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          {/* 3D Athletic Team Crest */}
+                          <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-amber-600 text-white font-black text-xl flex items-center justify-center shrink-0 uppercase shadow-md shadow-orange-500/25 ring-2 ring-white/90 border border-orange-400/40">
                             {t.name.charAt(0)}
                           </div>
 
@@ -1085,68 +1210,82 @@ export default function TeamPage() {
                               {t.name}
                             </h4>
                             <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
-                              {t.description || "Junior National Squad"}
+                              {t.description || "Cricket Squad"}
                             </p>
                           </div>
                         </div>
 
                         <div className="shrink-0">
                           {isSelected ? (
-                            <span className="text-[10px] font-extrabold tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                              Active
+                            <span className="text-[10px] font-black tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
+                              <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                              </span>
+                              Active Squad
                             </span>
                           ) : (
-                            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full">
+                            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
                               Inactive
                             </span>
                           )}
                         </div>
                       </div>
 
-                      {/* Middle Row: CPI Progress Ring + Player Count */}
-                      <div className="border-t border-slate-100 pt-3.5 grid grid-cols-2 gap-4 items-center">
-                        {/* CPI Radial Progress Visualization */}
+                      {/* Middle Row: Precision CPI Radial Gauge + Performance Strip */}
+                      <div className="border-t border-slate-100/90 pt-3.5 grid grid-cols-2 gap-3.5 items-center">
+                        {/* High-Precision CPI Radial Gauge */}
                         <div className="flex items-center gap-3">
-                          <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
-                            <svg className="w-11 h-11 transform -rotate-90" viewBox="0 0 36 36">
+                          <div className="relative w-13 h-13 flex items-center justify-center shrink-0">
+                            <svg className="w-13 h-13 transform -rotate-90" viewBox="0 0 36 36">
+                              <defs>
+                                <linearGradient id={`cpiGrad-${t.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stopColor="#f97316" />
+                                  <stop offset="100%" stopColor="#f59e0b" />
+                                </linearGradient>
+                              </defs>
                               <path
                                 className="text-slate-100"
-                                strokeWidth="3.5"
+                                strokeWidth="3.2"
                                 stroke="currentColor"
                                 fill="none"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                               />
                               <path
-                                className="text-orange-500"
+                                stroke={`url(#cpiGrad-${t.id})`}
                                 strokeDasharray={`${numCpi}, 100`}
-                                strokeWidth="3.5"
+                                strokeWidth="3.2"
                                 strokeLinecap="round"
-                                stroke="currentColor"
                                 fill="none"
+                                className="transition-all duration-700 ease-out"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                               />
                             </svg>
-                            <span className="absolute font-black text-xs text-orange-600 font-mono">
+                            <span className="absolute font-black text-sm text-orange-600 font-mono">
                               {cardTeamCpi}
                             </span>
                           </div>
                           <div>
                             <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAM CPI</span>
-                            <span className="text-[11px] font-bold text-slate-700">
-                              {typeof cardTeamCpi === 'number' ? (cardTeamCpi >= 75 ? 'High Perform' : 'Standard') : 'Not Scored'}
+                            <span className={`text-[10px] font-black uppercase px-2 py-0.2 rounded-md border inline-block mt-0.5 ${tier.color} ${tier.bg} ${tier.border}`}>
+                              {tier.label}
                             </span>
                           </div>
                         </div>
 
-                        {/* Player Count */}
-                        <div className="flex items-center gap-2.5 justify-end">
-                          <div className="text-right">
-                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">PLAYERS</span>
-                            <span className="text-sm font-black text-slate-900">{squadSize}</span>
+                        {/* Player Count & Metrics Mini-Badges */}
+                        <div className="flex items-center gap-2 justify-end">
+                          <div className="bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 text-center">
+                            <span className="text-[9px] font-extrabold text-slate-400 uppercase block">PPI</span>
+                            <span className="text-xs font-black text-slate-800">{ppiAvg}</span>
                           </div>
-                          <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
-                            <Users2 className="w-4 h-4 stroke-[2]" />
+                          <div className="bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 text-center">
+                            <span className="text-[9px] font-extrabold text-slate-400 uppercase block">MPI</span>
+                            <span className="text-xs font-black text-slate-800">{mpiAvg}</span>
+                          </div>
+                          <div className="bg-orange-50/80 border border-orange-200/80 rounded-xl px-2.5 py-1.5 text-center">
+                            <span className="text-[9px] font-extrabold text-orange-500 uppercase block">PLAYERS</span>
+                            <span className="text-xs font-black text-orange-700">{squadSize}</span>
                           </div>
                         </div>
                       </div>
@@ -1159,8 +1298,8 @@ export default function TeamPage() {
                             setIsEditing(true);
                             setActiveTab("OVERVIEW");
                           }}
-                          className="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
-                          title="Edit Team"
+                          className="px-3 py-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                          title="Edit Team Info"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                           <span>Edit</span>
@@ -1171,37 +1310,41 @@ export default function TeamPage() {
                             selectTeam(t);
                             setActiveTab("OVERVIEW");
                           }}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer border border-orange-200/80 active:scale-98"
+                          className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-50 hover:bg-orange-500 hover:text-white text-orange-600 font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer border border-orange-200/80 active:scale-98 shadow-2xs hover:shadow-md hover:shadow-orange-500/20"
                         >
-                          <span>View Team</span>
-                          <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+                          <span>VIEW SQUAD</span>
+                          <ChevronRight className="w-4 h-4 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
                         </button>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
 
-              {/* Bottom Action Card */}
-              <div
+              {/* Bottom Action Card: Interactive Squad Creator */}
+              <motion.div
+                whileHover={{ scale: 1.005, y: -2 }}
+                whileTap={{ scale: 0.995 }}
                 onClick={() => setShowCreateModal(true)}
-                className="bg-white border border-slate-200/80 hover:border-orange-300 hover:bg-orange-50/20 rounded-2xl p-4 sm:p-5 flex items-center justify-between cursor-pointer transition-all shadow-xs group"
+                className="bg-gradient-to-r from-orange-500/[0.04] via-white to-amber-500/[0.04] border-2 border-dashed border-orange-300/80 hover:border-orange-500 rounded-3xl p-5 sm:p-6 flex items-center justify-between cursor-pointer transition-all duration-300 shadow-xs hover:shadow-lg hover:shadow-orange-500/10 group"
               >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                    <Plus className="w-5 h-5 stroke-[3]" />
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-orange-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <Plus className="w-6 h-6 stroke-[3]" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <span className="font-black text-sm sm:text-base text-slate-900 block group-hover:text-orange-600 transition-colors truncate">
-                      Create another team
+                      Create another team squad
                     </span>
                     <span className="text-xs text-slate-500 font-medium block mt-0.5 truncate">
-                      Add a new squad to evaluate team CPI analytics.
+                      Add a new squad to evaluate team CPI analytics, track 7 parameters, and benchmark side-by-side.
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
-              </div>
+                <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 group-hover:border-orange-300 flex items-center justify-center shrink-0 ml-2 shadow-2xs">
+                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </motion.div>
             </div>
           )}
 
@@ -1209,31 +1352,38 @@ export default function TeamPage() {
           {activeTab === "OVERVIEW" && (
             <div className="space-y-5 sm:space-y-6">
               {/* Team Details Header Card */}
-              <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3.5 sm:space-y-4 relative">
-                <div className="flex flex-col items-center justify-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 border-b border-slate-100 pb-3 sm:pb-4">
-                  <div className="flex flex-col items-center sm:items-start">
-                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                      <span className="text-[10px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
-                        ACTIVE TEAM
-                      </span>
-                      <span className="text-[11px] sm:text-xs font-bold text-slate-400">
-                        Created {new Date(team.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                      </span>
+              <div className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-4 sm:space-y-5 relative overflow-hidden">
+                <div className="flex flex-col items-center justify-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-3.5 border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-amber-600 text-white font-black text-2xl flex items-center justify-center shrink-0 uppercase shadow-md shadow-orange-500/25 ring-2 ring-white border border-orange-400/40">
+                      {team.name.charAt(0)}
                     </div>
-                    <h2 className="text-lg sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
-                      {team.name}
-                    </h2>
-                    {team.description && (
-                      <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
-                        {team.description}
-                      </p>
-                    )}
+
+                    <div className="flex flex-col items-center sm:items-start min-w-0">
+                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                        <span className="text-[10px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200 flex items-center gap-1.5 shadow-2xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                          ACTIVE SQUAD
+                        </span>
+                        <span className="text-[11px] sm:text-xs font-bold text-slate-400">
+                          Created {new Date(team.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        </span>
+                      </div>
+                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-1 truncate">
+                        {team.name}
+                      </h2>
+                      {team.description && (
+                        <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
+                          {team.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-center sm:justify-end gap-2 shrink-0 pt-0.5 sm:pt-0">
                     <button
                       onClick={() => setIsEditing(!isEditing)}
-                      className="px-3 py-1.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     >
                       <Edit2 className="w-3.5 h-3.5 text-slate-500" />
                       <span>EDIT DETAILS</span>
@@ -1243,8 +1393,11 @@ export default function TeamPage() {
 
                 {/* Inline Edit Details Form */}
                 {isEditing && (
-                  <form onSubmit={handleUpdateTeam} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
-                    <div className="font-black text-xs uppercase tracking-wider text-slate-700">EDIT TEAM INFO</div>
+                  <form onSubmit={handleUpdateTeam} className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-3.5">
+                    <div className="font-black text-xs uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                      <Edit2 className="w-3.5 h-3.5 text-orange-500" />
+                      <span>EDIT TEAM INFO</span>
+                    </div>
                     <div>
                       <input
                         type="text"
@@ -1252,7 +1405,7 @@ export default function TeamPage() {
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
                         placeholder="Team Name"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 shadow-2xs"
                       />
                     </div>
                     <div>
@@ -1261,88 +1414,98 @@ export default function TeamPage() {
                         value={editDesc}
                         onChange={(e) => setEditDesc(e.target.value)}
                         placeholder="Team Description (optional)"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 shadow-2xs"
                       />
                     </div>
                     <div className="flex items-center justify-end gap-2 pt-1">
                       <button
                         type="button"
                         onClick={() => setIsEditing(false)}
-                        className="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold"
+                        className="px-3.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold"
                       >
                         CANCEL
                       </button>
                       <button
                         type="submit"
                         disabled={isUpdating || !editName.trim()}
-                        className="px-4 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-wider flex items-center gap-1"
+                        className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-orange-500/20"
                       >
-                        {isUpdating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                        SAVE
+                        {isUpdating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+                        <span>SAVE</span>
                       </button>
                     </div>
                   </form>
                 )}
 
                 {/* Team Quick Snapshot Stats (2 Columns on Mobile, 4 Columns on Tablet/Desktop) */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 pt-2">
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 sm:p-4 text-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-1">
+                  <div className="glass-surface border border-slate-200/80 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
                     <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">TOTAL PLAYERS</span>
-                    <span className="text-lg sm:text-2xl font-black text-slate-900">{squad.length}</span>
+                    <span className="text-xl sm:text-2xl font-black text-slate-900">{squad.length}</span>
                   </div>
-                  <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-3 sm:p-4 text-center">
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-50/80 border border-orange-200 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
                     <span className="text-[10px] sm:text-xs font-black text-orange-600 uppercase tracking-wider block mb-1">AVERAGE CPI</span>
-                    <span className="text-lg sm:text-2xl font-black text-orange-600">{teamCpi}</span>
+                    <span className="text-xl sm:text-2xl font-black text-orange-600 font-mono">{teamCpi}</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 sm:p-4 text-center">
+                  <div className="glass-surface border border-slate-200/80 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
                     <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">AVERAGE PPI</span>
-                    <span className="text-lg sm:text-2xl font-black text-slate-800">{avgPpi}</span>
+                    <span className="text-xl sm:text-2xl font-black text-slate-800">{avgPpi}</span>
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 sm:p-4 text-center">
+                  <div className="glass-surface border border-slate-200/80 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
                     <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">AVERAGE MPI</span>
-                    <span className="text-lg sm:text-2xl font-black text-slate-800">{avgMpi}</span>
+                    <span className="text-xl sm:text-2xl font-black text-slate-800">{avgMpi}</span>
                   </div>
                 </div>
 
                 {/* Team Strengths & Development Areas Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 pt-2">
-                  <div className="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 pt-1">
+                  <div className="bg-gradient-to-br from-emerald-50/80 to-teal-50/60 border border-emerald-200/90 rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-2xs">
                     <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
-                      <span className="text-xs font-black text-emerald-800 uppercase tracking-wider">TEAM STRENGTHS</span>
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-700">
+                        <TrendingUp className="w-4 h-4 stroke-[2.5]" />
+                      </div>
+                      <span className="text-xs font-black text-emerald-900 uppercase tracking-wider">TEAM STRENGTHS</span>
                     </div>
                     {hasAssessmentData && overallParamScores.length > 0 ? (
-                      <ul className="space-y-1.5">
+                      <ul className="space-y-2">
                         {overallParamScores.slice(0, 3).map(s => (
-                          <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between">
-                            <span>• {s.name}</span>
-                            <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md text-[11px] font-extrabold">{s.avg}</span>
+                          <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between bg-white/80 border border-emerald-200/60 rounded-xl px-3 py-1.5 shadow-2xs">
+                            <span className="flex items-center gap-1.5 font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                              {s.name}
+                            </span>
+                            <span className="text-emerald-700 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-lg text-xs font-black font-mono">{s.avg}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs font-bold text-slate-500 italic">
+                      <p className="text-xs font-bold text-slate-500 italic py-2">
                         Insufficient assessment data
                       </p>
                     )}
                   </div>
 
-                  <div className="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 space-y-2">
+                  <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/60 border border-amber-200/90 rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-2xs">
                     <div className="flex items-center gap-2">
-                      <TrendingDown className="w-4 h-4 text-amber-600 stroke-[2.5]" />
-                      <span className="text-xs font-black text-amber-800 uppercase tracking-wider">TEAM DEVELOPMENT AREAS</span>
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-700">
+                        <TrendingDown className="w-4 h-4 stroke-[2.5]" />
+                      </div>
+                      <span className="text-xs font-black text-amber-900 uppercase tracking-wider">TEAM DEVELOPMENT AREAS</span>
                     </div>
                     {hasAssessmentData && overallParamScores.length > 0 ? (
-                      <ul className="space-y-1.5">
+                      <ul className="space-y-2">
                         {[...overallParamScores].reverse().slice(0, 3).map(s => (
-                          <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between">
-                            <span>• {s.name}</span>
-                            <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md text-[11px] font-extrabold">{s.avg}</span>
+                          <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between bg-white/80 border border-amber-200/60 rounded-xl px-3 py-1.5 shadow-2xs">
+                            <span className="flex items-center gap-1.5 font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                              {s.name}
+                            </span>
+                            <span className="text-amber-700 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-lg text-xs font-black font-mono">{s.avg}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs font-bold text-slate-500 italic">
+                      <p className="text-xs font-bold text-slate-500 italic py-2">
                         Insufficient assessment data
                       </p>
                     )}
@@ -1351,65 +1514,70 @@ export default function TeamPage() {
               </div>
 
               {/* TEAM SQUAD SECTION */}
-              <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+              <div className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                   <div>
                     <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                       <span>TEAM SQUAD</span>
-                      <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-extrabold">
+                      <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-black border border-slate-200">
                         {squad.length}
                       </span>
                     </h3>
                     <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                      Players currently assigned to {team.name}
+                      Athletes currently assigned to {team.name}
                     </p>
                   </div>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => {
                       setSelectedPlayerIds([]);
                       setShowAddModal(true);
                     }}
-                    className="w-full sm:w-auto justify-center bg-orange-500 hover:bg-orange-600 text-white rounded-2xl py-2.5 px-4 font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    className="w-full sm:w-auto justify-center bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl py-2.5 px-5 font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 cursor-pointer flex items-center gap-2"
                   >
                     <UserPlus className="w-4 h-4 stroke-[2.5]" />
                     <span>+ ADD PLAYERS</span>
-                  </button>
+                  </motion.button>
                 </div>
 
                 {/* SQUAD PLAYER CARDS (1 Card Per Row on Mobile, 2 Cards Per Row on Desktop md:) */}
                 {squad.length === 0 ? (
-                  <div className="text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-6 space-y-3">
-                    <Users2 className="w-10 h-10 text-slate-300 mx-auto" />
+                  <div className="text-center py-12 bg-slate-50/80 border border-dashed border-slate-200 rounded-3xl p-6 space-y-3">
+                    <Users2 className="w-12 h-12 text-slate-300 mx-auto" />
                     <div className="font-black text-slate-700 text-sm uppercase">NO PLAYERS IN SQUAD</div>
                     <p className="text-xs text-slate-400 font-semibold max-w-xs mx-auto">
-                      Click "+ ADD PLAYERS" to select existing players from your coach squad and assign them to this team.
+                      Click "+ ADD PLAYERS" to select existing athletes from your coach squad and assign them to this team.
                     </p>
                     <button
                       onClick={() => {
                         setSelectedPlayerIds([]);
                         setShowAddModal(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-wider hover:bg-orange-600 transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-wider hover:bg-orange-600 transition-all cursor-pointer shadow-md shadow-orange-500/20"
                     >
                       <Plus className="w-4 h-4 stroke-[2.5]" />
                       <span>ADD PLAYERS NOW</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {squad.map((player) => {
                       const ppiDisplay = formatScore(player.ppiScore);
                       const mpiDisplay = formatScore(player.mpiScore);
 
                       return (
-                        <div
+                        <motion.div
                           key={player.id}
-                          className="bg-white border border-slate-200 hover:border-orange-300 rounded-2xl p-3.5 sm:p-4 transition-all hover:shadow-md space-y-3 relative group w-full"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          whileHover={{ y: -3 }}
+                          className="bg-white border border-slate-200/90 hover:border-orange-300/90 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:shadow-lg space-y-3 relative group w-full"
                         >
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-3.5">
                             {/* Circular Player Photo Avatar */}
-                            <div className="w-12 h-12 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-lg uppercase shrink-0 overflow-hidden shadow-sm">
+                            <div className="w-13 h-13 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-200/80 flex items-center justify-center text-orange-700 font-black text-lg uppercase shrink-0 overflow-hidden shadow-xs ring-2 ring-white">
                               {player.imageUrl ? (
                                 <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
                               ) : (
@@ -1446,26 +1614,26 @@ export default function TeamPage() {
                           </div>
 
                           {/* Performance Scores Row */}
-                          <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-2.5 border-t border-slate-100">
+                          <div className="grid grid-cols-2 gap-2.5 pt-2.5 border-t border-slate-100">
                             {/* PPI SCORE CARD */}
-                            <div className="bg-orange-50/80 border border-orange-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-orange-300 transition-colors">
+                            <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-orange-300 transition-colors">
                               <div className="flex items-center justify-center gap-1 text-orange-600 mb-0.5">
                                 <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
                                 <span className="text-[10px] font-black tracking-wider uppercase">PPI SCORE</span>
                               </div>
-                              <span className="text-base sm:text-lg font-black text-orange-700 block">{ppiDisplay}</span>
+                              <span className="text-base sm:text-lg font-black text-orange-700 font-mono block">{ppiDisplay}</span>
                             </div>
 
                             {/* MPI SCORE CARD */}
-                            <div className="bg-amber-50/80 border border-amber-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-amber-300 transition-colors">
+                            <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-amber-300 transition-colors">
                               <div className="flex items-center justify-center gap-1 text-amber-600 mb-0.5">
                                 <Flame className="w-3.5 h-3.5 stroke-[2.5]" />
                                 <span className="text-[10px] font-black tracking-wider uppercase">MPI SCORE</span>
                               </div>
-                              <span className="text-base sm:text-lg font-black text-amber-700 block">{mpiDisplay}</span>
+                              <span className="text-base sm:text-lg font-black text-amber-700 font-mono block">{mpiDisplay}</span>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -1476,7 +1644,12 @@ export default function TeamPage() {
 
           {/* TAB 2: 7-PARAMETER ANALYTICS */}
           {activeTab === "7PARAMS" && (
-            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+            >
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <Target className="w-5 h-5 text-orange-600 stroke-[2.5]" />
@@ -1495,27 +1668,27 @@ export default function TeamPage() {
               ) : (
                 <>
                   {/* Highlights Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+                    <div className="bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-white border border-emerald-200/90 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-2xs">
                       <div>
                         <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider block">STRONGEST PARAMETER</span>
                         <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
                           {strongestParam ? strongestParam.name : "N/A"}
                         </span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-xl">
+                      <div className="text-xl sm:text-2xl font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-3.5 py-1 rounded-xl font-mono">
                         {strongestParam ? strongestParam.avg : "N/A"}
                       </div>
                     </div>
 
-                    <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
+                    <div className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-white border border-amber-200/90 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-2xs">
                       <div>
                         <span className="text-[10px] font-black text-amber-700 uppercase tracking-wider block">WEAKEST PARAMETER</span>
                         <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
                           {weakestParam ? weakestParam.name : "N/A"}
                         </span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-amber-700 bg-amber-100 px-3 py-1 rounded-xl">
+                      <div className="text-xl sm:text-2xl font-black text-amber-700 bg-amber-100 border border-amber-300 px-3.5 py-1 rounded-xl font-mono">
                         {weakestParam ? weakestParam.avg : "N/A"}
                       </div>
                     </div>
@@ -1523,11 +1696,12 @@ export default function TeamPage() {
 
                   {/* 5 Parameters Grid Breakdown */}
                   <div className="space-y-4 pt-2">
-                    <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
-                      5 CPI PARAMETERS (PRACTICE VS MATCH)
+                    <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-orange-500" />
+                      <span>5 CPI PARAMETERS (PRACTICE VS MATCH)</span>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1 gap-3.5">
                       {PARAM_DEFINITIONS.map((p) => {
                         const pAvg = getParamAverage(practiceAssessments, p.getVal);
                         const mAvg = getParamAverage(matchAssessments, p.getVal);
@@ -1536,42 +1710,42 @@ export default function TeamPage() {
                         const mPercent = mAvg !== null ? (mAvg / 100) * 100 : 0;
 
                         return (
-                          <div key={p.name} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 space-y-3">
+                          <div key={p.name} className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-3 hover:shadow-md transition-shadow">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3">
-                              <span className="font-black text-sm text-slate-900 uppercase">{p.name}</span>
+                              <span className="font-black text-sm text-slate-900 uppercase tracking-tight">{p.name}</span>
                               <div className="flex items-center gap-3 text-xs font-bold">
                                 <span className="text-slate-600">
-                                  Practice: <strong className="text-slate-900">{pAvg !== null ? pAvg : "N/A"}</strong>
+                                  Practice: <strong className="text-orange-600 font-mono font-black">{pAvg !== null ? pAvg : "N/A"}</strong>
                                 </span>
-                                <span className="text-slate-400">•</span>
+                                <span className="text-slate-300">•</span>
                                 <span className="text-slate-600">
-                                  Match: <strong className="text-slate-900">{mAvg !== null ? mAvg : "N/A"}</strong>
+                                  Match: <strong className="text-amber-600 font-mono font-black">{mAvg !== null ? mAvg : "N/A"}</strong>
                                 </span>
                               </div>
                             </div>
 
                             {/* Progress Bar Rows */}
-                            <div className="space-y-1.5">
-                              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                                <span className="w-16 shrink-0 uppercase">PRACTICE</span>
-                                <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2.5 text-[10px] font-bold text-slate-500">
+                                <span className="w-16 shrink-0 uppercase font-black text-slate-600">PRACTICE</span>
+                                <div className="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
                                   <div
-                                    className="bg-orange-500 h-full rounded-full transition-all duration-300"
+                                    className="bg-gradient-to-r from-orange-500 to-amber-500 h-full rounded-full transition-all duration-500"
                                     style={{ width: `${Math.min(100, Math.max(0, pPercent))}%` }}
                                   />
                                 </div>
-                                <span className="w-8 text-right font-black text-slate-700">{pAvg !== null ? pAvg : "N/A"}</span>
+                                <span className="w-8 text-right font-black text-slate-800 font-mono">{pAvg !== null ? pAvg : "N/A"}</span>
                               </div>
 
-                              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                                <span className="w-16 shrink-0 uppercase">MATCH</span>
-                                <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
+                              <div className="flex items-center gap-2.5 text-[10px] font-bold text-slate-500">
+                                <span className="w-16 shrink-0 uppercase font-black text-slate-600">MATCH</span>
+                                <div className="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
                                   <div
-                                    className="bg-amber-500 h-full rounded-full transition-all duration-300"
+                                    className="bg-gradient-to-r from-amber-500 to-yellow-500 h-full rounded-full transition-all duration-500"
                                     style={{ width: `${Math.min(100, Math.max(0, mPercent))}%` }}
                                   />
                                 </div>
-                                <span className="w-8 text-right font-black text-slate-700">{mAvg !== null ? mAvg : "N/A"}</span>
+                                <span className="w-8 text-right font-black text-slate-800 font-mono">{mAvg !== null ? mAvg : "N/A"}</span>
                               </div>
                             </div>
                           </div>
@@ -1581,12 +1755,17 @@ export default function TeamPage() {
                   </div>
                 </>
               )}
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 3: ASSESSMENT HISTORY */}
           {activeTab === "HISTORY" && (
-            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+            >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
@@ -1598,11 +1777,11 @@ export default function TeamPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+                <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl self-start sm:self-auto border border-slate-200/80">
                   <button
                     onClick={() => setHistoryFilter("ALL")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "ALL" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                      historyFilter === "ALL" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800"
                     }`}
                   >
                     ALL
@@ -1610,7 +1789,7 @@ export default function TeamPage() {
                   <button
                     onClick={() => setHistoryFilter("PRACTICE")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "PRACTICE" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500"
+                      historyFilter === "PRACTICE" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
                     }`}
                   >
                     PRACTICE
@@ -1618,7 +1797,7 @@ export default function TeamPage() {
                   <button
                     onClick={() => setHistoryFilter("MATCH")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "MATCH" ? "bg-orange-500 text-white shadow-xs" : "text-slate-500"
+                      historyFilter === "MATCH" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
                     }`}
                   >
                     MATCH
@@ -1642,8 +1821,8 @@ export default function TeamPage() {
 
                 if (filtered.length === 0) {
                   return (
-                    <div className="text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-6">
-                      <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                    <div className="text-center py-12 bg-slate-50/80 border border-dashed border-slate-200 rounded-3xl p-6">
+                      <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-2" />
                       <div className="font-black text-slate-700 text-sm uppercase">NO ASSESSMENT RECORDS FOUND</div>
                       <p className="text-xs text-slate-400 font-semibold mt-1">
                         Assessments completed for squad players will automatically appear in this history log.
@@ -1657,14 +1836,14 @@ export default function TeamPage() {
                     {filtered.map((item, idx) => (
                       <div
                         key={`${item.type}-${item.id}-${idx}`}
-                        className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 space-y-2 hover:bg-slate-100/60 transition-colors"
+                        className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-2 hover:border-orange-300/80 hover:shadow-md transition-all"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3">
                             <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-lg shrink-0 ${
                               item.type === "PRACTICE"
-                                ? "bg-orange-100 text-orange-700 border border-orange-200"
-                                : "bg-amber-100 text-amber-700 border border-amber-200"
+                                ? "bg-orange-50 text-orange-700 border border-orange-200"
+                                : "bg-amber-50 text-amber-700 border border-amber-200"
                             }`}>
                               {item.type}
                             </span>
@@ -1682,14 +1861,14 @@ export default function TeamPage() {
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
                               {item.type === "PRACTICE" ? "PPI SCORE" : "MPI SCORE"}
                             </span>
-                            <span className="text-base font-black text-slate-900">
+                            <span className="text-base font-black text-slate-900 font-mono">
                               {formatScore(item.ppiScore || item.mpiScore)}
                             </span>
                           </div>
                         </div>
 
                         {item.notes && (
-                          <p className="text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-xl p-2.5 italic mt-1">
+                          <p className="text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200/80 rounded-xl p-3 italic mt-1">
                             "{item.notes}"
                           </p>
                         )}
@@ -1698,12 +1877,17 @@ export default function TeamPage() {
                   </div>
                 );
               })()}
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 4: TEAM COACH NOTES */}
           {activeTab === "NOTES" && (
-            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+            >
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <FileText className="w-5 h-5 text-orange-600 stroke-[2.5]" />
@@ -1715,10 +1899,10 @@ export default function TeamPage() {
               </div>
 
               {/* Add Note Form */}
-              <form onSubmit={handleSaveTeamNote} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4">
+              <form onSubmit={handleSaveTeamNote} className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-4">
                 <div className="font-black text-xs uppercase tracking-wider text-slate-700 flex items-center gap-2">
                   <Plus className="w-4 h-4 text-orange-600" />
-                  ADD TEAM COACH NOTE
+                  <span>ADD TEAM COACH NOTE</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1729,7 +1913,7 @@ export default function TeamPage() {
                     <select
                       value={noteType}
                       onChange={(e) => setNoteType(e.target.value as any)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer shadow-2xs"
                     >
                       <option value="PRACTICE">PRACTICE TEAM NOTE</option>
                       <option value="MATCH">MATCH TEAM NOTE</option>
@@ -1745,7 +1929,7 @@ export default function TeamPage() {
                       required
                       value={noteDate}
                       onChange={(e) => setNoteDate(e.target.value)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 shadow-2xs"
                     />
                   </div>
                 </div>
@@ -1757,7 +1941,7 @@ export default function TeamPage() {
                     value={noteContent}
                     onChange={(e) => setNoteContent(e.target.value)}
                     placeholder="Enter team coaching notes, strategy takeaways, or practice focus points..."
-                    className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 resize-none"
+                    className="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 resize-none shadow-2xs"
                   />
                 </div>
 
@@ -1765,7 +1949,7 @@ export default function TeamPage() {
                   <button
                     type="submit"
                     disabled={isSavingNote || !noteContent.trim()}
-                    className="w-full sm:w-auto justify-center bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl py-2 px-5 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    className="w-full sm:w-auto justify-center bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white rounded-xl py-2.5 px-6 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/20"
                   >
                     {isSavingNote ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
                     <span>SAVE TEAM NOTE</span>
@@ -1775,32 +1959,32 @@ export default function TeamPage() {
 
               {/* Team Notes List */}
               <div className="space-y-4 pt-2">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                   <span className="font-black text-xs text-slate-700 uppercase tracking-wider">
                     SAVED TEAM NOTES ({teamNotes.length})
                   </span>
 
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+                  <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl self-start sm:self-auto border border-slate-200/80">
                     <button
                       onClick={() => setNoteFilter("ALL")}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "ALL" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        noteFilter === "ALL" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800"
                       }`}
                     >
                       ALL
                     </button>
                     <button
                       onClick={() => setNoteFilter("PRACTICE")}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "PRACTICE" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500"
+                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        noteFilter === "PRACTICE" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
                       }`}
                     >
                       PRACTICE
                     </button>
                     <button
                       onClick={() => setNoteFilter("MATCH")}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "MATCH" ? "bg-orange-500 text-white shadow-xs" : "text-slate-500"
+                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        noteFilter === "MATCH" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
                       }`}
                     >
                       MATCH
@@ -1818,7 +2002,7 @@ export default function TeamPage() {
 
                   if (filteredNotes.length === 0) {
                     return (
-                      <div className="text-center py-8 text-slate-400 font-bold text-xs">
+                      <div className="text-center py-10 text-slate-400 font-bold text-xs bg-slate-50 rounded-2xl">
                         No team notes found for selected filter.
                       </div>
                     );
@@ -1827,13 +2011,13 @@ export default function TeamPage() {
                   return (
                     <div className="space-y-3">
                       {filteredNotes.map((n) => (
-                        <div key={n.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 space-y-2">
+                        <div key={n.id} className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-2.5 hover:shadow-md transition-all">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md ${
                                 n.type === "PRACTICE"
-                                  ? "bg-orange-100 text-orange-700 border border-orange-200"
-                                  : "bg-amber-100 text-amber-700 border border-amber-200"
+                                  ? "bg-orange-50 text-orange-700 border border-orange-200"
+                                  : "bg-amber-50 text-amber-700 border border-amber-200"
                               }`}>
                                 {n.type} TEAM NOTE
                               </span>
@@ -1855,8 +2039,9 @@ export default function TeamPage() {
                             {n.content}
                           </p>
 
-                          <div className="text-[10px] font-semibold text-slate-400 pt-1 border-t border-slate-200/50">
-                            By {n.coachName || "Coach"}
+                          <div className="text-[10px] font-semibold text-slate-400 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>Author: {n.coachName || "Coach"}</span>
+                            <span>Recorded for Squad</span>
                           </div>
                         </div>
                       ))}
@@ -1864,12 +2049,17 @@ export default function TeamPage() {
                   );
                 })()}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 5: TEAM COMPARISON */}
           {activeTab === "COMPARISON" && (
-            <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5 sm:space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+            >
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                   <ArrowRightLeft className="w-5 h-5 text-orange-600 stroke-[2.5]" />
@@ -1881,7 +2071,7 @@ export default function TeamPage() {
               </div>
 
               {/* Team Selectors */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5">
                 <div>
                   <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
                     SELECT TEAM
@@ -1895,7 +2085,7 @@ export default function TeamPage() {
                         setTeamBId(null);
                       }
                     }}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer shadow-2xs"
                   >
                     <option value="" disabled>-- Select Team --</option>
                     {allTeams.map(t => (
@@ -1911,7 +2101,7 @@ export default function TeamPage() {
                   <select
                     value={teamBId || ""}
                     onChange={(e) => setTeamBId(e.target.value ? Number(e.target.value) : null)}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer shadow-2xs"
                   >
                     <option value="">-- Select Team to Compare --</option>
                     {allTeams
@@ -1930,16 +2120,16 @@ export default function TeamPage() {
                 </div>
               ) : (!teamAId || !teamBId || !teamAData || !teamBData || teamAId === teamBId) ? (
                 /* Empty / Initial State Card */
-                <div className="bg-gradient-to-b from-slate-50 to-white border border-slate-200 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center space-y-3">
-                  <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
-                    <ArrowRightLeft className="w-7 h-7 stroke-[2]" />
+                <div className="bg-gradient-to-b from-slate-50 to-white border border-slate-200 rounded-3xl p-8 sm:p-12 text-center space-y-3">
+                  <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+                    <ArrowRightLeft className="w-8 h-8 stroke-[2]" />
                   </div>
                   <h4 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight">
                     Select another team to compare performance.
                   </h4>
                   <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-md mx-auto leading-relaxed">
                     {allTeams.length <= 1
-                      ? "You currently have 1 team created. Create additional teams under the SQUAD & OVERVIEW tab to enable side-by-side team performance comparisons."
+                      ? "You currently have 1 team created. Create additional teams under the MY TEAMS tab to enable side-by-side team performance comparisons."
                       : "Choose a second team from the 'COMPARE WITH' dropdown above to view side-by-side squad analytics, CPI averages, and 7-parameter parameter comparisons."
                     }
                   </p>
@@ -1948,7 +2138,7 @@ export default function TeamPage() {
                 /* Dynamic Comparison View */
                 <div className="space-y-5 sm:space-y-6">
                   {/* Dynamic Team Names Header */}
-                  <div className="bg-white text-slate-900 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="bg-white text-slate-900 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
                       <span className="text-[10px] font-black tracking-widest text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200/60 uppercase">
                         SELECTED TEAM
@@ -1958,8 +2148,8 @@ export default function TeamPage() {
                       </h4>
                     </div>
 
-                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-black text-slate-500 uppercase tracking-widest">
-                      COMPARING
+                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-black text-slate-500 uppercase tracking-widest shadow-2xs">
+                      VS
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
@@ -1975,7 +2165,7 @@ export default function TeamPage() {
                   {/* Side-by-side Overview Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* TEAM 1 CARD */}
-                    <div className="bg-orange-50/40 border border-orange-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                    <div className="bg-gradient-to-br from-orange-500/[0.04] to-white border border-orange-200/90 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
                       <div className="border-b border-orange-200/80 pb-3 flex items-center justify-between">
                         <div>
                           <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
@@ -1987,24 +2177,24 @@ export default function TeamPage() {
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
-                          <span className="text-xl font-black text-orange-600">
+                          <span className="text-2xl font-black text-orange-600 font-mono">
                             {compStatsA ? compStatsA.cpi : "N/A"}
                           </span>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 bg-white/80 rounded-xl p-3 border border-orange-100 text-center shadow-xs">
+                      <div className="grid grid-cols-3 gap-2 bg-white rounded-xl p-3 border border-orange-100 text-center shadow-xs">
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">PLAYERS</span>
                           <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.squadSize : "N/A"}</span>
                         </div>
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">PRACTICE PPI</span>
-                          <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.ppi : "N/A"}</span>
+                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsA ? compStatsA.ppi : "N/A"}</span>
                         </div>
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">MATCH MPI</span>
-                          <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.mpi : "N/A"}</span>
+                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsA ? compStatsA.mpi : "N/A"}</span>
                         </div>
                       </div>
 
@@ -2042,8 +2232,8 @@ export default function TeamPage() {
                     </div>
 
                     {/* TEAM 2 CARD */}
-                    <div className="bg-slate-100/60 border border-slate-300 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
-                      <div className="border-b border-slate-300/80 pb-3 flex items-center justify-between">
+                    <div className="bg-gradient-to-br from-amber-500/[0.04] to-white border border-amber-200/90 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                      <div className="border-b border-amber-200/80 pb-3 flex items-center justify-between">
                         <div>
                           <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest block">
                             COMPARED WITH
@@ -2054,24 +2244,24 @@ export default function TeamPage() {
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
-                          <span className="text-xl font-black text-amber-700">
+                          <span className="text-2xl font-black text-amber-700 font-mono">
                             {compStatsB ? compStatsB.cpi : "N/A"}
                           </span>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 bg-white/80 rounded-xl p-3 border border-slate-200 text-center shadow-xs">
+                      <div className="grid grid-cols-3 gap-2 bg-white rounded-xl p-3 border border-amber-100 text-center shadow-xs">
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">PLAYERS</span>
                           <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.squadSize : "N/A"}</span>
                         </div>
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">PRACTICE PPI</span>
-                          <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.ppi : "N/A"}</span>
+                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsB ? compStatsB.ppi : "N/A"}</span>
                         </div>
                         <div>
                           <span className="text-[10px] font-bold text-slate-400 uppercase block">MATCH MPI</span>
-                          <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.mpi : "N/A"}</span>
+                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsB ? compStatsB.mpi : "N/A"}</span>
                         </div>
                       </div>
 
@@ -2134,7 +2324,7 @@ export default function TeamPage() {
                       </div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-5 space-y-3.5">
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
                       {PARAM_DEFINITIONS.map((p) => {
                         const key = compParamFilter === "PRACTICE" ? "prac" : compParamFilter === "MATCH" ? "match" : "overall";
                         const valA = compStatsA ? compStatsA.paramsMap[p.name]?.[key] : "N/A";
@@ -2144,24 +2334,24 @@ export default function TeamPage() {
                         const numB = valB !== "N/A" ? Number(valB) : 0;
 
                         return (
-                          <div key={`comp-${p.name}`} className="space-y-1.5 border-b border-slate-200/50 pb-3 last:border-0 last:pb-0">
+                          <div key={`comp-${p.name}`} className="space-y-2 border-b border-slate-200/60 pb-3 last:border-0 last:pb-0">
                             <div className="flex items-center justify-between text-xs font-bold">
-                              <span className="text-orange-600 font-black text-sm">{valA}</span>
+                              <span className="text-orange-600 font-black text-sm font-mono">{valA}</span>
                               <span className="font-black text-slate-900 uppercase text-xs tracking-wider">{p.name}</span>
-                              <span className="text-amber-700 font-black text-sm">{valB}</span>
+                              <span className="text-amber-700 font-black text-sm font-mono">{valB}</span>
                             </div>
 
                             {/* Dual Bar Comparison */}
                             <div className="grid grid-cols-2 gap-2 h-3 bg-slate-200/80 rounded-full overflow-hidden p-0.5">
                               <div className="flex justify-end bg-slate-200/60 rounded-full overflow-hidden">
                                 <div
-                                  className="bg-orange-500 h-full rounded-full transition-all duration-300"
+                                  className="bg-gradient-to-l from-orange-500 to-amber-500 h-full rounded-full transition-all duration-300"
                                   style={{ width: `${Math.min(100, Math.max(0, (numA / 100) * 100))}%` }}
                                 />
                               </div>
                               <div className="flex justify-start bg-slate-200/60 rounded-full overflow-hidden">
                                 <div
-                                  className="bg-amber-500 h-full rounded-full transition-all duration-300"
+                                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
                                   style={{ width: `${Math.min(100, Math.max(0, (numB / 100) * 100))}%` }}
                                 />
                               </div>
@@ -2173,249 +2363,279 @@ export default function TeamPage() {
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
         </div>
       )}
 
       {/* MODAL: ADD PLAYERS TO TEAM */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <UserPlus className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  <span>ADD PLAYERS TO TEAM</span>
-                </h3>
-                <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                  Select players from your existing squad to add to {team?.name}.
-                </p>
-              </div>
-
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Modal Search Filter */}
-            <div className="p-3 sm:p-4 border-b border-slate-100 bg-white">
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search player name or role..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500"
-                />
-              </div>
-            </div>
-
-            {/* Modal Player Selection List */}
-            <div className="p-3 sm:p-4 overflow-y-auto space-y-2 flex-1">
-              {mySquad.length === 0 ? (
-                <div className="text-center py-8 text-slate-400 font-bold text-xs">
-                  No existing players found in your squad. Create players first under PLAYERS tab.
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAddModal(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.2 }}
+              className="glass-surface border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] z-10"
+            >
+              {/* Modal Header */}
+              <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <UserPlus className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+                    <span>ADD PLAYERS TO SQUAD</span>
+                  </h3>
+                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                    Select players from your coach squad to assign to {team?.name}.
+                  </p>
                 </div>
-              ) : (
-                (() => {
-                  const currentTeamPlayerIds = new Set((team?.players || []).map(p => p.id));
-                  const filteredPlayers = mySquad.filter(p =>
-                    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    (p.role && p.role.toLowerCase().includes(searchQuery.toLowerCase()))
-                  );
 
-                  if (filteredPlayers.length === 0) {
-                    return (
-                      <div className="text-center py-6 text-slate-400 font-bold text-xs">
-                        No players match "{searchQuery}"
-                      </div>
-                    );
-                  }
-
-                  return filteredPlayers.map((player) => {
-                    const isAlreadyInTeam = currentTeamPlayerIds.has(player.id);
-                    const isSelected = selectedPlayerIds.includes(player.id);
-
-                    return (
-                      <div
-                        key={player.id}
-                        onClick={() => {
-                          if (!isAlreadyInTeam) togglePlayerSelection(player.id);
-                        }}
-                        className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
-                          isAlreadyInTeam
-                            ? "bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed"
-                            : isSelected
-                            ? "bg-orange-50 border-orange-400 shadow-sm cursor-pointer"
-                            : "bg-white border-slate-200 hover:border-slate-300 cursor-pointer"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-sm uppercase shrink-0 overflow-hidden">
-                            {player.imageUrl ? (
-                              <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
-                            ) : (
-                              player.name.charAt(0).toUpperCase()
-                            )}
-                          </div>
-
-                          <div className="min-w-0">
-                            <h5 className="font-black text-xs text-slate-900 uppercase tracking-tight truncate">
-                              {player.name}
-                            </h5>
-                            <span className="text-[10px] font-semibold text-slate-500 uppercase">
-                              {player.role || "Player"}
-                            </span>
-                          </div>
-                        </div>
-
-                        {isAlreadyInTeam ? (
-                          <span className="text-[10px] font-black text-slate-500 bg-slate-200 px-2 py-1 rounded-md uppercase shrink-0">
-                            IN TEAM
-                          </span>
-                        ) : (
-                          <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
-                            isSelected
-                              ? "bg-orange-500 border-orange-500 text-white"
-                              : "border-slate-300 bg-white"
-                          }`}>
-                            {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  });
-                })()
-              )}
-            </div>
-
-            {/* Modal Footer Actions */}
-            <div className="p-3.5 sm:p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
-              <span className="text-xs font-black text-slate-600">
-                {selectedPlayerIds.length} Selected
-              </span>
-
-              <div className="flex items-center gap-2">
                 <button
-                  type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all"
+                  className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
                 >
-                  CANCEL
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleAddSelectedPlayers}
-                  disabled={isAddingPlayers || selectedPlayerIds.length === 0}
-                  className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-                >
-                  {isAddingPlayers ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>ADDING...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>ADD PLAYERS</span>
-                    </>
-                  )}
+                  <X className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+
+              {/* Modal Search Filter */}
+              <div className="p-3.5 sm:p-4 border-b border-slate-100 bg-white">
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search player name or role..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 shadow-2xs"
+                  />
+                </div>
+              </div>
+
+              {/* Modal Player Selection List */}
+              <div className="p-3.5 sm:p-4 overflow-y-auto space-y-2 flex-1">
+                {mySquad.length === 0 ? (
+                  <div className="text-center py-8 text-slate-400 font-bold text-xs">
+                    No existing players found in your squad. Create players first under PLAYERS tab.
+                  </div>
+                ) : (
+                  (() => {
+                    const currentTeamPlayerIds = new Set((team?.players || []).map(p => p.id));
+                    const filteredPlayers = mySquad.filter(p =>
+                      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      (p.role && p.role.toLowerCase().includes(searchQuery.toLowerCase()))
+                    );
+
+                    if (filteredPlayers.length === 0) {
+                      return (
+                        <div className="text-center py-6 text-slate-400 font-bold text-xs">
+                          No players match "{searchQuery}"
+                        </div>
+                      );
+                    }
+
+                    return filteredPlayers.map((player) => {
+                      const isAlreadyInTeam = currentTeamPlayerIds.has(player.id);
+                      const isSelected = selectedPlayerIds.includes(player.id);
+
+                      return (
+                        <div
+                          key={player.id}
+                          onClick={() => {
+                            if (!isAlreadyInTeam) togglePlayerSelection(player.id);
+                          }}
+                          className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
+                            isAlreadyInTeam
+                              ? "bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed"
+                              : isSelected
+                              ? "bg-orange-50/80 border-orange-400 shadow-xs cursor-pointer ring-1 ring-orange-400/50"
+                              : "bg-white border-slate-200 hover:border-slate-300 cursor-pointer hover:shadow-2xs"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-sm uppercase shrink-0 overflow-hidden">
+                              {player.imageUrl ? (
+                                <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
+                              ) : (
+                                player.name.charAt(0).toUpperCase()
+                              )}
+                            </div>
+
+                            <div className="min-w-0">
+                              <h5 className="font-black text-xs text-slate-900 uppercase tracking-tight truncate">
+                                {player.name}
+                              </h5>
+                              <span className="text-[10px] font-semibold text-slate-500 uppercase">
+                                {player.role || "Player"}
+                              </span>
+                            </div>
+                          </div>
+
+                          {isAlreadyInTeam ? (
+                            <span className="text-[10px] font-black text-slate-500 bg-slate-200 px-2 py-1 rounded-md uppercase shrink-0">
+                              IN TEAM
+                            </span>
+                          ) : (
+                            <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
+                              isSelected
+                                ? "bg-orange-500 border-orange-500 text-white"
+                                : "border-slate-300 bg-white"
+                            }`}>
+                              {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    });
+                  })()
+                )}
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="p-3.5 sm:p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                <span className="text-xs font-black text-slate-600">
+                  {selectedPlayerIds.length} Selected
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="px-4 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    CANCEL
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleAddSelectedPlayers}
+                    disabled={isAddingPlayers || selectedPlayerIds.length === 0}
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/20"
+                  >
+                    {isAddingPlayers ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>ADDING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>ADD PLAYERS</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* MODAL: CREATE NEW TEAM */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  <span>CREATE NEW TEAM</span>
-                </h3>
-                <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                  Organize players into a new dedicated team squad.
-                </p>
-              </div>
+      <AnimatePresence>
+        {showCreateModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCreateModal(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.2 }}
+              className="glass-surface border border-slate-200 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden z-10"
+            >
+              <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+                    <span>CREATE NEW TEAM</span>
+                  </h3>
+                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                    Organize players into a new dedicated squad.
+                  </p>
+                </div>
 
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateTeam} className="p-4 sm:p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                  Team Name <span className="text-orange-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={createName}
-                  onChange={(e) => setCreateName(e.target.value)}
-                  placeholder="e.g. Senior Academy XI / U-19 Squad"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-xs"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                  Team Description <span className="text-slate-400 font-medium">(Optional)</span>
-                </label>
-                <textarea
-                  rows={3}
-                  value={createDesc}
-                  onChange={(e) => setCreateDesc(e.target.value)}
-                  placeholder="e.g. Primary squad for 2026 regional championship preparation"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-xs resize-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button
-                  type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
                 >
-                  CANCEL
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={isCreating || !createName.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-                >
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>CREATING...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4 stroke-[2.5]" />
-                      <span>CREATE TEAM</span>
-                    </>
-                  )}
+                  <X className="w-4 h-4" />
                 </button>
               </div>
-            </form>
+
+              <form onSubmit={handleCreateTeam} className="p-5 sm:p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
+                    Team Name <span className="text-orange-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={createName}
+                    onChange={(e) => setCreateName(e.target.value)}
+                    placeholder="e.g. Senior Academy XI / U-19 Squad"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
+                    Team Description <span className="text-slate-400 font-medium">(Optional)</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={createDesc}
+                    onChange={(e) => setCreateDesc(e.target.value)}
+                    placeholder="e.g. Primary squad for 2026 regional championship preparation"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-2xs resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    CANCEL
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={isCreating || !createName.trim()}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/20"
+                  >
+                    {isCreating ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>CREATING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 stroke-[2.5]" />
+                        <span>CREATE TEAM</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }
