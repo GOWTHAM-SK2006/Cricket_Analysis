@@ -2742,8 +2742,6 @@ return (
               }
 
               const cachedPhoto = player.imageUrl || null;
-              const assessDate = lastAssessmentDates[player.id];
-              const { cleanRole, age } = parsePlayerAgeAndRole(player.role);
               const isTopPerformer = scores.cpi >= 80;
 
               return (
@@ -2759,8 +2757,8 @@ return (
                   {/* Subtle background hover glow */}
                   <div className="pointer-events-none absolute -right-16 -top-16 w-40 h-40 bg-[#D4AF37]/0 rounded-full blur-2xl group-hover:bg-[#D4AF37]/10 transition-all duration-500" />
 
-                  {/* Left Column: Avatar & Player Meta */}
-                  <div className="flex items-center gap-3.5 sm:gap-4.5 min-w-0 relative z-10">
+                  {/* Left Column: Avatar & Player Name */}
+                  <div className="flex items-center gap-3.5 sm:gap-4.5 min-w-0 flex-1 relative z-10">
                     {/* Avatar with Glow Ring */}
                     <div className="relative shrink-0">
                       <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full p-[2px] transition-all duration-300 ${
@@ -2786,45 +2784,16 @@ return (
                       </div>
                     </div>
 
-                    {/* Name & Details */}
-                    <div className="min-w-0 text-left space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-base sm:text-lg font-black text-white truncate tracking-tight group-hover:text-amber-300 transition-colors">
+                    {/* Full Name without truncation */}
+                    <div className="min-w-0 flex-1 text-left">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="text-base sm:text-lg font-black text-white break-words tracking-tight group-hover:text-amber-300 transition-colors">
                           {player.name}
                         </h4>
                         {isTopPerformer && (
                           <Crown className="w-4 h-4 text-[#D4AF37] shrink-0 fill-[#D4AF37]/20" />
                         )}
                       </div>
-
-                      <div className="flex flex-wrap items-center gap-1.5 text-left">
-                        {/* Clean Role Badge */}
-                        <span className="px-2 py-0.5 rounded-md bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-black uppercase tracking-wider">
-                          {cleanRole}
-                        </span>
-
-                        {/* Age Badge */}
-                        {age && (
-                          <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-zinc-400 text-[10px] font-bold uppercase tracking-wider">
-                            Age {age}
-                          </span>
-                        )}
-
-                        {/* Batting/Bowling style */}
-                        {player.battingStyle && (
-                          <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-white/5 border border-white/8 text-zinc-400 text-[10px] font-medium truncate max-w-[120px]">
-                            {player.battingStyle}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Assessment Recency Indicator */}
-                      {assessDate && (
-                        <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-medium pt-0.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
-                          <span>{assessDate === "Loading..." ? "Assessing..." : `Assessed: ${assessDate}`}</span>
-                        </div>
-                      )}
                     </div>
                   </div>
 
