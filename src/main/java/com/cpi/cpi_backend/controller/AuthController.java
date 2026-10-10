@@ -60,10 +60,33 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(
-            @RequestBody com.cpi.cpi_backend.dto.ForgotPasswordRequest request
+            @RequestBody com.cpi.cpi_backend.dto.ForgotPasswordRequest request,
+            jakarta.servlet.http.HttpServletRequest httpRequest
     ) {
         try {
-            return ResponseEntity.ok(service.forgotPassword(request));
+            String originHeader = httpRequest.getHeader("Origin");
+            String refererHeader = httpRequest.getHeader("Referer");
+            String hostHeader = httpRequest.getHeader("Host");
+            String forwardedHost = httpRequest.getHeader("X-Forwarded-Host");
+            String forwardedProto = httpRequest.getHeader("X-Forwarded-Proto");
+
+            String resolvedBaseUrl = null;
+            if (originHeader != null && !originHeader.isBlank()) {
+                resolvedBaseUrl = originHeader.trim();
+            } else if (refererHeader != null && !refererHeader.isBlank()) {
+                try {
+                    java.net.URI uri = java.net.URI.create(refererHeader.trim());
+                    resolvedBaseUrl = uri.getScheme() + "://" + uri.getAuthority();
+                } catch (Exception ignored) {}
+            } else if (forwardedHost != null && !forwardedHost.isBlank()) {
+                String proto = (forwardedProto != null && !forwardedProto.isBlank()) ? forwardedProto : "https";
+                resolvedBaseUrl = proto + "://" + forwardedHost.trim();
+            } else if (hostHeader != null && !hostHeader.isBlank()) {
+                String proto = httpRequest.isSecure() ? "https" : "http";
+                resolvedBaseUrl = proto + "://" + hostHeader.trim();
+            }
+
+            return ResponseEntity.ok(service.forgotPassword(request, resolvedBaseUrl));
         } catch (RuntimeException e) {
             return ResponseEntity
                     .badRequest()

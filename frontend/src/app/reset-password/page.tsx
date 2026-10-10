@@ -107,6 +107,13 @@ function ResetPasswordContent() {
         token: token?.trim(),
         newPassword,
       });
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("cpi_admin_token");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userName");
+        sessionStorage.clear();
+      }
       setResetSuccess(true);
     } catch (err: any) {
       setSubmitError(

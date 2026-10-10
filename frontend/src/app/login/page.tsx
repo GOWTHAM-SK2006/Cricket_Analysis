@@ -45,7 +45,11 @@ export default function LoginPage() {
     setForgotLoading(true);
 
     try {
-      const res = await api.post("/auth/forgot-password", { email: forgotEmail });
+      const clientUrl = typeof window !== "undefined" ? window.location.origin : undefined;
+      const res = await api.post("/auth/forgot-password", {
+        email: forgotEmail,
+        clientUrl,
+      });
       setForgotSent(true);
       setForgotSuccess(
         res.data?.message ||
@@ -168,6 +172,12 @@ export default function LoginPage() {
     try {
       const response = await api.post("/auth/login", { email, password });
       if (response.data.token) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("cpi_admin_token");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userName");
+        sessionStorage.clear();
+
         localStorage.setItem("token", response.data.token);
 
         const profileRes = await api.get("/profile", {

@@ -20,7 +20,8 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await api.post("/auth/forgot-password", { email });
+      const clientUrl = typeof window !== "undefined" ? window.location.origin : undefined;
+      const res = await api.post("/auth/forgot-password", { email, clientUrl });
       setSent(true);
       setSuccess(
         res.data?.message ||

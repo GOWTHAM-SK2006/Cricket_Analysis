@@ -51,12 +51,21 @@ public class EmailJsService {
     }
 
     public EmailSendResult sendPasswordResetEmail(String recipientEmail, String recipientName, String resetToken) {
-        String resetUrl = frontendUrl.replaceAll("/+$", "") + "/reset-password?token=" + resetToken;
+        return sendPasswordResetEmail(recipientEmail, recipientName, resetToken, null);
+    }
 
-        log.info("[Password Reset] Generated secure reset link for {}: {}", recipientEmail, resetUrl);
+    public EmailSendResult sendPasswordResetEmail(String recipientEmail, String recipientName, String resetToken, String baseUrl) {
+        String effectiveBaseUrl = (baseUrl != null && !baseUrl.isBlank()) ? baseUrl.trim().replaceAll("/+$", "") : "";
+        if (effectiveBaseUrl.isEmpty()) {
+            effectiveBaseUrl = (frontendUrl != null && !frontendUrl.isBlank()) ? frontendUrl.trim().replaceAll("/+$", "") : "http://localhost:3000";
+        }
+
+        String resetUrl = effectiveBaseUrl + "/reset-password?token=" + resetToken;
+
+        log.info("[Password Reset] Generated secure reset link for {} using base URL {}: {}", recipientEmail, effectiveBaseUrl, resetUrl);
 
         try {
-            String originUrl = (frontendUrl != null && !frontendUrl.isBlank()) ? frontendUrl.replaceAll("/+$", "") : "http://localhost:3000";
+            String originUrl = effectiveBaseUrl;
 
             Map<String, Object> templateParams = new HashMap<>();
             templateParams.put("to_email", recipientEmail);

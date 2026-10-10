@@ -38,7 +38,7 @@ public class AuthService {
         }
 
         // Always check for duplicate email FIRST before doing anything else
-        if (repository.findByEmail(request.getEmail().trim().toLowerCase()).isPresent()) {
+        if (repository.findByEmailIgnoreCase(request.getEmail().trim()).isPresent()) {
             throw new RuntimeException("An account with this email address already exists");
         }
 
@@ -133,7 +133,7 @@ public class AuthService {
             throw e;
         }
 
-        var user = repository.findByEmail(inputEmail)
+        var user = repository.findByEmailIgnoreCase(inputEmail)
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -198,7 +198,7 @@ public class AuthService {
         final String targetName = (verifiedName != null && !verifiedName.trim().isEmpty()) ? verifiedName.trim() : targetEmail.split("@")[0];
 
         // Check if coach exists or register seamless profile via verified Google identity
-        Coach user = repository.findByEmail(targetEmail).orElseGet(() -> {
+        Coach user = repository.findByEmailIgnoreCase(targetEmail).orElseGet(() -> {
             Role userRole = ("cpi@admin.com".equalsIgnoreCase(targetEmail) || "cpicoach@cpi.com".equalsIgnoreCase(targetEmail)) ? Role.ADMIN : Role.USER;
 
             Coach newUser = Coach.builder()
@@ -244,12 +244,16 @@ public class AuthService {
     }
 
     public java.util.Map<String, String> forgotPassword(ForgotPasswordRequest request) {
+        return forgotPassword(request, null);
+    }
+
+    public java.util.Map<String, String> forgotPassword(ForgotPasswordRequest request, String resolvedClientUrl) {
         if (request == null || request.getEmail() == null || request.getEmail().trim().isEmpty()) {
             throw new RuntimeException("Email address is required");
         }
 
         String targetEmail = request.getEmail().trim().toLowerCase();
-        var coachOpt = repository.findByEmail(targetEmail);
+        var coachOpt = repository.findByEmailIgnoreCase(targetEmail);
 
         if (coachOpt.isPresent()) {
             Coach coach = coachOpt.get();
@@ -274,8 +278,15 @@ public class AuthService {
 
             passwordResetTokenRepository.save(resetToken);
 
+            // Determine effective client origin/URL for reset link
+            String effectiveBaseUrl = (request.getClientUrl() != null && !request.getClientUrl().trim().isEmpty())
+                    ? request.getClientUrl().trim()
+                    : resolvedClientUrl;
+
             // Dispatch reset email via EmailJS (handled securely with server-side private key)
-            EmailJsService.EmailSendResult sendResult = emailJsService.sendPasswordResetEmail(coach.getEmail(), coach.getName(), token);
+            EmailJsService.EmailSendResult sendResult = emailJsService.sendPasswordResetEmail(
+                    coach.getEmail(), coach.getName(), token, effectiveBaseUrl
+            );
             if (!sendResult.isSuccess()) {
                 throw new RuntimeException(sendResult.getErrorMessage());
             }
