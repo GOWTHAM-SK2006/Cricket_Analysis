@@ -72,6 +72,25 @@ public class AdminSeeder implements CommandLineRunner {
                 }
             }
         }
+
+        // Ensure user's active accounts exist for login and password reset testing
+        String[] registeredEmails = {
+            "sec24am042@sairamtap.edu.in",
+            "gowtham@cpicoach.com",
+            "surulivelgowtham@gmail.com"
+        };
+        for (String userEmail : registeredEmails) {
+            if (coachRepository.findByEmail(userEmail.toLowerCase()).isEmpty()) {
+                Coach userCoach = Coach.builder()
+                        .name("Gowtham")
+                        .email(userEmail.toLowerCase())
+                        .password(passwordEncoder.encode(rawPassword))
+                        .role(Role.USER)
+                        .build();
+                coachRepository.save(userCoach);
+                log.info("Registered user account for: {}", userEmail);
+            }
+        }
     }
 
     private void seedDefaultConfig() {

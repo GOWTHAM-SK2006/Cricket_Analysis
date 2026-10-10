@@ -1,5 +1,7 @@
 package com.cpi.cpi_backend.service;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -33,14 +35,26 @@ public class EmailJsService {
 
     private static final String EMAILJS_API_URL = "https://api.emailjs.com/api/v1.0/email/send";
 
-    public boolean sendPasswordResetEmail(String recipientEmail, String recipientName, String resetToken) {
+    @Getter
+    @AllArgsConstructor
+    public static class EmailSendResult {
+        private final boolean success;
+        private final int statusCode;
+        private final String errorMessage;
+    }
+
+    public EmailSendResult sendPasswordResetEmail(String recipientEmail, String recipientName, String resetToken) {
         String resetUrl = frontendUrl.replaceAll("/+$", "") + "/reset-password?token=" + resetToken;
 
-        log.info("[Password Reset] Generated reset link for {}: {}", recipientEmail, resetUrl);
+        log.info("[Password Reset] Generated secure reset link for {}: {}", recipientEmail, resetUrl);
 
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+            String originUrl = (frontendUrl != null && !frontendUrl.isBlank()) ? frontendUrl.replaceAll("/+$", "") : "http://localhost:3000";
+            headers.set("Origin", originUrl);
+            headers.set("Referer", originUrl + "/");
+            headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
             Map<String, Object> templateParams = new HashMap<>();
             templateParams.put("to_email", recipientEmail);
@@ -64,27 +78,36 @@ public class EmailJsService {
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestPayload, headers);
 
-            log.info("[EmailJS] Sending password reset email via Service ID: {}, Template ID: {} to {}", 
+            log.info("[EmailJS] Dispatching reset email via Service: {}, Template: {} to {}", 
                     serviceId, templateId, recipientEmail);
 
             ResponseEntity<String> response = restTemplate.postForEntity(EMAILJS_API_URL, entity, String.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 log.info("[EmailJS] Successfully dispatched password reset email to {}", recipientEmail);
-                return true;
+                return new EmailSendResult(true, response.getStatusCode().value(), null);
             } else {
                 log.warn("[EmailJS] Received non-200 status code: {} - {}", response.getStatusCode(), response.getBody());
-                return false;
+                return new EmailSendResult(false, response.getStatusCode().value(), "EmailJS returned status " + response.getStatusCode());
             }
         } catch (HttpStatusCodeException ex) {
-            log.error("[EmailJS] HTTP Error {} while sending email to {}: {}", 
-                    ex.getStatusCode(), recipientEmail, ex.getResponseBodyAsString());
-            log.warn("[EmailJS Configuration Check] Ensure EmailJS Service '{}' and Template '{}' exist in your EmailJS dashboard.",
-                    serviceId, templateId);
-            return false;
+            String errorBody = ex.getResponseBodyAsString();
+            int statusCode = ex.getStatusCode().value();
+            log.error("[EmailJS] HTTP Error {} while sending email to {}: {}", statusCode, recipientEmail, errorBody);
+
+            String descriptiveError;
+            if (statusCode == 400 && errorBody.toLowerCase().contains("template id not found")) {
+                descriptiveError = "EmailJS Template ID '" + templateId + "' not found. Please set your correct Template ID in application.properties or EMAILJS_TEMPLATE_ID environment variable.";
+            } else if (statusCode == 403 && errorBody.toLowerCase().contains("non-browser")) {
+                descriptiveError = "EmailJS non-browser API access disabled. Please enable 'Allow API requests from non-browser environments' in your EmailJS Security settings.";
+            } else {
+                descriptiveError = "Email service returned error: " + errorBody;
+            }
+
+            return new EmailSendResult(false, statusCode, descriptiveError);
         } catch (Exception ex) {
             log.error("[EmailJS] Failed to send password reset email to {}: {}", recipientEmail, ex.getMessage(), ex);
-            return false;
+            return new EmailSendResult(false, 500, "Failed to connect to email service: " + ex.getMessage());
         }
     }
 

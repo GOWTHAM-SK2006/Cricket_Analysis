@@ -275,12 +275,15 @@ public class AuthService {
             passwordResetTokenRepository.save(resetToken);
 
             // Dispatch reset email via EmailJS (handled securely with server-side private key)
-            emailJsService.sendPasswordResetEmail(coach.getEmail(), coach.getName(), token);
+            EmailJsService.EmailSendResult sendResult = emailJsService.sendPasswordResetEmail(coach.getEmail(), coach.getName(), token);
+            if (!sendResult.isSuccess()) {
+                throw new RuntimeException(sendResult.getErrorMessage());
+            }
         }
 
         // Generic safe message to prevent email enumeration
         return java.util.Map.of(
-                "message", "If an account with that email address exists, a password reset link has been sent."
+                "message", "If an account with that email address exists, a password reset link has been dispatched."
         );
     }
 
