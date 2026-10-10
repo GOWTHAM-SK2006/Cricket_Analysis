@@ -3570,17 +3570,12 @@ return (
         <div className="max-w-xl sm:max-w-2xl mx-auto space-y-4">
           {/* Header Card */}
           <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3.5">
-            <div className="flex justify-between items-start gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
-                  <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
-                    PRACTICE ASSESSMENT
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-                  Evaluate the player&apos;s training performance across 5 core metrics
-                </p>
+            <div className="flex justify-between items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
+                <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
+                  PRACTICE ASSESSMENT
+                </h3>
               </div>
               <button
                 type="button"
@@ -3655,11 +3650,11 @@ return (
 
           <form onSubmit={handlePracticeSubmit} className="space-y-3.5">
             {[
-              { label: "TECHNIQUE", key: "technicalExecution", desc: "Technique, mechanics, and physical execution" },
-              { label: "SKILL LEVEL", key: "skillsLevel", desc: "Mastery and precision of core skills" },
-              { label: "GAME PLAN", key: "gamePlan", desc: "Tactical strategy, role clarity, and game plan execution" },
-              { label: "PREPARATION", key: "preparation", desc: "Session readiness, warmups, and routine" },
-              { label: "INTENSITY", key: "intensity", desc: "Energy, purpose, and competitive effort in training" }
+              { label: "TECHNIQUE", key: "technicalExecution" },
+              { label: "SKILL LEVEL", key: "skillsLevel" },
+              { label: "GAME PLAN", key: "gamePlan" },
+              { label: "PREPARATION", key: "preparation" },
+              { label: "INTENSITY", key: "intensity" }
             ].map((metric) => {
               const numVal = Number((practiceForm as any)[metric.key]);
               const intScore = Math.round(numVal);
@@ -3680,19 +3675,14 @@ return (
                   key={metric.key}
                   className="bg-white p-4 sm:p-4.5 border border-slate-200/80 hover:border-slate-300 rounded-2xl shadow-xs transition-all space-y-3 font-montserrat"
                 >
-                  <div className="flex justify-between items-start gap-3">
-                    <div className="space-y-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
-                          {metric.label}
-                        </label>
-                        <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
-                          {statusLabel}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                        {metric.desc}
-                      </p>
+                  <div className="flex justify-between items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
+                        {metric.label}
+                      </label>
+                      <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
+                        {statusLabel}
+                      </span>
                     </div>
 
                     <div className="flex items-baseline gap-1 bg-orange-50/90 border border-orange-200/80 px-2.5 sm:px-3 py-1.5 rounded-xl shrink-0 shadow-2xs">
@@ -3820,17 +3810,12 @@ return (
         <div className="max-w-xl sm:max-w-2xl mx-auto space-y-4">
           {/* Header Card */}
           <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3.5">
-            <div className="flex justify-between items-start gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
-                  <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
-                    MATCH ASSESSMENT
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-                  Evaluate the player&apos;s competitive match performance across 5 core metrics
-                </p>
+            <div className="flex justify-between items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
+                <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
+                  MATCH ASSESSMENT
+                </h3>
               </div>
               <button
                 type="button"
@@ -3905,11 +3890,11 @@ return (
 
           <form onSubmit={handleMatchSubmit} className="space-y-3.5">
             {[
-              { label: "TECHNIQUE", key: "technicalExecution", desc: "Fundamentals under pressure and match execution" },
-              { label: "SKILL LEVEL", key: "skillsLevel", desc: "Skill execution and versatility under match conditions" },
-              { label: "GAME PLAN", key: "gamePlan", desc: "Adherence to match plan, tactical discipline, and situational awareness" },
-              { label: "PREPARATION", key: "preparation", desc: "Pre-match focus, strategy alignment, and mental readiness" },
-              { label: "INTENSITY", key: "intensity", desc: "Competitive intensity, effort, and match urgency" }
+              { label: "TECHNIQUE", key: "technicalExecution" },
+              { label: "SKILL LEVEL", key: "skillsLevel" },
+              { label: "GAME PLAN", key: "gamePlan" },
+              { label: "PREPARATION", key: "preparation" },
+              { label: "INTENSITY", key: "intensity" }
             ].map((metric) => {
               const numVal = Number((matchForm as any)[metric.key]);
               const intScore = Math.round(numVal);
@@ -3930,19 +3915,14 @@ return (
                   key={metric.key}
                   className="bg-white p-4 sm:p-4.5 border border-slate-200/80 hover:border-slate-300 rounded-2xl shadow-xs transition-all space-y-3 font-montserrat"
                 >
-                  <div className="flex justify-between items-start gap-3">
-                    <div className="space-y-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
-                          {metric.label}
-                        </label>
-                        <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
-                          {statusLabel}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                        {metric.desc}
-                      </p>
+                  <div className="flex justify-between items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
+                        {metric.label}
+                      </label>
+                      <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
+                        {statusLabel}
+                      </span>
                     </div>
 
                     <div className="flex items-baseline gap-1 bg-orange-50/90 border border-orange-200/80 px-2.5 sm:px-3 py-1.5 rounded-xl shrink-0 shadow-2xs">
