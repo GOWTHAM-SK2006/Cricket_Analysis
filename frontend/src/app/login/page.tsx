@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, Mail, CheckCircle2, X, ArrowLeft, KeyRound } from "lucide-react";
 
 declare global {
   interface Window {
@@ -29,6 +29,40 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const googleBtnRef = useRef<HTMLDivElement>(null);
+
+  // Forgot Password modal state
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState("");
+  const [forgotSuccess, setForgotSuccess] = useState("");
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotSuccess("");
+    setForgotLoading(true);
+
+    try {
+      const res = await api.post("/auth/forgot-password", { email: forgotEmail });
+      setForgotSent(true);
+      setForgotSuccess(
+        res.data?.message ||
+          "If an account with that email address exists, a password reset link has been dispatched."
+      );
+    } catch (err: any) {
+      if (err.message && (err.message.includes("Network Error") || !err.response)) {
+        setForgotError("Unable to connect to CPI server. Please check your network connection.");
+      } else {
+        setForgotError(
+          err.response?.data?.message || "Failed to process password reset. Please try again."
+        );
+      }
+    } finally {
+      setForgotLoading(false);
+    }
+  };
 
   const handleGoogleCredentialResponse = useCallback(
     async (response: any) => {
@@ -243,6 +277,22 @@ export default function LoginPage() {
             </div>
           </div>
 
+          <div className="flex justify-end -mt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setForgotEmail(email || "");
+                setForgotOpen(true);
+                setForgotSent(false);
+                setForgotError("");
+                setForgotSuccess("");
+              }}
+              className="text-xs font-bold tracking-wider text-[#D4AF37] hover:text-[#FCE8B2] hover:underline uppercase transition-colors cursor-pointer"
+            >
+              Forgot Password?
+            </button>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -327,6 +377,122 @@ export default function LoginPage() {
       <div className="text-center text-xs text-slate-400 font-bold uppercase tracking-widest py-4">
         Mobile Sunlight Optimized • Simple UX
       </div>
+
+      {/* Forgot Password Modal */}
+      {forgotOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div
+            className="relative w-full max-w-md bg-[#12141D] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 space-y-6 text-[#F3F4F6]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setForgotOpen(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="text-center space-y-2">
+              <div className="w-14 h-14 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] mx-auto mb-3 shadow-lg shadow-[#D4AF37]/10">
+                <KeyRound className="w-7 h-7" />
+              </div>
+              <h2 className="text-2xl font-black tracking-wide text-white uppercase">
+                {forgotSent ? "CHECK YOUR EMAIL" : "FORGOT PASSWORD"}
+              </h2>
+              <p className="text-slate-400 text-sm font-medium">
+                {forgotSent
+                  ? "We've dispatched password reset instructions to your inbox."
+                  : "Enter your registered email address and we'll send you a secure link to reset your password."}
+              </p>
+            </div>
+
+            {forgotSent ? (
+              <div className="space-y-6">
+                <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#FCE8B2] p-4 rounded-2xl text-sm font-semibold flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold text-white">Reset Link Dispatched</p>
+                    <p className="text-xs text-slate-300">
+                      {forgotSuccess ||
+                        "If an account with that email exists, a password reset link has been sent."}
+                    </p>
+                    <p className="text-[11px] text-[#D4AF37] font-semibold pt-1">
+                      Link valid for 15 minutes. Check spam if not received.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForgotOpen(false);
+                    setForgotSent(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-[#E5A93C] via-[#D4AF37] to-[#B8860B] hover:opacity-95 text-[#090A0E] rounded-2xl py-4 text-base font-black tracking-wider uppercase transition-all shadow-lg shadow-[#D4AF37]/20 cursor-pointer"
+                >
+                  RETURN TO SIGN IN
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} className="space-y-5">
+                {forgotError && (
+                  <div className="bg-red-500/15 border border-red-500/30 text-red-300 p-3.5 rounded-2xl text-xs font-bold text-center">
+                    {forgotError}
+                  </div>
+                )}
+
+                <div className="space-y-2 text-left">
+                  <label className="text-xs font-black tracking-widest text-slate-400 block uppercase">
+                    REGISTERED EMAIL
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      required
+                      autoFocus
+                      className="w-full bg-[#0E1017] border border-white/10 focus:border-[#D4AF37] rounded-2xl pl-11 pr-4 py-3.5 text-base text-white font-medium focus:outline-none transition-all shadow-inner placeholder:text-slate-500"
+                      placeholder="Enter your registered email"
+                    />
+                    <Mail className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={forgotLoading}
+                  className="w-full bg-gradient-to-r from-[#E5A93C] via-[#D4AF37] to-[#B8860B] hover:opacity-95 text-[#090A0E] rounded-2xl py-4 text-base font-black tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-[0.98] disabled:opacity-60"
+                >
+                  {forgotLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin text-[#090A0E]" />
+                      <span>SENDING LINK...</span>
+                    </>
+                  ) : (
+                    "SEND RESET LINK"
+                  )}
+                </button>
+
+                <div className="text-center pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setForgotOpen(false)}
+                    className="text-slate-400 hover:text-white text-xs font-bold tracking-wider uppercase transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    Back to Sign In
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

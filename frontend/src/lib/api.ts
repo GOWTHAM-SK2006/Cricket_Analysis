@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosResponse, type AxiosRequestConfig } from 'axios';
 
 export const isNativePlatform = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -41,13 +41,13 @@ const inFlightRequests = new Map<string, Promise<any>>();
 const CACHE_TTL_MS = 120_000; // 2 minutes in-memory client cache
 
 const originalGet = api.get.bind(api);
-api.get = function <T = any, R = axios.AxiosResponse<T>, D = any>(url: string, config?: axios.AxiosRequestConfig<D>): Promise<R> {
+api.get = function <T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R> {
   const cached = getCache.get(url);
   if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
     // Background revalidation
     if (!inFlightRequests.has(url)) {
       const revalidatePromise = originalGet<T, R, D>(url, config)
-        .then((res) => {
+        .then((res: any) => {
           getCache.set(url, { data: res.data, timestamp: Date.now() });
           return res;
         })
@@ -74,7 +74,7 @@ api.get = function <T = any, R = axios.AxiosResponse<T>, D = any>(url: string, c
   }
 
   const reqPromise = originalGet<T, R, D>(url, config)
-    .then((res) => {
+    .then((res: any) => {
       getCache.set(url, { data: res.data, timestamp: Date.now() });
       return res;
     })

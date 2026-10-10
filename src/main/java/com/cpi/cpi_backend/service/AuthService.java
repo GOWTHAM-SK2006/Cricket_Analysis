@@ -3,9 +3,13 @@ package com.cpi.cpi_backend.service;
 import com.cpi.cpi_backend.dto.AuthenticationRequest;
 import com.cpi.cpi_backend.dto.AuthenticationResponse;
 import com.cpi.cpi_backend.dto.RegisterRequest;
+import com.cpi.cpi_backend.dto.ForgotPasswordRequest;
+import com.cpi.cpi_backend.dto.ResetPasswordRequest;
 import com.cpi.cpi_backend.entity.Coach;
+import com.cpi.cpi_backend.entity.PasswordResetToken;
 import com.cpi.cpi_backend.entity.Role;
 import com.cpi.cpi_backend.repository.CoachRepository;
+import com.cpi.cpi_backend.repository.PasswordResetTokenRepository;
 import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,8 @@ public class AuthService {
 
     private final CoachRepository repository;
     private final PlayerRepository playerRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailJsService emailJsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -235,5 +241,125 @@ public class AuthService {
         response.put("valid", true);
         response.put("playerName", player.getName());
         return response;
+    }
+
+    public java.util.Map<String, String> forgotPassword(ForgotPasswordRequest request) {
+        if (request == null || request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email address is required");
+        }
+
+        String targetEmail = request.getEmail().trim().toLowerCase();
+        var coachOpt = repository.findByEmail(targetEmail);
+
+        if (coachOpt.isPresent()) {
+            Coach coach = coachOpt.get();
+
+            // Clear previous tokens for this user
+            try {
+                passwordResetTokenRepository.deleteByCoach(coach);
+            } catch (Exception e) {
+                // Continue if already clear
+            }
+
+            // Generate cryptographically unguessable 64-character token
+            String token = java.util.UUID.randomUUID().toString().replace("-", "")
+                    + java.util.UUID.randomUUID().toString().replace("-", "");
+
+            PasswordResetToken resetToken = PasswordResetToken.builder()
+                    .token(token)
+                    .coach(coach)
+                    .expiryDate(java.time.LocalDateTime.now().plusMinutes(15))
+                    .used(false)
+                    .build();
+
+            passwordResetTokenRepository.save(resetToken);
+
+            // Dispatch reset email via EmailJS (handled securely with server-side private key)
+            emailJsService.sendPasswordResetEmail(coach.getEmail(), coach.getName(), token);
+        }
+
+        // Generic safe message to prevent email enumeration
+        return java.util.Map.of(
+                "message", "If an account with that email address exists, a password reset link has been sent."
+        );
+    }
+
+    public java.util.Map<String, Object> validateResetToken(String token) {
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        if (token == null || token.trim().isEmpty()) {
+            result.put("valid", false);
+            result.put("message", "Reset token is required");
+            return result;
+        }
+
+        var tokenOpt = passwordResetTokenRepository.findByToken(token.trim());
+        if (tokenOpt.isEmpty()) {
+            result.put("valid", false);
+            result.put("message", "This password reset link is invalid or does not exist.");
+            return result;
+        }
+
+        PasswordResetToken resetToken = tokenOpt.get();
+        if (resetToken.isUsed()) {
+            result.put("valid", false);
+            result.put("message", "This password reset link has already been used.");
+            return result;
+        }
+
+        if (resetToken.isExpired()) {
+            result.put("valid", false);
+            result.put("message", "This password reset link has expired. Please request a new one.");
+            return result;
+        }
+
+        result.put("valid", true);
+        result.put("message", "Token is valid");
+        String email = resetToken.getCoach().getEmail();
+        result.put("maskedEmail", maskEmail(email));
+        return result;
+    }
+
+    public java.util.Map<String, String> resetPassword(ResetPasswordRequest request) {
+        if (request == null || request.getToken() == null || request.getToken().trim().isEmpty()) {
+            throw new RuntimeException("Reset token is required");
+        }
+
+        if (request.getNewPassword() == null || request.getNewPassword().length() < 6) {
+            throw new RuntimeException("Password must be at least 6 characters long");
+        }
+
+        var tokenOpt = passwordResetTokenRepository.findByToken(request.getToken().trim());
+        if (tokenOpt.isEmpty()) {
+            throw new RuntimeException("Invalid or non-existent password reset link");
+        }
+
+        PasswordResetToken resetToken = tokenOpt.get();
+        if (resetToken.isUsed()) {
+            throw new RuntimeException("This password reset link has already been used");
+        }
+
+        if (resetToken.isExpired()) {
+            throw new RuntimeException("This password reset link has expired. Please request a new one");
+        }
+
+        Coach coach = resetToken.getCoach();
+        coach.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        repository.save(coach);
+
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
+
+        return java.util.Map.of(
+                "message", "Your password has been successfully reset. You can now sign in with your new password."
+        );
+    }
+
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) return "";
+        String[] parts = email.split("@");
+        String name = parts[0];
+        String domain = parts[1];
+        if (name.length() <= 2) return name.charAt(0) + "***@" + domain;
+        return name.charAt(0) + "***" + name.charAt(name.length() - 1) + "@" + domain;
     }
 }
