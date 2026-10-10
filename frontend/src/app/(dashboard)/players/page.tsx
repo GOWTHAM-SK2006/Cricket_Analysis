@@ -3860,14 +3860,14 @@ return (
       }
 
       return (
-        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-start justify-center p-2.5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:items-center text-left select-none font-montserrat">
-          <div className="w-full max-w-lg md:max-w-xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl space-y-2 sm:space-y-2.5 my-0 sm:my-auto relative overflow-hidden">
+        <div className="fixed inset-0 h-[100dvh] bg-[#090A0E]/90 backdrop-blur-xl z-50 flex items-start justify-center p-2.5 pt-[max(0.5rem,env(safe-area-inset-top))] pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-4 sm:items-center text-left select-none font-montserrat overflow-hidden">
+          <div className="w-full max-w-lg md:max-w-xl h-full sm:h-auto max-h-[calc(100dvh-1rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] sm:max-h-[92vh] bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl flex flex-col justify-between my-0 sm:my-auto relative overflow-hidden">
             {/* Ambient gold glow */}
             <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
 
             {/* Header: Title, Player Selector & Close */}
-            <div className="relative z-10 flex items-center justify-between gap-2 pb-2 border-b border-white/8">
+            <div className="relative z-10 flex items-center justify-between gap-2 pb-2 border-b border-white/8 shrink-0">
               <div className="flex items-center gap-2 flex-wrap min-w-0">
                 <div className="flex items-center gap-1.5 shrink-0">
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -3923,13 +3923,13 @@ return (
             </div>
 
             {error && (
-              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center">
+              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center shrink-0">
                 {error}
               </div>
             )}
 
             {/* Calculated PPI Score Hero Panel (Vercel Simulator Style: 88.6/100) */}
-            <div className="relative z-10 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 px-3 py-1.5 sm:px-3.5 sm:py-2.5 shadow-lg flex items-center justify-between gap-2.5">
+            <div className="relative z-10 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 px-3 py-1.5 sm:px-3.5 sm:py-2 shadow-lg flex items-center justify-between gap-2.5 shrink-0">
               <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
@@ -3961,9 +3961,9 @@ return (
             </div>
 
             {/* Form: 5 Indexes (1 per row, single-column 1+1+1+1+1) + Remarks + Save */}
-            <form onSubmit={handlePracticeSubmit} className="relative z-10 space-y-2 sm:space-y-2.5">
-              {/* Stacked Single-Column List for the 5 Indexes */}
-              <div className="space-y-1 sm:space-y-1.5">
+            <form onSubmit={handlePracticeSubmit} className="relative z-10 flex-1 flex flex-col justify-between min-h-0 pt-1.5 space-y-1.5 sm:space-y-2">
+              {/* Stacked Single-Column List for the 5 Indexes with responsive flex expansion */}
+              <div className="flex-1 flex flex-col justify-between min-h-0 gap-1 sm:gap-1.5 overflow-y-auto pr-0.5">
                 {[
                   { label: "TECHNIQUE", key: "technicalExecution" },
                   { label: "SKILL LEVEL", key: "skillsLevel" },
@@ -3988,7 +3988,7 @@ return (
                   return (
                     <div
                       key={metric.key}
-                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3 py-1.5 sm:px-3.5 sm:py-2 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1"
+                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3 py-1.5 sm:px-3.5 sm:py-2 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1 flex-1 min-h-[44px]"
                     >
                       {/* Metric Header Row */}
                       <div className="flex justify-between items-center gap-1.5">
@@ -4043,7 +4043,7 @@ return (
               </div>
 
               {/* Compact Coach Remarks Input */}
-              <div className="relative">
+              <div className="relative shrink-0 pt-0.5">
                 <input
                   type="text"
                   value={practiceForm.notes}
@@ -4057,7 +4057,7 @@ return (
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full h-9 sm:h-11 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50"
+                className="w-full h-10 sm:h-11 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50 shrink-0"
               >
                 {saving ? (
                   <>
@@ -4103,14 +4103,14 @@ return (
       }
 
       return (
-        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-start justify-center p-2.5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:items-center text-left select-none font-montserrat">
-          <div className="w-full max-w-lg md:max-w-xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl space-y-2 sm:space-y-2.5 my-0 sm:my-auto relative overflow-hidden">
+        <div className="fixed inset-0 h-[100dvh] bg-[#090A0E]/90 backdrop-blur-xl z-50 flex items-start justify-center p-2.5 pt-[max(0.5rem,env(safe-area-inset-top))] pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-4 sm:items-center text-left select-none font-montserrat overflow-hidden">
+          <div className="w-full max-w-lg md:max-w-xl h-full sm:h-auto max-h-[calc(100dvh-1rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] sm:max-h-[92vh] bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl flex flex-col justify-between my-0 sm:my-auto relative overflow-hidden">
             {/* Ambient gold glow */}
             <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
 
             {/* Header: Title, Player Selector & Close */}
-            <div className="relative z-10 flex items-center justify-between gap-2 pb-2 border-b border-white/8">
+            <div className="relative z-10 flex items-center justify-between gap-2 pb-2 border-b border-white/8 shrink-0">
               <div className="flex items-center gap-2 flex-wrap min-w-0">
                 <div className="flex items-center gap-1.5 shrink-0">
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -4166,13 +4166,13 @@ return (
             </div>
 
             {error && (
-              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center">
+              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center shrink-0">
                 {error}
               </div>
             )}
 
             {/* Calculated MPI Score Hero Panel (Vercel Simulator Style: 88.6/100) */}
-            <div className="relative z-10 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 px-3 py-1.5 sm:px-3.5 sm:py-2.5 shadow-lg flex items-center justify-between gap-2.5">
+            <div className="relative z-10 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 px-3 py-1.5 sm:px-3.5 sm:py-2 shadow-lg flex items-center justify-between gap-2.5 shrink-0">
               <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
@@ -4204,9 +4204,9 @@ return (
             </div>
 
             {/* Form: 5 Indexes (1 per row, single-column 1+1+1+1+1) + Remarks + Save */}
-            <form onSubmit={handleMatchSubmit} className="relative z-10 space-y-2 sm:space-y-2.5">
-              {/* Stacked Single-Column List for the 5 Indexes */}
-              <div className="space-y-1 sm:space-y-1.5">
+            <form onSubmit={handleMatchSubmit} className="relative z-10 flex-1 flex flex-col justify-between min-h-0 pt-1.5 space-y-1.5 sm:space-y-2">
+              {/* Stacked Single-Column List for the 5 Indexes with responsive flex expansion */}
+              <div className="flex-1 flex flex-col justify-between min-h-0 gap-1 sm:gap-1.5 overflow-y-auto pr-0.5">
                 {[
                   { label: "TECHNIQUE", key: "technicalExecution" },
                   { label: "SKILL LEVEL", key: "skillsLevel" },
@@ -4231,7 +4231,7 @@ return (
                   return (
                     <div
                       key={metric.key}
-                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3 py-1.5 sm:px-3.5 sm:py-2 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1"
+                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3 py-1.5 sm:px-3.5 sm:py-2 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1 flex-1 min-h-[44px]"
                     >
                       {/* Metric Header Row */}
                       <div className="flex justify-between items-center gap-1.5">
@@ -4286,7 +4286,7 @@ return (
               </div>
 
               {/* Compact Coach Remarks Input */}
-              <div className="relative">
+              <div className="relative shrink-0 pt-0.5">
                 <input
                   type="text"
                   value={matchForm.notes}
@@ -4300,7 +4300,7 @@ return (
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full h-9 sm:h-11 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50"
+                className="w-full h-10 sm:h-11 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50 shrink-0"
               >
                 {saving ? (
                   <>
