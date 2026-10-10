@@ -3860,8 +3860,8 @@ return (
       }
 
       return (
-        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-center justify-center p-2.5 sm:p-4 text-left select-none font-montserrat">
-          <div className="w-full max-w-lg md:max-w-xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl space-y-2 sm:space-y-2.5 my-auto relative overflow-hidden">
+        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-start justify-center p-2.5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:items-center text-left select-none font-montserrat">
+          <div className="w-full max-w-lg md:max-w-xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl space-y-2 sm:space-y-2.5 my-0 sm:my-auto relative overflow-hidden">
             {/* Ambient gold glow */}
             <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
@@ -4103,8 +4103,8 @@ return (
       }
 
       return (
-        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-center justify-center p-2.5 sm:p-4 text-left select-none font-montserrat">
-          <div className="w-full max-w-lg md:max-w-xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl space-y-2 sm:space-y-2.5 my-auto relative overflow-hidden">
+        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-start justify-center p-2.5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4 sm:items-center text-left select-none font-montserrat">
+          <div className="w-full max-w-lg md:max-w-xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 shadow-2xl space-y-2 sm:space-y-2.5 my-0 sm:my-auto relative overflow-hidden">
             {/* Ambient gold glow */}
             <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
