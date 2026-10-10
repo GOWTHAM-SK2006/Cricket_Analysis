@@ -1,0 +1,15 @@
+{
+  "appId": "com.cpi.cricketanalysis",
+  "appName": "Cricket Performance Index",
+  "webDir": "frontend/out",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#ea580c",
+      "style": "DARK"
+    }
+  }
+}

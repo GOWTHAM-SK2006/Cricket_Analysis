@@ -1,0 +1,19 @@
+{
+  "name": "cricket-analysis",
+  "version": "1.0.0",
+  "description": "Cricket Performance Index (CPI) Mobile Application",
+  "scripts": {
+    "build": "npm run --prefix frontend build",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}
