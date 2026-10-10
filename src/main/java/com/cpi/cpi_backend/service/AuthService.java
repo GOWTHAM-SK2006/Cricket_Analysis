@@ -165,29 +165,45 @@ public class AuthService {
                     verifiedName = (String) tokenInfo.get("name");
                 }
             } catch (Exception e) {
-                // 2. Base64 JWT payload decode fallback
+                // Try verifying as access_token if id_token failed
                 try {
-                    String[] parts = idToken.split("\\.");
-                    if (parts.length >= 2) {
-                        byte[] decodedBytes = java.util.Base64.getUrlDecoder().decode(parts[1]);
-                        String payloadJson = new String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8);
-                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                        com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(payloadJson);
-                        if (node.has("email")) {
-                            verifiedEmail = node.get("email").asText();
-                        }
-                        if (node.has("name")) {
-                            verifiedName = node.get("name").asText();
-                        }
+                    org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+                    String googleTokenInfoUrl = "https://oauth2.googleapis.com/tokeninfo?access_token=" + idToken.trim();
+                    @SuppressWarnings("unchecked")
+                    java.util.Map<String, Object> tokenInfo = restTemplate.getForObject(googleTokenInfoUrl, java.util.Map.class);
+                    if (tokenInfo != null && tokenInfo.containsKey("email")) {
+                        verifiedEmail = (String) tokenInfo.get("email");
+                        verifiedName = (String) tokenInfo.get("name");
                     }
-                } catch (Exception ex) {
-                    // Ignore parse error
+                } catch (Exception exAccess) {
+                    // 2. Base64 JWT payload decode fallback
+                    try {
+                        String[] parts = idToken.split("\\.");
+                        if (parts.length >= 2) {
+                            byte[] decodedBytes = java.util.Base64.getUrlDecoder().decode(parts[1]);
+                            String payloadJson = new String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8);
+                            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                            com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(payloadJson);
+                            if (node.has("email")) {
+                                verifiedEmail = node.get("email").asText();
+                            }
+                            if (node.has("name")) {
+                                verifiedName = node.get("name").asText();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        // Ignore parse error
+                    }
                 }
             }
-        } else {
+        }
+
+        if (verifiedEmail == null || verifiedEmail.trim().isEmpty()) {
             // Fallback for email parameter if provided
             verifiedEmail = request.get("email");
-            verifiedName = request.get("name");
+            if (verifiedName == null || verifiedName.trim().isEmpty()) {
+                verifiedName = request.get("name");
+            }
         }
 
         if (verifiedEmail == null || verifiedEmail.trim().isEmpty()) {

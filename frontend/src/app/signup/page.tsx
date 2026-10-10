@@ -27,7 +27,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
-  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const tokenClientRef = useRef<any>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -36,18 +36,39 @@ export default function SignupPage() {
     confirmPassword: ""
   });
 
-  const handleGoogleCredentialResponse = useCallback(
-    async (response: any) => {
-      if (!response || !response.credential) return;
+  const handleGoogleSuccess = useCallback(
+    async (tokenOrCredential: { idToken?: string; accessToken?: string; email?: string; name?: string }) => {
       setGoogleLoading(true);
       setError("");
 
       try {
+        let userEmail = tokenOrCredential.email || "";
+        let userName = tokenOrCredential.name || "";
+
+        // If access token is provided and email isn't yet available, retrieve user info from Google
+        if (tokenOrCredential.accessToken && !userEmail) {
+          try {
+            const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+              headers: { Authorization: `Bearer ${tokenOrCredential.accessToken}` }
+            });
+            if (userInfoRes.ok) {
+              const userInfo = await userInfoRes.json();
+              userEmail = userInfo.email || "";
+              userName = userInfo.name || "";
+            }
+          } catch (e) {
+            console.warn("Failed to fetch Google userinfo:", e);
+          }
+        }
+
         const res = await api.post("/auth/google", {
-          idToken: response.credential
+          idToken: tokenOrCredential.idToken || tokenOrCredential.accessToken,
+          token: tokenOrCredential.accessToken || tokenOrCredential.idToken,
+          email: userEmail,
+          name: userName
         });
 
-        if (res.data.token) {
+        if (res.data?.token) {
           localStorage.clear();
           sessionStorage.clear();
           localStorage.setItem("token", res.data.token);
@@ -56,10 +77,10 @@ export default function SignupPage() {
             headers: { Authorization: `Bearer ${res.data.token}` }
           });
 
-          const userEmail = (profileRes.data.email || "").toLowerCase();
+          const emailLower = (profileRes.data.email || "").toLowerCase();
           if (
             profileRes.data.role === "ADMIN" &&
-            (userEmail === "cpi@admin.com" || userEmail === "cpicoach@cpi.com")
+            (emailLower === "cpi@admin.com" || emailLower === "cpicoach@cpi.com")
           ) {
             localStorage.setItem("cpi_admin_token", res.data.token);
             localStorage.setItem("userRole", "admin");
@@ -77,7 +98,7 @@ export default function SignupPage() {
           router.push("/dashboard");
         }
       } catch (err: any) {
-        setError(err.response?.data?.message || "Google Sign-Up failed");
+        setError(err.response?.data?.message || err.message || "Google Sign-Up failed");
       } finally {
         setGoogleLoading(false);
       }
@@ -85,49 +106,55 @@ export default function SignupPage() {
     [router]
   );
 
-  // Only activate Google GIS on production (cpicoach.com)
-  const [isProductionDomain, setIsProductionDomain] = useState(false);
-
+  // Initialize Google Identity Services and OAuth 2.0 Token Client
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname;
-      setIsProductionDomain(host === "cpicoach.com" || host.endsWith(".cpicoach.com"));
-    }
-  }, []);
-
-  const isGoogleActive = isGoogleConfigured && isProductionDomain;
-
-  useEffect(() => {
-    if (!isGoogleActive) return;
+    if (!isGoogleConfigured) return;
 
     const scriptId = "google-gis-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
-    const initGis = () => {
-      if (window.google?.accounts?.id) {
-        try {
+    const initGoogle = () => {
+      if (typeof window === "undefined" || !window.google) return;
+
+      try {
+        if (window.google.accounts?.id) {
           window.google.accounts.id.initialize({
             client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleCredentialResponse,
+            callback: (response: any) => {
+              if (response?.credential) {
+                handleGoogleSuccess({ idToken: response.credential });
+              }
+            },
             auto_select: false,
             cancel_on_tap_outside: true
           });
-
-          if (googleBtnRef.current) {
-            googleBtnRef.current.innerHTML = "";
-            window.google.accounts.id.renderButton(googleBtnRef.current, {
-              theme: "outline",
-              size: "large",
-              type: "standard",
-              shape: "pill",
-              text: "continue_with",
-              width: "380",
-              logo_alignment: "left"
-            });
-          }
-        } catch (err) {
-          console.error("Failed to initialize Google Identity Services", err);
         }
+
+        if (window.google.accounts?.oauth2) {
+          tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+            client_id: GOOGLE_CLIENT_ID,
+            scope: "email profile openid",
+            callback: (tokenResponse: any) => {
+              if (tokenResponse.error) {
+                if (tokenResponse.error === "popup_closed_by_user" || tokenResponse.error === "access_denied") {
+                  return;
+                }
+                const originHelp =
+                  typeof window !== "undefined" && window.location.hostname === "localhost"
+                    ? " (Note: Localhost is not configured in Google Cloud Console. Google Sign-In is configured for https://cpicoach.com)"
+                    : "";
+                setError((tokenResponse.error_description || tokenResponse.error) + originHelp);
+                return;
+              }
+
+              if (tokenResponse.access_token) {
+                handleGoogleSuccess({ accessToken: tokenResponse.access_token });
+              }
+            }
+          });
+        }
+      } catch (err: any) {
+        console.error("Failed to initialize Google services:", err);
       }
     };
 
@@ -137,12 +164,90 @@ export default function SignupPage() {
       script.src = "https://accounts.google.com/gsi/client";
       script.async = true;
       script.defer = true;
-      script.onload = initGis;
+      script.onload = initGoogle;
       document.body.appendChild(script);
     } else {
-      initGis();
+      initGoogle();
     }
-  }, [handleGoogleCredentialResponse]);
+  }, [handleGoogleSuccess]);
+
+  // Handle URL hash fragments from OAuth redirects (if applicable)
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.location.hash) return;
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const idToken = params.get("id_token");
+    const accessToken = params.get("access_token");
+
+    if (idToken || accessToken) {
+      window.history.replaceState(null, "", window.location.pathname);
+      handleGoogleSuccess({ idToken: idToken || undefined, accessToken: accessToken || undefined });
+    }
+  }, [handleGoogleSuccess]);
+
+  const handleGoogleSignIn = () => {
+    setError("");
+
+    if (!isGoogleConfigured) {
+      setError(
+        "Google OAuth is not configured: Missing or invalid NEXT_PUBLIC_GOOGLE_CLIENT_ID. Please verify your environment configuration."
+      );
+      return;
+    }
+
+    if (tokenClientRef.current) {
+      try {
+        tokenClientRef.current.requestAccessToken({ prompt: "select_account" });
+        return;
+      } catch (err: any) {
+        console.warn("Token client requestAccessToken error:", err);
+      }
+    }
+
+    if (typeof window !== "undefined" && window.google?.accounts?.oauth2) {
+      try {
+        const client = window.google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: "email profile openid",
+          callback: (tokenResponse: any) => {
+            if (tokenResponse.access_token) {
+              handleGoogleSuccess({ accessToken: tokenResponse.access_token });
+            } else if (tokenResponse.error && tokenResponse.error !== "popup_closed_by_user") {
+              setError(tokenResponse.error_description || tokenResponse.error);
+            }
+          }
+        });
+        tokenClientRef.current = client;
+        client.requestAccessToken({ prompt: "select_account" });
+        return;
+      } catch (err: any) {
+        console.warn("On-the-fly token client failed:", err);
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      const redirectUri = window.location.origin + "/signup";
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+        GOOGLE_CLIENT_ID
+      )}&redirect_uri=${encodeURIComponent(
+        redirectUri
+      )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}&prompt=select_account`;
+
+      const width = 500;
+      const height = 650;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      const popup = window.open(
+        googleAuthUrl,
+        "GoogleSignIn",
+        `width=${width},height=${height},left=${left},top=${top},status=no,toolbar=no,menubar=no,location=yes`
+      );
+
+      if (!popup || popup.closed || typeof popup.closed === "undefined") {
+        window.location.href = googleAuthUrl;
+      }
+    }
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -360,52 +465,45 @@ export default function SignupPage() {
           </div>
         </div>
 
-        {/* Google Official GIS Button Container */}
-        <div className="space-y-3">
-          {googleLoading && (
-            <div className="flex items-center justify-center gap-2 text-xs font-black text-slate-500 uppercase tracking-wide py-2">
-              <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-              <span>Authenticating with Google...</span>
-            </div>
-          )}
-          {isGoogleActive ? (
-            <div
-              ref={googleBtnRef}
-              className="w-full min-h-[44px] flex justify-center"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() =>
-                setError(
-                  typeof window !== "undefined" && window.location.hostname === "localhost"
-                    ? "Google Sign-In is configured exclusively for production (https://cpicoach.com). Please sign up with your details above on localhost."
-                    : "Google Sign-In is not configured yet. Please sign up with your details above."
-                )
-              }
-              className="w-full border-2 border-slate-200 hover:bg-slate-100 text-slate-700 font-bold py-3 px-4 rounded-full flex items-center justify-center gap-3 transition-colors shadow-sm"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                />
-              </svg>
-              <span>Continue with Google</span>
-            </button>
-          )}
+        {/* Google Sign-In Button */}
+        <div>
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+            className="w-full bg-[#12141D] hover:bg-[#181B27] active:scale-[0.98] border border-white/10 hover:border-white/20 text-white font-bold text-base rounded-2xl py-4.5 flex items-center justify-center gap-3 transition-all duration-200 cursor-pointer shadow-lg shadow-black/40 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {googleLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin text-[#D4AF37]" />
+                <span className="text-sm font-bold uppercase tracking-wider text-zinc-300">
+                  Authenticating with Google...
+                </span>
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                  />
+                </svg>
+                <span>Continue with Google</span>
+              </>
+            )}
+          </button>
         </div>
 
         <div className="text-center pt-2">
