@@ -229,10 +229,16 @@ export default function LoginPage() {
       return;
     }
 
-    // 1. Try Token Client popup (Google OAuth 2.0 account chooser)
+    // Prepare optional hint without forced re-authentication prompts
+    const options: any = {};
+    if (email && email.includes("@")) {
+      options.hint = email.trim();
+    }
+
+    // 1. Try Token Client popup (uses active Google session without password challenge)
     if (tokenClientRef.current) {
       try {
-        tokenClientRef.current.requestAccessToken({ prompt: "select_account" });
+        tokenClientRef.current.requestAccessToken(options);
         return;
       } catch (err: any) {
         console.warn("Token client requestAccessToken error:", err);
@@ -254,21 +260,25 @@ export default function LoginPage() {
           }
         });
         tokenClientRef.current = client;
-        client.requestAccessToken({ prompt: "select_account" });
+        client.requestAccessToken(options);
         return;
       } catch (err: any) {
         console.warn("On-the-fly token client failed:", err);
       }
     }
 
-    // 3. Fallback: Standard Google OAuth endpoint redirect / popup
+    // 3. Fallback: Standard Google OAuth endpoint redirect / popup without forced prompt parameter
     if (typeof window !== "undefined") {
       const redirectUri = window.location.origin + "/login";
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+      let googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
         GOOGLE_CLIENT_ID
       )}&redirect_uri=${encodeURIComponent(
         redirectUri
-      )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}&prompt=select_account`;
+      )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}`;
+
+      if (email && email.includes("@")) {
+        googleAuthUrl += `&login_hint=${encodeURIComponent(email.trim())}`;
+      }
 
       const width = 500;
       const height = 650;

@@ -195,9 +195,15 @@ export default function SignupPage() {
       return;
     }
 
+    // Prepare optional hint without forced re-authentication prompts
+    const options: any = {};
+    if (formData.email && formData.email.includes("@")) {
+      options.hint = formData.email.trim();
+    }
+
     if (tokenClientRef.current) {
       try {
-        tokenClientRef.current.requestAccessToken({ prompt: "select_account" });
+        tokenClientRef.current.requestAccessToken(options);
         return;
       } catch (err: any) {
         console.warn("Token client requestAccessToken error:", err);
@@ -218,7 +224,7 @@ export default function SignupPage() {
           }
         });
         tokenClientRef.current = client;
-        client.requestAccessToken({ prompt: "select_account" });
+        client.requestAccessToken(options);
         return;
       } catch (err: any) {
         console.warn("On-the-fly token client failed:", err);
@@ -227,11 +233,15 @@ export default function SignupPage() {
 
     if (typeof window !== "undefined") {
       const redirectUri = window.location.origin + "/signup";
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+      let googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
         GOOGLE_CLIENT_ID
       )}&redirect_uri=${encodeURIComponent(
         redirectUri
-      )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}&prompt=select_account`;
+      )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}`;
+
+      if (formData.email && formData.email.includes("@")) {
+        googleAuthUrl += `&login_hint=${encodeURIComponent(formData.email.trim())}`;
+      }
 
       const width = 500;
       const height = 650;
