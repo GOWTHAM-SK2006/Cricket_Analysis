@@ -7,8 +7,10 @@ import { uploadPlayerImage } from "@/lib/supabase";
 import {
   Search, Plus, Loader2, ArrowLeft, Clipboard, ShieldCheck,
   Sparkles, ListCollapse, Award, Flame, Heart, Brain, X, Camera, CheckCircle2,
-  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap, AlertTriangle, Activity
+  Filter, Check, Copy, Target, Edit2, ChevronDown, FileText, Download, Trash2, TrendingUp, Zap, AlertTriangle, Activity,
+  Users, Crown, ChevronRight, SlidersHorizontal, UserCheck, Shield
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import PerformanceTrendChart from "@/components/PerformanceTrendChart";
 import CricketLoader from "@/components/CricketLoader";
 import { getRoleContextForParameter } from "@/lib/roleContext";
@@ -2316,14 +2318,70 @@ const sortedPlayers = [...filteredPlayers].sort((a, b) => {
   return 0;
 });
 
+const squadStats = (() => {
+  const total = players.length;
+  if (total === 0) return { total: 0, avgCpi: "N/A", topPlayer: null, assessedCount: 0 };
+  
+  let assessedCount = 0;
+  let cpiSum = 0;
+  let topPlayer: Player | null = null;
+  let maxCpi = -1;
+
+  players.forEach((p) => {
+    const scores = getPlayerScores(p);
+    if (scores.cpi > 0) {
+      assessedCount++;
+      cpiSum += scores.cpi;
+      if (scores.cpi > maxCpi) {
+        maxCpi = scores.cpi;
+        topPlayer = p;
+      }
+    }
+  });
+
+  const avgCpi = assessedCount > 0 ? (cpiSum / assessedCount <= 10 ? Math.round((cpiSum / assessedCount) * 10) : Math.round(cpiSum / assessedCount)) : "N/A";
+
+  return {
+    total,
+    avgCpi,
+    topPlayer,
+    assessedCount
+  };
+})();
+
+const roleCounts = (() => {
+  let batsmen = 0;
+  let bowlers = 0;
+  let allRounders = 0;
+  let wicketKeepers = 0;
+
+  players.forEach((p) => {
+    const r = (p.role || "").toLowerCase();
+    if (r.includes("batsman") || r.includes("batter")) batsmen++;
+    else if (r.includes("bowler")) bowlers++;
+    else if (r.includes("all-rounder") || r.includes("all rounder") || r.includes("allrounder")) allRounders++;
+    else if (r.includes("wicketkeeper") || r.includes("wicket-keeper") || r.includes("wicket keeper") || r.includes("keeper")) wicketKeepers++;
+  });
+
+  return {
+    all: players.length,
+    batsman: batsmen,
+    bowler: bowlers,
+    all_rounder: allRounders,
+    wicket_keeper: wicketKeepers
+  };
+})();
+
 return (
   <div className="space-y-6 pb-12 select-none">
 
     {/* ------------------ SUCCESS ANIMATION OVERLAY ------------------ */}
     {showSuccessOverlay && (
-      <div className="fixed inset-0 bg-white/90 z-[100] flex flex-col items-center justify-center space-y-4 animate-fade-in">
-        <CheckCircle2 className="w-20 h-20 text-orange-500 stroke-[2] animate-bounce" />
-        <h2 className="text-3xl font-bold text-slate-900 uppercase tracking-tight">{successMessage}</h2>
+      <div className="fixed inset-0 bg-[#090A0E]/85 backdrop-blur-md z-[100] flex flex-col items-center justify-center space-y-4 animate-fade-in">
+        <div className="w-20 h-20 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+          <CheckCircle2 className="w-12 h-12 text-[#D4AF37] stroke-[2.5] animate-bounce" />
+        </div>
+        <h2 className="text-2xl font-black text-white uppercase tracking-tight">{successMessage}</h2>
       </div>
     )}
 
@@ -2331,51 +2389,162 @@ return (
     {view === "list" && (
       <div className="space-y-6">
 
-        {/* Top Row: Search & Filter & Add */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div id="tour-search" className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-500" />
-              <input
-                type="text"
-                placeholder="SEARCH PLAYERS..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-14 bg-white border-2 border-slate-200 rounded-2xl pl-12 pr-4 text-base font-bold text-slate-900 placeholder-zinc-650 focus:outline-none focus:border-orange-500 transition-colors uppercase"
-              />
-            </div>
+        {/* SQUAD HERO COMMAND HEADER */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#181B27]/95 via-[#12141D] to-[#0A0B10] border border-white/8 p-5 sm:p-7 shadow-2xl">
+          {/* Ambient background glows */}
+          <div className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
 
-            <button
-              id="tour-filter"
-              onClick={() => setShowFilterOverlay(true)}
-              className={`h-14 w-14 rounded-2xl flex items-center justify-center border shrink-0 cursor-pointer transition-all active:scale-95 ${sortBy !== "highest_cpi" || quickFilter !== "all" || roleFilter !== "all"
-                  ? "bg-orange-500 text-black border-orange-400"
-                  : "bg-white border-2 border-slate-200 text-zinc-400 hover:text-slate-900"
-                }`}
-              title="Filter Squad"
-            >
-              <Filter className="w-6 h-6" />
-            </button>
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/8">
+            <div className="space-y-1.5 text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] sm:text-[11px] font-black uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                SQUAD ROSTER & DIRECTORY
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent">
+                Squad Management
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-medium">
+                Track player benchmarks, assess training progression, and elevate match readiness.
+              </p>
+            </div>
 
             {role !== "player" && (
               <button
                 id="tour-add-player-btn"
                 onClick={() => setShowAddForm(true)}
-                className="h-14 w-14 bg-orange-500 hover:bg-orange-600 text-black rounded-2xl flex items-center justify-center border border-orange-400 shrink-0 cursor-pointer shadow-lg active:scale-95 transition-all"
+                className="self-start sm:self-center flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-[#D4AF37]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer border border-[#D4AF37]/50"
                 title="Add Player"
               >
-                <Plus className="w-8 h-8 stroke-[3]" />
+                <Plus className="w-4 h-4 stroke-[3]" />
+                <span>Add Player</span>
               </button>
             )}
           </div>
 
+          {/* Quick Squad Performance Stats Grid */}
+          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-4 sm:pt-5">
+            <div className="bg-[#12141D]/90 border border-white/8 hover:border-[#D4AF37]/30 rounded-2xl p-3 sm:p-3.5 transition-all text-left">
+              <div className="flex items-center justify-between text-zinc-400 mb-1">
+                <span className="text-[10px] font-black uppercase tracking-wider">Total Squad</span>
+                <Users className="w-4 h-4 text-[#D4AF37]" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-white">{players.length}</div>
+              <div className="text-[10px] text-zinc-500 font-bold uppercase mt-0.5">Active Roster</div>
+            </div>
+
+            <div className="bg-[#12141D]/90 border border-white/8 hover:border-[#D4AF37]/30 rounded-2xl p-3 sm:p-3.5 transition-all text-left">
+              <div className="flex items-center justify-between text-zinc-400 mb-1">
+                <span className="text-[10px] font-black uppercase tracking-wider">Squad Avg CPI</span>
+                <Zap className="w-4 h-4 text-amber-400" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-[#D4AF37]">{squadStats.avgCpi}</div>
+              <div className="text-[10px] text-zinc-500 font-bold uppercase mt-0.5">{squadStats.assessedCount} Assessed</div>
+            </div>
+
+            <div className="bg-[#12141D]/90 border border-white/8 hover:border-[#D4AF37]/30 rounded-2xl p-3 sm:p-3.5 transition-all text-left">
+              <div className="flex items-center justify-between text-zinc-400 mb-1">
+                <span className="text-[10px] font-black uppercase tracking-wider">Top CPI Player</span>
+                <Crown className="w-4 h-4 text-amber-300" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-white truncate">
+                {squadStats.topPlayer ? squadStats.topPlayer.name.split(" ")[0] : "—"}
+              </div>
+              <div className="text-[10px] text-[#D4AF37] font-black uppercase mt-0.5">
+                {squadStats.topPlayer ? `${formatScoreValue(getPlayerScores(squadStats.topPlayer).cpi)} CPI` : "Pending"}
+              </div>
+            </div>
+
+            <div className="bg-[#12141D]/90 border border-white/8 hover:border-[#D4AF37]/30 rounded-2xl p-3 sm:p-3.5 transition-all text-left">
+              <div className="flex items-center justify-between text-zinc-400 mb-1">
+                <span className="text-[10px] font-black uppercase tracking-wider">Assessed Rate</span>
+                <Activity className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-emerald-400">
+                {players.length > 0 ? `${Math.round((squadStats.assessedCount / players.length) * 100)}%` : "0%"}
+              </div>
+              <div className="text-[10px] text-zinc-500 font-bold uppercase mt-0.5">{squadStats.assessedCount} of {players.length} Done</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Controls: Search Bar & Role Tabs */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div id="tour-search" className="relative flex-1 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#D4AF37]/70 group-focus-within:text-[#D4AF37] transition-colors" />
+              <input
+                type="text"
+                placeholder="SEARCH PLAYERS BY NAME OR ROLE..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-13 sm:h-14 bg-[#12141D]/90 border border-white/10 group-hover:border-white/20 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/30 rounded-2xl pl-12 pr-10 text-sm sm:text-base font-bold text-white placeholder-zinc-500 focus:outline-none transition-all uppercase"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            <button
+              id="tour-filter"
+              onClick={() => setShowFilterOverlay(true)}
+              className={`h-13 sm:h-14 px-4 sm:px-5 rounded-2xl flex items-center justify-center gap-2 border shrink-0 cursor-pointer transition-all active:scale-95 font-black text-xs uppercase tracking-wider ${
+                sortBy !== "highest_cpi" || quickFilter !== "all" || roleFilter !== "all"
+                  ? "bg-[#D4AF37] text-[#090A0E] border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20"
+                  : "bg-[#12141D] border-white/10 text-zinc-300 hover:text-white hover:border-white/20"
+              }`}
+              title="Filter Squad"
+            >
+              <Filter className="w-4 h-4" />
+              <span className="hidden sm:inline">Filters</span>
+            </button>
+          </div>
+
+          {/* Quick Role Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            {[
+              { id: "all", label: "All", count: roleCounts.all, icon: Users },
+              { id: "batsman", label: "Batsmen", count: roleCounts.batsman, emoji: "🏏" },
+              { id: "bowler", label: "Bowlers", count: roleCounts.bowler, emoji: "🎯" },
+              { id: "all_rounder", label: "All-Rounders", count: roleCounts.all_rounder, emoji: "⚡" },
+              { id: "wicket_keeper", label: "Keepers", count: roleCounts.wicket_keeper, emoji: "🧤" },
+            ].map((tab) => {
+              const active = roleFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setRoleFilter(tab.id as any)}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider shrink-0 transition-all cursor-pointer border ${
+                    active
+                      ? "bg-[#D4AF37] text-[#090A0E] border-[#D4AF37] shadow-md shadow-[#D4AF37]/20"
+                      : "bg-[#12141D]/90 text-zinc-400 border-white/8 hover:text-white hover:border-white/20"
+                  }`}
+                >
+                  {tab.emoji ? <span>{tab.emoji}</span> : <tab.icon className="w-3.5 h-3.5" />}
+                  <span>{tab.label}</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    active ? "bg-[#090A0E]/20 text-[#090A0E]" : "bg-white/5 text-zinc-400"
+                  }`}>
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Active Filter Chips */}
           {(sortBy !== "highest_cpi" || quickFilter !== "all" || roleFilter !== "all") && (
-            <div className="flex flex-wrap gap-2 text-left pt-1">
+            <div className="flex flex-wrap items-center gap-2 text-left pt-1">
+              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Active:</span>
               {quickFilter !== "all" && (
                 <span
                   onClick={() => setQuickFilter("all")}
-                  className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-sm font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
+                  className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] rounded-full text-xs font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-[#D4AF37]/20 transition-all"
                 >
                   Filter: {quickFilter.replace(/_/g, " ")}
                   <X className="w-3 h-3 stroke-[3]" />
@@ -2384,7 +2553,7 @@ return (
               {roleFilter !== "all" && (
                 <span
                   onClick={() => setRoleFilter("all")}
-                  className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-sm font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
+                  className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] rounded-full text-xs font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-[#D4AF37]/20 transition-all"
                 >
                   Role: {roleFilter.replace(/_/g, " ")}
                   <X className="w-3 h-3 stroke-[3]" />
@@ -2393,7 +2562,7 @@ return (
               {sortBy !== "highest_cpi" && (
                 <span
                   onClick={() => setSortBy("highest_cpi")}
-                  className="px-3 py-1.5 bg-orange-500/10 border border-orange-500/35 text-orange-400 rounded-full text-sm font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-orange-500/20"
+                  className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] rounded-full text-xs font-bold uppercase flex items-center gap-1.5 cursor-pointer hover:bg-[#D4AF37]/20 transition-all"
                 >
                   Sort: {sortBy.replace(/_/g, " ")}
                   <X className="w-3 h-3 stroke-[3]" />
@@ -2405,7 +2574,7 @@ return (
                   setQuickFilter("all");
                   setRoleFilter("all");
                 }}
-                className="text-xs font-bold text-zinc-500 hover:text-slate-900 uppercase tracking-wider pl-1 cursor-pointer"
+                className="text-xs font-bold text-zinc-400 hover:text-white uppercase tracking-wider pl-1 cursor-pointer transition-colors"
               >
                 Clear All
               </button>
@@ -2413,126 +2582,150 @@ return (
           )}
         </div>
 
-        {/* Add Player Form (Clean inline card) */}
-        {showAddForm && (
-          <div className="border-2 border-orange-500 bg-white rounded-3xl p-6 space-y-5">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wider">ADD NEW PLAYER</h3>
-              <button
-                onClick={() => { setShowAddForm(false); router.replace("/players"); }}
-                className="p-1 rounded bg-slate-100 hover:bg-slate-100 text-zinc-400"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {error && (
-              <div className="bg-red-950 text-red-200 border-2 border-red-500 text-sm font-bold p-3 rounded-xl text-center">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleAddPlayerSubmit} className="space-y-4 text-left">
-
-              {/* Photo Picker */}
-              <div className="flex flex-col items-center space-y-2">
-                <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-full bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group shadow-xs"
-                >
-                  {newPlayer.photo ? (
-                    <img src={newPlayer.photo} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <>
-                      <Camera className="w-8 h-8 text-zinc-500 group-hover:text-orange-500 mb-1" />
-                      <span className="text-sm font-bold text-zinc-500 uppercase">CHOOSE</span>
-                    </>
-                  )}
+        {/* Add Player Inline Form (Obsidian Glass) */}
+        <AnimatePresence>
+          {showAddForm && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -10 }}
+              className="border border-[#D4AF37]/40 bg-gradient-to-br from-[#181B27] via-[#12141D] to-[#0A0B10] rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xl"
+            >
+              <div className="flex justify-between items-center pb-3 border-b border-white/8">
+                <div className="space-y-0.5 text-left">
+                  <h3 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider flex items-center gap-2">
+                    <Plus className="w-5 h-5 text-[#D4AF37]" />
+                    Add New Player
+                  </h3>
+                  <p className="text-xs text-zinc-400">Enroll a player into your squad roster for CPI tracking</p>
                 </div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={(e) => handlePhotoSelect(e)}
-                  accept="image/*"
-                  className="hidden"
-                />
+                <button
+                  onClick={() => { setShowAddForm(false); router.replace("/players"); }}
+                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYER NAME</label>
-                <input
-                  type="text"
-                  required
-                  value={newPlayer.name}
-                  onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
-                  className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
-                  placeholder="Enter player full name"
-                />
-              </div>
+              {error && (
+                <div className="bg-red-500/10 text-red-300 border border-red-500/30 text-xs font-bold p-3 rounded-xl text-center">
+                  {error}
+                </div>
+              )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-bold tracking-widest text-zinc-400">AGE</label>
+              <form onSubmit={handleAddPlayerSubmit} className="space-y-4 text-left">
+                {/* Photo Picker */}
+                <div className="flex flex-col items-center space-y-2">
+                  <span className="text-xs font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-24 h-24 rounded-full bg-[#1B1E2C] border-2 border-dashed border-white/20 hover:border-[#D4AF37] cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group transition-all"
+                  >
+                    {newPlayer.photo ? (
+                      <img src={newPlayer.photo} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <>
+                        <Camera className="w-7 h-7 text-zinc-400 group-hover:text-[#D4AF37] mb-1 transition-colors" />
+                        <span className="text-[11px] font-bold text-zinc-400 uppercase">CHOOSE</span>
+                      </>
+                    )}
+                  </div>
                   <input
-                    type="number"
-                    required
-                    value={newPlayer.age}
-                    onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
-                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
-                    placeholder="e.g. 16"
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={(e) => handlePhotoSelect(e)}
+                    accept="image/*"
+                    className="hidden"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYING ROLE</label>
-                  <select
-                    value={newPlayer.role}
-                    onChange={(e) => setNewPlayer({ ...newPlayer, role: e.target.value })}
-                    className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
-                  >
-                    <option value="Batsman">Batsman</option>
-                    <option value="Bowler">Bowler</option>
-                    <option value="All-rounder">All-rounder</option>
-                    <option value="Wicketkeeper">Wicketkeeper</option>
-                  </select>
-                </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={saving}
-                className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-xl py-4 text-lg font-black tracking-wider uppercase transition-all shadow-lg shadow-orange-500/20 cursor-pointer flex items-center justify-center gap-2"
-              >
-                {saving ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "SAVE PLAYER"}
-              </button>
-            </form>
-          </div>
-        )}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">PLAYER FULL NAME</label>
+                  <input
+                    type="text"
+                    required
+                    value={newPlayer.name}
+                    onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
+                    className="w-full bg-[#1B1E2C] border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37]"
+                    placeholder="Enter player full name"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">AGE</label>
+                    <input
+                      type="number"
+                      required
+                      value={newPlayer.age}
+                      onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
+                      className="w-full bg-[#1B1E2C] border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37]"
+                      placeholder="e.g. 19"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">PLAYING ROLE</label>
+                    <select
+                      value={newPlayer.role}
+                      onChange={(e) => setNewPlayer({ ...newPlayer, role: e.target.value })}
+                      className="w-full h-[46px] bg-[#1B1E2C] border border-white/10 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37] cursor-pointer"
+                    >
+                      <option value="Batsman">Batsman</option>
+                      <option value="Bowler">Bowler</option>
+                      <option value="All-rounder">All-rounder</option>
+                      <option value="Wicketkeeper">Wicketkeeper</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="w-full bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl py-3.5 text-sm font-black tracking-wider uppercase transition-all shadow-lg shadow-[#D4AF37]/20 cursor-pointer flex items-center justify-center gap-2 active:scale-98"
+                >
+                  {saving ? <Loader2 className="w-5 h-5 animate-spin text-[#090A0E]" /> : "SAVE PLAYER TO ROSTER"}
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Player Cards list */}
         {loading ? (
           <CricketLoader message="Loading Squad..." />
         ) : fetchError ? (
-          <div className="bg-red-50 border-2 border-red-200 rounded-3xl p-8 text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 text-red-600 mb-2">
+          <div className="bg-red-500/10 border border-red-500/30 rounded-3xl p-8 text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-500/20 text-red-400 mb-2">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h4 className="text-lg font-bold text-red-900 uppercase tracking-wide">Failed to Load Squad</h4>
-            <p className="text-sm font-medium text-red-700 max-w-md mx-auto">{fetchError}</p>
+            <h4 className="text-lg font-bold text-white uppercase tracking-wide">Failed to Load Squad</h4>
+            <p className="text-sm font-medium text-red-300 max-w-md mx-auto">{fetchError}</p>
             <button
               onClick={() => fetchData()}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer uppercase text-xs tracking-wider"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#D4AF37] hover:bg-amber-400 active:scale-95 text-[#090A0E] font-black rounded-xl shadow-md transition-all cursor-pointer uppercase text-xs tracking-wider"
             >
               Retry
             </button>
           </div>
         ) : sortedPlayers.length === 0 ? (
-          <div className="text-center py-16 text-zinc-500 font-bold uppercase tracking-wider text-sm border-2 border-dashed border-slate-200 rounded-3xl">
-            No players found
+          <div className="text-center py-16 px-4 bg-[#12141D]/60 border border-dashed border-white/10 rounded-3xl space-y-3">
+            <div className="w-12 h-12 rounded-full bg-white/5 mx-auto flex items-center justify-center text-zinc-500">
+              <Search className="w-6 h-6" />
+            </div>
+            <h4 className="text-base font-bold text-white uppercase">No Players Found</h4>
+            <p className="text-xs text-zinc-400 max-w-xs mx-auto">
+              No squad members match the current search or filters.
+            </p>
+            <button
+              onClick={() => { setSearchQuery(""); setRoleFilter("all"); setQuickFilter("all"); }}
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-[#D4AF37] uppercase tracking-wider cursor-pointer"
+            >
+              Reset Filters
+            </button>
           </div>
         ) : (
-          <div id="tour-player-list" className="space-y-4">
-            {sortedPlayers.map((player) => {
+          <div id="tour-player-list" className="space-y-3">
+            {sortedPlayers.map((player, idx) => {
               const scores = getPlayerScores(player);
               let scoreLabel = "CPI INDEX";
               let scoreDisplay = "N/A";
@@ -2549,61 +2742,138 @@ return (
               }
 
               const cachedPhoto = player.imageUrl || null;
-              const assessDate = lastAssessmentDates[player.id] || "Loading...";
+              const assessDate = lastAssessmentDates[player.id];
+              const { cleanRole, age } = parsePlayerAgeAndRole(player.role);
+              const isTopPerformer = scores.cpi >= 80;
 
               return (
-                <div
+                <motion.div
                   key={player.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: idx * 0.04 }}
+                  whileHover={{ y: -2 }}
                   onClick={() => handleSelectPlayer(player)}
-                  className="bg-white border-2 border-slate-200 rounded-3xl p-5 flex items-center justify-between hover:border-slate-200 transition-all active:scale-[0.99] cursor-pointer"
+                  className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#181B27]/95 via-[#12141D] to-[#0D0E15] border border-white/8 hover:border-[#D4AF37]/50 p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(212,175,55,0.12)] cursor-pointer"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
-                    {/* Photo or Initials Avatar */}
+                  {/* Subtle background hover glow */}
+                  <div className="pointer-events-none absolute -right-16 -top-16 w-40 h-40 bg-[#D4AF37]/0 rounded-full blur-2xl group-hover:bg-[#D4AF37]/10 transition-all duration-500" />
+
+                  {/* Left Column: Avatar & Player Meta */}
+                  <div className="flex items-center gap-3.5 sm:gap-4.5 min-w-0 relative z-10">
+                    {/* Avatar with Glow Ring */}
                     <div className="relative shrink-0">
-                      <div className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden shadow-xs">
-                        <img
-                          src={cachedPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=ffedd5&color=ea580c&font-size=0.45&bold=true`}
-                          alt={player.name}
-                          className="w-full h-full object-cover rounded-full"
-                        />
+                      <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full p-[2px] transition-all duration-300 ${
+                        isTopPerformer
+                          ? "bg-gradient-to-tr from-[#D4AF37] via-amber-300 to-[#D4AF37]/40 shadow-md shadow-[#D4AF37]/20"
+                          : "bg-gradient-to-tr from-white/20 via-white/5 to-[#D4AF37]/30 group-hover:from-[#D4AF37]/60 group-hover:to-amber-300/60"
+                      }`}>
+                        <div className="w-full h-full rounded-full bg-[#12141D] overflow-hidden flex items-center justify-center">
+                          <img
+                            src={cachedPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=1B1E2C&color=D4AF37&font-size=0.45&bold=true`}
+                            alt={player.name}
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        </div>
                       </div>
-                      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white border border-slate-200 rounded-full flex items-center justify-center text-xs shadow-xs z-10" title={player.role}>
+
+                      {/* Role Emoji Badge */}
+                      <div
+                        className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#090A0E] border border-white/20 rounded-full flex items-center justify-center text-xs shadow-md z-10"
+                        title={player.role}
+                      >
                         {getRoleEmoji(player.role)}
                       </div>
                     </div>
 
-                    <div className="min-w-0 text-left space-y-0.5">
-                      <h4 className="text-xl font-bold text-slate-900 truncate tracking-tight leading-none">{player.name}</h4>
-                      <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest truncate">{player.role}</p>
+                    {/* Name & Details */}
+                    <div className="min-w-0 text-left space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-base sm:text-lg font-black text-white truncate tracking-tight group-hover:text-amber-300 transition-colors">
+                          {player.name}
+                        </h4>
+                        {isTopPerformer && (
+                          <Crown className="w-4 h-4 text-[#D4AF37] shrink-0 fill-[#D4AF37]/20" />
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-1.5 text-left">
+                        {/* Clean Role Badge */}
+                        <span className="px-2 py-0.5 rounded-md bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-black uppercase tracking-wider">
+                          {cleanRole}
+                        </span>
+
+                        {/* Age Badge */}
+                        {age && (
+                          <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-zinc-400 text-[10px] font-bold uppercase tracking-wider">
+                            Age {age}
+                          </span>
+                        )}
+
+                        {/* Batting/Bowling style */}
+                        {player.battingStyle && (
+                          <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-white/5 border border-white/8 text-zinc-400 text-[10px] font-medium truncate max-w-[120px]">
+                            {player.battingStyle}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Assessment Recency Indicator */}
+                      {assessDate && (
+                        <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-medium pt-0.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
+                          <span>{assessDate === "Loading..." ? "Assessing..." : `Assessed: ${assessDate}`}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 shrink-0">
-                    <div className="text-right">
-                      <div className="text-xs font-bold text-zinc-500 tracking-widest uppercase">{scoreLabel}</div>
-                      <div className="text-2xl font-bold text-orange-500 tracking-tight">{scoreDisplay}</div>
+                  {/* Right Column: Score Metric & Actions */}
+                  <div className="flex items-center gap-2.5 sm:gap-4 shrink-0 relative z-10">
+                    {/* Score Pill */}
+                    <div className="text-right px-3 py-1.5 rounded-xl bg-[#090A0E]/60 border border-white/8 group-hover:border-[#D4AF37]/30 transition-all min-w-[70px] sm:min-w-[85px]">
+                      <div className="text-[9px] font-black text-zinc-400 tracking-widest uppercase">
+                        {scoreLabel}
+                      </div>
+                      <div className="text-xl sm:text-2xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent tracking-tight">
+                        {scoreDisplay}
+                      </div>
+                      {/* Micro PPI & MPI preview if both exist */}
+                      {player.ppiScore && player.mpiScore ? (
+                        <div className="hidden sm:flex items-center justify-end gap-1.5 text-[9px] font-bold text-zinc-500 pt-0.5">
+                          <span>P:{Math.round(player.ppiScore <= 10 ? player.ppiScore * 10 : player.ppiScore)}</span>
+                          <span>•</span>
+                          <span>M:{Math.round(player.mpiScore <= 10 ? player.mpiScore * 10 : player.mpiScore)}</span>
+                        </div>
+                      ) : null}
                     </div>
 
+                    {/* Coach Edit & Delete actions */}
                     {role !== "player" && (
-                      <div className="flex items-center gap-1.5 border-l border-slate-200 pl-3">
+                      <div className="flex items-center gap-1.5 border-l border-white/10 pl-2.5 sm:pl-3">
                         <button
                           onClick={(e) => handleOpenEditModal(player, e)}
-                          className="p-2.5 rounded-xl bg-slate-100 hover:bg-orange-100 text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-300 transition-all cursor-pointer"
+                          className="p-2 sm:p-2.5 rounded-xl bg-white/5 hover:bg-[#D4AF37]/20 text-zinc-400 hover:text-[#D4AF37] border border-white/8 hover:border-[#D4AF37]/40 transition-all cursor-pointer"
                           title="Edit Player"
                         >
-                          <Edit2 className="w-4 h-4" />
+                          <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                         <button
                           onClick={(e) => handleOpenDeleteModal(player, e)}
-                          className="p-2.5 rounded-xl bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-600 border border-slate-200 hover:border-rose-300 transition-all cursor-pointer"
+                          className="p-2 sm:p-2.5 rounded-xl bg-white/5 hover:bg-rose-500/20 text-zinc-400 hover:text-rose-400 border border-white/8 hover:border-rose-500/30 transition-all cursor-pointer"
                           title="Delete Player"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                       </div>
                     )}
+
+                    {/* View Arrow Cue */}
+                    <div className="hidden sm:flex items-center justify-center text-zinc-500 group-hover:text-[#D4AF37] group-hover:translate-x-1 transition-all">
+                      <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -4357,25 +4627,25 @@ return (
 
     {/* ------------------ OVERLAY: FILTER & SORT ------------------ */}
     {showFilterOverlay && (
-      <div className="fixed inset-0 bg-white/80 z-[60] flex items-end justify-center animate-fade-in select-none">
-        <div className="bg-white border-t-2 border-slate-200 w-full max-w-lg rounded-t-[32px] p-6 space-y-6 pb-10 shadow-2xl animate-slide-up">
+      <div className="fixed inset-0 bg-[#090A0E]/85 backdrop-blur-md z-[60] flex items-end justify-center animate-fade-in select-none">
+        <div className="bg-[#12141D] border-t border-[#D4AF37]/30 w-full max-w-lg rounded-t-[32px] p-6 sm:p-7 space-y-6 pb-10 shadow-2xl animate-slide-up">
 
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
+          <div className="flex justify-between items-center pb-3 border-b border-white/8">
             <div className="space-y-0.5">
-              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight text-left">FILTER & SORT SQUAD</h3>
-              <p className="text-sm text-zinc-500 font-bold uppercase text-left">{sortedPlayers.length} players matched</p>
+              <h3 className="text-xl font-black text-white uppercase tracking-tight text-left">Filter & Sort Squad</h3>
+              <p className="text-xs text-zinc-400 font-bold uppercase text-left">{sortedPlayers.length} players matched</p>
             </div>
             <button
               onClick={() => setShowFilterOverlay(false)}
-              className="p-2 rounded-xl bg-slate-100 text-zinc-400 hover:text-slate-900 transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-white/5 text-zinc-400 hover:text-white transition-colors cursor-pointer"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* SORT BY */}
           <div className="space-y-2 text-left">
-            <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase">SORT BY</label>
+            <label className="text-xs font-black tracking-widest text-zinc-400 uppercase">SORT BY</label>
             <div className="flex flex-wrap gap-2">
               {[
                 { label: "Highest CPI", val: "highest_cpi" },
@@ -4391,8 +4661,8 @@ return (
                   type="button"
                   onClick={() => setSortBy(opt.val as any)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${sortBy === opt.val
-                      ? "bg-orange-500 text-black border-orange-450"
-                      : "bg-slate-100 text-zinc-400 border-slate-200 hover:border-zinc-700"
+                      ? "bg-[#D4AF37] text-[#090A0E] border-[#D4AF37] shadow-md shadow-[#D4AF37]/20 font-black"
+                      : "bg-[#181B27] text-zinc-400 border-white/8 hover:text-white hover:border-white/20"
                     }`}
                 >
                   {opt.label}
@@ -4403,7 +4673,7 @@ return (
 
           {/* QUICK FILTERS */}
           <div className="space-y-2 text-left">
-            <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase">QUICK FILTERS</label>
+            <label className="text-xs font-black tracking-widest text-zinc-400 uppercase">QUICK FILTERS</label>
             <div className="flex flex-wrap gap-2">
               {[
                 { label: "All Players", val: "all" },
@@ -4417,8 +4687,8 @@ return (
                   type="button"
                   onClick={() => setQuickFilter(opt.val as any)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${quickFilter === opt.val
-                      ? "bg-orange-500 text-black border-orange-450"
-                      : "bg-slate-100 text-zinc-400 border-slate-200 hover:border-zinc-700"
+                      ? "bg-[#D4AF37] text-[#090A0E] border-[#D4AF37] shadow-md shadow-[#D4AF37]/20 font-black"
+                      : "bg-[#181B27] text-zinc-400 border-white/8 hover:text-white hover:border-white/20"
                     }`}
                 >
                   {opt.label}
@@ -4429,7 +4699,7 @@ return (
 
           {/* ROLE FILTERS */}
           <div className="space-y-2 text-left">
-            <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase">ROLE FILTERS</label>
+            <label className="text-xs font-black tracking-widest text-zinc-400 uppercase">ROLE FILTERS</label>
             <div className="flex flex-wrap gap-2">
               {[
                 { label: "All Roles", val: "all" },
@@ -4443,8 +4713,8 @@ return (
                   type="button"
                   onClick={() => setRoleFilter(opt.val as any)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer border ${roleFilter === opt.val
-                      ? "bg-orange-500 text-black border-orange-450"
-                      : "bg-slate-100 text-zinc-400 border-slate-200 hover:border-zinc-700"
+                      ? "bg-[#D4AF37] text-[#090A0E] border-[#D4AF37] shadow-md shadow-[#D4AF37]/20 font-black"
+                      : "bg-[#181B27] text-zinc-400 border-white/8 hover:text-white hover:border-white/20"
                     }`}
                 >
                   {opt.label}
@@ -4456,9 +4726,9 @@ return (
           <button
             type="button"
             onClick={() => setShowFilterOverlay(false)}
-            className="w-full bg-white hover:bg-zinc-200 text-black rounded-xl py-4 text-base font-bold transition-all cursor-pointer flex items-center justify-center border-2 border-white shadow-xl active:scale-98"
+            className="w-full bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl py-4 text-sm font-black uppercase tracking-wider transition-all cursor-pointer shadow-xl active:scale-98"
           >
-            APPLY & VIEW SQUAD
+            Apply & View Squad
           </button>
         </div>
       </div>
@@ -4626,20 +4896,20 @@ return (
 
     {/* ------------------ EDIT PLAYER MODAL ------------------ */}
     {showEditForm && editingPlayer && (
-      <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[90] flex items-center justify-center p-4">
-        <div className="bg-white border-2 border-orange-500 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wider">EDIT PLAYER DETAILS</h3>
+      <div className="fixed inset-0 bg-[#090A0E]/85 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+        <div className="bg-[#12141D] border border-[#D4AF37]/40 rounded-3xl p-6 sm:p-7 max-w-lg w-full space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="flex justify-between items-center pb-3 border-b border-white/8">
+            <h3 className="text-xl font-black text-white uppercase tracking-wider">Edit Player Details</h3>
             <button
               onClick={() => { setShowEditForm(false); setEditingPlayer(null); }}
-              className="p-1 rounded bg-slate-100 hover:bg-slate-200 text-zinc-500 cursor-pointer"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-700 border-2 border-red-200 text-sm font-bold p-3 rounded-xl text-center">
+            <div className="bg-red-500/10 text-red-300 border border-red-500/30 text-xs font-bold p-3 rounded-xl text-center">
               {error}
             </div>
           )}
@@ -4648,17 +4918,17 @@ return (
 
             {/* Photo Picker */}
             <div className="flex flex-col items-center space-y-2">
-              <span className="text-sm font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
+              <span className="text-xs font-bold tracking-widest text-zinc-400 block self-start">PLAYER PHOTO</span>
               <div
                 onClick={() => editFileInputRef.current?.click()}
-                className="w-24 h-24 rounded-full bg-slate-100 border-2 border-slate-200 hover:border-orange-500 cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group"
+                className="w-24 h-24 rounded-full bg-[#1B1E2C] border-2 border-dashed border-white/20 hover:border-[#D4AF37] cursor-pointer flex flex-col items-center justify-center overflow-hidden relative group transition-all"
               >
                 {editPlayerForm.photo ? (
                   <img src={editPlayerForm.photo} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
                   <>
-                    <Camera className="w-8 h-8 text-zinc-500 group-hover:text-orange-500 mb-1" />
-                    <span className="text-sm font-bold text-zinc-500 uppercase">CHANGE</span>
+                    <Camera className="w-7 h-7 text-zinc-400 group-hover:text-[#D4AF37] mb-1 transition-colors" />
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase">CHANGE</span>
                   </>
                 )}
               </div>
@@ -4680,35 +4950,35 @@ return (
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYER NAME</label>
+              <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">PLAYER NAME</label>
               <input
                 type="text"
                 required
                 value={editPlayerForm.name}
                 onChange={(e) => setEditPlayerForm({ ...editPlayerForm, name: e.target.value })}
-                className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
+                className="w-full bg-[#1B1E2C] border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37]"
                 placeholder="Enter player full name"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-1">
-                <label className="text-sm font-bold tracking-widest text-zinc-400">AGE</label>
+                <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">AGE</label>
                 <input
                   type="number"
                   required
                   value={editPlayerForm.age}
                   onChange={(e) => setEditPlayerForm({ ...editPlayerForm, age: e.target.value })}
-                  className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500"
-                  placeholder="e.g. 16"
+                  className="w-full bg-[#1B1E2C] border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37]"
+                  placeholder="e.g. 19"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-sm font-bold tracking-widest text-zinc-400">PLAYING ROLE</label>
+                <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">PLAYING ROLE</label>
                 <select
                   value={editPlayerForm.role}
                   onChange={(e) => setEditPlayerForm({ ...editPlayerForm, role: e.target.value })}
-                  className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  className="w-full h-[46px] bg-[#1B1E2C] border border-white/10 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37] cursor-pointer"
                 >
                   <option value="Batsman">Batsman</option>
                   <option value="Bowler">Bowler</option>
@@ -4718,24 +4988,24 @@ return (
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-1">
-                <label className="text-sm font-bold tracking-widest text-zinc-400">BATTING STYLE</label>
+                <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">BATTING STYLE</label>
                 <select
                   value={editPlayerForm.battingStyle}
                   onChange={(e) => setEditPlayerForm({ ...editPlayerForm, battingStyle: e.target.value })}
-                  className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  className="w-full h-[46px] bg-[#1B1E2C] border border-white/10 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37] cursor-pointer"
                 >
                   <option value="Right-hand bat">Right-hand bat</option>
                   <option value="Left-hand bat">Left-hand bat</option>
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-sm font-bold tracking-widest text-zinc-400">BOWLING STYLE</label>
+                <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">BOWLING STYLE</label>
                 <select
                   value={editPlayerForm.bowlingStyle}
                   onChange={(e) => setEditPlayerForm({ ...editPlayerForm, bowlingStyle: e.target.value })}
-                  className="w-full h-[52px] bg-white border-2 border-slate-200 rounded-xl px-3 py-2 text-base text-slate-900 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                  className="w-full h-[46px] bg-[#1B1E2C] border border-white/10 rounded-xl px-3 py-2 text-sm text-white font-bold focus:outline-none focus:border-[#D4AF37] cursor-pointer"
                 >
                   <option value="None">None</option>
                   <option value="Right-arm fast">Right-arm fast</option>
@@ -4751,16 +5021,16 @@ return (
               <button
                 type="button"
                 onClick={() => { setShowEditForm(false); setEditingPlayer(null); }}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3.5 font-bold uppercase cursor-pointer"
+                className="flex-1 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl py-3.5 font-bold uppercase transition-colors cursor-pointer text-xs tracking-wider"
               >
-                CANCEL
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-3.5 font-black uppercase transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl py-3.5 font-black uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center justify-center gap-2 text-xs"
               >
-                {saving ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "UPDATE PLAYER"}
+                {saving ? <Loader2 className="w-5 h-5 animate-spin text-[#090A0E]" /> : "Update Player"}
               </button>
             </div>
           </form>
@@ -4770,16 +5040,16 @@ return (
 
     {/* ------------------ DELETE CONFIRMATION MODAL ------------------ */}
     {showDeleteModal && deletingPlayer && (
-      <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[90] flex items-center justify-center p-4">
-        <div className="bg-white border-2 border-rose-500 rounded-3xl p-6 max-w-md w-full text-center space-y-4 shadow-2xl">
-          <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto border border-rose-200">
+      <div className="fixed inset-0 bg-[#090A0E]/85 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+        <div className="bg-[#12141D] border border-rose-500/40 rounded-3xl p-6 sm:p-7 max-w-md w-full text-center space-y-4 shadow-2xl">
+          <div className="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center mx-auto border border-rose-500/20">
             <Trash2 className="w-7 h-7 stroke-[2.5]" />
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">DELETE PLAYER?</h3>
-            <p className="text-xs font-semibold text-slate-600 leading-relaxed">
-              Are you sure you want to delete <span className="font-bold text-slate-900">{deletingPlayer.name}</span>? All associated practice and match assessments will be permanently removed.
+            <h3 className="text-xl font-black text-white uppercase tracking-tight">Delete Player?</h3>
+            <p className="text-xs font-semibold text-zinc-400 leading-relaxed">
+              Are you sure you want to delete <span className="font-bold text-white">{deletingPlayer.name}</span>? All associated practice and match assessments will be permanently removed.
             </p>
           </div>
 
@@ -4787,17 +5057,17 @@ return (
             <button
               type="button"
               onClick={() => { setShowDeleteModal(false); setDeletingPlayer(null); }}
-              className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3.5 font-bold uppercase cursor-pointer"
+              className="flex-1 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl py-3.5 font-bold uppercase transition-colors cursor-pointer text-xs tracking-wider"
             >
-              CANCEL
+              Cancel
             </button>
             <button
               type="button"
               onClick={handleConfirmDelete}
               disabled={deleting}
-              className="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3.5 font-black uppercase transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+              className="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-3.5 font-black uppercase transition-all shadow-lg shadow-rose-600/30 cursor-pointer flex items-center justify-center gap-2 text-xs tracking-wider"
             >
-              {deleting ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "CONFIRM DELETE"}
+              {deleting ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "Confirm Delete"}
             </button>
           </div>
         </div>
