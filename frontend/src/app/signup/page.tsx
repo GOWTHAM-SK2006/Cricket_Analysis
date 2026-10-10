@@ -206,7 +206,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-slate-900 flex flex-col justify-between p-6 select-none transition-colors">
+    <div className="min-h-screen bg-[#090A0E] text-[#F3F4F6] flex flex-col justify-between p-6 select-none transition-colors">
       <div className="my-auto max-w-md w-full mx-auto space-y-8">
         {/* Logo and Welcome */}
         <div className="text-center">

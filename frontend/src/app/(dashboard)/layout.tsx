@@ -21,7 +21,7 @@ export default function DashboardLayout({
   const [status, setStatus] = useState<"APPROVED" | "PENDING" | "REJECTED" | null>(null);
   const [orgName, setOrgName] = useState("");
   const [role, setRole] = useState<string | null>(null);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [userName, setUserName] = useState("");
   const [showTour, setShowTour] = useState(false);
   const [tourPage, setTourPage] = useState<"dashboard" | "players">("dashboard");
@@ -65,9 +65,9 @@ export default function DashboardLayout({
   }, [pathname, role]);
 
   useEffect(() => {
-    document.documentElement.classList.add("light");
-    document.documentElement.classList.remove("dark");
-    localStorage.setItem("theme", "light");
+    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("light");
+    localStorage.setItem("theme", "dark");
   }, []);
 
   const toggleTheme = () => {
@@ -206,18 +206,18 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-orange-500/20 pb-24 font-sans">
+    <div className="min-h-screen bg-[#090A0E] text-[#F3F4F6] selection:bg-[#D4AF37]/20 pb-24 font-sans">
       {/* Top Header – CPI branding left, notification + profile right */}
-      <header className="h-16 border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm">
+      <header className="h-16 border-b border-white/8 bg-[#12141D]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm">
         {/* Left Side: CPI Logo + Text */}
         <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
           <div className="relative w-9 h-9">
             <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
           </div>
           <div className="leading-none">
-            <span className="text-[11px] font-black tracking-wider text-slate-800 uppercase block">CRICKET</span>
-            <span className="text-[11px] font-black tracking-wider text-orange-600 uppercase block">PERFORMANCE</span>
-            <span className="text-[11px] font-black tracking-wider text-slate-800 uppercase block">INDEX</span>
+            <span className="text-[11px] font-black tracking-wider text-white uppercase block">CRICKET</span>
+            <span className="text-[11px] font-black tracking-wider text-[#D4AF37] uppercase block">PERFORMANCE</span>
+            <span className="text-[11px] font-black tracking-wider text-white uppercase block">INDEX</span>
           </div>
         </Link>
 
@@ -226,19 +226,19 @@ export default function DashboardLayout({
           <button
             onClick={() => setShowPremiumModal(true)}
             id="premium-plans-header-btn"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-black text-[10px] sm:text-[11px] tracking-wider uppercase shadow-md shadow-orange-500/20 hover:scale-[1.03] active:scale-95 transition-all cursor-pointer border border-orange-400/50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#E5A93C] via-[#D4AF37] to-[#B8860B] hover:from-[#F5BA4E] hover:to-[#C99615] text-[#090A0E] font-black text-[10px] sm:text-[11px] tracking-wider uppercase shadow-md shadow-[#D4AF37]/20 hover:scale-[1.03] active:scale-95 transition-all cursor-pointer border border-[#D4AF37]/50"
             title="View Premium Plans"
           >
-            <Crown className="w-3.5 h-3.5 fill-black stroke-black shrink-0" />
+            <Crown className="w-3.5 h-3.5 fill-[#090A0E] stroke-[#090A0E] shrink-0" />
             <span className="font-black">PREMIUM</span>
           </button>
 
-          <button className="relative text-slate-500 hover:text-orange-600 transition-colors cursor-pointer p-1">
+          <button className="relative text-[#9CA3AF] hover:text-[#D4AF37] transition-colors cursor-pointer p-1">
             <Bell className="w-5.5 h-5.5 stroke-[2]" />
-            <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-[9px] font-black text-white flex items-center justify-center border-2 border-white">3</span>
+            <span className="absolute top-0 right-0 w-4 h-4 bg-[#D4AF37] rounded-full text-[9px] font-black text-[#090A0E] flex items-center justify-center border-2 border-[#12141D]">3</span>
           </button>
           <Link href="/profile" className="flex items-center justify-center cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-orange-100 border-2 border-orange-300 flex items-center justify-center text-orange-700 font-black text-sm uppercase hover:border-orange-500 transition-colors shadow-sm overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-[#1B1E2C] border-2 border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-black text-sm uppercase hover:border-[#D4AF37] transition-colors shadow-sm overflow-hidden">
               {userAvatar ? (
                 <img src={userAvatar} alt="Profile Avatar" className="w-full h-full object-cover rounded-full" />
               ) : userName ? (
@@ -257,7 +257,7 @@ export default function DashboardLayout({
       </main>
 
       {/* Bottom 4-Tab Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-18 bg-white border-t border-slate-200 z-40 flex items-center justify-around px-2 pb-safe shadow-lg">
+      <nav className="fixed bottom-0 left-0 right-0 h-18 bg-[#12141D] border-t border-white/8 z-40 flex items-center justify-around px-2 pb-safe shadow-lg">
         {tabs.map((tab) => {
           const isActive = pathname === tab.path;
           const Icon = tab.icon;
@@ -268,7 +268,7 @@ export default function DashboardLayout({
               href={tab.path}
               prefetch={true}
               className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all ${
-                isActive ? "text-orange-600 font-black" : "text-slate-400 font-bold hover:text-slate-600"
+                isActive ? "text-[#D4AF37] font-black" : "text-[#9CA3AF] font-bold hover:text-white"
               }`}
             >
               <Icon className={`w-5.5 h-5.5 mb-1 ${isActive ? "stroke-[2.5]" : "stroke-[2]"}`} />
@@ -279,7 +279,7 @@ export default function DashboardLayout({
       </nav>
 
       {/* Footer */}
-      <div className="text-center py-6 text-xs text-slate-400 font-semibold tracking-wide">
+      <div className="text-center py-6 text-xs text-[#6B7280] font-semibold tracking-wide">
         © {new Date().getFullYear()} CPI – Cricket Performance Index. All rights reserved.
       </div>
       {showTour && role && (

@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<string | null>(null);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [customAvatar, setCustomAvatar] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState<string>("CPI CRICKET ACADEMY");
   const [isEditingCompany, setIsEditingCompany] = useState<boolean>(false);
@@ -22,7 +22,7 @@ export default function ProfilePage() {
     const storedRole = localStorage.getItem("userRole");
     setRole(storedRole);
 
-    const storedTheme = (localStorage.getItem("theme") as "light" | "dark") || "light";
+    const storedTheme = (localStorage.getItem("theme") as "light" | "dark") || "dark";
     setTheme(storedTheme);
 
     api.get("/profile")

@@ -3708,7 +3708,7 @@ return (
                         setPracticeForm({ ...practiceForm, [metric.key]: parseFloat(e.target.value) });
                       }}
                       style={{
-                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`,
+                        background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, #1B1E2C ${pct}%, #1B1E2C 100%)`,
                         touchAction: "none"
                       }}
                       className="ppi-mpi-slider w-full h-2.5 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
@@ -3948,7 +3948,7 @@ return (
                         setMatchForm({ ...matchForm, [metric.key]: parseFloat(e.target.value) });
                       }}
                       style={{
-                        background: `linear-gradient(to right, #f97316 0%, #f97316 ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`,
+                        background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, #1B1E2C ${pct}%, #1B1E2C 100%)`,
                         touchAction: "none"
                       }}
                       className="ppi-mpi-slider w-full h-2.5 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"

@@ -1240,8 +1240,8 @@ export default function TeamPage() {
                             <svg className="w-13 h-13 transform -rotate-90" viewBox="0 0 36 36">
                               <defs>
                                 <linearGradient id={`cpiGrad-${t.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                  <stop offset="0%" stopColor="#f97316" />
-                                  <stop offset="100%" stopColor="#f59e0b" />
+                                  <stop offset="0%" stopColor="#D4AF37" />
+                                  <stop offset="100%" stopColor="#F59E0B" />
                                 </linearGradient>
                               </defs>
                               <path

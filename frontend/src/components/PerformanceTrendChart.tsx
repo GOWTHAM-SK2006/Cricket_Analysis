@@ -65,28 +65,28 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
   const yGridLines = [2, 4, 6, 8, 10];
 
   return (
-    <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-md relative overflow-hidden select-none">
+    <div className="bg-[#12141D] border border-white/8 rounded-3xl p-5 shadow-md relative overflow-hidden select-none">
       {/* Subtle Glow Background Accent */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-orange-500/5 blur-[80px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#D4AF37]/5 blur-[80px] rounded-full pointer-events-none" />
 
       <div className="flex items-center justify-between mb-4">
-        <h4 className="text-[10px] font-black tracking-widest text-slate-500 uppercase">
+        <h4 className="text-[10px] font-black tracking-widest text-[#9CA3AF] uppercase">
           Performance Trends
         </h4>
         
         {/* Legend */}
         <div className="flex items-center gap-3 text-[9px] font-black tracking-wider uppercase">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-0.5 bg-orange-500 rounded-full inline-block shadow-[0_0_8px_#f97316]" />
-            <span className="text-slate-700">CPI</span>
+            <span className="w-2.5 h-0.5 bg-[#D4AF37] rounded-full inline-block shadow-[0_0_8px_#D4AF37]" />
+            <span className="text-white">CPI</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-0.5 border-t border-dashed border-zinc-400 inline-block" />
-            <span className="text-slate-500">PPI</span>
+            <span className="w-2.5 h-0.5 border-t border-dashed border-[#9CA3AF] inline-block" />
+            <span className="text-[#9CA3AF]">PPI</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-0.5 bg-amber-500 inline-block" />
-            <span className="text-slate-400">MPI</span>
+            <span className="w-2.5 h-0.5 bg-[#F59E0B] inline-block" />
+            <span className="text-[#F59E0B]">MPI</span>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   y1={y}
                   x2={width - paddingRight}
                   y2={y}
-                  stroke="#e2e8f0"
+                  stroke="rgba(255, 255, 255, 0.08)"
                   strokeWidth={0.8}
                   strokeDasharray="2 4"
                 />
@@ -134,7 +134,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   x={paddingLeft - 8}
                   y={y + 3}
                   textAnchor="end"
-                  fill="#6b7280"
+                  fill="#9CA3AF"
                   className="text-[9px] font-bold font-mono"
                 >
                   {val}
@@ -149,7 +149,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
             y1={getY(0)}
             x2={width - paddingRight}
             y2={getY(0)}
-            stroke="#e2e8f0"
+            stroke="rgba(255, 255, 255, 0.12)"
             strokeWidth={1.5}
           />
 
@@ -162,7 +162,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                 x={x}
                 y={height - paddingBottom + 18}
                 textAnchor="middle"
-                fill="#4b5563"
+                fill="#9CA3AF"
                 className="text-[9px] font-black uppercase tracking-tight"
               >
                 {point.label}
@@ -177,7 +177,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
               <motion.path
                 d={mpiPath}
                 fill="none"
-                stroke="#d97706"
+                stroke="#F59E0B"
                 strokeWidth={1.8}
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -186,11 +186,11 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                 transition={{ duration: 1.2, ease: "easeOut" }}
               />
 
-              {/* PPI Line (Zinc/White - Dashed) */}
+              {/* PPI Line (Muted Zinc - Dashed) */}
               <motion.path
                 d={ppiPath}
                 fill="none"
-                stroke="#9ca3af"
+                stroke="#9CA3AF"
                 strokeWidth={1.8}
                 strokeDasharray="4 4"
                 strokeLinecap="round"
@@ -200,11 +200,11 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                 transition={{ duration: 1.2, ease: "easeOut" }}
               />
 
-              {/* CPI Line (Solid Premium Orange with glow) */}
+              {/* CPI Line (Solid Gold with glow) */}
               <motion.path
                 d={cpiPath}
                 fill="none"
-                stroke="#f97316"
+                stroke="#D4AF37"
                 strokeWidth={3}
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -230,8 +230,8 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   cx={x}
                   cy={yPpi}
                   r={3}
-                  fill="#f1f5f9"
-                  stroke="#9ca3af"
+                  fill="#12141D"
+                  stroke="#9CA3AF"
                   strokeWidth={1.5}
                 />
                 {/* MPI Dot */}
@@ -239,8 +239,8 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   cx={x}
                   cy={yMpi}
                   r={3}
-                  fill="#f1f5f9"
-                  stroke="#d97706"
+                  fill="#12141D"
+                  stroke="#F59E0B"
                   strokeWidth={1.5}
                 />
                 {/* CPI Glow ring */}
@@ -249,7 +249,7 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   cy={yCpi}
                   r={5}
                   fill="none"
-                  stroke="#f97316"
+                  stroke="#D4AF37"
                   strokeWidth={1}
                   className="animate-pulse"
                 />
@@ -258,8 +258,8 @@ export default function PerformanceTrendChart({ data }: PerformanceTrendChartPro
                   cx={x}
                   cy={yCpi}
                   r={3.5}
-                  fill="#fff"
-                  stroke="#f97316"
+                  fill="#12141D"
+                  stroke="#D4AF37"
                   strokeWidth={2}
                 />
               </g>

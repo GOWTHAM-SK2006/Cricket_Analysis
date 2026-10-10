@@ -25,22 +25,22 @@ export default function CricketLoader({
 
   const content = (
     <div className="flex flex-col items-center justify-center text-center select-none space-y-3">
-      {/* Normal Spinning Circle Spinner */}
+      {/* Spinning Circle Spinner */}
       <div className="relative flex items-center justify-center">
-        <Loader2 className={`${iconSize} text-orange-500 animate-spin stroke-[2.5]`} />
+        <Loader2 className={`${iconSize} text-[#D4AF37] animate-spin stroke-[2.5]`} />
       </div>
 
       {/* Loading Text & Bouncing Dots */}
       <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center gap-1">
-          <span className={`font-extrabold uppercase tracking-widest text-[11px] ${fullScreen ? "text-slate-800" : "text-slate-800"}`}>
+          <span className="font-extrabold uppercase tracking-widest text-[11px] text-white">
             {message}
           </span>
           <span className="flex gap-0.5 ml-0.5">
             {[0, 1, 2].map((dot) => (
               <motion.span
                 key={dot}
-                className="w-1 h-1 bg-orange-500 rounded-full inline-block"
+                className="w-1 h-1 bg-[#D4AF37] rounded-full inline-block"
                 animate={{
                   y: ["0%", "-50%", "0%"],
                   opacity: [0.4, 1, 0.4],
@@ -58,8 +58,8 @@ export default function CricketLoader({
 
         {/* Optional Subtext Badge */}
         {showSubtext && subtext && (
-          <div className="mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/10 dark:bg-orange-500/15 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-bold text-[8.5px] tracking-wider uppercase">
-            <span className="w-1 h-1 rounded-full bg-orange-500 animate-ping" />
+          <div className="mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/25 text-[#FCE8B2] font-bold text-[8.5px] tracking-wider uppercase">
+            <span className="w-1 h-1 rounded-full bg-[#D4AF37] animate-ping" />
             {subtext}
           </div>
         )}
@@ -69,8 +69,8 @@ export default function CricketLoader({
 
   if (fullScreen) {
     return (
-      <div className={`fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 ${className}`}>
-        <div className="p-6 bg-white border border-slate-200 rounded-3xl shadow-xl flex flex-col items-center">
+      <div className={`fixed inset-0 z-50 bg-[#090A0E]/85 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 ${className}`}>
+        <div className="p-6 bg-[#12141D] border border-white/8 rounded-3xl shadow-xl flex flex-col items-center">
           {content}
         </div>
       </div>

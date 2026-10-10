@@ -24,9 +24,9 @@ export default function Home() {
     }
   }, [router]);
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-slate-900 selection:bg-orange-500/20 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#090A0E] text-[#F3F4F6] selection:bg-[#D4AF37]/20 font-sans flex flex-col">
       {/* Navigation */}
-      <nav className="fixed w-full z-50 top-0 border-b border-slate-200/80 bg-[#FAF9F6]/90 backdrop-blur-md shadow-xs">
+      <nav className="fixed w-full z-50 top-0 border-b border-white/8 bg-[#090A0E]/90 backdrop-blur-md shadow-xs">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="relative w-8 h-9 flex-shrink-0">
@@ -38,15 +38,15 @@ export default function Home() {
                 priority
               />
             </div>
-            <span className="text-lg font-black tracking-tight text-slate-900">CPI Analytics</span>
+            <span className="text-lg font-black tracking-tight text-white">CPI Analytics</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors uppercase tracking-wider">
+            <Link href="/login" className="text-xs font-bold text-[#9CA3AF] hover:text-white transition-colors uppercase tracking-wider">
               Log in
             </Link>
             <Link
               href="/signup"
-              className="h-9 px-4 rounded-xl text-xs font-black bg-orange-500 hover:bg-orange-600 text-white inline-flex items-center justify-center transition-all cursor-pointer shadow-md"
+              className="h-9 px-4 rounded-xl text-xs font-black bg-gradient-to-r from-[#E5A93C] via-[#D4AF37] to-[#B8860B] hover:from-[#F5BA4E] hover:to-[#C99615] text-[#090A0E] inline-flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#D4AF37]/20"
             >
               Get Started
             </Link>
@@ -61,11 +61,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-200/80 bg-orange-50/80 text-orange-600 text-xs font-black mb-5 shadow-xs"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#FCE8B2] text-xs font-black mb-5 shadow-xs"
           >
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
             </span>
             Platform v1.0 Live
           </motion.div>
@@ -74,11 +74,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-5 text-slate-900 leading-[1.08]"
+            className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-5 text-white leading-[1.08]"
           >
             Cricket Performance
             <br />
-            <span className="text-orange-500 font-black px-1 inline-block">
+            <span className="text-[#D4AF37] font-black px-1 inline-block">
               Intelligence (CPI)
             </span>
           </motion.h1>
@@ -87,7 +87,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg sm:text-2xl text-slate-600 max-w-3xl mx-auto mb-8 font-bold leading-relaxed"
+            className="text-lg sm:text-2xl text-[#9CA3AF] max-w-3xl mx-auto mb-8 font-bold leading-relaxed"
           >
             Are we training properly? If not, what must we do better?{" "}
             <br className="hidden sm:inline" />
@@ -102,10 +102,10 @@ export default function Home() {
           >
             <Link
               href="/signup"
-              className="h-14 px-8 rounded-2xl text-base font-black bg-orange-500 hover:bg-orange-600 text-white inline-flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-xl shadow-orange-500/25 cursor-pointer"
+              className="h-14 px-8 rounded-2xl text-base font-black bg-gradient-to-r from-[#E5A93C] via-[#D4AF37] to-[#B8860B] hover:from-[#F5BA4E] hover:to-[#C99615] text-[#090A0E] inline-flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-xl shadow-[#D4AF37]/25 cursor-pointer"
             >
               Start Coaching Now
-              <ArrowRight className="w-5 h-5 text-white" />
+              <ArrowRight className="w-5 h-5 text-[#090A0E]" />
             </Link>
           </motion.div>
         </div>
