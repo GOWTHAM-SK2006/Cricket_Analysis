@@ -3866,60 +3866,88 @@ return (
             <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
 
-            {/* Header: Title, Player Selector & Close */}
-            <div className="relative z-10 flex items-center justify-between gap-2 pb-2.5 border-b border-white/8 shrink-0">
-              <div className="flex items-center gap-2 flex-wrap min-w-0">
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
-                  <h3 className="text-xs sm:text-sm font-black tracking-tight text-white uppercase truncate">
-                    Practice Assessment
-                  </h3>
-                </div>
-
-                {/* Player Selector Capsule */}
-                <div className="flex items-center gap-1.5 bg-[#1B1E2C] border border-white/10 rounded-xl px-2.5 py-0.5 text-xs">
-                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">PLAYER:</span>
-                  <div className="relative inline-block">
-                    <select
-                      value={selectedPlayer.id}
-                      onChange={(e) => {
-                        const nextPlayer = players.find(p => p.id === Number(e.target.value));
-                        if (nextPlayer) {
-                          setSelectedPlayer(nextPlayer);
-                          loadHistory(nextPlayer.id);
-                          setPracticeForm({
-                            technicalExecution: 7,
-                            skillsLevel: 7,
-                            gamePlan: 7,
-                            preparation: 7,
-                            intensity: 7,
-                            notes: ""
-                          });
-                          setError("");
-                          window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
-                        }
-                      }}
-                      className="appearance-none bg-transparent font-black text-xs text-[#D4AF37] pr-4 cursor-pointer focus:outline-none uppercase tracking-wider"
-                    >
-                      {players.map((p) => (
-                        <option key={p.id} value={p.id} className="bg-[#12141D] text-white font-bold">
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="pointer-events-none absolute inset-y-0 right-0 my-auto w-3 h-3 text-[#D4AF37]" />
-                  </div>
-                </div>
+            {/* Header: Centered Prominent Title & Close Button */}
+            <div className="relative z-10 flex items-center justify-center pb-2.5 border-b border-white/8 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                <h2 className="text-sm sm:text-base font-black tracking-wider text-white uppercase text-center font-montserrat">
+                  Practice Assessment
+                </h2>
               </div>
 
-              {/* Close Button */}
+              {/* Close Button at top-right */}
               <button
                 type="button"
                 onClick={() => setShowPracticeOverlay(false)}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
+            </div>
+
+            {/* Player Profile Section Directly Below Heading */}
+            <div className="relative z-10 flex items-center justify-between gap-3 bg-[#12141D] border border-white/8 hover:border-[#D4AF37]/30 rounded-2xl p-2.5 sm:p-3 shrink-0 transition-all">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                {/* Real Player Profile Image */}
+                <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full p-0.5 bg-gradient-to-br from-[#D4AF37] to-amber-700 shrink-0 shadow-md">
+                  <img
+                    src={selectedPlayer.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=181B27&color=D4AF37&font-size=0.45&bold=true`}
+                    alt={selectedPlayer.name}
+                    className="w-full h-full object-cover rounded-full bg-[#181B27]"
+                  />
+                </div>
+
+                {/* Player Name & Role */}
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-wide truncate">
+                    {selectedPlayer.name}
+                  </h3>
+                  {selectedPlayer.role ? (
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#D4AF37] tracking-wider uppercase block truncate">
+                      {selectedPlayer.role}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">
+                      Player #{selectedPlayer.id}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Player Selector Dropdown Capsule */}
+              <div className="flex items-center gap-1.5 bg-[#1B1E2C] border border-white/10 hover:border-[#D4AF37]/40 rounded-xl px-2.5 py-1.5 text-xs shrink-0 transition-colors">
+                <span className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">SWITCH:</span>
+                <div className="relative inline-block">
+                  <select
+                    value={selectedPlayer.id}
+                    onChange={(e) => {
+                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                      if (nextPlayer) {
+                        setSelectedPlayer(nextPlayer);
+                        loadHistory(nextPlayer.id);
+                        setPracticeForm({
+                          technicalExecution: 7,
+                          skillsLevel: 7,
+                          gamePlan: 7,
+                          preparation: 7,
+                          intensity: 7,
+                          notes: ""
+                        });
+                        setError("");
+                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
+                      }
+                    }}
+                    className="appearance-none bg-transparent font-black text-xs text-[#D4AF37] pr-4 cursor-pointer focus:outline-none uppercase tracking-wider"
+                  >
+                    {players.map((p) => (
+                      <option key={p.id} value={p.id} className="bg-[#12141D] text-white font-bold">
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute inset-y-0 right-0 my-auto w-3 h-3 text-[#D4AF37]" />
+                </div>
+              </div>
             </div>
 
             {error && (
@@ -4103,60 +4131,88 @@ return (
             <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
 
-            {/* Header: Title, Player Selector & Close */}
-            <div className="relative z-10 flex items-center justify-between gap-2 pb-2.5 border-b border-white/8 shrink-0">
-              <div className="flex items-center gap-2 flex-wrap min-w-0">
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
-                  <h3 className="text-xs sm:text-sm font-black tracking-tight text-white uppercase truncate">
-                    Match Assessment
-                  </h3>
-                </div>
-
-                {/* Player Selector Capsule */}
-                <div className="flex items-center gap-1.5 bg-[#1B1E2C] border border-white/10 rounded-xl px-2.5 py-0.5 text-xs">
-                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">PLAYER:</span>
-                  <div className="relative inline-block">
-                    <select
-                      value={selectedPlayer.id}
-                      onChange={(e) => {
-                        const nextPlayer = players.find(p => p.id === Number(e.target.value));
-                        if (nextPlayer) {
-                          setSelectedPlayer(nextPlayer);
-                          loadHistory(nextPlayer.id);
-                          setMatchForm({
-                            technicalExecution: 7,
-                            skillsLevel: 7,
-                            gamePlan: 7,
-                            preparation: 7,
-                            intensity: 7,
-                            notes: ""
-                          });
-                          setError("");
-                          window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
-                        }
-                      }}
-                      className="appearance-none bg-transparent font-black text-xs text-[#D4AF37] pr-4 cursor-pointer focus:outline-none uppercase tracking-wider"
-                    >
-                      {players.map((p) => (
-                        <option key={p.id} value={p.id} className="bg-[#12141D] text-white font-bold">
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="pointer-events-none absolute inset-y-0 right-0 my-auto w-3 h-3 text-[#D4AF37]" />
-                  </div>
-                </div>
+            {/* Header: Centered Prominent Title & Close Button */}
+            <div className="relative z-10 flex items-center justify-center pb-2.5 border-b border-white/8 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                <h2 className="text-sm sm:text-base font-black tracking-wider text-white uppercase text-center font-montserrat">
+                  Match Assessment
+                </h2>
               </div>
 
-              {/* Close Button */}
+              {/* Close Button at top-right */}
               <button
                 type="button"
                 onClick={() => setShowMatchOverlay(false)}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
+            </div>
+
+            {/* Player Profile Section Directly Below Heading */}
+            <div className="relative z-10 flex items-center justify-between gap-3 bg-[#12141D] border border-white/8 hover:border-[#D4AF37]/30 rounded-2xl p-2.5 sm:p-3 shrink-0 transition-all">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                {/* Real Player Profile Image */}
+                <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full p-0.5 bg-gradient-to-br from-[#D4AF37] to-amber-700 shrink-0 shadow-md">
+                  <img
+                    src={selectedPlayer.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedPlayer.name)}&background=181B27&color=D4AF37&font-size=0.45&bold=true`}
+                    alt={selectedPlayer.name}
+                    className="w-full h-full object-cover rounded-full bg-[#181B27]"
+                  />
+                </div>
+
+                {/* Player Name & Role */}
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-wide truncate">
+                    {selectedPlayer.name}
+                  </h3>
+                  {selectedPlayer.role ? (
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#D4AF37] tracking-wider uppercase block truncate">
+                      {selectedPlayer.role}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">
+                      Player #{selectedPlayer.id}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Player Selector Dropdown Capsule */}
+              <div className="flex items-center gap-1.5 bg-[#1B1E2C] border border-white/10 hover:border-[#D4AF37]/40 rounded-xl px-2.5 py-1.5 text-xs shrink-0 transition-colors">
+                <span className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">SWITCH:</span>
+                <div className="relative inline-block">
+                  <select
+                    value={selectedPlayer.id}
+                    onChange={(e) => {
+                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                      if (nextPlayer) {
+                        setSelectedPlayer(nextPlayer);
+                        loadHistory(nextPlayer.id);
+                        setMatchForm({
+                          technicalExecution: 7,
+                          skillsLevel: 7,
+                          gamePlan: 7,
+                          preparation: 7,
+                          intensity: 7,
+                          notes: ""
+                        });
+                        setError("");
+                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
+                      }
+                    }}
+                    className="appearance-none bg-transparent font-black text-xs text-[#D4AF37] pr-4 cursor-pointer focus:outline-none uppercase tracking-wider"
+                  >
+                    {players.map((p) => (
+                      <option key={p.id} value={p.id} className="bg-[#12141D] text-white font-bold">
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute inset-y-0 right-0 my-auto w-3 h-3 text-[#D4AF37]" />
+                </div>
+              </div>
             </div>
 
             {error && (
