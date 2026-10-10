@@ -85,16 +85,16 @@ const PARAM_DEFINITIONS = [
 
 const getCpiTier = (score: number | string | null | undefined): { label: string; color: string; bg: string; border: string; glow: string } => {
   if (score === null || score === undefined || score === "N/A") {
-    return { label: "Unrated", color: "text-slate-400", bg: "bg-slate-100", border: "border-slate-200", glow: "from-slate-400 to-slate-500" };
+    return { label: "Unrated", color: "text-zinc-400", bg: "bg-white/5", border: "border-white/10", glow: "from-zinc-400 to-zinc-500" };
   }
   const num = typeof score === "number" ? score : Number(score);
   if (isNaN(num) || num <= 0) {
-    return { label: "Unrated", color: "text-slate-400", bg: "bg-slate-100", border: "border-slate-200", glow: "from-slate-400 to-slate-500" };
+    return { label: "Unrated", color: "text-zinc-400", bg: "bg-white/5", border: "border-white/10", glow: "from-zinc-400 to-zinc-500" };
   }
-  if (num >= 85) return { label: "Elite", color: "text-amber-700", bg: "bg-amber-100", border: "border-amber-300", glow: "from-amber-400 to-orange-500" };
-  if (num >= 70) return { label: "High Perform", color: "text-orange-700", bg: "bg-orange-100", border: "border-orange-300", glow: "from-orange-500 to-amber-500" };
-  if (num >= 55) return { label: "Standard", color: "text-emerald-700", bg: "bg-emerald-100", border: "border-emerald-300", glow: "from-emerald-400 to-teal-500" };
-  return { label: "Developing", color: "text-blue-700", bg: "bg-blue-100", border: "border-blue-300", glow: "from-blue-400 to-cyan-500" };
+  if (num >= 85) return { label: "Elite", color: "text-[#F5BA4E]", bg: "bg-[#D4AF37]/15", border: "border-[#D4AF37]/35", glow: "from-[#F5BA4E] to-[#D4AF37]" };
+  if (num >= 70) return { label: "High Perform", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/15", border: "border-[#D4AF37]/35", glow: "from-[#D4AF37] to-[#F59E0B]" };
+  if (num >= 55) return { label: "Standard", color: "text-emerald-400", bg: "bg-emerald-500/15", border: "border-emerald-500/30", glow: "from-emerald-400 to-teal-500" };
+  return { label: "Developing", color: "text-blue-400", bg: "bg-blue-500/15", border: "border-blue-500/30", glow: "from-blue-400 to-cyan-500" };
 };
 
 export default function TeamPage() {
@@ -923,51 +923,59 @@ export default function TeamPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="glass-surface border border-slate-200/90 rounded-3xl p-4 sm:p-6 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#181B27] via-[#12141D] to-[#0A0C12] border border-[#D4AF37]/30 shadow-2xl shadow-[#D4AF37]/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xl group"
       >
+        {/* Subtle Gold Shimmer Top Border */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-90" />
+
+        {/* Ambient Radial Flare in corner */}
+        <div className="absolute -top-14 -right-14 w-48 h-48 bg-[radial-gradient(circle,rgba(212,175,55,0.22)_0%,transparent_70%)] pointer-events-none" />
+
         <div className="space-y-1 min-w-0 z-10">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black tracking-widest uppercase shadow-2xs">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F5BA4E] text-[9.5px] font-black tracking-widest uppercase">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
             </span>
             <span>ELITE SQUAD ANALYTICS</span>
           </div>
 
           <div className="flex items-center gap-2.5 pt-0.5">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 uppercase truncate">
-              TEAM MANAGEMENT
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-white uppercase truncate">
+              <span className="bg-gradient-to-r from-white via-[#F3F4F6] to-[#FCE8B2] bg-clip-text text-transparent">
+                TEAM MANAGEMENT
+              </span>
             </h1>
           </div>
 
-          <p className="text-xs sm:text-sm text-slate-500 font-medium truncate flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+          <p className="text-xs sm:text-sm text-zinc-400 font-medium truncate flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 animate-pulse" />
             <span>Manage squads, evaluate CPI benchmarks, and track collective performance</span>
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0 z-10">
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => setShowCreateModal(true)}
-            className="group relative overflow-hidden bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs uppercase tracking-wider py-3 px-5 sm:px-6 rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="group relative overflow-hidden bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] hover:to-[#C69212] text-[#090A0E] font-black text-xs uppercase tracking-wider py-3 px-5 sm:px-6 rounded-2xl shadow-lg shadow-[#D4AF37]/25 hover:shadow-[#D4AF37]/40 transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#D4AF37]/50"
           >
-            <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
-              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            <div className="w-5 h-5 rounded-lg bg-[#090A0E]/15 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
+              <Plus className="w-3.5 h-3.5 stroke-[3] text-[#090A0E]" />
             </div>
             <span>CREATE TEAM</span>
           </motion.button>
 
           {team && (
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => generateTeamPdfReport()}
-              className="px-4 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shrink-0 border border-slate-200/90 shadow-xs hover:border-slate-300"
+              className="px-4 py-3 rounded-2xl bg-[#12141D]/90 hover:bg-[#181B27] text-zinc-300 hover:text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shrink-0 border border-white/10 hover:border-[#D4AF37]/40 shadow-sm"
               title="Download Team PDF Report"
             >
-              <Download className="w-4 h-4 text-slate-600 group-hover:translate-y-0.5 transition-transform" />
+              <Download className="w-4 h-4 text-[#D4AF37] group-hover:translate-y-0.5 transition-transform" />
               <span className="hidden sm:inline">REPORT</span>
             </motion.button>
           )}
@@ -981,18 +989,19 @@ export default function TeamPage() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}
-          whileHover={{ y: -3 }}
-          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+          whileHover={{ y: -3, scale: 1.015 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 flex items-center gap-3.5 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/15 to-amber-500/10 border border-orange-500/25 flex items-center justify-center text-orange-600 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-xs">
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-sm">
             <Shield className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAMS REGISTERED</span>
-            <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight block">
-              {allTeams.length} <span className="text-xs font-bold text-slate-500">{allTeams.length === 1 ? "Squad" : "Squads"}</span>
+            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">TEAMS REGISTERED</span>
+            <span className="text-lg sm:text-xl font-black text-white tracking-tight block">
+              {allTeams.length} <span className="text-xs font-bold text-zinc-500">{allTeams.length === 1 ? "Squad" : "Squads"}</span>
             </span>
-            <span className="text-[10px] font-bold text-orange-600/90 bg-orange-50 border border-orange-200/60 px-1.5 py-0.2 rounded-md inline-block mt-0.5">
+            <span className="text-[10px] font-bold text-[#F5BA4E] bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
               Active Roster
             </span>
           </div>
@@ -1003,18 +1012,19 @@ export default function TeamPage() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          whileHover={{ y: -3 }}
-          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+          whileHover={{ y: -3, scale: 1.015 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 flex items-center gap-3.5 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/15 to-indigo-500/10 border border-blue-500/25 flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-xs">
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-sm">
             <Users2 className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SQUAD PLAYERS</span>
-            <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight block">
-              {mySquad.length} <span className="text-xs font-bold text-slate-500">{mySquad.length === 1 ? "Athlete" : "Athletes"}</span>
+            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">SQUAD PLAYERS</span>
+            <span className="text-lg sm:text-xl font-black text-white tracking-tight block">
+              {mySquad.length} <span className="text-xs font-bold text-zinc-500">{mySquad.length === 1 ? "Athlete" : "Athletes"}</span>
             </span>
-            <span className="text-[10px] font-bold text-blue-600/90 bg-blue-50 border border-blue-200/60 px-1.5 py-0.2 rounded-md inline-block mt-0.5">
+            <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
               Available
             </span>
           </div>
@@ -1025,28 +1035,29 @@ export default function TeamPage() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.15 }}
-          whileHover={{ y: -3 }}
-          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+          whileHover={{ y: -3, scale: 1.015 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/15 transition-all duration-300 flex items-center gap-3.5 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-xs">
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-sm">
             <Award className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">COLLECTIVE CPI</span>
+            <span className="text-[10px] font-extrabold text-[#F5BA4E] uppercase tracking-wider block">COLLECTIVE CPI</span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-lg sm:text-xl font-black text-orange-600 font-mono tracking-tight">
+              <span className="text-lg sm:text-xl font-black text-[#D4AF37] font-mono tracking-tight drop-shadow-[0_0_10px_rgba(212,175,55,0.45)]">
                 {teamCpi}
               </span>
               {(() => {
                 const tier = getCpiTier(teamCpi);
                 return (
-                  <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.2 rounded-md border ${tier.color} ${tier.bg} ${tier.border}`}>
+                  <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md border ${tier.color} ${tier.bg} ${tier.border}`}>
                     {tier.label}
                   </span>
                 );
               })()}
             </div>
-            <span className="text-[10px] font-bold text-slate-400 block mt-0.5">
+            <span className="text-[10px] font-bold text-zinc-500 block mt-0.5">
               Team Index
             </span>
           </div>
@@ -1057,10 +1068,11 @@ export default function TeamPage() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          whileHover={{ y: -3 }}
-          className="glass-surface border border-slate-200/80 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-300 flex items-center gap-3.5 group relative overflow-hidden"
+          whileHover={{ y: -3, scale: 1.015 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 flex items-center gap-3.5 group"
         >
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform shadow-xs relative">
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform shadow-sm relative">
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
@@ -1068,11 +1080,11 @@ export default function TeamPage() {
             <CheckCircle2 className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">ACTIVE SQUAD</span>
-            <span className="text-xs sm:text-sm font-black text-slate-900 truncate block">
+            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">ACTIVE SQUAD</span>
+            <span className="text-xs sm:text-sm font-black text-white truncate block">
               {team ? team.name : "None"}
             </span>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded-md inline-block mt-0.5">
+            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
               In Focus
             </span>
           </div>
@@ -1114,7 +1126,7 @@ export default function TeamPage() {
       {allTeams.length > 0 && team && (
         <div className="space-y-4 sm:space-y-5">
           {/* ------------------ 3. SEGMENTED NAVIGATION TABS ------------------ */}
-          <div className="glass-surface border border-slate-200/80 rounded-2xl p-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-w-full shadow-2xs">
+          <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-w-full shadow-inner">
             {[
               { id: "MY_TEAMS", label: "MY TEAMS", count: allTeams.length, icon: Users2 },
               { id: "OVERVIEW", label: "SQUAD OVERVIEW", icon: BarChart2 },
@@ -1131,18 +1143,18 @@ export default function TeamPage() {
                   onClick={() => setActiveTab(t.id as any)}
                   className={`relative px-4 py-2.5 rounded-xl font-extrabold text-[11px] uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
                     isActive
-                      ? "bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white shadow-md shadow-orange-500/25"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                      ? "bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] font-black shadow-lg shadow-[#D4AF37]/25"
+                      : "text-zinc-400 hover:text-white hover:bg-white/5"
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 stroke-[2.2] transition-transform ${isActive ? "scale-110" : ""}`} />
                   <span>{t.label}</span>
                   {t.count !== undefined && (
                     <span
-                      className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
+                      className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
                         isActive
-                          ? "bg-white/25 text-white"
-                          : "bg-slate-200 text-slate-700"
+                          ? "bg-[#090A0E]/20 text-[#090A0E]"
+                          : "bg-white/10 text-zinc-300"
                       }`}
                     >
                       {t.count}
@@ -1156,13 +1168,13 @@ export default function TeamPage() {
           {/* ------------------ 4. TAB: MY TEAMS (Clean Redesigned Team Profile Cards) ------------------ */}
           {activeTab === "MY_TEAMS" && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
+              <div className="flex items-center justify-between border-b border-white/8 pb-3">
                 <div>
-                  <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Users2 className="w-4 h-4 text-orange-600 stroke-[2.5]" />
+                  <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-tight flex items-center gap-2">
+                    <Users2 className="w-4 h-4 text-[#D4AF37] stroke-[2.5]" />
                     <span>MY TEAMS ({allTeams.length})</span>
                   </h3>
-                  <p className="text-[11px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
+                  <p className="text-[11px] sm:text-xs font-semibold text-zinc-400 mt-0.5 truncate">
                     Select a team to view its squad dashboard and performance analytics.
                   </p>
                 </div>
@@ -1190,26 +1202,29 @@ export default function TeamPage() {
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: idx * 0.05 }}
-                      whileHover={{ y: -4 }}
-                      className={`relative rounded-3xl p-5 sm:p-6 transition-all duration-300 space-y-4 border ${
+                      whileHover={{ y: -4, scale: 1.01 }}
+                      className={`relative rounded-3xl p-5 sm:p-6 transition-all duration-300 space-y-4 border overflow-hidden group ${
                         isSelected
-                          ? "bg-gradient-to-b from-orange-500/[0.04] via-white to-white border-orange-500/80 ring-2 ring-orange-500/20 shadow-xl shadow-orange-500/10"
-                          : "bg-white border-slate-200/90 hover:border-orange-300/80 shadow-xs hover:shadow-xl"
+                          ? "bg-gradient-to-b from-[#1E2232] via-[#141724] to-[#0E1017] border-[#D4AF37]/80 ring-2 ring-[#D4AF37]/30 shadow-2xl shadow-[#D4AF37]/15"
+                          : "bg-gradient-to-b from-[#181B27]/90 to-[#12141D]/90 border-white/10 hover:border-[#D4AF37]/50 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10"
                       }`}
                     >
+                      {/* Top border ambient shimmer for selected or hover */}
+                      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent ${isSelected ? 'opacity-90' : 'opacity-0 group-hover:opacity-75'} transition-opacity`} />
+
                       {/* Top Row: Athletic Crest, Name, Description, Status */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3.5 min-w-0">
                           {/* 3D Athletic Team Crest */}
-                          <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-amber-600 text-white font-black text-xl flex items-center justify-center shrink-0 uppercase shadow-md shadow-orange-500/25 ring-2 ring-white/90 border border-orange-400/40">
+                          <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] font-black text-xl flex items-center justify-center shrink-0 uppercase shadow-lg shadow-[#D4AF37]/25 border border-[#D4AF37]/50">
                             {t.name.charAt(0)}
                           </div>
 
                           <div className="min-w-0">
-                            <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate leading-tight">
+                            <h4 className="font-black text-base sm:text-lg text-white uppercase truncate leading-tight group-hover:text-[#F5BA4E] transition-colors">
                               {t.name}
                             </h4>
-                            <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                            <p className="text-xs text-zinc-400 font-medium truncate mt-0.5">
                               {t.description || "Cricket Squad"}
                             </p>
                           </div>
@@ -1217,15 +1232,15 @@ export default function TeamPage() {
 
                         <div className="shrink-0">
                           {isSelected ? (
-                            <span className="text-[10px] font-black tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
+                            <span className="text-[10px] font-black tracking-wider text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
                               <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
                               </span>
                               Active Squad
                             </span>
                           ) : (
-                            <span className="text-[10px] font-extrabold tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
+                            <span className="text-[10px] font-extrabold tracking-wider text-zinc-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
                               Inactive
                             </span>
                           )}
@@ -1233,19 +1248,19 @@ export default function TeamPage() {
                       </div>
 
                       {/* Middle Row: Precision CPI Radial Gauge + Performance Strip */}
-                      <div className="border-t border-slate-100/90 pt-3.5 grid grid-cols-2 gap-3.5 items-center">
+                      <div className="border-t border-white/8 pt-3.5 grid grid-cols-2 gap-3.5 items-center">
                         {/* High-Precision CPI Radial Gauge */}
                         <div className="flex items-center gap-3">
                           <div className="relative w-13 h-13 flex items-center justify-center shrink-0">
                             <svg className="w-13 h-13 transform -rotate-90" viewBox="0 0 36 36">
                               <defs>
                                 <linearGradient id={`cpiGrad-${t.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                  <stop offset="0%" stopColor="#D4AF37" />
-                                  <stop offset="100%" stopColor="#F59E0B" />
+                                  <stop offset="0%" stopColor="#F5BA4E" />
+                                  <stop offset="100%" stopColor="#D4AF37" />
                                 </linearGradient>
                               </defs>
                               <path
-                                className="text-slate-100"
+                                className="text-white/10"
                                 strokeWidth="3.2"
                                 stroke="currentColor"
                                 fill="none"
@@ -1261,13 +1276,13 @@ export default function TeamPage() {
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                               />
                             </svg>
-                            <span className="absolute font-black text-sm text-orange-600 font-mono">
+                            <span className="absolute font-black text-base text-[#D4AF37] font-mono drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]">
                               {cardTeamCpi}
                             </span>
                           </div>
                           <div>
-                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TEAM CPI</span>
-                            <span className={`text-[10px] font-black uppercase px-2 py-0.2 rounded-md border inline-block mt-0.5 ${tier.color} ${tier.bg} ${tier.border}`}>
+                            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">TEAM CPI</span>
+                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border inline-block mt-0.5 ${tier.color} ${tier.bg} ${tier.border}`}>
                               {tier.label}
                             </span>
                           </div>
@@ -1275,30 +1290,30 @@ export default function TeamPage() {
 
                         {/* Player Count & Metrics Mini-Badges */}
                         <div className="flex items-center gap-2 justify-end">
-                          <div className="bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 text-center">
-                            <span className="text-[9px] font-extrabold text-slate-400 uppercase block">PPI</span>
-                            <span className="text-xs font-black text-slate-800">{ppiAvg}</span>
+                          <div className="bg-[#0E1017] border border-white/10 rounded-xl px-2.5 py-1.5 text-center">
+                            <span className="text-[9px] font-extrabold text-zinc-400 uppercase block">PPI</span>
+                            <span className="text-xs font-black text-white">{ppiAvg}</span>
                           </div>
-                          <div className="bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 text-center">
-                            <span className="text-[9px] font-extrabold text-slate-400 uppercase block">MPI</span>
-                            <span className="text-xs font-black text-slate-800">{mpiAvg}</span>
+                          <div className="bg-[#0E1017] border border-white/10 rounded-xl px-2.5 py-1.5 text-center">
+                            <span className="text-[9px] font-extrabold text-zinc-400 uppercase block">MPI</span>
+                            <span className="text-xs font-black text-white">{mpiAvg}</span>
                           </div>
-                          <div className="bg-orange-50/80 border border-orange-200/80 rounded-xl px-2.5 py-1.5 text-center">
-                            <span className="text-[9px] font-extrabold text-orange-500 uppercase block">PLAYERS</span>
-                            <span className="text-xs font-black text-orange-700">{squadSize}</span>
+                          <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl px-2.5 py-1.5 text-center">
+                            <span className="text-[9px] font-extrabold text-[#F5BA4E] uppercase block">PLAYERS</span>
+                            <span className="text-xs font-black text-[#D4AF37]">{squadSize}</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Card Action Footer */}
-                      <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-100">
+                      <div className="pt-2 flex items-center justify-between gap-2 border-t border-white/8">
                         <button
                           onClick={() => {
                             selectTeam(t);
                             setIsEditing(true);
                             setActiveTab("OVERVIEW");
                           }}
-                          className="px-3 py-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                           title="Edit Team Info"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -1310,10 +1325,10 @@ export default function TeamPage() {
                             selectTeam(t);
                             setActiveTab("OVERVIEW");
                           }}
-                          className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-50 hover:bg-orange-500 hover:text-white text-orange-600 font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer border border-orange-200/80 active:scale-98 shadow-2xs hover:shadow-md hover:shadow-orange-500/20"
+                          className="group/btn inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#D4AF37]/15 hover:bg-gradient-to-r hover:from-[#F5BA4E] hover:to-[#B8860B] hover:text-[#090A0E] text-[#D4AF37] font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer border border-[#D4AF37]/40 active:scale-95 shadow-sm hover:shadow-lg hover:shadow-[#D4AF37]/25"
                         >
                           <span>VIEW SQUAD</span>
-                          <ChevronRight className="w-4 h-4 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
+                          <ChevronRight className="w-4 h-4 stroke-[2.5] group-hover/btn:translate-x-1 transition-transform" />
                         </button>
                       </div>
                     </motion.div>
@@ -1323,26 +1338,26 @@ export default function TeamPage() {
 
               {/* Bottom Action Card: Interactive Squad Creator */}
               <motion.div
-                whileHover={{ scale: 1.005, y: -2 }}
-                whileTap={{ scale: 0.995 }}
+                whileHover={{ scale: 1.01, y: -2 }}
+                whileTap={{ scale: 0.99 }}
                 onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-orange-500/[0.04] via-white to-amber-500/[0.04] border-2 border-dashed border-orange-300/80 hover:border-orange-500 rounded-3xl p-5 sm:p-6 flex items-center justify-between cursor-pointer transition-all duration-300 shadow-xs hover:shadow-lg hover:shadow-orange-500/10 group"
+                className="bg-gradient-to-r from-[#181B27]/90 via-[#12141D]/90 to-[#181B27]/90 border-2 border-dashed border-[#D4AF37]/40 hover:border-[#D4AF37] rounded-3xl p-5 sm:p-6 flex items-center justify-between cursor-pointer transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/15 group backdrop-blur-xl"
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-orange-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] flex items-center justify-center shrink-0 shadow-md shadow-[#D4AF37]/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                     <Plus className="w-6 h-6 stroke-[3]" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="font-black text-sm sm:text-base text-slate-900 block group-hover:text-orange-600 transition-colors truncate">
+                    <span className="font-black text-sm sm:text-base text-white block group-hover:text-[#F5BA4E] transition-colors truncate">
                       Create another team squad
                     </span>
-                    <span className="text-xs text-slate-500 font-medium block mt-0.5 truncate">
+                    <span className="text-xs text-zinc-400 font-medium block mt-0.5 truncate">
                       Add a new squad to evaluate team CPI analytics, track 7 parameters, and benchmark side-by-side.
                     </span>
                   </div>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 group-hover:border-orange-300 flex items-center justify-center shrink-0 ml-2 shadow-2xs">
-                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                <div className="w-9 h-9 rounded-xl bg-[#12141D] border border-white/10 group-hover:border-[#D4AF37]/50 flex items-center justify-center shrink-0 ml-2 shadow-sm">
+                  <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
                 </div>
               </motion.div>
             </div>
@@ -1669,26 +1684,26 @@ export default function TeamPage() {
                 <>
                   {/* Highlights Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
-                    <div className="bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-white border border-emerald-200/90 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-2xs">
+                    <div className="bg-gradient-to-br from-emerald-500/15 via-[#181B27] to-[#12141D] border border-emerald-500/30 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-md">
                       <div>
-                        <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider block">STRONGEST PARAMETER</span>
-                        <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
+                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-wider block">STRONGEST PARAMETER</span>
+                        <span className="text-base sm:text-lg font-black text-white mt-0.5 block">
                           {strongestParam ? strongestParam.name : "N/A"}
                         </span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-emerald-700 bg-emerald-100 border border-emerald-300 px-3.5 py-1 rounded-xl font-mono">
+                      <div className="text-xl sm:text-2xl font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-3.5 py-1 rounded-xl font-mono">
                         {strongestParam ? strongestParam.avg : "N/A"}
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-white border border-amber-200/90 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-2xs">
+                    <div className="bg-gradient-to-br from-[#D4AF37]/15 via-[#181B27] to-[#12141D] border border-[#D4AF37]/30 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-md">
                       <div>
-                        <span className="text-[10px] font-black text-amber-700 uppercase tracking-wider block">WEAKEST PARAMETER</span>
-                        <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
+                        <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-wider block">WEAKEST PARAMETER</span>
+                        <span className="text-base sm:text-lg font-black text-white mt-0.5 block">
                           {weakestParam ? weakestParam.name : "N/A"}
                         </span>
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-amber-700 bg-amber-100 border border-amber-300 px-3.5 py-1 rounded-xl font-mono">
+                      <div className="text-xl sm:text-2xl font-black text-[#D4AF37] bg-[#D4AF37]/15 border border-[#D4AF37]/30 px-3.5 py-1 rounded-xl font-mono">
                         {weakestParam ? weakestParam.avg : "N/A"}
                       </div>
                     </div>
@@ -2120,14 +2135,14 @@ export default function TeamPage() {
                 </div>
               ) : (!teamAId || !teamBId || !teamAData || !teamBData || teamAId === teamBId) ? (
                 /* Empty / Initial State Card */
-                <div className="bg-gradient-to-b from-slate-50 to-white border border-slate-200 rounded-3xl p-8 sm:p-12 text-center space-y-3">
-                  <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+                <div className="bg-gradient-to-b from-[#181B27]/90 to-[#12141D]/90 border border-white/10 rounded-3xl p-8 sm:p-12 text-center space-y-3">
+                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] mx-auto flex items-center justify-center shadow-inner">
                     <ArrowRightLeft className="w-8 h-8 stroke-[2]" />
                   </div>
-                  <h4 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight">
+                  <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight">
                     Select another team to compare performance.
                   </h4>
-                  <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-md mx-auto leading-relaxed">
+                  <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-md mx-auto leading-relaxed">
                     {allTeams.length <= 1
                       ? "You currently have 1 team created. Create additional teams under the MY TEAMS tab to enable side-by-side team performance comparisons."
                       : "Choose a second team from the 'COMPARE WITH' dropdown above to view side-by-side squad analytics, CPI averages, and 7-parameter parameter comparisons."
@@ -2138,25 +2153,25 @@ export default function TeamPage() {
                 /* Dynamic Comparison View */
                 <div className="space-y-5 sm:space-y-6">
                   {/* Dynamic Team Names Header */}
-                  <div className="bg-white text-slate-900 rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="bg-[#12141D] text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
-                      <span className="text-[10px] font-black tracking-widest text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200/60 uppercase">
+                      <span className="text-[10px] font-black tracking-widest text-[#F5BA4E] bg-[#D4AF37]/10 px-2.5 py-1 rounded-lg border border-[#D4AF37]/30 uppercase">
                         SELECTED TEAM
                       </span>
-                      <h4 className="text-base sm:text-lg font-black uppercase text-slate-900 truncate max-w-[200px] sm:max-w-[260px]">
+                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px]">
                         {teamAData.team.name}
                       </h4>
                     </div>
 
-                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-slate-100 border border-slate-200 text-[11px] font-black text-slate-500 uppercase tracking-widest shadow-2xs">
+                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-[#1B1E2C] border border-white/10 text-[11px] font-black text-zinc-400 uppercase tracking-widest shadow-2xs">
                       VS
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                      <h4 className="text-base sm:text-lg font-black uppercase text-slate-900 truncate max-w-[200px] sm:max-w-[260px] text-right">
+                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px] text-right">
                         {teamBData.team.name}
                       </h4>
-                      <span className="text-[10px] font-black tracking-widest text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60 uppercase">
+                      <span className="text-[10px] font-black tracking-widest text-[#D4AF37] bg-[#D4AF37]/10 px-2.5 py-1 rounded-lg border border-[#D4AF37]/30 uppercase">
                         COMPARED WITH
                       </span>
                     </div>
@@ -2165,134 +2180,134 @@ export default function TeamPage() {
                   {/* Side-by-side Overview Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* TEAM 1 CARD */}
-                    <div className="bg-gradient-to-br from-orange-500/[0.04] to-white border border-orange-200/90 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
-                      <div className="border-b border-orange-200/80 pb-3 flex items-center justify-between">
+                    <div className="bg-gradient-to-br from-[#181B27]/90 to-[#12141D]/90 border border-[#D4AF37]/30 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                      <div className="border-b border-white/8 pb-3 flex items-center justify-between">
                         <div>
-                          <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">
+                          <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-widest block">
                             SELECTED TEAM
                           </span>
-                          <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate">
+                          <h4 className="font-black text-base sm:text-lg text-white uppercase truncate">
                             {teamAData.team.name}
                           </h4>
                         </div>
                         <div className="text-right">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
-                          <span className="text-2xl font-black text-orange-600 font-mono">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">CPI AVG</span>
+                          <span className="text-2xl font-black text-[#D4AF37] font-mono">
                             {compStatsA ? compStatsA.cpi : "N/A"}
                           </span>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 bg-white rounded-xl p-3 border border-orange-100 text-center shadow-xs">
+                      <div className="grid grid-cols-3 gap-2 bg-[#0E1017] rounded-xl p-3 border border-white/10 text-center shadow-xs">
                         <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PLAYERS</span>
-                          <span className="text-sm font-black text-slate-900">{compStatsA ? compStatsA.squadSize : "N/A"}</span>
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PLAYERS</span>
+                          <span className="text-sm font-black text-white">{compStatsA ? compStatsA.squadSize : "N/A"}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PRACTICE PPI</span>
-                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsA ? compStatsA.ppi : "N/A"}</span>
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PRACTICE PPI</span>
+                          <span className="text-sm font-black text-white font-mono">{compStatsA ? compStatsA.ppi : "N/A"}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">MATCH MPI</span>
-                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsA ? compStatsA.mpi : "N/A"}</span>
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">MATCH MPI</span>
+                          <span className="text-sm font-black text-white font-mono">{compStatsA ? compStatsA.mpi : "N/A"}</span>
                         </div>
                       </div>
 
-                      <div className="space-y-3 text-xs font-semibold text-slate-700">
+                      <div className="space-y-3 text-xs font-semibold text-zinc-300">
                         <div>
-                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
+                          <span className="font-black text-white uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
                           {compStatsA && compStatsA.strengths.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {compStatsA.strengths.map((s, i) => (
-                                <span key={i} className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-orange-200">
+                                <span key={i} className="bg-[#D4AF37]/15 text-[#F5BA4E] text-[10px] font-bold px-2 py-0.5 rounded-md border border-[#D4AF37]/30">
                                   {s}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
                           )}
                         </div>
 
                         <div>
-                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
+                          <span className="font-black text-white uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
                           {compStatsA && compStatsA.devAreas.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {compStatsA.devAreas.map((d, i) => (
-                                <span key={i} className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-200">
+                                <span key={i} className="bg-white/5 text-zinc-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/10">
                                   {d}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
                           )}
                         </div>
                       </div>
                     </div>
 
                     {/* TEAM 2 CARD */}
-                    <div className="bg-gradient-to-br from-amber-500/[0.04] to-white border border-amber-200/90 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
-                      <div className="border-b border-amber-200/80 pb-3 flex items-center justify-between">
+                    <div className="bg-gradient-to-br from-[#181B27]/90 to-[#12141D]/90 border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                      <div className="border-b border-white/8 pb-3 flex items-center justify-between">
                         <div>
-                          <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest block">
+                          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
                             COMPARED WITH
                           </span>
-                          <h4 className="font-black text-base sm:text-lg text-slate-900 uppercase truncate">
+                          <h4 className="font-black text-base sm:text-lg text-white uppercase truncate">
                             {teamBData.team.name}
                           </h4>
                         </div>
                         <div className="text-right">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">CPI AVG</span>
-                          <span className="text-2xl font-black text-amber-700 font-mono">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">CPI AVG</span>
+                          <span className="text-2xl font-black text-[#D4AF37] font-mono">
                             {compStatsB ? compStatsB.cpi : "N/A"}
                           </span>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 bg-white rounded-xl p-3 border border-amber-100 text-center shadow-xs">
+                      <div className="grid grid-cols-3 gap-2 bg-[#0E1017] rounded-xl p-3 border border-white/10 text-center shadow-xs">
                         <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PLAYERS</span>
-                          <span className="text-sm font-black text-slate-900">{compStatsB ? compStatsB.squadSize : "N/A"}</span>
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PLAYERS</span>
+                          <span className="text-sm font-black text-white">{compStatsB ? compStatsB.squadSize : "N/A"}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">PRACTICE PPI</span>
-                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsB ? compStatsB.ppi : "N/A"}</span>
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PRACTICE PPI</span>
+                          <span className="text-sm font-black text-white font-mono">{compStatsB ? compStatsB.ppi : "N/A"}</span>
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase block">MATCH MPI</span>
-                          <span className="text-sm font-black text-slate-900 font-mono">{compStatsB ? compStatsB.mpi : "N/A"}</span>
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">MATCH MPI</span>
+                          <span className="text-sm font-black text-white font-mono">{compStatsB ? compStatsB.mpi : "N/A"}</span>
                         </div>
                       </div>
 
-                      <div className="space-y-3 text-xs font-semibold text-slate-700">
+                      <div className="space-y-3 text-xs font-semibold text-zinc-300">
                         <div>
-                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
+                          <span className="font-black text-white uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
                           {compStatsB && compStatsB.strengths.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {compStatsB.strengths.map((s, i) => (
-                                <span key={i} className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-200">
+                                <span key={i} className="bg-[#D4AF37]/15 text-[#F5BA4E] text-[10px] font-bold px-2 py-0.5 rounded-md border border-[#D4AF37]/30">
                                   {s}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
                           )}
                         </div>
 
                         <div>
-                          <span className="font-black text-slate-900 uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
+                          <span className="font-black text-white uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
                           {compStatsB && compStatsB.devAreas.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {compStatsB.devAreas.map((d, i) => (
-                                <span key={i} className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-200">
+                                <span key={i} className="bg-white/5 text-zinc-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/10">
                                   {d}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic text-[11px]">Insufficient assessment data</span>
+                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
                           )}
                         </div>
                       </div>
