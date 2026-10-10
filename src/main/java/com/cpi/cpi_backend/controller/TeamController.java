@@ -17,6 +17,7 @@ import com.cpi.cpi_backend.repository.PlayerRepository;
 import com.cpi.cpi_backend.repository.PracticeAssessmentRepository;
 import com.cpi.cpi_backend.repository.TeamNoteRepository;
 import com.cpi.cpi_backend.repository.TeamRepository;
+import com.cpi.cpi_backend.entity.Role;
 import com.cpi.cpi_backend.config.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -50,6 +51,13 @@ public class TeamController {
         }
         return coachRepository.findById(currentCoach.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Coach not found"));
+    }
+
+    private Set<Long> getPermittedPlayerIds(Coach coach) {
+        if (coach.getRole() == Role.ADMIN) {
+            return playerRepository.findAll().stream().map(Player::getId).collect(Collectors.toSet());
+        }
+        return playerRepository.findByCreatorCoachId(coach.getId()).stream().map(Player::getId).collect(Collectors.toSet());
     }
 
     private PlayerResponse toPlayerResponse(Player player, Map<Long, String> practiceDateMap, Map<Long, String> matchDateMap) {
@@ -158,8 +166,8 @@ public class TeamController {
     @Cacheable(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id")
     public ResponseEntity<List<TeamResponse>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
         Coach coach = getManagedCoach(currentCoach);
-        List<Team> teams = new ArrayList<>(teamRepository.findByCoachId(coach.getId()));
-        String queryMethod = "teamRepository.findByCoachId(" + coach.getId() + ")";
+        List<Team> teams = new ArrayList<>(teamRepository.findByCoachIdWithPlayersAndCoach(coach.getId()));
+        String queryMethod = "teamRepository.findByCoachIdWithPlayersAndCoach(" + coach.getId() + ")";
 
         // Auto-initialize primary team if coach has players or existing system data but zero teams linked
         if (teams.isEmpty()) {
@@ -194,11 +202,21 @@ public class TeamController {
     }
 
     @GetMapping("/my-team")
-    @Transactional
+    @Transactional(readOnly = true)
+    @Cacheable(value = CacheNames.TEAMS, key = "'my-team:coach:' + #currentCoach.id")
     public ResponseEntity<TeamResponse> getMyPrimaryTeam(@AuthenticationPrincipal Coach currentCoach) {
         Coach coach = getManagedCoach(currentCoach);
-        List<TeamResponse> allTeams = getMyTeams(currentCoach).getBody();
-        TeamResponse primary = (allTeams != null && !allTeams.isEmpty()) ? allTeams.get(0) : null;
+        List<Team> teams = teamRepository.findByCoachIdWithPlayersAndCoach(coach.getId());
+        Team primaryTeam = null;
+        if (!teams.isEmpty()) {
+            primaryTeam = teams.get(0);
+        } else {
+            List<TeamResponse> allTeams = getMyTeams(currentCoach).getBody();
+            if (allTeams != null && !allTeams.isEmpty()) {
+                return ResponseEntity.ok(allTeams.get(0));
+            }
+        }
+        TeamResponse primary = toTeamResponse(primaryTeam);
 
         System.out.println(String.format(
             "[DIAGNOSTIC LOG] Endpoint: GET /api/teams/my-team | User Email: %s | Coach ID: %d | Primary Team ID: %s",
@@ -212,6 +230,7 @@ public class TeamController {
     @Transactional
     @Caching(evict = {
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.TEAMS, key = "'my-team:coach:' + #currentCoach.id"),
         @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
     })
     public ResponseEntity<TeamResponse> createTeam(
@@ -226,8 +245,7 @@ public class TeamController {
 
         List<Player> initialPlayers = new ArrayList<>();
         if (request.getPlayerIds() != null && !request.getPlayerIds().isEmpty()) {
-            List<Player> coachPlayers = playerRepository.findByCreatorCoachId(coach.getId());
-            Set<Long> coachPlayerIds = coachPlayers.stream().map(Player::getId).collect(Collectors.toSet());
+            Set<Long> coachPlayerIds = getPermittedPlayerIds(coach);
 
             for (Long pid : request.getPlayerIds()) {
                 if (coachPlayerIds.contains(pid)) {
@@ -251,7 +269,9 @@ public class TeamController {
     @Transactional
     @Caching(evict = {
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
-        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+        @CacheEvict(value = CacheNames.TEAMS, key = "'my-team:coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.ASSESSMENTS, key = "'team:' + #id + ':coach:' + #currentCoach.id")
     })
     public ResponseEntity<TeamResponse> updateTeam(
             @PathVariable Long id,
@@ -274,8 +294,7 @@ public class TeamController {
         }
 
         if (request.getPlayerIds() != null) {
-            List<Player> coachPlayers = playerRepository.findByCreatorCoachId(coach.getId());
-            Set<Long> coachPlayerIds = coachPlayers.stream().map(Player::getId).collect(Collectors.toSet());
+            Set<Long> coachPlayerIds = getPermittedPlayerIds(coach);
             
             List<Player> updatedPlayers = new ArrayList<>();
             for (Long pid : request.getPlayerIds()) {
@@ -294,7 +313,9 @@ public class TeamController {
     @Transactional
     @Caching(evict = {
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
-        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+        @CacheEvict(value = CacheNames.TEAMS, key = "'my-team:coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.ASSESSMENTS, key = "'team:' + #id + ':coach:' + #currentCoach.id")
     })
     public ResponseEntity<TeamResponse> addPlayersToTeam(
             @PathVariable Long id,
@@ -310,8 +331,7 @@ public class TeamController {
         }
 
         if (request.getPlayerIds() != null && !request.getPlayerIds().isEmpty()) {
-            List<Player> coachPlayers = playerRepository.findByCreatorCoachId(coach.getId());
-            Set<Long> coachPlayerIds = coachPlayers.stream().map(Player::getId).collect(Collectors.toSet());
+            Set<Long> coachPlayerIds = getPermittedPlayerIds(coach);
 
             List<Player> currentSquad = new ArrayList<>(team.getPlayers());
             Set<Long> existingSquadIds = currentSquad.stream().map(Player::getId).collect(Collectors.toSet());
@@ -335,7 +355,9 @@ public class TeamController {
     @Transactional
     @Caching(evict = {
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
-        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+        @CacheEvict(value = CacheNames.TEAMS, key = "'my-team:coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.ASSESSMENTS, key = "'team:' + #id + ':coach:' + #currentCoach.id")
     })
     public ResponseEntity<TeamResponse> removePlayerFromTeam(
             @PathVariable Long id,
@@ -363,7 +385,9 @@ public class TeamController {
     @Transactional
     @Caching(evict = {
         @CacheEvict(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id"),
-        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id")
+        @CacheEvict(value = CacheNames.TEAMS, key = "'my-team:coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.DASHBOARD_STATS, key = "'coach:' + #currentCoach.id"),
+        @CacheEvict(value = CacheNames.ASSESSMENTS, key = "'team:' + #id + ':coach:' + #currentCoach.id")
     })
     public ResponseEntity<Void> deleteTeam(
             @PathVariable Long id,
@@ -387,29 +411,32 @@ public class TeamController {
 
     @GetMapping("/{id}/assessments")
     @Transactional(readOnly = true)
+    @Cacheable(value = CacheNames.ASSESSMENTS, key = "'team:' + #id + ':coach:' + #currentCoach.id")
     public ResponseEntity<Map<String, Object>> getTeamAssessments(
             @PathVariable Long id,
             @AuthenticationPrincipal Coach currentCoach
     ) {
         Coach coach = getManagedCoach(currentCoach);
-        Team team = teamRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        Team team = teamRepository.findByIdWithPlayersAndCoach(id)
+                .orElseGet(() -> teamRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found")));
 
         if (team.getCoach() == null || !team.getCoach().getId().equals(coach.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to access this team's assessments");
         }
 
         List<Player> squad = team.getPlayers() != null ? team.getPlayers() : Collections.emptyList();
-        List<Long> playerIds = squad.stream().map(Player::getId).collect(Collectors.toList());
+        List<Long> playerIds = squad.stream().map(Player::getId).filter(Objects::nonNull).collect(Collectors.toList());
 
-        List<PracticeAssessment> practiceAssessments = new ArrayList<>();
-        List<MatchAssessment> matchAssessments = new ArrayList<>();
+        List<PracticeAssessment> practiceAssessments;
+        List<MatchAssessment> matchAssessments;
 
         if (!playerIds.isEmpty()) {
-            for (Long pid : playerIds) {
-                practiceAssessments.addAll(practiceAssessmentRepository.findByPlayerId(pid));
-                matchAssessments.addAll(matchAssessmentRepository.findByPlayerId(pid));
-            }
+            practiceAssessments = new ArrayList<>(practiceAssessmentRepository.findByPlayerIdInWithPlayerAndCoach(playerIds));
+            matchAssessments = new ArrayList<>(matchAssessmentRepository.findByPlayerIdInWithPlayerAndCoach(playerIds));
+        } else {
+            practiceAssessments = new ArrayList<>();
+            matchAssessments = new ArrayList<>();
         }
 
         // Sort assessments descending by date
@@ -425,6 +452,7 @@ public class TeamController {
 
     @GetMapping("/{id}/notes")
     @Transactional(readOnly = true)
+    @Cacheable(value = CacheNames.TEAMS, key = "'notes:team:' + #id + ':coach:' + #currentCoach.id")
     public ResponseEntity<List<TeamNoteResponse>> getTeamNotes(
             @PathVariable Long id,
             @AuthenticationPrincipal Coach currentCoach
@@ -437,7 +465,7 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to view notes for this team");
         }
 
-        List<TeamNote> notes = teamNoteRepository.findByTeamIdOrderByDateDescCreatedAtDesc(team.getId());
+        List<TeamNote> notes = teamNoteRepository.findByTeamIdWithCoachOrderByDateDescCreatedAtDesc(team.getId());
         List<TeamNoteResponse> response = notes.stream().map(this::toTeamNoteResponse).collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
@@ -445,6 +473,7 @@ public class TeamController {
 
     @PostMapping("/{id}/notes")
     @Transactional
+    @CacheEvict(value = CacheNames.TEAMS, key = "'notes:team:' + #id + ':coach:' + #currentCoach.id")
     public ResponseEntity<TeamNoteResponse> createTeamNote(
             @PathVariable Long id,
             @RequestBody TeamNoteRequest request,
@@ -479,6 +508,7 @@ public class TeamController {
 
     @DeleteMapping("/{id}/notes/{noteId}")
     @Transactional
+    @CacheEvict(value = CacheNames.TEAMS, key = "'notes:team:' + #id + ':coach:' + #currentCoach.id")
     public ResponseEntity<Void> deleteTeamNote(
             @PathVariable Long id,
             @PathVariable Long noteId,

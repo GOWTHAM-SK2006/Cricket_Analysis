@@ -14,6 +14,9 @@ public interface MatchAssessmentRepository extends JpaRepository<MatchAssessment
     
     @Query("SELECT m FROM MatchAssessment m LEFT JOIN FETCH m.player LEFT JOIN FETCH m.coach WHERE m.player.id = :playerId ORDER BY m.date DESC, m.id DESC")
     List<MatchAssessment> findByPlayerIdWithPlayerAndCoach(@Param("playerId") Long playerId);
+
+    @Query("SELECT m FROM MatchAssessment m LEFT JOIN FETCH m.player LEFT JOIN FETCH m.coach WHERE m.player.id IN :playerIds ORDER BY m.date DESC, m.id DESC")
+    List<MatchAssessment> findByPlayerIdInWithPlayerAndCoach(@Param("playerIds") java.util.Collection<Long> playerIds);
     
     List<MatchAssessment> findByCoachId(Long coachId);
 

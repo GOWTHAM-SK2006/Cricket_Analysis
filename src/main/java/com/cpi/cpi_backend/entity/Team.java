@@ -33,7 +33,7 @@ public class Team {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coach_id")
-    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password"})
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "authorities"})
     private Coach coach;
 
     @ManyToMany(fetch = FetchType.EAGER)

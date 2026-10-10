@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { api } from "@/lib/api";
 import {
   Users2, Plus, Loader2, UserPlus, Trash2, Search,
@@ -10,7 +10,6 @@ import {
   ChevronRight, BarChart2, Clock, MoreVertical, ArrowUpDown
 } from "lucide-react";
 import CricketLoader from "@/components/CricketLoader";
-import jsPDF from "jspdf";
 
 interface Player {
   id: number;
@@ -84,10 +83,54 @@ const PARAM_DEFINITIONS = [
 ];
 
 export default function TeamPage() {
-  const [loading, setLoading] = useState(true);
-  const [team, setTeam] = useState<Team | null>(null);
-  const [allTeams, setAllTeams] = useState<Team[]>([]);
-  const [mySquad, setMySquad] = useState<Player[]>([]);
+  const [loading, setLoading] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = sessionStorage.getItem("cpi_teams_cache");
+        if (cached) return false;
+      } catch {}
+    }
+    return true;
+  });
+
+  const [allTeams, setAllTeams] = useState<Team[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = sessionStorage.getItem("cpi_teams_cache");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch {}
+    }
+    return [];
+  });
+
+  const [team, setTeam] = useState<Team | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = sessionStorage.getItem("cpi_teams_cache");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed[0];
+        }
+      } catch {}
+    }
+    return null;
+  });
+
+  const [mySquad, setMySquad] = useState<Player[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = sessionStorage.getItem("cpi_players_cache");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch {}
+    }
+    return [];
+  });
   
   // Navigation Sub-Tabs
   const [activeTab, setActiveTab] = useState<"MY_TEAMS" | "OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("MY_TEAMS");
@@ -99,6 +142,12 @@ export default function TeamPage() {
   const [practiceAssessments, setPracticeAssessments] = useState<AssessmentItem[]>([]);
   const [matchAssessments, setMatchAssessments] = useState<AssessmentItem[]>([]);
   const [teamNotes, setTeamNotes] = useState<TeamNote[]>([]);
+
+  // Cache & Loading states for on-demand tabs
+  const assessmentsCache = useRef<Map<number, { practiceAssessments: AssessmentItem[]; matchAssessments: AssessmentItem[] }>>(new Map());
+  const notesCache = useRef<Map<number, TeamNote[]>>(new Map());
+  const [loadingAssessments, setLoadingAssessments] = useState(false);
+  const [loadingNotes, setLoadingNotes] = useState(false);
 
   // Create Team Form State
   const [createName, setCreateName] = useState("");
@@ -140,39 +189,38 @@ export default function TeamPage() {
 
   const fetchTeamData = async () => {
     try {
-      setLoading(true);
-      const [teamRes, allTeamsRes, squadRes] = await Promise.all([
-        api.get("/teams/my-team").catch(() => ({ data: null })),
+      // Parallel fetch of teams and players only - assessments and notes are loaded on-demand per tab
+      const [allTeamsRes, squadRes] = await Promise.all([
         api.get("/teams").catch(() => ({ data: [] })),
         api.get("/players").catch(() => ({ data: [] }))
       ]);
 
       const teamsList = Array.isArray(allTeamsRes.data) ? allTeamsRes.data : [];
       setAllTeams(teamsList);
-
-      const primaryTeam = teamRes.data && teamRes.data.id ? teamRes.data : (teamsList[0] || null);
-
-      if (primaryTeam && primaryTeam.id) {
-        setTeam(primaryTeam);
-        setEditName(primaryTeam.name || "");
-        setEditDesc(primaryTeam.description || "");
-
-        // Set primary team for comparison selector 1; leave selector 2 unselected initially
-        setTeamAId(primaryTeam.id);
-        setTeamBId(null);
-
-        // Fetch team assessments and notes
-        const [assessmentsRes, notesRes] = await Promise.all([
-          api.get(`/teams/${primaryTeam.id}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } })),
-          api.get(`/teams/${primaryTeam.id}/notes`).catch(() => ({ data: [] }))
-        ]);
-
-        setPracticeAssessments(assessmentsRes.data.practiceAssessments || []);
-        setMatchAssessments(assessmentsRes.data.matchAssessments || []);
-        setTeamNotes(Array.isArray(notesRes.data) ? notesRes.data : []);
-      } else {
-        setTeam(null);
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem("cpi_teams_cache", JSON.stringify(teamsList));
+          if (Array.isArray(squadRes.data)) {
+            sessionStorage.setItem("cpi_players_cache", JSON.stringify(squadRes.data));
+          }
+        } catch {}
       }
+
+      setTeam(prev => {
+        if (prev && teamsList.some(t => t.id === prev.id)) {
+          const updated = teamsList.find(t => t.id === prev.id) || prev;
+          setEditName(updated.name || "");
+          setEditDesc(updated.description || "");
+          return updated;
+        }
+        const primary = teamsList[0] || null;
+        if (primary) {
+          setEditName(primary.name || "");
+          setEditDesc(primary.description || "");
+          setTeamAId(primary.id);
+        }
+        return primary;
+      });
 
       setMySquad(Array.isArray(squadRes.data) ? squadRes.data : []);
     } catch (err) {
@@ -186,8 +234,63 @@ export default function TeamPage() {
     fetchTeamData();
   }, []);
 
-  // Fetch comparison data when teamAId or teamBId changes
+  const ensureAssessmentsLoaded = async (teamId: number, forceRefresh = false) => {
+    if (!forceRefresh && assessmentsCache.current.has(teamId)) {
+      const cached = assessmentsCache.current.get(teamId)!;
+      setPracticeAssessments(cached.practiceAssessments);
+      setMatchAssessments(cached.matchAssessments);
+      return;
+    }
+
+    try {
+      setLoadingAssessments(true);
+      const res = await api.get(`/teams/${teamId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
+      const prac = res.data?.practiceAssessments || [];
+      const match = res.data?.matchAssessments || [];
+      assessmentsCache.current.set(teamId, { practiceAssessments: prac, matchAssessments: match });
+      setPracticeAssessments(prac);
+      setMatchAssessments(match);
+    } catch (err) {
+      console.error("Failed to load team assessments:", err);
+    } finally {
+      setLoadingAssessments(false);
+    }
+  };
+
+  const ensureNotesLoaded = async (teamId: number, forceRefresh = false) => {
+    if (!forceRefresh && notesCache.current.has(teamId)) {
+      const cached = notesCache.current.get(teamId)!;
+      setTeamNotes(cached);
+      return;
+    }
+
+    try {
+      setLoadingNotes(true);
+      const res = await api.get(`/teams/${teamId}/notes`).catch(() => ({ data: [] }));
+      const notes = Array.isArray(res.data) ? res.data : [];
+      notesCache.current.set(teamId, notes);
+      setTeamNotes(notes);
+    } catch (err) {
+      console.error("Failed to load team notes:", err);
+    } finally {
+      setLoadingNotes(false);
+    }
+  };
+
+  // Load tab-specific data on-demand when switching tabs
   useEffect(() => {
+    if (!team?.id) return;
+    if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+      ensureAssessmentsLoaded(team.id);
+    } else if (activeTab === "NOTES") {
+      ensureNotesLoaded(team.id);
+    }
+  }, [activeTab, team?.id]);
+
+  // Fetch comparison data only when activeTab === "COMPARISON"
+  useEffect(() => {
+    if (activeTab !== "COMPARISON") return;
+
     const loadComparison = async () => {
       if (!teamAId && !teamBId) {
         setTeamAData(null);
@@ -200,11 +303,18 @@ export default function TeamPage() {
         if (teamAId) {
           const targetA = allTeams.find(t => t.id === teamAId);
           if (targetA) {
-            const resA = await api.get(`/teams/${teamAId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
+            let pracA = assessmentsCache.current.get(teamAId)?.practiceAssessments;
+            let matchA = assessmentsCache.current.get(teamAId)?.matchAssessments;
+            if (!pracA || !matchA) {
+              const resA = await api.get(`/teams/${teamAId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
+              pracA = resA.data?.practiceAssessments || [];
+              matchA = resA.data?.matchAssessments || [];
+              assessmentsCache.current.set(teamAId, { practiceAssessments: pracA, matchAssessments: matchA });
+            }
             setTeamAData({
               team: targetA,
-              prac: resA.data.practiceAssessments || [],
-              match: resA.data.matchAssessments || []
+              prac: pracA,
+              match: matchA
             });
           }
         } else {
@@ -214,11 +324,18 @@ export default function TeamPage() {
         if (teamBId) {
           const targetB = allTeams.find(t => t.id === teamBId);
           if (targetB) {
-            const resB = await api.get(`/teams/${teamBId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
+            let pracB = assessmentsCache.current.get(teamBId)?.practiceAssessments;
+            let matchB = assessmentsCache.current.get(teamBId)?.matchAssessments;
+            if (!pracB || !matchB) {
+              const resB = await api.get(`/teams/${teamBId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
+              pracB = resB.data?.practiceAssessments || [];
+              matchB = resB.data?.matchAssessments || [];
+              assessmentsCache.current.set(teamBId, { practiceAssessments: pracB, matchAssessments: matchB });
+            }
             setTeamBData({
               team: targetB,
-              prac: resB.data.practiceAssessments || [],
-              match: resB.data.matchAssessments || []
+              prac: pracB,
+              match: matchB
             });
           }
         } else {
@@ -232,25 +349,18 @@ export default function TeamPage() {
     };
 
     loadComparison();
-  }, [teamAId, teamBId, allTeams]);
+  }, [activeTab, teamAId, teamBId, allTeams]);
 
-  const selectTeam = async (selected: Team) => {
-    try {
-      setTeam(selected);
-      setEditName(selected.name || "");
-      setEditDesc(selected.description || "");
-      setTeamAId(selected.id);
+  const selectTeam = (selected: Team) => {
+    setTeam(selected);
+    setEditName(selected.name || "");
+    setEditDesc(selected.description || "");
+    setTeamAId(selected.id);
 
-      const [assessmentsRes, notesRes] = await Promise.all([
-        api.get(`/teams/${selected.id}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } })),
-        api.get(`/teams/${selected.id}/notes`).catch(() => ({ data: [] }))
-      ]);
-
-      setPracticeAssessments(assessmentsRes.data.practiceAssessments || []);
-      setMatchAssessments(assessmentsRes.data.matchAssessments || []);
-      setTeamNotes(Array.isArray(notesRes.data) ? notesRes.data : []);
-    } catch (err) {
-      console.error("Failed to load selected team data:", err);
+    if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+      ensureAssessmentsLoaded(selected.id);
+    } else if (activeTab === "NOTES") {
+      ensureNotesLoaded(selected.id);
     }
   };
 
@@ -267,9 +377,11 @@ export default function TeamPage() {
       const newTeam = res.data;
       setAllTeams(prev => {
         const filtered = prev.filter(t => t.id !== newTeam.id);
-        return [...filtered, newTeam];
+        const updated = [...filtered, newTeam];
+        try { sessionStorage.setItem("cpi_teams_cache", JSON.stringify(updated)); } catch {}
+        return updated;
       });
-      await selectTeam(newTeam);
+      selectTeam(newTeam);
       setCreateName("");
       setCreateDesc("");
       setShowCreateModal(false);
@@ -292,7 +404,13 @@ export default function TeamPage() {
         name: editName.trim(),
         description: editDesc.trim(),
       });
-      setTeam(res.data);
+      const updated = res.data;
+      setTeam(updated);
+      setAllTeams(prev => {
+        const next = prev.map(t => t.id === updated.id ? updated : t);
+        try { sessionStorage.setItem("cpi_teams_cache", JSON.stringify(next)); } catch {}
+        return next;
+      });
       setIsEditing(false);
     } catch (err) {
       console.error("Failed to update team", err);
@@ -310,7 +428,18 @@ export default function TeamPage() {
       const res = await api.post(`/teams/${team.id}/players`, {
         playerIds: selectedPlayerIds
       });
-      setTeam(res.data);
+      const updated = res.data;
+      setTeam(updated);
+      setAllTeams(prev => {
+        const next = prev.map(t => t.id === updated.id ? updated : t);
+        try { sessionStorage.setItem("cpi_teams_cache", JSON.stringify(next)); } catch {}
+        return next;
+      });
+      // Invalidate assessments cache for this team since squad membership changed
+      assessmentsCache.current.delete(team.id);
+      if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+        ensureAssessmentsLoaded(team.id, true);
+      }
       setShowAddModal(false);
       setSelectedPlayerIds([]);
     } catch (err) {
@@ -327,7 +456,18 @@ export default function TeamPage() {
     try {
       setRemovingPlayerId(playerId);
       const res = await api.delete(`/teams/${team.id}/players/${playerId}`);
-      setTeam(res.data);
+      const updated = res.data;
+      setTeam(updated);
+      setAllTeams(prev => {
+        const next = prev.map(t => t.id === updated.id ? updated : t);
+        try { sessionStorage.setItem("cpi_teams_cache", JSON.stringify(next)); } catch {}
+        return next;
+      });
+      // Invalidate assessments cache for this team since squad membership changed
+      assessmentsCache.current.delete(team.id);
+      if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+        ensureAssessmentsLoaded(team.id, true);
+      }
     } catch (err) {
       console.error("Failed to remove player from team", err);
       alert("Failed to remove player from team.");
@@ -347,7 +487,12 @@ export default function TeamPage() {
         date: noteDate,
         content: noteContent.trim()
       });
-      setTeamNotes(prev => [res.data, ...prev]);
+      const newNote = res.data;
+      setTeamNotes(prev => {
+        const updated = [newNote, ...prev];
+        notesCache.current.set(team.id, updated);
+        return updated;
+      });
       setNoteContent("");
     } catch (err) {
       console.error("Failed to save team note", err);
@@ -362,7 +507,11 @@ export default function TeamPage() {
 
     try {
       await api.delete(`/teams/${team.id}/notes/${noteId}`);
-      setTeamNotes(prev => prev.filter(n => n.id !== noteId));
+      setTeamNotes(prev => {
+        const updated = prev.filter(n => n.id !== noteId);
+        notesCache.current.set(team.id, updated);
+        return updated;
+      });
     } catch (err) {
       console.error("Failed to delete team note", err);
       alert("Failed to delete team note.");
@@ -376,9 +525,10 @@ export default function TeamPage() {
   };
 
   // PDF Team Report Generator
-  const generateTeamPdfReport = () => {
+  const generateTeamPdfReport = async () => {
     if (!team) return;
 
+    const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -1337,91 +1487,100 @@ export default function TeamPage() {
                 </p>
               </div>
 
-              {/* Highlights Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider block">STRONGEST PARAMETER</span>
-                    <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
-                      {strongestParam ? strongestParam.name : "N/A"}
-                    </span>
-                  </div>
-                  <div className="text-xl sm:text-2xl font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-xl">
-                    {strongestParam ? strongestParam.avg : "N/A"}
-                  </div>
+              {loadingAssessments && practiceAssessments.length === 0 && matchAssessments.length === 0 ? (
+                <div className="text-center py-12">
+                  <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
+                  <span className="text-xs font-bold text-slate-500">Loading 7-parameter analytics...</span>
                 </div>
-
-                <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-black text-amber-700 uppercase tracking-wider block">WEAKEST PARAMETER</span>
-                    <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
-                      {weakestParam ? weakestParam.name : "N/A"}
-                    </span>
-                  </div>
-                  <div className="text-xl sm:text-2xl font-black text-amber-700 bg-amber-100 px-3 py-1 rounded-xl">
-                    {weakestParam ? weakestParam.avg : "N/A"}
-                  </div>
-                </div>
-              </div>
-
-              {/* 5 Parameters Grid Breakdown */}
-              <div className="space-y-4 pt-2">
-                <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
-                  5 CPI PARAMETERS (PRACTICE VS MATCH)
-                </div>
-
-                <div className="grid grid-cols-1 gap-3">
-                  {PARAM_DEFINITIONS.map((p) => {
-                    const pAvg = getParamAverage(practiceAssessments, p.getVal);
-                    const mAvg = getParamAverage(matchAssessments, p.getVal);
-
-                    const pPercent = pAvg !== null ? (pAvg / 100) * 100 : 0;
-                    const mPercent = mAvg !== null ? (mAvg / 100) * 100 : 0;
-
-                    return (
-                      <div key={p.name} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 space-y-3">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3">
-                          <span className="font-black text-sm text-slate-900 uppercase">{p.name}</span>
-                          <div className="flex items-center gap-3 text-xs font-bold">
-                            <span className="text-slate-600">
-                              Practice: <strong className="text-slate-900">{pAvg !== null ? pAvg : "N/A"}</strong>
-                            </span>
-                            <span className="text-slate-400">•</span>
-                            <span className="text-slate-600">
-                              Match: <strong className="text-slate-900">{mAvg !== null ? mAvg : "N/A"}</strong>
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Progress Bar Rows */}
-                        <div className="space-y-1.5">
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                            <span className="w-16 shrink-0 uppercase">PRACTICE</span>
-                            <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
-                              <div
-                                className="bg-orange-500 h-full rounded-full transition-all duration-300"
-                                style={{ width: `${Math.min(100, Math.max(0, pPercent))}%` }}
-                              />
-                            </div>
-                            <span className="w-8 text-right font-black text-slate-700">{pAvg !== null ? pAvg : "N/A"}</span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                            <span className="w-16 shrink-0 uppercase">MATCH</span>
-                            <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
-                              <div
-                                className="bg-amber-500 h-full rounded-full transition-all duration-300"
-                                style={{ width: `${Math.min(100, Math.max(0, mPercent))}%` }}
-                              />
-                            </div>
-                            <span className="w-8 text-right font-black text-slate-700">{mAvg !== null ? mAvg : "N/A"}</span>
-                          </div>
-                        </div>
+              ) : (
+                <>
+                  {/* Highlights Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider block">STRONGEST PARAMETER</span>
+                        <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
+                          {strongestParam ? strongestParam.name : "N/A"}
+                        </span>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                      <div className="text-xl sm:text-2xl font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-xl">
+                        {strongestParam ? strongestParam.avg : "N/A"}
+                      </div>
+                    </div>
+
+                    <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black text-amber-700 uppercase tracking-wider block">WEAKEST PARAMETER</span>
+                        <span className="text-base sm:text-lg font-black text-slate-900 mt-0.5 block">
+                          {weakestParam ? weakestParam.name : "N/A"}
+                        </span>
+                      </div>
+                      <div className="text-xl sm:text-2xl font-black text-amber-700 bg-amber-100 px-3 py-1 rounded-xl">
+                        {weakestParam ? weakestParam.avg : "N/A"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5 Parameters Grid Breakdown */}
+                  <div className="space-y-4 pt-2">
+                    <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
+                      5 CPI PARAMETERS (PRACTICE VS MATCH)
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3">
+                      {PARAM_DEFINITIONS.map((p) => {
+                        const pAvg = getParamAverage(practiceAssessments, p.getVal);
+                        const mAvg = getParamAverage(matchAssessments, p.getVal);
+
+                        const pPercent = pAvg !== null ? (pAvg / 100) * 100 : 0;
+                        const mPercent = mAvg !== null ? (mAvg / 100) * 100 : 0;
+
+                        return (
+                          <div key={p.name} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 space-y-3">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3">
+                              <span className="font-black text-sm text-slate-900 uppercase">{p.name}</span>
+                              <div className="flex items-center gap-3 text-xs font-bold">
+                                <span className="text-slate-600">
+                                  Practice: <strong className="text-slate-900">{pAvg !== null ? pAvg : "N/A"}</strong>
+                                </span>
+                                <span className="text-slate-400">•</span>
+                                <span className="text-slate-600">
+                                  Match: <strong className="text-slate-900">{mAvg !== null ? mAvg : "N/A"}</strong>
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Progress Bar Rows */}
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+                                <span className="w-16 shrink-0 uppercase">PRACTICE</span>
+                                <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                  <div
+                                    className="bg-orange-500 h-full rounded-full transition-all duration-300"
+                                    style={{ width: `${Math.min(100, Math.max(0, pPercent))}%` }}
+                                  />
+                                </div>
+                                <span className="w-8 text-right font-black text-slate-700">{pAvg !== null ? pAvg : "N/A"}</span>
+                              </div>
+
+                              <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+                                <span className="w-16 shrink-0 uppercase">MATCH</span>
+                                <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
+                                  <div
+                                    className="bg-amber-500 h-full rounded-full transition-all duration-300"
+                                    style={{ width: `${Math.min(100, Math.max(0, mPercent))}%` }}
+                                  />
+                                </div>
+                                <span className="w-8 text-right font-black text-slate-700">{mAvg !== null ? mAvg : "N/A"}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
@@ -1468,7 +1627,12 @@ export default function TeamPage() {
               </div>
 
               {/* Assessment List */}
-              {(() => {
+              {loadingAssessments && practiceAssessments.length === 0 && matchAssessments.length === 0 ? (
+                <div className="text-center py-12">
+                  <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
+                  <span className="text-xs font-bold text-slate-500">Loading assessment history...</span>
+                </div>
+              ) : (() => {
                 const combinedList = [
                   ...practiceAssessments.map(a => ({ ...a, type: "PRACTICE" as const })),
                   ...matchAssessments.map(a => ({ ...a, type: "MATCH" as const }))
@@ -1644,7 +1808,12 @@ export default function TeamPage() {
                   </div>
                 </div>
 
-                {(() => {
+                {loadingNotes && teamNotes.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
+                    <span className="text-xs font-bold text-slate-500">Loading team notes...</span>
+                  </div>
+                ) : (() => {
                   const filteredNotes = teamNotes.filter(n => noteFilter === "ALL" || n.type === noteFilter);
 
                   if (filteredNotes.length === 0) {
