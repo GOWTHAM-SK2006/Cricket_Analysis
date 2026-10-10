@@ -3835,484 +3835,498 @@ return (
     })()}
 
     {/* ------------------ OVERLAY: PRACTICE ASSESSMENT ------------------ */}
-    {showPracticeOverlay && selectedPlayer && (
-      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-5 text-left select-none pb-12 font-montserrat">
-        <div className="max-w-xl sm:max-w-2xl mx-auto space-y-4">
-          {/* Header Card */}
-          <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3.5">
-            <div className="flex justify-between items-center gap-3">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
-                <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
-                  PRACTICE ASSESSMENT
-                </h3>
+    {showPracticeOverlay && selectedPlayer && (() => {
+      const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
+      const sum = keys.reduce((acc, k) => acc + Number((practiceForm as any)[k] || 0), 0);
+      const avg = sum / keys.length;
+      const ppi100 = (avg * 10).toFixed(1);
+      const calcScore = Number(avg.toFixed(1));
+
+      let tierTitle = "Solid Performer";
+      let tierBadgeStyle = "bg-amber-500/15 text-amber-300 border-amber-500/30";
+      let tierDesc = "Good physical and technical foundation with scope for further improvement in intensity and game plan execution.";
+      if (calcScore >= 8.5) {
+        tierTitle = "Elite Tier";
+        tierBadgeStyle = "bg-purple-500/15 text-purple-300 border-purple-500/30";
+        tierDesc = "Exceptional technical execution, tactical clarity, and competitive intensity across all core training metrics.";
+      } else if (calcScore >= 7.0) {
+        tierTitle = "First-Class / Academy Tier";
+        tierBadgeStyle = "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+        tierDesc = "Solid technical foundation with high growth potential in tactical decision-making and execution.";
+      } else if (calcScore < 5.0) {
+        tierTitle = "Developmental Tier";
+        tierBadgeStyle = "bg-rose-500/15 text-rose-300 border-rose-500/30";
+        tierDesc = "Fundamental stance, technique, and session preparation adjustments needed to elevate performance consistency.";
+      }
+
+      return (
+        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 text-left select-none font-montserrat">
+          <div className="w-full max-w-xl sm:max-w-2xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 sm:space-y-3.5 my-auto relative overflow-hidden">
+            {/* Ambient gold glow */}
+            <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
+
+            {/* Header: Title, Player Selector & Close */}
+            <div className="relative z-10 flex items-center justify-between gap-2 pb-2.5 border-b border-white/8">
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <h3 className="text-xs sm:text-sm font-black tracking-tight text-white uppercase truncate">
+                    Practice Assessment
+                  </h3>
+                </div>
+
+                {/* Player Selector Capsule */}
+                <div className="flex items-center gap-1.5 bg-[#1B1E2C] border border-white/10 rounded-xl px-2.5 py-1 text-xs">
+                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">PLAYER:</span>
+                  <div className="relative inline-block">
+                    <select
+                      value={selectedPlayer.id}
+                      onChange={(e) => {
+                        const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                        if (nextPlayer) {
+                          setSelectedPlayer(nextPlayer);
+                          loadHistory(nextPlayer.id);
+                          setPracticeForm({
+                            technicalExecution: 7,
+                            skillsLevel: 7,
+                            gamePlan: 7,
+                            preparation: 7,
+                            intensity: 7,
+                            notes: ""
+                          });
+                          setError("");
+                          window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
+                        }
+                      }}
+                      className="appearance-none bg-transparent font-black text-xs text-[#D4AF37] pr-4 cursor-pointer focus:outline-none uppercase tracking-wider"
+                    >
+                      {players.map((p) => (
+                        <option key={p.id} value={p.id} className="bg-[#12141D] text-white font-bold">
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute inset-y-0 right-0 my-auto w-3 h-3 text-[#D4AF37]" />
+                  </div>
+                </div>
               </div>
+
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setShowPracticeOverlay(false)}
-                className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
-              {/* Player Selector */}
-              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-1.5">
-                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">PLAYER:</span>
-                <div className="relative inline-block">
-                  <select
-                    value={selectedPlayer.id}
-                    onChange={(e) => {
-                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
-                      if (nextPlayer) {
-                        setSelectedPlayer(nextPlayer);
-                        loadHistory(nextPlayer.id);
-                        setPracticeForm({
-                          technicalExecution: 7,
-                          skillsLevel: 7,
-                          gamePlan: 7,
-                          preparation: 7,
-                          intensity: 7,
-                          notes: ""
-                        });
-                        setError("");
-                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=practice`);
-                      }
-                    }}
-                    className="appearance-none bg-transparent font-extrabold text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-montserrat"
-                  >
-                    {players.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-montserrat">
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-orange-600">
-                    <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
+            {error && (
+              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-2.5 rounded-xl uppercase tracking-wider text-center">
+                {error}
+              </div>
+            )}
+
+            {/* Calculated PPI Score Hero Panel (Vercel Simulator Style: 88.6/100) */}
+            <div className="relative z-10 overflow-hidden rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 p-3 sm:p-3.5 shadow-lg flex items-center justify-between gap-3">
+              <div className="space-y-0.5 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                    CALCULATED PPI SCORE
+                  </span>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
+                    {tierTitle}
+                  </span>
                 </div>
+
+                <div className="flex items-baseline gap-1.5 pt-0.5">
+                  <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent leading-none tracking-tight">
+                    {ppi100}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-400">/ 100</span>
+                  <span className="text-[11px] font-bold text-zinc-500 ml-1.5 hidden sm:inline">
+                    ({calcScore}/10)
+                  </span>
+                </div>
+
+                <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-tight truncate max-w-sm pt-0.5">
+                  {tierDesc}
+                </p>
               </div>
 
-              {/* Live PPI Score Preview */}
-              {(() => {
-                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
-                const sum = keys.reduce((acc, k) => acc + Number((practiceForm as any)[k] || 0), 0);
-                const avg = (sum / keys.length).toFixed(1);
-                const ppi = Math.round((sum / keys.length) * 10);
-                return (
-                  <div className="flex items-center gap-2 bg-orange-50 border border-orange-200/80 rounded-xl px-3 py-1.5 shadow-2xs">
-                    <span className="text-[10px] font-extrabold text-orange-600/80 uppercase tracking-wider">LIVE PPI PREVIEW:</span>
-                    <span className="text-xs font-black text-orange-600 font-montserrat">{ppi} <span className="text-[10px] font-bold text-orange-500">({avg}/10)</span></span>
-                  </div>
-                );
-              })()}
+              <div className="w-10 h-10 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shadow-sm shrink-0">
+                <Activity className="w-5 h-5 stroke-[2.5]" />
+              </div>
             </div>
+
+            {/* Form: 5 Indexes in Compact 2-Column Grid + Remarks + Save */}
+            <form onSubmit={handlePracticeSubmit} className="relative z-10 space-y-2.5 sm:space-y-3">
+              {/* Compact 2-Column Grid for the 5 Indexes */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                {[
+                  { label: "TECHNIQUE", key: "technicalExecution" },
+                  { label: "SKILL LEVEL", key: "skillsLevel" },
+                  { label: "GAME PLAN", key: "gamePlan" },
+                  { label: "PREPARATION", key: "preparation" },
+                  { label: "INTENSITY", key: "intensity" }
+                ].map((metric, idx) => {
+                  const numVal = Number((practiceForm as any)[metric.key]);
+                  const intScore = Math.round(numVal);
+                  const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
+
+                  let statusLabel = "DEV";
+                  let statusBadgeColor = "text-rose-400 bg-rose-500/10 border-rose-500/20";
+                  if (intScore >= 7) {
+                    statusLabel = "STRONG";
+                    statusBadgeColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+                  } else if (intScore >= 4) {
+                    statusLabel = "MODERATE";
+                    statusBadgeColor = "text-amber-400 bg-amber-500/10 border-amber-500/20";
+                  }
+
+                  const isFifth = idx === 4;
+
+                  return (
+                    <div
+                      key={metric.key}
+                      className={`bg-[#12141D] hover:bg-[#181B27] p-2.5 sm:p-3 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl sm:rounded-2xl shadow-xs transition-all flex flex-col justify-between gap-1.5 ${
+                        isFifth ? "col-span-2 sm:col-span-1" : ""
+                      }`}
+                    >
+                      {/* Metric Header */}
+                      <div className="flex justify-between items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <label className="text-[10px] sm:text-[11px] font-black tracking-wider text-white uppercase truncate">
+                            {metric.label}
+                          </label>
+                          <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded border uppercase tracking-wider shrink-0 ${statusBadgeColor}`}>
+                            {statusLabel}
+                          </span>
+                        </div>
+
+                        {/* Score Value Pill */}
+                        <div className="flex items-baseline gap-0.5 bg-[#1B1E2C] border border-white/10 px-2 py-0.5 rounded-lg shrink-0">
+                          <span className="text-sm sm:text-base font-black text-[#D4AF37] leading-none">
+                            {intScore}
+                          </span>
+                          <span className="text-[9px] font-bold text-zinc-500">/10</span>
+                        </div>
+                      </div>
+
+                      {/* Compact Slider Track */}
+                      <div className="relative pt-0.5">
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          step="0.01"
+                          value={(practiceForm as any)[metric.key]}
+                          onPointerDown={handleSliderInteraction}
+                          onTouchStart={handleSliderInteraction}
+                          onFocus={handleSliderInteraction}
+                          onChange={(e) => {
+                            handleSliderInteraction();
+                            setPracticeForm({ ...practiceForm, [metric.key]: parseFloat(e.target.value) });
+                          }}
+                          style={{
+                            background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, #1B1E2C ${pct}%, #1B1E2C 100%)`,
+                            touchAction: "none"
+                          }}
+                          className="ppi-mpi-slider w-full h-2 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
+                        />
+                        <div className="flex justify-between items-center text-[8px] font-bold text-zinc-500 px-0.5 pt-0.5">
+                          <span>0</span>
+                          <span>5</span>
+                          <span>10</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Compact Coach Remarks Input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={practiceForm.notes}
+                  onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
+                  placeholder="Coach Remarks & Drill Observations (Optional)..."
+                  className="w-full h-9 sm:h-10 bg-[#1B1E2C] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
+                />
+              </div>
+
+              {/* Save Assessment Action Button */}
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full h-11 sm:h-12 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#090A0E]" />
+                    <span>Saving Assessment...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 stroke-[3]" />
+                    <span>Save Assessment</span>
+                  </>
+                )}
+              </button>
+            </form>
           </div>
-
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider font-montserrat">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handlePracticeSubmit} className="space-y-3.5">
-            {[
-              { label: "TECHNIQUE", key: "technicalExecution" },
-              { label: "SKILL LEVEL", key: "skillsLevel" },
-              { label: "GAME PLAN", key: "gamePlan" },
-              { label: "PREPARATION", key: "preparation" },
-              { label: "INTENSITY", key: "intensity" }
-            ].map((metric) => {
-              const numVal = Number((practiceForm as any)[metric.key]);
-              const intScore = Math.round(numVal);
-              const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
-
-              let statusLabel = "DEVELOPMENTAL";
-              let statusBadgeColor = "text-rose-700 bg-rose-50 border-rose-200/80";
-              if (intScore >= 7) {
-                statusLabel = "STRONG";
-                statusBadgeColor = "text-emerald-700 bg-emerald-50 border-emerald-200/80";
-              } else if (intScore >= 4) {
-                statusLabel = "MODERATE";
-                statusBadgeColor = "text-amber-700 bg-amber-50 border-amber-200/80";
-              }
-
-              return (
-                <div
-                  key={metric.key}
-                  className="bg-white p-4 sm:p-4.5 border border-slate-200/80 hover:border-slate-300 rounded-2xl shadow-xs transition-all space-y-3 font-montserrat"
-                >
-                  <div className="flex justify-between items-center gap-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
-                        {metric.label}
-                      </label>
-                      <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
-                        {statusLabel}
-                      </span>
-                    </div>
-
-                    <div className="flex items-baseline gap-1 bg-orange-50/90 border border-orange-200/80 px-2.5 sm:px-3 py-1.5 rounded-xl shrink-0 shadow-2xs">
-                      <span className="text-xl sm:text-2xl font-black text-orange-600 font-montserrat leading-none">
-                        {intScore}
-                      </span>
-                      <span className="text-xs font-bold text-orange-500/80">/ 10</span>
-                    </div>
-                  </div>
-
-                  <div className="relative pt-1">
-                    <input
-                      type="range"
-                      min="0"
-                      max="10"
-                      step="0.01"
-                      value={(practiceForm as any)[metric.key]}
-                      onPointerDown={handleSliderInteraction}
-                      onTouchStart={handleSliderInteraction}
-                      onFocus={handleSliderInteraction}
-                      onChange={(e) => {
-                        handleSliderInteraction();
-                        setPracticeForm({ ...practiceForm, [metric.key]: parseFloat(e.target.value) });
-                      }}
-                      style={{
-                        background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, #1B1E2C ${pct}%, #1B1E2C 100%)`,
-                        touchAction: "none"
-                      }}
-                      className="ppi-mpi-slider w-full h-2.5 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
-                    />
-                    <div className="flex justify-between items-center text-[10px] font-montserrat text-slate-400 font-bold px-0.5 pt-1.5">
-                      <span>0</span>
-                      <span>5</span>
-                      <span>10</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Calculated PPI Score Card */}
-            {(() => {
-              const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
-              const sum = keys.reduce((acc, k) => acc + Number((practiceForm as any)[k] || 0), 0);
-              const calcScore = Number((sum / keys.length).toFixed(1));
-
-              let tierTitle = "Solid Performer";
-              let tierBadgeStyle = "bg-amber-50 text-amber-800 border-amber-200/80";
-              let tierDesc = "Good physical and technical foundation with scope for further improvement in intensity and game plan execution.";
-              if (calcScore >= 8.5) {
-                tierTitle = "Elite Tier";
-                tierBadgeStyle = "bg-purple-50 text-purple-800 border-purple-200/80";
-                tierDesc = "Exceptional technical execution, tactical clarity, and competitive intensity across all core training metrics.";
-              } else if (calcScore >= 7.0) {
-                tierTitle = "First-Class / Academy Tier";
-                tierBadgeStyle = "bg-emerald-50 text-emerald-800 border-emerald-200/80";
-                tierDesc = "Solid technical foundation with high growth potential in tactical decision-making and execution.";
-              } else if (calcScore < 5.0) {
-                tierTitle = "Developmental Tier";
-                tierBadgeStyle = "bg-rose-50 text-rose-800 border-rose-200/80";
-                tierDesc = "Fundamental stance, technique, and session preparation adjustments needed to elevate performance consistency.";
-              }
-
-              return (
-                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3 font-montserrat">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest block">
-                      CALCULATED PPI SCORE
-                    </span>
-                    <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600 shadow-2xs">
-                      <Activity className="w-5 h-5 stroke-[2.5]" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-4xl sm:text-5xl font-black text-orange-600 font-montserrat leading-none">
-                        {calcScore}
-                      </span>
-                      <span className="text-sm sm:text-base font-bold text-slate-500">/ 10</span>
-                    </div>
-
-                    <div>
-                      <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
-                        {tierTitle}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-600 font-medium leading-relaxed pt-1">
-                      {tierDesc}
-                    </p>
-                  </div>
-                </div>
-              );
-            })()}
-
-            <div className="bg-white p-4.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-sm space-y-2 font-montserrat">
-              <label className="text-xs font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1.5">
-                <span>COACH REMARKS & NOTES</span>
-                <span className="text-[10px] font-normal text-slate-400 lowercase">(optional)</span>
-              </label>
-              <textarea
-                value={practiceForm.notes}
-                onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
-                className="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-3.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24 font-montserrat"
-                placeholder="Record specific training observations, technical cues, or drill outcomes..."
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-3.5 sm:py-4 text-sm sm:text-base font-extrabold tracking-wider transition-all flex items-center justify-center cursor-pointer border border-orange-500 shadow-md shadow-orange-500/20 disabled:opacity-50 font-montserrat uppercase"
-            >
-              {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
-            </button>
-          </form>
         </div>
-      </div>
-    )}
+      );
+    })()}
 
     {/* ------------------ OVERLAY: MATCH ASSESSMENT ------------------ */}
-    {showMatchOverlay && selectedPlayer && (
-      <div className="fixed inset-0 bg-slate-50/95 backdrop-blur-md z-50 overflow-y-auto p-4 sm:p-6 space-y-5 text-left select-none pb-12 font-montserrat">
-        <div className="max-w-xl sm:max-w-2xl mx-auto space-y-4">
-          {/* Header Card */}
-          <div className="bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3.5">
-            <div className="flex justify-between items-center gap-3">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
-                <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 uppercase">
-                  MATCH ASSESSMENT
-                </h3>
+    {showMatchOverlay && selectedPlayer && (() => {
+      const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
+      const sum = keys.reduce((acc, k) => acc + Number((matchForm as any)[k] || 0), 0);
+      const avg = sum / keys.length;
+      const mpi100 = (avg * 10).toFixed(1);
+      const calcScore = Number(avg.toFixed(1));
+
+      let tierTitle = "Solid Performer";
+      let tierBadgeStyle = "bg-amber-500/15 text-amber-300 border-amber-500/30";
+      let tierDesc = "Good physical and technical foundation with scope for further improvement in intensity and game plan execution.";
+      if (calcScore >= 8.5) {
+        tierTitle = "Elite Tier";
+        tierBadgeStyle = "bg-purple-500/15 text-purple-300 border-purple-500/30";
+        tierDesc = "Exceptional technical execution, tactical clarity, and competitive intensity across all match conditions.";
+      } else if (calcScore >= 7.0) {
+        tierTitle = "First-Class / Academy Tier";
+        tierBadgeStyle = "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+        tierDesc = "Solid technical foundation with high growth potential in match decision-making and execution.";
+      } else if (calcScore < 5.0) {
+        tierTitle = "Developmental Tier";
+        tierBadgeStyle = "bg-rose-500/15 text-rose-300 border-rose-500/30";
+        tierDesc = "Fundamental stance, technique, and match preparation adjustments needed to elevate performance under pressure.";
+      }
+
+      return (
+        <div className="fixed inset-0 bg-[#090A0E]/90 backdrop-blur-xl z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 text-left select-none font-montserrat">
+          <div className="w-full max-w-xl sm:max-w-2xl bg-gradient-to-b from-[#181B27]/98 via-[#12141D] to-[#0A0B10] border border-white/10 sm:border-[#D4AF37]/35 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 sm:space-y-3.5 my-auto relative overflow-hidden">
+            {/* Ambient gold glow */}
+            <div className="pointer-events-none absolute -top-20 -left-20 w-52 h-52 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
+
+            {/* Header: Title, Player Selector & Close */}
+            <div className="relative z-10 flex items-center justify-between gap-2 pb-2.5 border-b border-white/8">
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <h3 className="text-xs sm:text-sm font-black tracking-tight text-white uppercase truncate">
+                    Match Assessment
+                  </h3>
+                </div>
+
+                {/* Player Selector Capsule */}
+                <div className="flex items-center gap-1.5 bg-[#1B1E2C] border border-white/10 rounded-xl px-2.5 py-1 text-xs">
+                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">PLAYER:</span>
+                  <div className="relative inline-block">
+                    <select
+                      value={selectedPlayer.id}
+                      onChange={(e) => {
+                        const nextPlayer = players.find(p => p.id === Number(e.target.value));
+                        if (nextPlayer) {
+                          setSelectedPlayer(nextPlayer);
+                          loadHistory(nextPlayer.id);
+                          setMatchForm({
+                            technicalExecution: 7,
+                            skillsLevel: 7,
+                            gamePlan: 7,
+                            preparation: 7,
+                            intensity: 7,
+                            notes: ""
+                          });
+                          setError("");
+                          window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
+                        }
+                      }}
+                      className="appearance-none bg-transparent font-black text-xs text-[#D4AF37] pr-4 cursor-pointer focus:outline-none uppercase tracking-wider"
+                    >
+                      {players.map((p) => (
+                        <option key={p.id} value={p.id} className="bg-[#12141D] text-white font-bold">
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute inset-y-0 right-0 my-auto w-3 h-3 text-[#D4AF37]" />
+                  </div>
+                </div>
               </div>
+
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setShowMatchOverlay(false)}
-                className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
-              {/* Player Selector */}
-              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-1.5">
-                <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">PLAYER:</span>
-                <div className="relative inline-block">
-                  <select
-                    value={selectedPlayer.id}
-                    onChange={(e) => {
-                      const nextPlayer = players.find(p => p.id === Number(e.target.value));
-                      if (nextPlayer) {
-                        setSelectedPlayer(nextPlayer);
-                        loadHistory(nextPlayer.id);
-                        setMatchForm({
-                          technicalExecution: 7,
-                          skillsLevel: 7,
-                          gamePlan: 7,
-                          preparation: 7,
-                          intensity: 7,
-                          notes: ""
-                        });
-                        setError("");
-                        window.history.replaceState(null, "", `/players?id=${nextPlayer.id}&action=match`);
-                      }
-                    }}
-                    className="appearance-none bg-transparent font-extrabold text-xs text-orange-600 pr-5 cursor-pointer focus:outline-none uppercase tracking-wider font-montserrat"
-                  >
-                    {players.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-white text-slate-900 font-bold font-montserrat">
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-orange-600">
-                    <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
+            {error && (
+              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-2.5 rounded-xl uppercase tracking-wider text-center">
+                {error}
+              </div>
+            )}
+
+            {/* Calculated MPI Score Hero Panel (Vercel Simulator Style: 88.6/100) */}
+            <div className="relative z-10 overflow-hidden rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 p-3 sm:p-3.5 shadow-lg flex items-center justify-between gap-3">
+              <div className="space-y-0.5 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                    CALCULATED MPI SCORE
+                  </span>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
+                    {tierTitle}
+                  </span>
                 </div>
+
+                <div className="flex items-baseline gap-1.5 pt-0.5">
+                  <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent leading-none tracking-tight">
+                    {mpi100}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-400">/ 100</span>
+                  <span className="text-[11px] font-bold text-zinc-500 ml-1.5 hidden sm:inline">
+                    ({calcScore}/10)
+                  </span>
+                </div>
+
+                <p className="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-tight truncate max-w-sm pt-0.5">
+                  {tierDesc}
+                </p>
               </div>
 
-              {/* Live MPI Score Preview */}
-              {(() => {
-                const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
-                const sum = keys.reduce((acc, k) => acc + Number((matchForm as any)[k] || 0), 0);
-                const avg = (sum / keys.length).toFixed(1);
-                const mpi = Math.round((sum / keys.length) * 10);
-                return (
-                  <div className="flex items-center gap-2 bg-orange-50 border border-orange-200/80 rounded-xl px-3 py-1.5 shadow-2xs">
-                    <span className="text-[10px] font-extrabold text-orange-600/80 uppercase tracking-wider">LIVE MPI PREVIEW:</span>
-                    <span className="text-xs font-black text-orange-600 font-montserrat">{mpi} <span className="text-[10px] font-bold text-orange-500">({avg}/10)</span></span>
-                  </div>
-                );
-              })()}
+              <div className="w-10 h-10 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shadow-sm shrink-0">
+                <Flame className="w-5 h-5 stroke-[2.5]" />
+              </div>
             </div>
+
+            {/* Form: 5 Indexes in Compact 2-Column Grid + Remarks + Save */}
+            <form onSubmit={handleMatchSubmit} className="relative z-10 space-y-2.5 sm:space-y-3">
+              {/* Compact 2-Column Grid for the 5 Indexes */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                {[
+                  { label: "TECHNIQUE", key: "technicalExecution" },
+                  { label: "SKILL LEVEL", key: "skillsLevel" },
+                  { label: "GAME PLAN", key: "gamePlan" },
+                  { label: "PREPARATION", key: "preparation" },
+                  { label: "INTENSITY", key: "intensity" }
+                ].map((metric, idx) => {
+                  const numVal = Number((matchForm as any)[metric.key]);
+                  const intScore = Math.round(numVal);
+                  const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
+
+                  let statusLabel = "DEV";
+                  let statusBadgeColor = "text-rose-400 bg-rose-500/10 border-rose-500/20";
+                  if (intScore >= 7) {
+                    statusLabel = "STRONG";
+                    statusBadgeColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+                  } else if (intScore >= 4) {
+                    statusLabel = "MODERATE";
+                    statusBadgeColor = "text-amber-400 bg-amber-500/10 border-amber-500/20";
+                  }
+
+                  const isFifth = idx === 4;
+
+                  return (
+                    <div
+                      key={metric.key}
+                      className={`bg-[#12141D] hover:bg-[#181B27] p-2.5 sm:p-3 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl sm:rounded-2xl shadow-xs transition-all flex flex-col justify-between gap-1.5 ${
+                        isFifth ? "col-span-2 sm:col-span-1" : ""
+                      }`}
+                    >
+                      {/* Metric Header */}
+                      <div className="flex justify-between items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <label className="text-[10px] sm:text-[11px] font-black tracking-wider text-white uppercase truncate">
+                            {metric.label}
+                          </label>
+                          <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded border uppercase tracking-wider shrink-0 ${statusBadgeColor}`}>
+                            {statusLabel}
+                          </span>
+                        </div>
+
+                        {/* Score Value Pill */}
+                        <div className="flex items-baseline gap-0.5 bg-[#1B1E2C] border border-white/10 px-2 py-0.5 rounded-lg shrink-0">
+                          <span className="text-sm sm:text-base font-black text-[#D4AF37] leading-none">
+                            {intScore}
+                          </span>
+                          <span className="text-[9px] font-bold text-zinc-500">/10</span>
+                        </div>
+                      </div>
+
+                      {/* Compact Slider Track */}
+                      <div className="relative pt-0.5">
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          step="0.01"
+                          value={(matchForm as any)[metric.key]}
+                          onPointerDown={handleSliderInteraction}
+                          onTouchStart={handleSliderInteraction}
+                          onFocus={handleSliderInteraction}
+                          onChange={(e) => {
+                            handleSliderInteraction();
+                            setMatchForm({ ...matchForm, [metric.key]: parseFloat(e.target.value) });
+                          }}
+                          style={{
+                            background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, #1B1E2C ${pct}%, #1B1E2C 100%)`,
+                            touchAction: "none"
+                          }}
+                          className="ppi-mpi-slider w-full h-2 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
+                        />
+                        <div className="flex justify-between items-center text-[8px] font-bold text-zinc-500 px-0.5 pt-0.5">
+                          <span>0</span>
+                          <span>5</span>
+                          <span>10</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Compact Coach Remarks Input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={matchForm.notes}
+                  onChange={(e) => setMatchForm({ ...matchForm, notes: e.target.value })}
+                  placeholder="Coach Remarks & Match Performance Highlights (Optional)..."
+                  className="w-full h-9 sm:h-10 bg-[#1B1E2C] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
+                />
+              </div>
+
+              {/* Save Assessment Action Button */}
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full h-11 sm:h-12 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#090A0E]" />
+                    <span>Saving Assessment...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 stroke-[3]" />
+                    <span>Save Assessment</span>
+                  </>
+                )}
+              </button>
+            </form>
           </div>
-
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-bold p-4 rounded-xl uppercase tracking-wider font-montserrat">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleMatchSubmit} className="space-y-3.5">
-            {[
-              { label: "TECHNIQUE", key: "technicalExecution" },
-              { label: "SKILL LEVEL", key: "skillsLevel" },
-              { label: "GAME PLAN", key: "gamePlan" },
-              { label: "PREPARATION", key: "preparation" },
-              { label: "INTENSITY", key: "intensity" }
-            ].map((metric) => {
-              const numVal = Number((matchForm as any)[metric.key]);
-              const intScore = Math.round(numVal);
-              const pct = Math.min(100, Math.max(0, (numVal / 10) * 100));
-
-              let statusLabel = "DEVELOPMENTAL";
-              let statusBadgeColor = "text-rose-700 bg-rose-50 border-rose-200/80";
-              if (intScore >= 7) {
-                statusLabel = "STRONG";
-                statusBadgeColor = "text-emerald-700 bg-emerald-50 border-emerald-200/80";
-              } else if (intScore >= 4) {
-                statusLabel = "MODERATE";
-                statusBadgeColor = "text-amber-700 bg-amber-50 border-amber-200/80";
-              }
-
-              return (
-                <div
-                  key={metric.key}
-                  className="bg-white p-4 sm:p-4.5 border border-slate-200/80 hover:border-slate-300 rounded-2xl shadow-xs transition-all space-y-3 font-montserrat"
-                >
-                  <div className="flex justify-between items-center gap-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <label className="text-xs sm:text-sm font-extrabold tracking-wider text-slate-900 uppercase">
-                        {metric.label}
-                      </label>
-                      <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wider ${statusBadgeColor}`}>
-                        {statusLabel}
-                      </span>
-                    </div>
-
-                    <div className="flex items-baseline gap-1 bg-orange-50/90 border border-orange-200/80 px-2.5 sm:px-3 py-1.5 rounded-xl shrink-0 shadow-2xs">
-                      <span className="text-xl sm:text-2xl font-black text-orange-600 font-montserrat leading-none">
-                        {intScore}
-                      </span>
-                      <span className="text-xs font-bold text-orange-500/80">/ 10</span>
-                    </div>
-                  </div>
-
-                  <div className="relative pt-1">
-                    <input
-                      type="range"
-                      min="0"
-                      max="10"
-                      step="0.01"
-                      value={(matchForm as any)[metric.key]}
-                      onPointerDown={handleSliderInteraction}
-                      onTouchStart={handleSliderInteraction}
-                      onFocus={handleSliderInteraction}
-                      onChange={(e) => {
-                        handleSliderInteraction();
-                        setMatchForm({ ...matchForm, [metric.key]: parseFloat(e.target.value) });
-                      }}
-                      style={{
-                        background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, #1B1E2C ${pct}%, #1B1E2C 100%)`,
-                        touchAction: "none"
-                      }}
-                      className="ppi-mpi-slider w-full h-2.5 rounded-full appearance-none cursor-pointer touch-none focus:outline-none"
-                    />
-                    <div className="flex justify-between items-center text-[10px] font-montserrat text-slate-400 font-bold px-0.5 pt-1.5">
-                      <span>0</span>
-                      <span>5</span>
-                      <span>10</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Calculated MPI Score Card */}
-            {(() => {
-              const keys = ["technicalExecution", "skillsLevel", "gamePlan", "preparation", "intensity"] as const;
-              const sum = keys.reduce((acc, k) => acc + Number((matchForm as any)[k] || 0), 0);
-              const calcScore = Number((sum / keys.length).toFixed(1));
-
-              let tierTitle = "Solid Performer";
-              let tierBadgeStyle = "bg-amber-50 text-amber-800 border-amber-200/80";
-              let tierDesc = "Good physical and technical foundation with scope for further improvement in intensity and game plan execution.";
-              if (calcScore >= 8.5) {
-                tierTitle = "Elite Tier";
-                tierBadgeStyle = "bg-purple-50 text-purple-800 border-purple-200/80";
-                tierDesc = "Exceptional technical execution, tactical clarity, and competitive intensity across all match conditions.";
-              } else if (calcScore >= 7.0) {
-                tierTitle = "First-Class / Academy Tier";
-                tierBadgeStyle = "bg-emerald-50 text-emerald-800 border-emerald-200/80";
-                tierDesc = "Solid technical foundation with high growth potential in match decision-making and execution.";
-              } else if (calcScore < 5.0) {
-                tierTitle = "Developmental Tier";
-                tierBadgeStyle = "bg-rose-50 text-rose-800 border-rose-200/80";
-                tierDesc = "Fundamental stance, technique, and match preparation adjustments needed to elevate performance under pressure.";
-              }
-
-              return (
-                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3 font-montserrat">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-widest block">
-                      CALCULATED MPI SCORE
-                    </span>
-                    <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600 shadow-2xs">
-                      <Flame className="w-5 h-5 stroke-[2.5]" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-4xl sm:text-5xl font-black text-orange-600 font-montserrat leading-none">
-                        {calcScore}
-                      </span>
-                      <span className="text-sm sm:text-base font-bold text-slate-500">/ 10</span>
-                    </div>
-
-                    <div>
-                      <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
-                        {tierTitle}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-600 font-medium leading-relaxed pt-1">
-                      {tierDesc}
-                    </p>
-                  </div>
-                </div>
-              );
-            })()}
-
-            <div className="bg-white p-4.5 sm:p-5 border border-slate-200/90 rounded-2xl shadow-sm space-y-2 font-montserrat">
-              <label className="text-xs font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1.5">
-                <span>COACH REMARKS & NOTES</span>
-                <span className="text-[10px] font-normal text-slate-400 lowercase">(optional)</span>
-              </label>
-              <textarea
-                value={matchForm.notes}
-                onChange={(e) => setMatchForm({ ...matchForm, notes: e.target.value })}
-                className="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-3.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all resize-none h-24 font-montserrat"
-                placeholder="Record specific match performance details, opponent tactics, or situational highlights..."
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white rounded-2xl py-3.5 sm:py-4 text-sm sm:text-base font-extrabold tracking-wider transition-all flex items-center justify-center cursor-pointer border border-orange-500 shadow-md shadow-orange-500/20 disabled:opacity-50 font-montserrat uppercase"
-            >
-              {saving ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : "SAVE ASSESSMENT"}
-            </button>
-          </form>
         </div>
-      </div>
-    )}
+      );
+    })()}
 
     {/* ------------------ OVERLAY: SELF ASSESSMENT ------------------ */}
     {showSelfOverlay && selectedPlayer && (
