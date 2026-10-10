@@ -161,7 +161,11 @@ export default function LoginPage() {
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Invalid email or password");
+      if (err.message && (err.message.includes("Network Error") || !err.response)) {
+        setError("Unable to connect to CPI server. Please check your internet connection.");
+      } else {
+        setError(err.response?.data?.message || "Invalid email or password");
+      }
     } finally {
       setLoading(false);
     }

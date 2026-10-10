@@ -1,11 +1,28 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("userRole");
+      if (token) {
+        if (role === "admin") {
+          router.replace("/admin/dashboard");
+        } else {
+          router.replace("/dashboard");
+        }
+      }
+    }
+  }, [router]);
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-slate-900 selection:bg-orange-500/20 font-sans flex flex-col">
       {/* Navigation */}

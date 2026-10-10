@@ -1,9 +1,35 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+export const isNativePlatform = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  const win = window as any;
+  if (win.Capacitor?.isNativePlatform?.()) return true;
+  if (win.location.protocol === 'capacitor:' || win.location.protocol === 'ionic:') return true;
+  // Android Capacitor WebView serves from https://localhost without an explicit port
+  if (win.location.hostname === 'localhost' && !win.location.port) return true;
+  return false;
+};
+
+export const getApiBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const customUrl = localStorage.getItem('cpi_custom_api_url');
+    if (customUrl && customUrl.trim()) return customUrl.trim();
+
+    if (isNativePlatform()) {
+      return 'https://cpicoach.com/api';
+    }
+  }
+
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.trim()) {
+    return envUrl.trim();
+  }
+
+  return '/api';
+};
 
 export const api = axios.create({
-  baseURL: API_URL,
+  baseURL: getApiBaseUrl(),
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -61,6 +87,7 @@ api.get = function <T = any, R = axios.AxiosResponse<T>, D = any>(url: string, c
 } as any;
 
 api.interceptors.request.use((config) => {
+  config.baseURL = getApiBaseUrl();
   (config as any).meta = { startTime: Date.now() };
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('token');

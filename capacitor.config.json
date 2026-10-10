@@ -3,7 +3,14 @@
   "appName": "Cricket Performance Index",
   "webDir": "frontend/out",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "cleartext": true,
+    "allowNavigation": [
+      "cpicoach.com",
+      "*.cpicoach.com",
+      "*.railway.app",
+      "accounts.google.com"
+    ]
   },
   "plugins": {
     "StatusBar": {
