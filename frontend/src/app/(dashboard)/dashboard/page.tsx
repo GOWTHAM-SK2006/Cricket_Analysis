@@ -121,27 +121,6 @@ export default function DashboardPage() {
     loadDashboardData();
   }, []);
 
-  const formatActivityDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    const d = new Date(dateStr);
-    const now = new Date();
-
-    const isToday =
-      d.getDate() === now.getDate() &&
-      d.getMonth() === now.getMonth() &&
-      d.getFullYear() === now.getFullYear();
-
-    const yesterday = new Date();
-    yesterday.setDate(now.getDate() - 1);
-    const isYesterday =
-      d.getDate() === yesterday.getDate() &&
-      d.getMonth() === yesterday.getMonth() &&
-      d.getFullYear() === yesterday.getFullYear();
-
-    if (isToday) return "Today";
-    if (isYesterday) return "Yesterday";
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  };
 
   const formatScoreValue = (val: number | null | undefined) => {
     if (val === null || val === undefined || val === 0) return "N/A";
@@ -466,13 +445,13 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
-      {/* 4. PERFORMANCE CHART (BEST / AVG / LOW) */}
+      {/* 4. CPI PERFORMANCE CHART (BEST / AVG / LOW) */}
       <motion.div variants={itemVariants} className="space-y-3 text-left">
         <h3 className="text-[11px] font-black tracking-widest text-zinc-300 uppercase pl-0.5 flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-md bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center">
             <BarChart3 className="w-2.5 h-2.5 text-[#D4AF37]" />
           </div>
-          PERFORMANCE CHART
+          CPI PERFORMANCE CHART
         </h3>
 
         <div className="bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 rounded-3xl p-5 sm:p-6 space-y-5 shadow-xl backdrop-blur-xl">
@@ -569,51 +548,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </motion.div>
-
-      {/* 5. RECENT ACTIVITY (IF AVAILABLE) */}
-      {stats?.recentAssessments && stats.recentAssessments.length > 0 && (
-        <motion.div variants={itemVariants} className="space-y-3 text-left">
-          <h3 className="text-[11px] font-black tracking-widest text-zinc-300 uppercase pl-0.5 flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-md bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center">
-              <Activity className="w-2.5 h-2.5 text-[#D4AF37]" />
-            </div>
-            RECENT ASSESSMENTS
-          </h3>
-          <div className="bg-gradient-to-b from-[#181B27]/90 to-[#12141D]/90 border border-white/10 rounded-2xl p-4 divide-y divide-white/5 space-y-2.5">
-            {stats.recentAssessments.slice(0, 3).map((a, idx) => (
-              <div
-                key={idx}
-                className={`flex items-center justify-between ${idx > 0 ? "pt-2.5" : ""}`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <div
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${
-                      a.assessmentType === "MATCH"
-                        ? "bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30"
-                        : "bg-blue-500/15 text-blue-400 border border-blue-500/30"
-                    }`}
-                  >
-                    {a.assessmentType === "MATCH" ? "M" : "P"}
-                  </div>
-                  <div>
-                    <div className="text-xs font-black text-white">{a.playerName}</div>
-                    <div className="text-[10px] text-zinc-400 font-semibold">
-                      {a.assessmentType === "MATCH" ? "Match Assessment" : "Practice Assessment"} •{" "}
-                      {formatActivityDate(a.date)}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-sm font-black text-[#D4AF37] font-mono">
-                    {formatScoreValue(a.score)}
-                  </span>
-                  <span className="text-[9px] text-zinc-500 block uppercase font-bold">Score</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
 
       {/* Footer Copyright */}
       <div className="text-center pt-2 pb-2">
