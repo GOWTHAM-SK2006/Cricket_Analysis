@@ -3867,7 +3867,7 @@ return (
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
 
             {/* Header: Title, Player Selector & Close */}
-            <div className="relative z-10 flex items-center justify-between gap-2 pb-2 border-b border-white/8 shrink-0">
+            <div className="relative z-10 flex items-center justify-between gap-2 pb-2.5 border-b border-white/8 shrink-0">
               <div className="flex items-center gap-2 flex-wrap min-w-0">
                 <div className="flex items-center gap-1.5 shrink-0">
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -3923,47 +3923,15 @@ return (
             </div>
 
             {error && (
-              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center shrink-0">
+              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center shrink-0 my-1">
                 {error}
               </div>
             )}
 
-            {/* Calculated PPI Score Hero Panel (Vercel Simulator Style: 88.6/100) */}
-            <div className="relative z-10 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 px-3 py-1.5 sm:px-3.5 sm:py-2 shadow-lg flex items-center justify-between gap-2.5 shrink-0">
-              <div className="space-y-0.5 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
-                    CALCULATED PPI SCORE
-                  </span>
-                  <span className={`text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
-                    {tierTitle}
-                  </span>
-                </div>
-
-                <div className="flex items-baseline gap-1.5 pt-0.5">
-                  <span className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent leading-none tracking-tight">
-                    {ppi100}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-400">/ 100</span>
-                  <span className="text-[10px] sm:text-[11px] font-bold text-zinc-500 ml-1 hidden sm:inline">
-                    ({calcScore}/10)
-                  </span>
-                </div>
-
-                <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium leading-tight truncate max-w-sm pt-0.5">
-                  {tierDesc}
-                </p>
-              </div>
-
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shadow-sm shrink-0">
-                <Activity className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.5]" />
-              </div>
-            </div>
-
-            {/* Form: 5 Indexes (1 per row, single-column 1+1+1+1+1) + Remarks + Save */}
-            <form onSubmit={handlePracticeSubmit} className="relative z-10 flex-1 flex flex-col justify-between min-h-0 pt-1.5 space-y-1.5 sm:space-y-2">
-              {/* Stacked Single-Column List for the 5 Indexes with responsive flex expansion */}
-              <div className="flex-1 flex flex-col justify-between min-h-0 gap-1 sm:gap-1.5 overflow-y-auto pr-0.5">
+            {/* Form: 5 Indexes -> Large Result Card -> Remarks -> Save CTA */}
+            <form onSubmit={handlePracticeSubmit} className="relative z-10 flex-1 min-h-0 overflow-y-auto pr-1 pt-2 space-y-3 sm:space-y-4">
+              {/* Stacked Single-Column List for the 5 Indexes */}
+              <div className="space-y-2 sm:space-y-2.5">
                 {[
                   { label: "TECHNIQUE", key: "technicalExecution" },
                   { label: "SKILL LEVEL", key: "skillsLevel" },
@@ -3988,12 +3956,12 @@ return (
                   return (
                     <div
                       key={metric.key}
-                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3 py-1.5 sm:px-3.5 sm:py-2 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1 flex-1 min-h-[44px]"
+                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3.5 py-2 sm:px-4 sm:py-2.5 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1.5"
                     >
                       {/* Metric Header Row */}
                       <div className="flex justify-between items-center gap-1.5">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <label className="text-[10px] sm:text-[11px] font-black tracking-wider text-white uppercase truncate">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <label className="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase truncate">
                             {metric.label}
                           </label>
                           <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded border uppercase tracking-wider shrink-0 ${statusBadgeColor}`}>
@@ -4002,15 +3970,15 @@ return (
                         </div>
 
                         {/* Score Value Pill */}
-                        <div className="flex items-baseline gap-0.5 bg-[#1B1E2C] border border-white/10 px-2 py-0.5 rounded-lg shrink-0">
-                          <span className="text-xs sm:text-sm font-black text-[#D4AF37] leading-none">
+                        <div className="flex items-baseline gap-0.5 bg-[#1B1E2C] border border-white/10 px-2.5 py-0.5 rounded-lg shrink-0">
+                          <span className="text-sm font-black text-[#D4AF37] leading-none">
                             {intScore}
                           </span>
                           <span className="text-[9px] font-bold text-zinc-500">/10</span>
                         </div>
                       </div>
 
-                      {/* Compact Slider Track Row */}
+                      {/* Slider Track Row */}
                       <div className="relative pt-0.5">
                         <input
                           type="range"
@@ -4042,14 +4010,40 @@ return (
                 })}
               </div>
 
-              {/* Compact Coach Remarks Input */}
-              <div className="relative shrink-0 pt-0.5">
+              {/* Large Prominent Calculated PPI Score Result Card (Matching CPI Diagnostic Simulator) */}
+              <div className="rounded-2xl border border-[#D4AF37]/35 bg-gradient-to-b from-[#181B27] via-[#12141D] to-[#0A0B10] p-4 sm:p-5 text-center shadow-xl space-y-2.5 my-2">
+                <span className="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-widest block">
+                  CALCULATED PPI SCORE
+                </span>
+
+                <div className="flex items-baseline justify-center gap-1.5 pt-0.5">
+                  <span className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent leading-none tracking-tight">
+                    {ppi100}
+                  </span>
+                  <span className="text-lg sm:text-xl font-bold text-zinc-400">
+                    /100
+                  </span>
+                </div>
+
+                <div className="pt-0.5">
+                  <span className="inline-block px-4 py-1 rounded-full border border-[#D4AF37]/60 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-bold tracking-wide">
+                    {tierTitle}
+                  </span>
+                </div>
+
+                <p className="text-[11px] sm:text-xs text-zinc-400 font-medium leading-relaxed max-w-md mx-auto pt-0.5">
+                  {tierDesc}
+                </p>
+              </div>
+
+              {/* Coach Remarks Input */}
+              <div className="relative pt-0.5">
                 <input
                   type="text"
                   value={practiceForm.notes}
                   onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
                   placeholder="Coach Remarks & Drill Observations (Optional)..."
-                  className="w-full h-8 sm:h-9 bg-[#1B1E2C] border border-white/10 rounded-xl px-3 text-[11px] sm:text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
+                  className="w-full h-10 sm:h-11 bg-[#1B1E2C] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
                 />
               </div>
 
@@ -4057,7 +4051,7 @@ return (
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full h-10 sm:h-11 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50 shrink-0"
+                className="w-full h-11 sm:h-12 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50"
               >
                 {saving ? (
                   <>
@@ -4110,7 +4104,7 @@ return (
             <div className="pointer-events-none absolute -bottom-20 -right-20 w-52 h-52 bg-amber-500/10 rounded-full blur-3xl" />
 
             {/* Header: Title, Player Selector & Close */}
-            <div className="relative z-10 flex items-center justify-between gap-2 pb-2 border-b border-white/8 shrink-0">
+            <div className="relative z-10 flex items-center justify-between gap-2 pb-2.5 border-b border-white/8 shrink-0">
               <div className="flex items-center gap-2 flex-wrap min-w-0">
                 <div className="flex items-center gap-1.5 shrink-0">
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -4166,47 +4160,15 @@ return (
             </div>
 
             {error && (
-              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center shrink-0">
+              <div className="relative z-10 bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold p-1.5 rounded-xl uppercase tracking-wider text-center shrink-0 my-1">
                 {error}
               </div>
             )}
 
-            {/* Calculated MPI Score Hero Panel (Vercel Simulator Style: 88.6/100) */}
-            <div className="relative z-10 overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#181B27] via-[#141724] to-[#10121D] border border-[#D4AF37]/35 px-3 py-1.5 sm:px-3.5 sm:py-2 shadow-lg flex items-center justify-between gap-2.5 shrink-0">
-              <div className="space-y-0.5 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
-                    CALCULATED MPI SCORE
-                  </span>
-                  <span className={`text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded-full border uppercase tracking-wider ${tierBadgeStyle}`}>
-                    {tierTitle}
-                  </span>
-                </div>
-
-                <div className="flex items-baseline gap-1.5 pt-0.5">
-                  <span className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent leading-none tracking-tight">
-                    {mpi100}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-400">/ 100</span>
-                  <span className="text-[10px] sm:text-[11px] font-bold text-zinc-500 ml-1 hidden sm:inline">
-                    ({calcScore}/10)
-                  </span>
-                </div>
-
-                <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium leading-tight truncate max-w-sm pt-0.5">
-                  {tierDesc}
-                </p>
-              </div>
-
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shadow-sm shrink-0">
-                <Flame className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.5]" />
-              </div>
-            </div>
-
-            {/* Form: 5 Indexes (1 per row, single-column 1+1+1+1+1) + Remarks + Save */}
-            <form onSubmit={handleMatchSubmit} className="relative z-10 flex-1 flex flex-col justify-between min-h-0 pt-1.5 space-y-1.5 sm:space-y-2">
-              {/* Stacked Single-Column List for the 5 Indexes with responsive flex expansion */}
-              <div className="flex-1 flex flex-col justify-between min-h-0 gap-1 sm:gap-1.5 overflow-y-auto pr-0.5">
+            {/* Form: 5 Indexes -> Large Result Card -> Remarks -> Save CTA */}
+            <form onSubmit={handleMatchSubmit} className="relative z-10 flex-1 min-h-0 overflow-y-auto pr-1 pt-2 space-y-3 sm:space-y-4">
+              {/* Stacked Single-Column List for the 5 Indexes */}
+              <div className="space-y-2 sm:space-y-2.5">
                 {[
                   { label: "TECHNIQUE", key: "technicalExecution" },
                   { label: "SKILL LEVEL", key: "skillsLevel" },
@@ -4231,12 +4193,12 @@ return (
                   return (
                     <div
                       key={metric.key}
-                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3 py-1.5 sm:px-3.5 sm:py-2 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1 flex-1 min-h-[44px]"
+                      className="w-full bg-[#12141D] hover:bg-[#181B27] px-3.5 py-2 sm:px-4 sm:py-2.5 border border-white/8 hover:border-[#D4AF37]/40 rounded-xl shadow-xs transition-all flex flex-col justify-between gap-1.5"
                     >
                       {/* Metric Header Row */}
                       <div className="flex justify-between items-center gap-1.5">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <label className="text-[10px] sm:text-[11px] font-black tracking-wider text-white uppercase truncate">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <label className="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase truncate">
                             {metric.label}
                           </label>
                           <span className={`text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded border uppercase tracking-wider shrink-0 ${statusBadgeColor}`}>
@@ -4245,15 +4207,15 @@ return (
                         </div>
 
                         {/* Score Value Pill */}
-                        <div className="flex items-baseline gap-0.5 bg-[#1B1E2C] border border-white/10 px-2 py-0.5 rounded-lg shrink-0">
-                          <span className="text-xs sm:text-sm font-black text-[#D4AF37] leading-none">
+                        <div className="flex items-baseline gap-0.5 bg-[#1B1E2C] border border-white/10 px-2.5 py-0.5 rounded-lg shrink-0">
+                          <span className="text-sm font-black text-[#D4AF37] leading-none">
                             {intScore}
                           </span>
                           <span className="text-[9px] font-bold text-zinc-500">/10</span>
                         </div>
                       </div>
 
-                      {/* Compact Slider Track Row */}
+                      {/* Slider Track Row */}
                       <div className="relative pt-0.5">
                         <input
                           type="range"
@@ -4285,14 +4247,40 @@ return (
                 })}
               </div>
 
-              {/* Compact Coach Remarks Input */}
-              <div className="relative shrink-0 pt-0.5">
+              {/* Large Prominent Calculated MPI Score Result Card (Matching CPI Diagnostic Simulator) */}
+              <div className="rounded-2xl border border-[#D4AF37]/35 bg-gradient-to-b from-[#181B27] via-[#12141D] to-[#0A0B10] p-4 sm:p-5 text-center shadow-xl space-y-2.5 my-2">
+                <span className="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-widest block">
+                  CALCULATED MPI SCORE
+                </span>
+
+                <div className="flex items-baseline justify-center gap-1.5 pt-0.5">
+                  <span className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-[#D4AF37] bg-clip-text text-transparent leading-none tracking-tight">
+                    {mpi100}
+                  </span>
+                  <span className="text-lg sm:text-xl font-bold text-zinc-400">
+                    /100
+                  </span>
+                </div>
+
+                <div className="pt-0.5">
+                  <span className="inline-block px-4 py-1 rounded-full border border-[#D4AF37]/60 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-bold tracking-wide">
+                    {tierTitle}
+                  </span>
+                </div>
+
+                <p className="text-[11px] sm:text-xs text-zinc-400 font-medium leading-relaxed max-w-md mx-auto pt-0.5">
+                  {tierDesc}
+                </p>
+              </div>
+
+              {/* Coach Remarks Input */}
+              <div className="relative pt-0.5">
                 <input
                   type="text"
                   value={matchForm.notes}
                   onChange={(e) => setMatchForm({ ...matchForm, notes: e.target.value })}
                   placeholder="Coach Remarks & Match Performance Highlights (Optional)..."
-                  className="w-full h-8 sm:h-9 bg-[#1B1E2C] border border-white/10 rounded-xl px-3 text-[11px] sm:text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
+                  className="w-full h-10 sm:h-11 bg-[#1B1E2C] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
                 />
               </div>
 
@@ -4300,7 +4288,7 @@ return (
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full h-10 sm:h-11 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50 shrink-0"
+                className="w-full h-11 sm:h-12 bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#FAD06C] hover:to-[#C99615] text-[#090A0E] rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#D4AF37]/20 active:scale-98 disabled:opacity-50"
               >
                 {saving ? (
                   <>
