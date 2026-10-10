@@ -15,7 +15,7 @@ declare global {
 
 const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
-  "615869393937-9ib5l28morbhm0blc9a72a2si34h1mqp.apps.googleusercontent.com";
+  "559180577956-7kl3l6joq4k0n6o8gtcd3gvocsf03cqq.apps.googleusercontent.com";
 const isGoogleConfigured = Boolean(
   GOOGLE_CLIENT_ID && !GOOGLE_CLIENT_ID.includes("102938475612")
 );
@@ -85,8 +85,20 @@ export default function SignupPage() {
     [router]
   );
 
+  // Only activate Google GIS on production (cpicoach.com)
+  const [isProductionDomain, setIsProductionDomain] = useState(false);
+
   useEffect(() => {
-    if (!isGoogleConfigured) return;
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname;
+      setIsProductionDomain(host === "cpicoach.com" || host.endsWith(".cpicoach.com"));
+    }
+  }, []);
+
+  const isGoogleActive = isGoogleConfigured && isProductionDomain;
+
+  useEffect(() => {
+    if (!isGoogleActive) return;
 
     const scriptId = "google-gis-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
@@ -356,7 +368,7 @@ export default function SignupPage() {
               <span>Authenticating with Google...</span>
             </div>
           )}
-          {isGoogleConfigured ? (
+          {isGoogleActive ? (
             <div
               ref={googleBtnRef}
               className="w-full min-h-[44px] flex justify-center"
@@ -366,7 +378,9 @@ export default function SignupPage() {
               type="button"
               onClick={() =>
                 setError(
-                  "Google Sign-In is not configured yet. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID in frontend/.env.local or sign up with your name, email, and password above."
+                  typeof window !== "undefined" && window.location.hostname === "localhost"
+                    ? "Google Sign-In is configured exclusively for production (https://cpicoach.com). Please sign up with your details above on localhost."
+                    : "Google Sign-In is not configured yet. Please sign up with your details above."
                 )
               }
               className="w-full border-2 border-slate-200 hover:bg-slate-100 text-slate-700 font-bold py-3 px-4 rounded-full flex items-center justify-center gap-3 transition-colors shadow-sm"

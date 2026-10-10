@@ -5,6 +5,8 @@ COPY frontend/package*.json ./
 RUN npm ci --prefer-offline
 COPY frontend/ ./
 ENV NEXT_PUBLIC_API_URL=/api
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID=559180577956-7kl3l6joq4k0n6o8gtcd3gvocsf03cqq.apps.googleusercontent.com
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 RUN npm run build
 
 # Stage 2: Build the Spring Boot backend
