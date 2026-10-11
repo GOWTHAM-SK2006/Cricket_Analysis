@@ -7,18 +7,21 @@ import {
   Edit2, Check, X, Shield, Sparkles, User, AlertCircle,
   FileText, Download, TrendingUp, TrendingDown, ArrowRightLeft,
   Calendar, CheckCircle2, Award, Target, Flame, ChevronDown,
-  ChevronRight, BarChart2, Clock, MoreVertical, ArrowUpDown, Zap
+  ChevronRight, BarChart2, Clock, Zap
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import CricketLoader from "@/components/CricketLoader";
 
 interface Player {
   id: number;
   name: string;
-  role: string;
+  role?: string;
   battingStyle?: string;
   bowlingStyle?: string;
   imageUrl?: string;
+  photoUrl?: string;
+  photo?: string;
   ppiScore?: number | null;
   mpiScore?: number | null;
 }
@@ -64,6 +67,27 @@ const formatScore = (val: number | null | undefined): string => {
   return `${score100}`;
 };
 
+const getPlayerImage = (player: Player) => {
+  if (player.imageUrl) return player.imageUrl;
+  if ((player as any).photoUrl) return (player as any).photoUrl;
+  if ((player as any).photo) return (player as any).photo;
+  const name = player.name || "Player";
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name
+  )}&background=181B27&color=D4AF37&font-size=0.45&bold=true`;
+};
+
+const getPlayerCpiScore = (p: Player): string => {
+  const ppiStr = formatScore(p.ppiScore);
+  const mpiStr = formatScore(p.mpiScore);
+  const ppi = ppiStr !== "N/A" ? Number(ppiStr) : 0;
+  const mpi = mpiStr !== "N/A" ? Number(mpiStr) : 0;
+  if (ppi > 0 && mpi > 0) return `${Math.round(ppi * 0.4 + mpi * 0.6)}`;
+  if (ppi > 0) return `${ppi}`;
+  if (mpi > 0) return `${mpi}`;
+  return "N/A";
+};
+
 const getParamAverage = (assessments: AssessmentItem[], getVal: (a: AssessmentItem) => number | undefined): number | null => {
   const validVals = assessments
     .map(a => getVal(a))
@@ -83,21 +107,23 @@ const PARAM_DEFINITIONS = [
   { name: "Intensity", getVal: (a: AssessmentItem) => a.intensity }
 ];
 
-const getCpiTier = (score: number | string | null | undefined): { label: string; color: string; bg: string; border: string; glow: string } => {
+const getCpiTier = (score: number | string | null | undefined): { label: string; color: string; bg: string; border: string } => {
   if (score === null || score === undefined || score === "N/A") {
-    return { label: "Unrated", color: "text-zinc-400", bg: "bg-white/5", border: "border-white/10", glow: "from-zinc-400 to-zinc-500" };
+    return { label: "Unrated", color: "text-zinc-400", bg: "bg-white/5", border: "border-white/10" };
   }
   const num = typeof score === "number" ? score : Number(score);
   if (isNaN(num) || num <= 0) {
-    return { label: "Unrated", color: "text-zinc-400", bg: "bg-white/5", border: "border-white/10", glow: "from-zinc-400 to-zinc-500" };
+    return { label: "Unrated", color: "text-zinc-400", bg: "bg-white/5", border: "border-white/10" };
   }
-  if (num >= 85) return { label: "Elite", color: "text-[#F5BA4E]", bg: "bg-[#D4AF37]/15", border: "border-[#D4AF37]/35", glow: "from-[#F5BA4E] to-[#D4AF37]" };
-  if (num >= 70) return { label: "High Perform", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/15", border: "border-[#D4AF37]/35", glow: "from-[#D4AF37] to-[#F59E0B]" };
-  if (num >= 55) return { label: "Standard", color: "text-emerald-400", bg: "bg-emerald-500/15", border: "border-emerald-500/30", glow: "from-emerald-400 to-teal-500" };
-  return { label: "Developing", color: "text-blue-400", bg: "bg-blue-500/15", border: "border-blue-500/30", glow: "from-blue-400 to-cyan-500" };
+  if (num >= 85) return { label: "Elite", color: "text-[#F5BA4E]", bg: "bg-[#D4AF37]/15", border: "border-[#D4AF37]/35" };
+  if (num >= 70) return { label: "High Perform", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/15", border: "border-[#D4AF37]/35" };
+  if (num >= 55) return { label: "Standard", color: "text-emerald-400", bg: "bg-emerald-500/15", border: "border-emerald-500/30" };
+  return { label: "Developing", color: "text-blue-400", bg: "bg-blue-500/15", border: "border-blue-500/30" };
 };
 
 export default function TeamPage() {
+  const router = useRouter();
+
   const [loading, setLoading] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       try {
@@ -146,19 +172,23 @@ export default function TeamPage() {
     }
     return [];
   });
-  
-  // Navigation Sub-Tabs
-  const [activeTab, setActiveTab] = useState<"MY_TEAMS" | "OVERVIEW" | "7PARAMS" | "HISTORY" | "NOTES" | "COMPARISON">("MY_TEAMS");
 
-  // Modal & Selection State
+  // Focused Navigation Tabs (Players Roster is primary!)
+  const [activeTab, setActiveTab] = useState<"PLAYERS" | "ANALYTICS" | "NOTES" | "COMPARISON">("PLAYERS");
+
+  // Modals
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // Search filter inside active squad
+  const [squadSearchQuery, setSquadSearchQuery] = useState("");
 
   // Assessment & Notes Data
   const [practiceAssessments, setPracticeAssessments] = useState<AssessmentItem[]>([]);
   const [matchAssessments, setMatchAssessments] = useState<AssessmentItem[]>([]);
   const [teamNotes, setTeamNotes] = useState<TeamNote[]>([]);
 
-  // Cache & Loading states for on-demand tabs
+  // Cache & Loading states
   const assessmentsCache = useRef<Map<number, { practiceAssessments: AssessmentItem[]; matchAssessments: AssessmentItem[] }>>(new Map());
   const notesCache = useRef<Map<number, TeamNote[]>>(new Map());
   const [loadingAssessments, setLoadingAssessments] = useState(false);
@@ -176,7 +206,6 @@ export default function TeamPage() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Add Players Modal State
-  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingPlayers, setIsAddingPlayers] = useState(false);
@@ -191,10 +220,7 @@ export default function TeamPage() {
   const [isSavingNote, setIsSavingNote] = useState(false);
   const [noteFilter, setNoteFilter] = useState<"ALL" | "PRACTICE" | "MATCH">("ALL");
 
-  // Assessment History Filter State
-  const [historyFilter, setHistoryFilter] = useState<"ALL" | "PRACTICE" | "MATCH">("ALL");
-
-  // Comparison State (Team Comparison)
+  // Comparison State
   const [teamAId, setTeamAId] = useState<number | null>(null);
   const [teamBId, setTeamBId] = useState<number | null>(null);
   const [teamAData, setTeamAData] = useState<{ team: Team; prac: AssessmentItem[]; match: AssessmentItem[] } | null>(null);
@@ -204,7 +230,6 @@ export default function TeamPage() {
 
   const fetchTeamData = async () => {
     try {
-      // Parallel fetch of teams and players only - assessments and notes are loaded on-demand per tab
       const [allTeamsRes, squadRes] = await Promise.all([
         api.get("/teams").catch(() => ({ data: [] })),
         api.get("/players").catch(() => ({ data: [] }))
@@ -292,17 +317,15 @@ export default function TeamPage() {
     }
   };
 
-  // Load tab-specific data on-demand when switching tabs
   useEffect(() => {
     if (!team?.id) return;
-    if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+    if (activeTab === "ANALYTICS") {
       ensureAssessmentsLoaded(team.id);
     } else if (activeTab === "NOTES") {
       ensureNotesLoaded(team.id);
     }
   }, [activeTab, team?.id]);
 
-  // Fetch comparison data only when activeTab === "COMPARISON"
   useEffect(() => {
     if (activeTab !== "COMPARISON") return;
 
@@ -318,19 +341,15 @@ export default function TeamPage() {
         if (teamAId) {
           const targetA = allTeams.find(t => t.id === teamAId);
           if (targetA) {
-            let pracA = assessmentsCache.current.get(teamAId)?.practiceAssessments;
-            let matchA = assessmentsCache.current.get(teamAId)?.matchAssessments;
-            if (!pracA || !matchA) {
+            let pracA: AssessmentItem[] = assessmentsCache.current.get(teamAId)?.practiceAssessments || [];
+            let matchA: AssessmentItem[] = assessmentsCache.current.get(teamAId)?.matchAssessments || [];
+            if (pracA.length === 0 && matchA.length === 0) {
               const resA = await api.get(`/teams/${teamAId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
               pracA = resA.data?.practiceAssessments || [];
               matchA = resA.data?.matchAssessments || [];
               assessmentsCache.current.set(teamAId, { practiceAssessments: pracA, matchAssessments: matchA });
             }
-            setTeamAData({
-              team: targetA,
-              prac: pracA,
-              match: matchA
-            });
+            setTeamAData({ team: targetA, prac: pracA, match: matchA });
           }
         } else {
           setTeamAData(null);
@@ -339,19 +358,15 @@ export default function TeamPage() {
         if (teamBId) {
           const targetB = allTeams.find(t => t.id === teamBId);
           if (targetB) {
-            let pracB = assessmentsCache.current.get(teamBId)?.practiceAssessments;
-            let matchB = assessmentsCache.current.get(teamBId)?.matchAssessments;
-            if (!pracB || !matchB) {
+            let pracB: AssessmentItem[] = assessmentsCache.current.get(teamBId)?.practiceAssessments || [];
+            let matchB: AssessmentItem[] = assessmentsCache.current.get(teamBId)?.matchAssessments || [];
+            if (pracB.length === 0 && matchB.length === 0) {
               const resB = await api.get(`/teams/${teamBId}/assessments`).catch(() => ({ data: { practiceAssessments: [], matchAssessments: [] } }));
               pracB = resB.data?.practiceAssessments || [];
               matchB = resB.data?.matchAssessments || [];
               assessmentsCache.current.set(teamBId, { practiceAssessments: pracB, matchAssessments: matchB });
             }
-            setTeamBData({
-              team: targetB,
-              prac: pracB,
-              match: matchB
-            });
+            setTeamBData({ team: targetB, prac: pracB, match: matchB });
           }
         } else {
           setTeamBData(null);
@@ -371,8 +386,9 @@ export default function TeamPage() {
     setEditName(selected.name || "");
     setEditDesc(selected.description || "");
     setTeamAId(selected.id);
+    setSquadSearchQuery("");
 
-    if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+    if (activeTab === "ANALYTICS") {
       ensureAssessmentsLoaded(selected.id);
     } else if (activeTab === "NOTES") {
       ensureNotesLoaded(selected.id);
@@ -400,7 +416,7 @@ export default function TeamPage() {
       setCreateName("");
       setCreateDesc("");
       setShowCreateModal(false);
-      setActiveTab("OVERVIEW");
+      setActiveTab("PLAYERS");
     } catch (err) {
       console.error("Failed to create team", err);
       alert("Failed to create team. Please try again.");
@@ -450,9 +466,8 @@ export default function TeamPage() {
         try { sessionStorage.setItem("cpi_teams_cache", JSON.stringify(next)); } catch {}
         return next;
       });
-      // Invalidate assessments cache for this team since squad membership changed
       assessmentsCache.current.delete(team.id);
-      if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+      if (activeTab === "ANALYTICS") {
         ensureAssessmentsLoaded(team.id, true);
       }
       setShowAddModal(false);
@@ -478,9 +493,8 @@ export default function TeamPage() {
         try { sessionStorage.setItem("cpi_teams_cache", JSON.stringify(next)); } catch {}
         return next;
       });
-      // Invalidate assessments cache for this team since squad membership changed
       assessmentsCache.current.delete(team.id);
-      if (activeTab === "OVERVIEW" || activeTab === "7PARAMS" || activeTab === "HISTORY") {
+      if (activeTab === "ANALYTICS") {
         ensureAssessmentsLoaded(team.id, true);
       }
     } catch (err) {
@@ -550,8 +564,7 @@ export default function TeamPage() {
     const reportDateStr = new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
     const coachName = typeof window !== "undefined" ? localStorage.getItem("userName") || "Coach" : "Coach";
 
-    // Header
-    doc.setFillColor(15, 23, 42); // Dark slate header
+    doc.setFillColor(15, 23, 42);
     doc.rect(0, 0, pageWidth, 22, "F");
 
     doc.setFont("helvetica", "bold");
@@ -570,7 +583,6 @@ export default function TeamPage() {
 
     let y = 28;
 
-    // Team Information Card
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
     doc.roundedRect(14, y, pageWidth - 28, 20, 2, 2, "FD");
@@ -588,7 +600,6 @@ export default function TeamPage() {
 
     y += 25;
 
-    // Summary Metrics Boxes
     const boxW = (pageWidth - 28 - 9) / 4;
 
     const calcTeamAvg = (getVal: (a: AssessmentItem) => number | undefined, items: AssessmentItem[]) => {
@@ -631,123 +642,8 @@ export default function TeamPage() {
       doc.text(m.val, x + 4, y + 12);
     });
 
-    y += 22;
+    y += 24;
 
-    // 5 CPI Parameter Performance Section
-    doc.setFontSize(9.5);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(15, 23, 42);
-    doc.text("TEAM 5-PARAMETER PERFORMANCE", 14, y);
-
-    y += 5;
-
-    // Table Header
-    doc.setFillColor(241, 245, 249);
-    doc.rect(14, y, pageWidth - 28, 6, "F");
-
-    doc.setFontSize(7.5);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(71, 85, 105);
-    doc.text("PARAMETER", 18, y + 4.2);
-    doc.text("PRACTICE AVG", 90, y + 4.2);
-    doc.text("MATCH AVG", 135, y + 4.2);
-    doc.text("OVERALL", 175, y + 4.2);
-
-    y += 6;
-
-    PARAM_DEFINITIONS.forEach((param, idx) => {
-      if (idx % 2 === 1) {
-        doc.setFillColor(248, 250, 252);
-        doc.rect(14, y, pageWidth - 28, 5, "F");
-      }
-
-      const pAvg = getParamAverage(practiceAssessments, param.getVal);
-      const mAvg = getParamAverage(matchAssessments, param.getVal);
-
-      const pStr = pAvg !== null ? `${pAvg}` : "N/A";
-      const mStr = mAvg !== null ? `${mAvg}` : "N/A";
-
-      let oStr = "N/A";
-      if (pAvg !== null && mAvg !== null) oStr = `${Math.round((pAvg + mAvg) / 2 * 10) / 10}`;
-      else if (pAvg !== null) oStr = `${pAvg}`;
-      else if (mAvg !== null) oStr = `${mAvg}`;
-
-      doc.setFontSize(8);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(15, 23, 42);
-      doc.text(param.name, 18, y + 3.6);
-
-      doc.setFont("helvetica", "bold");
-      doc.text(pStr, 90, y + 3.6);
-      doc.text(mStr, 135, y + 3.6);
-      doc.text(oStr, 175, y + 3.6);
-
-      y += 5;
-    });
-
-    y += 8;
-
-    // Team Strengths & Development Areas
-    const allAssessments = [...practiceAssessments, ...matchAssessments];
-    const hasData = allAssessments.length > 0;
-
-    const paramScores = PARAM_DEFINITIONS.map(p => {
-      const avg = getParamAverage(allAssessments, p.getVal);
-      return { name: p.name, avg };
-    }).filter(p => p.avg !== null) as { name: string; avg: number }[];
-
-    paramScores.sort((a, b) => b.avg - a.avg);
-
-    const colW = (pageWidth - 28 - 6) / 2;
-
-    // Strengths Box
-    doc.setFillColor(240, 253, 244);
-    doc.setDrawColor(187, 247, 208);
-    doc.roundedRect(14, y, colW, 22, 2, 2, "FD");
-
-    doc.setFontSize(8.5);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(21, 128, 61);
-    doc.text("TEAM STRENGTHS", 18, y + 5);
-
-    doc.setFontSize(7.5);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(30, 41, 59);
-
-    if (hasData && paramScores.length > 0) {
-      paramScores.slice(0, 3).forEach((s, idx) => {
-        doc.text(`• ${s.name} (${s.avg})`, 18, y + 10 + idx * 3.8);
-      });
-    } else {
-      doc.text("Insufficient assessment data", 18, y + 11);
-    }
-
-    // Development Areas Box
-    doc.setFillColor(254, 243, 199);
-    doc.setDrawColor(253, 230, 138);
-    doc.roundedRect(14 + colW + 6, y, colW, 22, 2, 2, "FD");
-
-    doc.setFontSize(8.5);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(180, 83, 9);
-    doc.text("TEAM DEVELOPMENT AREAS", 18 + colW + 6, y + 5);
-
-    doc.setFontSize(7.5);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(30, 41, 59);
-
-    if (hasData && paramScores.length > 0) {
-      const devAreas = [...paramScores].reverse().slice(0, 3);
-      devAreas.forEach((imp, idx) => {
-        doc.text(`• ${imp.name} (${imp.avg})`, 18 + colW + 6, y + 10 + idx * 3.8);
-      });
-    } else {
-      doc.text("Insufficient assessment data", 18 + colW + 6, y + 11);
-    }
-
-    y += 28;
-
-    // Team Squad List Summary
     doc.setFontSize(9.5);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(15, 23, 42);
@@ -761,8 +657,8 @@ export default function TeamPage() {
     doc.setFontSize(7);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(71, 85, 105);
-    doc.text("PLAYER NAME", 18, y + 3.5);
-    doc.text("ROLE", 85, y + 3.5);
+    doc.text("PLAYER FULL NAME", 18, y + 3.5);
+    doc.text("CPI SCORE", 100, y + 3.5);
     doc.text("PPI", 140, y + 3.5);
     doc.text("MPI", 175, y + 3.5);
 
@@ -781,18 +677,12 @@ export default function TeamPage() {
       doc.setFont("helvetica", "normal");
       doc.setTextColor(15, 23, 42);
       doc.text(p.name, 18, y + 3.2);
-      doc.text(p.role || "Player", 85, y + 3.2);
+      doc.text(getPlayerCpiScore(p), 100, y + 3.2);
       doc.text(formatScore(p.ppiScore), 140, y + 3.2);
       doc.text(formatScore(p.mpiScore), 175, y + 3.2);
 
       y += 4.5;
     });
-
-    // Footer
-    doc.setFontSize(7.5);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(148, 163, 184);
-    doc.text("Cricket Performance Index (CPI) • Official Confidential Team Report", 14, pageHeight - 8);
 
     doc.save(`${team.name.replace(/\s+/g, "_")}_Team_Report.pdf`);
   };
@@ -801,33 +691,15 @@ export default function TeamPage() {
     return <CricketLoader fullScreen message="Loading Team..." subtext="Cricket Performance Index" />;
   }
 
-  // Calculate Primary Team Performance Data
+  // Active squad and metrics calculation
   const squad = team?.players || [];
+  const filteredSquad = squad.filter(p =>
+    squadSearchQuery ? p.name.toLowerCase().includes(squadSearchQuery.toLowerCase()) : true
+  );
+
   const allAssessments = [...practiceAssessments, ...matchAssessments];
   const hasAssessmentData = allAssessments.length > 0;
 
-  // Calculate 5 Parameter Averages for Practice & Match
-  const practiceParamScores = PARAM_DEFINITIONS.map(p => ({
-    name: p.name,
-    avg: getParamAverage(practiceAssessments, p.getVal)
-  }));
-
-  const matchParamScores = PARAM_DEFINITIONS.map(p => ({
-    name: p.name,
-    avg: getParamAverage(matchAssessments, p.getVal)
-  }));
-
-  const overallParamScores = PARAM_DEFINITIONS.map(p => {
-    const avg = getParamAverage(allAssessments, p.getVal);
-    return { name: p.name, avg };
-  }).filter(p => p.avg !== null) as { name: string; avg: number }[];
-
-  overallParamScores.sort((a, b) => b.avg - a.avg);
-
-  const strongestParam = overallParamScores.length > 0 ? overallParamScores[0] : null;
-  const weakestParam = overallParamScores.length > 0 ? overallParamScores[overallParamScores.length - 1] : null;
-
-  // Practice & Match overall scores
   const validPpi = squad.map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
   const validMpi = squad.map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
 
@@ -838,14 +710,15 @@ export default function TeamPage() {
     ? Math.round((avgPpi + avgMpi) / 2)
     : (typeof avgPpi === "number" ? avgPpi : (typeof avgMpi === "number" ? avgMpi : "N/A"));
 
-  // Comparison helper functions for Team Comparison
+  const teamTier = getCpiTier(teamCpi);
+
+  // Comparison helper
   const calcComparisonStats = (data: { team: Team; prac: AssessmentItem[]; match: AssessmentItem[] } | null) => {
     if (!data) return null;
 
     const squadList = data.team.players || [];
     const allAss = [...data.prac, ...data.match];
 
-    // Practice PPI
     const pracAssScores = data.prac.map(a => a.ppiScore).filter((v): v is number => typeof v === "number" && v > 0);
     const squadPpiList = squadList.map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
 
@@ -857,7 +730,6 @@ export default function TeamPage() {
       ppiAvg = Math.round(squadPpiList.reduce((a, b) => a + b, 0) / squadPpiList.length);
     }
 
-    // Match MPI
     const matchAssScores = data.match.map(a => a.mpiScore).filter((v): v is number => typeof v === "number" && v > 0);
     const squadMpiList = squadList.map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
 
@@ -887,25 +759,12 @@ export default function TeamPage() {
       };
     });
 
-    const paramScoresSorted = PARAM_DEFINITIONS.map(p => {
-      const avg = getParamAverage(allAss, p.getVal);
-      return { name: p.name, avg };
-    }).filter(p => p.avg !== null) as { name: string; avg: number }[];
-
-    paramScoresSorted.sort((a, b) => b.avg - a.avg);
-
-    const strengths = paramScoresSorted.length > 0 ? paramScoresSorted.slice(0, 3).map(s => `${s.name} (${s.avg})`) : [];
-    const devAreas = paramScoresSorted.length > 0 ? [...paramScoresSorted].reverse().slice(0, 3).map(s => `${s.name} (${s.avg})`) : [];
-
     return {
       squadSize: squadList.length,
       cpi: cpiVal,
       ppi: ppiAvg,
       mpi: mpiAvg,
-      paramsMap,
-      strengths,
-      devAreas,
-      hasData: allAss.length > 0 || squadList.length > 0
+      paramsMap
     };
   };
 
@@ -914,207 +773,147 @@ export default function TeamPage() {
 
   return (
     <div className="relative space-y-5 sm:space-y-6 pb-28 sm:pb-20 max-w-full overflow-x-hidden">
-      {/* Ambient background performance glow accents */}
-      <div className="absolute -top-24 -right-20 w-96 h-96 bg-gradient-to-br from-orange-500/10 via-amber-400/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-96 -left-28 w-80 h-80 bg-gradient-to-tr from-amber-500/8 via-orange-400/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+      {/* Ambient background glow accents */}
+      <div className="absolute -top-24 -right-20 w-96 h-96 bg-[radial-gradient(circle,rgba(212,175,55,0.15)_0%,transparent_70%)] pointer-events-none -z-10" />
+      <div className="absolute top-96 -left-28 w-80 h-80 bg-[radial-gradient(circle,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none -z-10" />
 
-      {/* ------------------ 1. GLASSO-HERO HEADER ------------------ */}
+      {/* ── 1. HEADER & PURPOSE (Clear, High-Impact) ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#181B27] via-[#12141D] to-[#0A0C12] border border-[#D4AF37]/30 shadow-2xl shadow-[#D4AF37]/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xl group"
+        transition={{ duration: 0.3 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#181B27] via-[#12141D] to-[#0A0C12] border border-[#D4AF37]/30 shadow-2xl shadow-[#D4AF37]/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xl"
       >
-        {/* Subtle Gold Shimmer Top Border */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-90" />
-
-        {/* Ambient Radial Flare in corner */}
-        <div className="absolute -top-14 -right-14 w-48 h-48 bg-[radial-gradient(circle,rgba(212,175,55,0.22)_0%,transparent_70%)] pointer-events-none" />
 
         <div className="space-y-1 min-w-0 z-10">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F5BA4E] text-[9.5px] font-black tracking-widest uppercase">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
-            </span>
-            <span>ELITE SQUAD ANALYTICS</span>
+            <Shield className="w-3 h-3 text-[#D4AF37]" />
+            <span>SQUAD ROSTER & TEAM MANAGEMENT</span>
           </div>
 
           <div className="flex items-center gap-2.5 pt-0.5">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-white uppercase truncate">
-              <span className="bg-gradient-to-r from-white via-[#F3F4F6] to-[#FCE8B2] bg-clip-text text-transparent">
-                TEAM MANAGEMENT
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-white uppercase">
+              TEAM{" "}
+              <span className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] bg-clip-text text-transparent">
+                MANAGEMENT
               </span>
             </h1>
           </div>
 
-          <p className="text-xs sm:text-sm text-zinc-400 font-medium truncate flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 animate-pulse" />
-            <span>Manage squads, evaluate CPI benchmarks, and track collective performance</span>
+          <p className="text-xs sm:text-sm text-zinc-400 font-medium flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+            <span>Organize your squads, assign players, and monitor team performance</span>
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0 z-10">
           <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setShowCreateModal(true)}
-            className="group relative overflow-hidden bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] hover:to-[#C69212] text-[#090A0E] font-black text-xs uppercase tracking-wider py-3 px-5 sm:px-6 rounded-2xl shadow-lg shadow-[#D4AF37]/25 hover:shadow-[#D4AF37]/40 transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#D4AF37]/50"
+            className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] hover:to-[#C69212] text-[#090A0E] font-black text-xs uppercase tracking-wider py-3 px-5 sm:px-6 rounded-2xl shadow-lg shadow-[#D4AF37]/25 hover:shadow-[#D4AF37]/40 transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#D4AF37]/50"
           >
-            <div className="w-5 h-5 rounded-lg bg-[#090A0E]/15 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
-              <Plus className="w-3.5 h-3.5 stroke-[3] text-[#090A0E]" />
-            </div>
-            <span>CREATE TEAM</span>
+            <Plus className="w-4 h-4 stroke-[3]" />
+            <span>CREATE NEW TEAM</span>
           </motion.button>
 
           {team && (
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => generateTeamPdfReport()}
               className="px-4 py-3 rounded-2xl bg-[#12141D]/90 hover:bg-[#181B27] text-zinc-300 hover:text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shrink-0 border border-white/10 hover:border-[#D4AF37]/40 shadow-sm"
               title="Download Team PDF Report"
             >
-              <Download className="w-4 h-4 text-[#D4AF37] group-hover:translate-y-0.5 transition-transform" />
+              <Download className="w-4 h-4 text-[#D4AF37]" />
               <span className="hidden sm:inline">REPORT</span>
             </motion.button>
           )}
         </div>
       </motion.div>
 
-      {/* ------------------ 2. TEAM PERFORMANCE SUMMARY METRICS ------------------ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* Metric 1: Total Teams */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.05 }}
-          whileHover={{ y: -3, scale: 1.015 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 flex items-center gap-3.5 group"
-        >
-          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-sm">
-            <Shield className="w-6 h-6 stroke-[2.2]" />
-          </div>
-          <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">TEAMS REGISTERED</span>
-            <span className="text-lg sm:text-xl font-black text-white tracking-tight block">
-              {allTeams.length} <span className="text-xs font-bold text-zinc-500">{allTeams.length === 1 ? "Squad" : "Squads"}</span>
+      {/* ── 2. TEAM SELECTOR (Clear, Instant Squad Switcher) ── */}
+      {allTeams.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <Users2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>SELECT SQUAD TO MANAGE ({allTeams.length})</span>
             </span>
-            <span className="text-[10px] font-bold text-[#F5BA4E] bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
-              Active Roster
+            <span className="text-[10px] font-bold text-zinc-500">
+              Active: <strong className="text-white">{team?.name || "None"}</strong>
             </span>
           </div>
-        </motion.div>
 
-        {/* Metric 2: Total Squad Players */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          whileHover={{ y: -3, scale: 1.015 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 flex items-center gap-3.5 group"
-        >
-          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-sm">
-            <Users2 className="w-6 h-6 stroke-[2.2]" />
-          </div>
-          <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">SQUAD PLAYERS</span>
-            <span className="text-lg sm:text-xl font-black text-white tracking-tight block">
-              {mySquad.length} <span className="text-xs font-bold text-zinc-500">{mySquad.length === 1 ? "Athlete" : "Athletes"}</span>
-            </span>
-            <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
-              Available
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Metric 3: Average Team CPI */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
-          whileHover={{ y: -3, scale: 1.015 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/15 transition-all duration-300 flex items-center gap-3.5 group"
-        >
-          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform shadow-sm">
-            <Award className="w-6 h-6 stroke-[2.2]" />
-          </div>
-          <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-[#F5BA4E] uppercase tracking-wider block">COLLECTIVE CPI</span>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-lg sm:text-xl font-black text-[#D4AF37] font-mono tracking-tight drop-shadow-[0_0_10px_rgba(212,175,55,0.45)]">
-                {teamCpi}
-              </span>
-              {(() => {
-                const tier = getCpiTier(teamCpi);
-                return (
-                  <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md border ${tier.color} ${tier.bg} ${tier.border}`}>
-                    {tier.label}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            {allTeams.map((t) => {
+              const isSelected = team?.id === t.id;
+              const count = t.players?.length || 0;
+              return (
+                <button
+                  key={`pill-${t.id}`}
+                  onClick={() => selectTeam(t)}
+                  className={`px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all shrink-0 cursor-pointer flex items-center gap-2.5 border ${
+                    isSelected
+                      ? "bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] border-[#D4AF37] shadow-lg shadow-[#D4AF37]/25"
+                      : "bg-[#12141D] hover:bg-[#181B27] text-zinc-300 hover:text-white border-white/10 hover:border-[#D4AF37]/40"
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-black ${
+                      isSelected ? "bg-[#090A0E]/20 text-[#090A0E]" : "bg-[#D4AF37]/20 text-[#D4AF37]"
+                    }`}
+                  >
+                    {t.name.charAt(0)}
+                  </div>
+                  <span>{t.name}</span>
+                  <span
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                      isSelected ? "bg-[#090A0E]/20 text-[#090A0E]" : "bg-white/10 text-zinc-400"
+                    }`}
+                  >
+                    {count} {count === 1 ? "player" : "players"}
                   </span>
-                );
-              })()}
-            </div>
-            <span className="text-[10px] font-bold text-zinc-500 block mt-0.5">
-              Team Index
-            </span>
-          </div>
-        </motion.div>
+                </button>
+              );
+            })}
 
-        {/* Metric 4: Active Team */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          whileHover={{ y: -3, scale: 1.015 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 p-4 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10 transition-all duration-300 flex items-center gap-3.5 group"
-        >
-          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform shadow-sm relative">
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-            </span>
-            <CheckCircle2 className="w-6 h-6 stroke-[2.2]" />
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="px-3.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all shrink-0 cursor-pointer flex items-center gap-1.5 bg-[#12141D]/60 hover:bg-[#181B27] text-zinc-400 hover:text-[#D4AF37] border border-dashed border-white/15 hover:border-[#D4AF37]/50"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+ NEW TEAM</span>
+            </button>
           </div>
-          <div className="min-w-0">
-            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">ACTIVE SQUAD</span>
-            <span className="text-xs sm:text-sm font-black text-white truncate block">
-              {team ? team.name : "None"}
-            </span>
-            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md inline-block mt-0.5">
-              In Focus
-            </span>
-          </div>
-        </motion.div>
-      </div>
+        </div>
+      )}
 
-      {/* STATE 1: NO TEAMS YET */}
+      {/* ── STATE 1: NO TEAMS CREATED YET ── */}
       {allTeams.length === 0 && !team && (
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.35 }}
-          className="glass-surface border border-slate-200/80 rounded-3xl p-8 sm:p-12 shadow-sm space-y-6 text-center relative overflow-hidden"
+          className="rounded-3xl bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-[#D4AF37]/30 p-8 sm:p-12 text-center space-y-6 shadow-2xl relative overflow-hidden"
         >
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-500/15 to-amber-500/10 border border-orange-200 text-orange-600 mx-auto flex items-center justify-center shadow-inner">
+          <div className="w-20 h-20 rounded-3xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] mx-auto flex items-center justify-center shadow-inner">
             <Shield className="w-10 h-10 stroke-[2]" />
           </div>
           <div className="space-y-2 max-w-md mx-auto">
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
               NO TEAMS CREATED YET
             </h2>
-            <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed">
-              Organize your players into dedicated team squads to evaluate collective performance metrics, track CPI averages, and manage group analytics.
+            <p className="text-zinc-400 text-xs sm:text-sm font-medium leading-relaxed">
+              Create your first team squad (e.g. "Senior Academy XI" or "U-19 Squad") to group athletes, assign players, and track collective CPI benchmarks.
             </p>
           </div>
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowCreateModal(true)}
-            className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-orange-500/25 cursor-pointer inline-flex items-center gap-2"
+            className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] rounded-2xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#D4AF37]/25 cursor-pointer inline-flex items-center gap-2"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>CREATE YOUR FIRST TEAM</span>
@@ -1122,18 +921,172 @@ export default function TeamPage() {
         </motion.div>
       )}
 
-      {/* STATE 2: TEAM DASHBOARD VIEW */}
+      {/* ── STATE 2: ACTIVE TEAM MANAGEMENT DASHBOARD ── */}
       {allTeams.length > 0 && team && (
-        <div className="space-y-4 sm:space-y-5">
-          {/* ------------------ 3. SEGMENTED NAVIGATION TABS ------------------ */}
-          <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth max-w-full shadow-inner">
+        <div className="space-y-5">
+          {/* ── ACTIVE TEAM CARD & BENCHMARKS ── */}
+          <div className="rounded-3xl bg-gradient-to-b from-[#181B27]/95 via-[#12141D]/95 to-[#0E1017] border border-[#D4AF37]/30 p-5 sm:p-6 shadow-xl space-y-5 relative overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/8 pb-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] font-black text-2xl flex items-center justify-center shrink-0 uppercase shadow-lg shadow-[#D4AF37]/25 border border-[#D4AF37]/50">
+                  {team.name.charAt(0)}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black tracking-wider text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full uppercase flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      ACTIVE SQUAD
+                    </span>
+                    <span className="text-xs text-zinc-500 font-bold">
+                      {squad.length} Athletes
+                    </span>
+                  </div>
+
+                  <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight mt-0.5 truncate">
+                    {team.name}
+                  </h2>
+
+                  {team.description && (
+                    <p className="text-xs text-zinc-400 font-medium truncate mt-0.5">
+                      {team.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-white/10"
+                >
+                  <Edit2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>{isEditing ? "CANCEL" : "EDIT SQUAD"}</span>
+                </button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setSelectedPlayerIds([]);
+                    setShowAddModal(true);
+                  }}
+                  className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] text-[#090A0E] rounded-xl py-2 px-4 font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-[#D4AF37]/25 cursor-pointer flex items-center gap-1.5"
+                >
+                  <UserPlus className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>+ ADD PLAYERS</span>
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Inline Edit Form */}
+            {isEditing && (
+              <form onSubmit={handleUpdateTeam} className="bg-[#0E1017] border border-white/10 rounded-2xl p-4 sm:p-5 space-y-3.5">
+                <div className="font-black text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                  <Edit2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>EDIT SQUAD DETAILS</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="Team Name"
+                    className="w-full bg-[#181B27] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                  <input
+                    type="text"
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    placeholder="Team Description (optional)"
+                    className="w-full bg-[#181B27] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-bold cursor-pointer"
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isUpdating || !editName.trim()}
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] text-[#090A0E] text-xs font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {isUpdating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+                    <span>SAVE CHANGES</span>
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Quick Metrics Strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-3.5 text-center">
+                <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">
+                  SQUAD ROSTER
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-white font-mono mt-0.5 block">
+                  {squad.length}
+                </span>
+                <span className="text-[9px] font-bold text-zinc-500 uppercase mt-0.5 block">
+                  Assigned Athletes
+                </span>
+              </div>
+
+              <div className="bg-[#0E1017] border border-[#D4AF37]/30 rounded-2xl p-3.5 text-center">
+                <span className="text-[10px] font-extrabold text-[#F5BA4E] uppercase tracking-wider block">
+                  TEAM CPI
+                </span>
+                <div className="flex items-center justify-center gap-1.5 mt-0.5">
+                  <span className="text-xl sm:text-2xl font-black text-[#D4AF37] font-mono">
+                    {teamCpi}
+                  </span>
+                  <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md border ${teamTier.color} ${teamTier.bg} ${teamTier.border}`}>
+                    {teamTier.label}
+                  </span>
+                </div>
+                <span className="text-[9px] font-bold text-zinc-500 uppercase mt-0.5 block">
+                  Collective Index
+                </span>
+              </div>
+
+              <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-3.5 text-center">
+                <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">
+                  PRACTICE PPI
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-white font-mono mt-0.5 block">
+                  {avgPpi}
+                </span>
+                <span className="text-[9px] font-bold text-zinc-500 uppercase mt-0.5 block">
+                  Practice Average
+                </span>
+              </div>
+
+              <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-3.5 text-center">
+                <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">
+                  MATCH MPI
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-white font-mono mt-0.5 block">
+                  {avgMpi}
+                </span>
+                <span className="text-[9px] font-bold text-zinc-500 uppercase mt-0.5 block">
+                  Match Average
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── 3. FOCUSED SUB-TABS (Players Roster is Front and Center!) ── */}
+          <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar shadow-inner">
             {[
-              { id: "MY_TEAMS", label: "MY TEAMS", count: allTeams.length, icon: Users2 },
-              { id: "OVERVIEW", label: "SQUAD OVERVIEW", icon: BarChart2 },
-              { id: "7PARAMS", label: "7-PARAMETER ANALYTICS", icon: TrendingUp },
-              { id: "HISTORY", label: "ASSESSMENT HISTORY", icon: Clock },
-              { id: "NOTES", label: "TEAM COACH NOTES", icon: FileText },
-              { id: "COMPARISON", label: "TEAM COMPARISON", icon: ArrowRightLeft }
+              { id: "PLAYERS", label: "SQUAD PLAYERS", count: squad.length, icon: Users2 },
+              { id: "ANALYTICS", label: "TEAM ANALYTICS", icon: BarChart2 },
+              { id: "NOTES", label: "COACH NOTES", count: teamNotes.length, icon: FileText },
+              { id: "COMPARISON", label: "COMPARE SQUADS", icon: ArrowRightLeft }
             ].map((t) => {
               const Icon = t.icon;
               const isActive = activeTab === t.id;
@@ -1141,20 +1094,18 @@ export default function TeamPage() {
                 <button
                   key={t.id}
                   onClick={() => setActiveTab(t.id as any)}
-                  className={`relative px-4 py-2.5 rounded-xl font-extrabold text-[11px] uppercase tracking-wider transition-all shrink-0 cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+                  className={`px-4 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
                     isActive
                       ? "bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] font-black shadow-lg shadow-[#D4AF37]/25"
                       : "text-zinc-400 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 stroke-[2.2] transition-transform ${isActive ? "scale-110" : ""}`} />
+                  <Icon className={`w-3.5 h-3.5 stroke-[2.2] ${isActive ? "scale-110" : ""}`} />
                   <span>{t.label}</span>
                   {t.count !== undefined && (
                     <span
                       className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
-                        isActive
-                          ? "bg-[#090A0E]/20 text-[#090A0E]"
-                          : "bg-white/10 text-zinc-300"
+                        isActive ? "bg-[#090A0E]/20 text-[#090A0E]" : "bg-white/10 text-zinc-300"
                       }`}
                     >
                       {t.count}
@@ -1165,778 +1116,274 @@ export default function TeamPage() {
             })}
           </div>
 
-          {/* ------------------ 4. TAB: MY TEAMS (Clean Redesigned Team Profile Cards) ------------------ */}
-          {activeTab === "MY_TEAMS" && (
+          {/* ── TAB 1: SQUAD PLAYERS (Core Player Management) ── */}
+          {activeTab === "PLAYERS" && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-white/8 pb-3">
-                <div>
-                  <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-tight flex items-center gap-2">
-                    <Users2 className="w-4 h-4 text-[#D4AF37] stroke-[2.5]" />
-                    <span>MY TEAMS ({allTeams.length})</span>
-                  </h3>
-                  <p className="text-[11px] sm:text-xs font-semibold text-zinc-400 mt-0.5 truncate">
-                    Select a team to view its squad dashboard and performance analytics.
-                  </p>
-                </div>
-              </div>
-
-              {/* Team Profile Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-                {allTeams.map((t, idx) => {
-                  const isSelected = team?.id === t.id;
-                  const squadSize = t.players?.length || 0;
-                  const ppiList = (t.players || []).map(p => formatScore(p.ppiScore)).filter(s => s !== "N/A").map(s => Number(s));
-                  const mpiList = (t.players || []).map(p => formatScore(p.mpiScore)).filter(s => s !== "N/A").map(s => Number(s));
-                  const ppiAvg = ppiList.length > 0 ? Math.round(ppiList.reduce((a, b) => a + b, 0) / ppiList.length) : "N/A";
-                  const mpiAvg = mpiList.length > 0 ? Math.round(mpiList.reduce((a, b) => a + b, 0) / mpiList.length) : "N/A";
-                  const cardTeamCpi = (typeof ppiAvg === "number" && typeof mpiAvg === "number")
-                    ? Math.round((ppiAvg + mpiAvg) / 2)
-                    : (typeof ppiAvg === "number" ? ppiAvg : (typeof mpiAvg === "number" ? mpiAvg : "N/A"));
-
-                  const numCpi = typeof cardTeamCpi === "number" ? cardTeamCpi : 0;
-                  const tier = getCpiTier(cardTeamCpi);
-
-                  return (
-                    <motion.div
-                      key={`card-${t.id}`}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 }}
-                      whileHover={{ y: -4, scale: 1.01 }}
-                      className={`relative rounded-3xl p-5 sm:p-6 transition-all duration-300 space-y-4 border overflow-hidden group ${
-                        isSelected
-                          ? "bg-gradient-to-b from-[#1E2232] via-[#141724] to-[#0E1017] border-[#D4AF37]/80 ring-2 ring-[#D4AF37]/30 shadow-2xl shadow-[#D4AF37]/15"
-                          : "bg-gradient-to-b from-[#181B27]/90 to-[#12141D]/90 border-white/10 hover:border-[#D4AF37]/50 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/10"
-                      }`}
-                    >
-                      {/* Top border ambient shimmer for selected or hover */}
-                      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent ${isSelected ? 'opacity-90' : 'opacity-0 group-hover:opacity-75'} transition-opacity`} />
-
-                      {/* Top Row: Athletic Crest, Name, Description, Status */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3.5 min-w-0">
-                          {/* 3D Athletic Team Crest */}
-                          <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] font-black text-xl flex items-center justify-center shrink-0 uppercase shadow-lg shadow-[#D4AF37]/25 border border-[#D4AF37]/50">
-                            {t.name.charAt(0)}
-                          </div>
-
-                          <div className="min-w-0">
-                            <h4 className="font-black text-base sm:text-lg text-white uppercase truncate leading-tight group-hover:text-[#F5BA4E] transition-colors">
-                              {t.name}
-                            </h4>
-                            <p className="text-xs text-zinc-400 font-medium truncate mt-0.5">
-                              {t.description || "Cricket Squad"}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="shrink-0">
-                          {isSelected ? (
-                            <span className="text-[10px] font-black tracking-wider text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                              <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                              </span>
-                              Active Squad
-                            </span>
-                          ) : (
-                            <span className="text-[10px] font-extrabold tracking-wider text-zinc-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
-                              Inactive
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Middle Row: Precision CPI Radial Gauge + Performance Strip */}
-                      <div className="border-t border-white/8 pt-3.5 grid grid-cols-2 gap-3.5 items-center">
-                        {/* High-Precision CPI Radial Gauge */}
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-13 h-13 flex items-center justify-center shrink-0">
-                            <svg className="w-13 h-13 transform -rotate-90" viewBox="0 0 36 36">
-                              <defs>
-                                <linearGradient id={`cpiGrad-${t.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                  <stop offset="0%" stopColor="#F5BA4E" />
-                                  <stop offset="100%" stopColor="#D4AF37" />
-                                </linearGradient>
-                              </defs>
-                              <path
-                                className="text-white/10"
-                                strokeWidth="3.2"
-                                stroke="currentColor"
-                                fill="none"
-                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                              />
-                              <path
-                                stroke={`url(#cpiGrad-${t.id})`}
-                                strokeDasharray={`${numCpi}, 100`}
-                                strokeWidth="3.2"
-                                strokeLinecap="round"
-                                fill="none"
-                                className="transition-all duration-700 ease-out"
-                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                              />
-                            </svg>
-                            <span className="absolute font-black text-base text-[#D4AF37] font-mono drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]">
-                              {cardTeamCpi}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider block">TEAM CPI</span>
-                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border inline-block mt-0.5 ${tier.color} ${tier.bg} ${tier.border}`}>
-                              {tier.label}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Player Count & Metrics Mini-Badges */}
-                        <div className="flex items-center gap-2 justify-end">
-                          <div className="bg-[#0E1017] border border-white/10 rounded-xl px-2.5 py-1.5 text-center">
-                            <span className="text-[9px] font-extrabold text-zinc-400 uppercase block">PPI</span>
-                            <span className="text-xs font-black text-white">{ppiAvg}</span>
-                          </div>
-                          <div className="bg-[#0E1017] border border-white/10 rounded-xl px-2.5 py-1.5 text-center">
-                            <span className="text-[9px] font-extrabold text-zinc-400 uppercase block">MPI</span>
-                            <span className="text-xs font-black text-white">{mpiAvg}</span>
-                          </div>
-                          <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl px-2.5 py-1.5 text-center">
-                            <span className="text-[9px] font-extrabold text-[#F5BA4E] uppercase block">PLAYERS</span>
-                            <span className="text-xs font-black text-[#D4AF37]">{squadSize}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Card Action Footer */}
-                      <div className="pt-2 flex items-center justify-between gap-2 border-t border-white/8">
-                        <button
-                          onClick={() => {
-                            selectTeam(t);
-                            setIsEditing(true);
-                            setActiveTab("OVERVIEW");
-                          }}
-                          className="px-3 py-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                          title="Edit Team Info"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                          <span>Edit</span>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            selectTeam(t);
-                            setActiveTab("OVERVIEW");
-                          }}
-                          className="group/btn inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#D4AF37]/15 hover:bg-gradient-to-r hover:from-[#F5BA4E] hover:to-[#B8860B] hover:text-[#090A0E] text-[#D4AF37] font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer border border-[#D4AF37]/40 active:scale-95 shadow-sm hover:shadow-lg hover:shadow-[#D4AF37]/25"
-                        >
-                          <span>VIEW SQUAD</span>
-                          <ChevronRight className="w-4 h-4 stroke-[2.5] group-hover/btn:translate-x-1 transition-transform" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* Bottom Action Card: Interactive Squad Creator */}
-              <motion.div
-                whileHover={{ scale: 1.01, y: -2 }}
-                whileTap={{ scale: 0.99 }}
-                onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-[#181B27]/90 via-[#12141D]/90 to-[#181B27]/90 border-2 border-dashed border-[#D4AF37]/40 hover:border-[#D4AF37] rounded-3xl p-5 sm:p-6 flex items-center justify-between cursor-pointer transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-[#D4AF37]/15 group backdrop-blur-xl"
-              >
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] flex items-center justify-center shrink-0 shadow-md shadow-[#D4AF37]/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                    <Plus className="w-6 h-6 stroke-[3]" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <span className="font-black text-sm sm:text-base text-white block group-hover:text-[#F5BA4E] transition-colors truncate">
-                      Create another team squad
-                    </span>
-                    <span className="text-xs text-zinc-400 font-medium block mt-0.5 truncate">
-                      Add a new squad to evaluate team CPI analytics, track 7 parameters, and benchmark side-by-side.
-                    </span>
-                  </div>
-                </div>
-                <div className="w-9 h-9 rounded-xl bg-[#12141D] border border-white/10 group-hover:border-[#D4AF37]/50 flex items-center justify-center shrink-0 ml-2 shadow-sm">
-                  <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
-                </div>
-              </motion.div>
-            </div>
-          )}
-
-          {/* TAB 1: SQUAD & OVERVIEW */}
-          {activeTab === "OVERVIEW" && (
-            <div className="space-y-5 sm:space-y-6">
-              {/* Team Details Header Card */}
-              <div className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-4 sm:space-y-5 relative overflow-hidden">
-                <div className="flex flex-col items-center justify-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-3.5 border-b border-slate-100 pb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-amber-600 text-white font-black text-2xl flex items-center justify-center shrink-0 uppercase shadow-md shadow-orange-500/25 ring-2 ring-white border border-orange-400/40">
-                      {team.name.charAt(0)}
-                    </div>
-
-                    <div className="flex flex-col items-center sm:items-start min-w-0">
-                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                        <span className="text-[10px] font-black tracking-wider text-orange-600 uppercase bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200 flex items-center gap-1.5 shadow-2xs">
-                          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                          ACTIVE SQUAD
-                        </span>
-                        <span className="text-[11px] sm:text-xs font-bold text-slate-400">
-                          Created {new Date(team.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                        </span>
-                      </div>
-                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-1 truncate">
-                        {team.name}
-                      </h2>
-                      {team.description && (
-                        <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
-                          {team.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-center sm:justify-end gap-2 shrink-0 pt-0.5 sm:pt-0">
-                    <button
-                      onClick={() => setIsEditing(!isEditing)}
-                      className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                    >
-                      <Edit2 className="w-3.5 h-3.5 text-slate-500" />
-                      <span>EDIT DETAILS</span>
-                    </button>
-                  </div>
+              {/* Search & Actions Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#12141D] border border-white/10 rounded-2xl p-3.5 sm:p-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={squadSearchQuery}
+                    onChange={(e) => setSquadSearchQuery(e.target.value)}
+                    placeholder="Search player in squad by full name..."
+                    className="w-full bg-[#0E1017] border border-white/10 rounded-xl pl-9 pr-4 py-2 text-xs font-bold text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
+                  />
                 </div>
 
-                {/* Inline Edit Details Form */}
-                {isEditing && (
-                  <form onSubmit={handleUpdateTeam} className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-3.5">
-                    <div className="font-black text-xs uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <Edit2 className="w-3.5 h-3.5 text-orange-500" />
-                      <span>EDIT TEAM INFO</span>
-                    </div>
-                    <div>
-                      <input
-                        type="text"
-                        required
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        placeholder="Team Name"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 shadow-2xs"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        type="text"
-                        value={editDesc}
-                        onChange={(e) => setEditDesc(e.target.value)}
-                        placeholder="Team Description (optional)"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 shadow-2xs"
-                      />
-                    </div>
-                    <div className="flex items-center justify-end gap-2 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setIsEditing(false)}
-                        className="px-3.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold"
-                      >
-                        CANCEL
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={isUpdating || !editName.trim()}
-                        className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-orange-500/20"
-                      >
-                        {isUpdating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
-                        <span>SAVE</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
-
-                {/* Team Quick Snapshot Stats (2 Columns on Mobile, 4 Columns on Tablet/Desktop) */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-1">
-                  <div className="glass-surface border border-slate-200/80 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">TOTAL PLAYERS</span>
-                    <span className="text-xl sm:text-2xl font-black text-slate-900">{squad.length}</span>
-                  </div>
-                  <div className="bg-gradient-to-br from-orange-50 to-amber-50/80 border border-orange-200 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    <span className="text-[10px] sm:text-xs font-black text-orange-600 uppercase tracking-wider block mb-1">AVERAGE CPI</span>
-                    <span className="text-xl sm:text-2xl font-black text-orange-600 font-mono">{teamCpi}</span>
-                  </div>
-                  <div className="glass-surface border border-slate-200/80 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">AVERAGE PPI</span>
-                    <span className="text-xl sm:text-2xl font-black text-slate-800">{avgPpi}</span>
-                  </div>
-                  <div className="glass-surface border border-slate-200/80 rounded-2xl p-4 text-center hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-wider block mb-1">AVERAGE MPI</span>
-                    <span className="text-xl sm:text-2xl font-black text-slate-800">{avgMpi}</span>
-                  </div>
-                </div>
-
-                {/* Team Strengths & Development Areas Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 pt-1">
-                  <div className="bg-gradient-to-br from-emerald-50/80 to-teal-50/60 border border-emerald-200/90 rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-2xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-700">
-                        <TrendingUp className="w-4 h-4 stroke-[2.5]" />
-                      </div>
-                      <span className="text-xs font-black text-emerald-900 uppercase tracking-wider">TEAM STRENGTHS</span>
-                    </div>
-                    {hasAssessmentData && overallParamScores.length > 0 ? (
-                      <ul className="space-y-2">
-                        {overallParamScores.slice(0, 3).map(s => (
-                          <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between bg-white/80 border border-emerald-200/60 rounded-xl px-3 py-1.5 shadow-2xs">
-                            <span className="flex items-center gap-1.5 font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                              {s.name}
-                            </span>
-                            <span className="text-emerald-700 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-lg text-xs font-black font-mono">{s.avg}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-xs font-bold text-slate-500 italic py-2">
-                        Insufficient assessment data
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="bg-gradient-to-br from-amber-50/80 to-orange-50/60 border border-amber-200/90 rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-2xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-700">
-                        <TrendingDown className="w-4 h-4 stroke-[2.5]" />
-                      </div>
-                      <span className="text-xs font-black text-amber-900 uppercase tracking-wider">TEAM DEVELOPMENT AREAS</span>
-                    </div>
-                    {hasAssessmentData && overallParamScores.length > 0 ? (
-                      <ul className="space-y-2">
-                        {[...overallParamScores].reverse().slice(0, 3).map(s => (
-                          <li key={s.name} className="text-xs font-bold text-slate-800 flex items-center justify-between bg-white/80 border border-amber-200/60 rounded-xl px-3 py-1.5 shadow-2xs">
-                            <span className="flex items-center gap-1.5 font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                              {s.name}
-                            </span>
-                            <span className="text-amber-700 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-lg text-xs font-black font-mono">{s.avg}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-xs font-bold text-slate-500 italic py-2">
-                        Insufficient assessment data
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* TEAM SQUAD SECTION */}
-              <div className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                      <span>TEAM SQUAD</span>
-                      <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-black border border-slate-200">
-                        {squad.length}
-                      </span>
-                    </h3>
-                    <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                      Athletes currently assigned to {team.name}
-                    </p>
-                  </div>
-
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                  <span className="text-xs font-bold text-zinc-400">
+                    Showing <strong className="text-white">{filteredSquad.length}</strong> of {squad.length} athletes
+                  </span>
+                  <button
                     onClick={() => {
                       setSelectedPlayerIds([]);
                       setShowAddModal(true);
                     }}
-                    className="w-full sm:w-auto justify-center bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl py-2.5 px-5 font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-orange-500/20 cursor-pointer flex items-center gap-2"
+                    className="bg-[#D4AF37]/15 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#090A0E] border border-[#D4AF37]/35 rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
                   >
-                    <UserPlus className="w-4 h-4 stroke-[2.5]" />
-                    <span>+ ADD PLAYERS</span>
-                  </motion.button>
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>ADD PLAYERS</span>
+                  </button>
                 </div>
-
-                {/* SQUAD PLAYER CARDS (1 Card Per Row on Mobile, 2 Cards Per Row on Desktop md:) */}
-                {squad.length === 0 ? (
-                  <div className="text-center py-12 bg-slate-50/80 border border-dashed border-slate-200 rounded-3xl p-6 space-y-3">
-                    <Users2 className="w-12 h-12 text-slate-300 mx-auto" />
-                    <div className="font-black text-slate-700 text-sm uppercase">NO PLAYERS IN SQUAD</div>
-                    <p className="text-xs text-slate-400 font-semibold max-w-xs mx-auto">
-                      Click "+ ADD PLAYERS" to select existing athletes from your coach squad and assign them to this team.
-                    </p>
-                    <button
-                      onClick={() => {
-                        setSelectedPlayerIds([]);
-                        setShowAddModal(true);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-wider hover:bg-orange-600 transition-all cursor-pointer shadow-md shadow-orange-500/20"
-                    >
-                      <Plus className="w-4 h-4 stroke-[2.5]" />
-                      <span>ADD PLAYERS NOW</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {squad.map((player) => {
-                      const ppiDisplay = formatScore(player.ppiScore);
-                      const mpiDisplay = formatScore(player.mpiScore);
-
-                      return (
-                        <motion.div
-                          key={player.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          whileHover={{ y: -3 }}
-                          className="bg-white border border-slate-200/90 hover:border-orange-300/90 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:shadow-lg space-y-3 relative group w-full"
-                        >
-                          <div className="flex items-start gap-3.5">
-                            {/* Circular Player Photo Avatar */}
-                            <div className="w-13 h-13 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-200/80 flex items-center justify-center text-orange-700 font-black text-lg uppercase shrink-0 overflow-hidden shadow-xs ring-2 ring-white">
-                              {player.imageUrl ? (
-                                <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
-                              ) : (
-                                player.name.charAt(0).toUpperCase()
-                              )}
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-black text-base sm:text-lg text-slate-900 truncate uppercase tracking-tight">
-                                {player.name}
-                              </h4>
-                              <span className="inline-block mt-0.5 text-xs font-extrabold uppercase px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-md">
-                                {player.role || "Player"}
-                              </span>
-                              {(player.battingStyle || player.bowlingStyle) && (
-                                <p className="text-xs font-medium text-slate-400 truncate mt-1">
-                                  {[player.battingStyle, player.bowlingStyle].filter(Boolean).join(" • ")}
-                                </p>
-                              )}
-                            </div>
-
-                            <button
-                              onClick={() => handleRemovePlayer(player.id)}
-                              disabled={removingPlayerId === player.id}
-                              title="Remove player from team"
-                              className="p-2 rounded-xl text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
-                            >
-                              {removingPlayerId === player.id ? (
-                                <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
-                              ) : (
-                                <Trash2 className="w-4 h-4 stroke-[2]" />
-                              )}
-                            </button>
-                          </div>
-
-                          {/* Performance Scores Row */}
-                          <div className="grid grid-cols-2 gap-2.5 pt-2.5 border-t border-slate-100">
-                            {/* PPI SCORE CARD */}
-                            <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-orange-300 transition-colors">
-                              <div className="flex items-center justify-center gap-1 text-orange-600 mb-0.5">
-                                <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
-                                <span className="text-[10px] font-black tracking-wider uppercase">PPI SCORE</span>
-                              </div>
-                              <span className="text-base sm:text-lg font-black text-orange-700 font-mono block">{ppiDisplay}</span>
-                            </div>
-
-                            {/* MPI SCORE CARD */}
-                            <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200/90 rounded-xl p-2.5 text-center shadow-2xs hover:border-amber-300 transition-colors">
-                              <div className="flex items-center justify-center gap-1 text-amber-600 mb-0.5">
-                                <Flame className="w-3.5 h-3.5 stroke-[2.5]" />
-                                <span className="text-[10px] font-black tracking-wider uppercase">MPI SCORE</span>
-                              </div>
-                              <span className="text-base sm:text-lg font-black text-amber-700 font-mono block">{mpiDisplay}</span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                )}
               </div>
+
+              {/* Player Cards Roster */}
+              {squad.length === 0 ? (
+                <div className="text-center py-12 bg-gradient-to-b from-[#181B27]/90 to-[#12141D]/90 border border-dashed border-white/15 rounded-3xl p-6 space-y-3">
+                  <Users2 className="w-12 h-12 text-zinc-500 mx-auto" />
+                  <div className="font-black text-white text-base uppercase">NO PLAYERS IN THIS SQUAD</div>
+                  <p className="text-xs text-zinc-400 font-medium max-w-sm mx-auto">
+                    Click "+ ADD PLAYERS" to select athletes from your roster and assign them to {team.name}.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSelectedPlayerIds([]);
+                      setShowAddModal(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] text-[#090A0E] text-xs font-black uppercase tracking-wider cursor-pointer shadow-md shadow-[#D4AF37]/25"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3]" />
+                    <span>ADD PLAYERS NOW</span>
+                  </button>
+                </div>
+              ) : filteredSquad.length === 0 ? (
+                <div className="text-center py-8 text-zinc-400 font-bold text-xs bg-[#12141D] rounded-2xl border border-white/10">
+                  No players match "{squadSearchQuery}"
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+                  {filteredSquad.map((player) => {
+                    const cpiDisplay = getPlayerCpiScore(player);
+                    const ppiDisplay = formatScore(player.ppiScore);
+                    const mpiDisplay = formatScore(player.mpiScore);
+
+                    return (
+                      <motion.div
+                        key={player.id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        whileHover={{ y: -2 }}
+                        className="bg-gradient-to-b from-[#181B27]/95 to-[#12141D]/95 border border-white/10 hover:border-[#D4AF37]/50 rounded-2xl p-4 sm:p-4.5 transition-all duration-300 hover:shadow-xl hover:shadow-[#D4AF37]/10 flex flex-col justify-between gap-3 group"
+                      >
+                        {/* Top: Avatar, FULL Name, Remove Button */}
+                        <div className="flex items-start gap-3.5 min-w-0">
+                          {/* Profile Avatar */}
+                          <div className="w-12 h-12 rounded-full bg-[#1B1E2C] ring-2 ring-[#D4AF37]/40 flex items-center justify-center shrink-0 overflow-hidden shadow-md">
+                            <img
+                              src={getPlayerImage(player)}
+                              alt={player.name}
+                              className="w-full h-full object-cover rounded-full"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = "none";
+                              }}
+                            />
+                          </div>
+
+                          {/* FULL PLAYER NAME - NEVER TRUNCATED! */}
+                          <div className="min-w-0 flex-1">
+                            <h4
+                              onClick={() => router.push(`/players?id=${player.id}`)}
+                              className="text-sm sm:text-base font-black text-white break-words leading-tight hover:text-[#F5BA4E] transition-colors cursor-pointer"
+                            >
+                              {player.name}
+                            </h4>
+                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mt-0.5">
+                              Squad Athlete
+                            </span>
+                          </div>
+
+                          {/* Remove Button */}
+                          <button
+                            onClick={() => handleRemovePlayer(player.id)}
+                            disabled={removingPlayerId === player.id}
+                            title="Remove player from team"
+                            className="p-2 rounded-xl text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer shrink-0"
+                          >
+                            {removingPlayerId === player.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
+                            ) : (
+                              <Trash2 className="w-4 h-4 stroke-[2]" />
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Performance Scores Row: CPI, PPI, MPI */}
+                        <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/8 text-center">
+                          <div className="bg-[#0E1017] rounded-xl py-1.5 px-2 border border-white/5">
+                            <span className="text-[8px] font-bold text-[#F5BA4E] uppercase block leading-none">
+                              CPI SCORE
+                            </span>
+                            <span className="text-sm sm:text-base font-black text-[#D4AF37] font-mono block mt-0.5">
+                              {cpiDisplay}
+                            </span>
+                          </div>
+                          <div className="bg-[#0E1017] rounded-xl py-1.5 px-2 border border-white/5">
+                            <span className="text-[8px] font-bold text-zinc-400 uppercase block leading-none">
+                              PRACTICE PPI
+                            </span>
+                            <span className="text-sm sm:text-base font-black text-white font-mono block mt-0.5">
+                              {ppiDisplay}
+                            </span>
+                          </div>
+                          <div className="bg-[#0E1017] rounded-xl py-1.5 px-2 border border-white/5">
+                            <span className="text-[8px] font-bold text-zinc-400 uppercase block leading-none">
+                              MATCH MPI
+                            </span>
+                            <span className="text-sm sm:text-base font-black text-white font-mono block mt-0.5">
+                              {mpiDisplay}
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
-          {/* TAB 2: 7-PARAMETER ANALYTICS */}
-          {activeTab === "7PARAMS" && (
+          {/* ── TAB 2: TEAM ANALYTICS ── */}
+          {activeTab === "ANALYTICS" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+              className="rounded-3xl bg-gradient-to-b from-[#181B27]/95 via-[#12141D]/95 to-[#0E1017] border border-white/10 p-5 sm:p-7 shadow-xl space-y-6"
             >
               <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <Target className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  <span>TEAM 7-PARAMETER PERFORMANCE</span>
+                <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+                  <Target className="w-5 h-5 text-[#D4AF37] stroke-[2.5]" />
+                  <span>5 CPI PARAMETERS PERFORMANCE</span>
                 </h3>
-                <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                  Aggregate parameter-by-parameter analysis across all squad members. Practice & Match remain strictly separated.
+                <p className="text-xs font-semibold text-zinc-400 mt-0.5">
+                  Aggregate parameter breakdown across all members of {team.name}. Practice and match remain strictly separated.
                 </p>
               </div>
 
               {loadingAssessments && practiceAssessments.length === 0 && matchAssessments.length === 0 ? (
                 <div className="text-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
-                  <span className="text-xs font-bold text-slate-500">Loading 7-parameter analytics...</span>
+                  <Loader2 className="w-6 h-6 animate-spin text-[#D4AF37] mx-auto mb-2" />
+                  <span className="text-xs font-bold text-zinc-400">Loading parameter analytics...</span>
                 </div>
               ) : (
-                <>
-                  {/* Highlights Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
-                    <div className="bg-gradient-to-br from-emerald-500/15 via-[#181B27] to-[#12141D] border border-emerald-500/30 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-md">
-                      <div>
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-wider block">STRONGEST PARAMETER</span>
-                        <span className="text-base sm:text-lg font-black text-white mt-0.5 block">
-                          {strongestParam ? strongestParam.name : "N/A"}
-                        </span>
-                      </div>
-                      <div className="text-xl sm:text-2xl font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-3.5 py-1 rounded-xl font-mono">
-                        {strongestParam ? strongestParam.avg : "N/A"}
-                      </div>
-                    </div>
+                <div className="grid grid-cols-1 gap-3.5">
+                  {PARAM_DEFINITIONS.map((p) => {
+                    const pAvg = getParamAverage(practiceAssessments, p.getVal);
+                    const mAvg = getParamAverage(matchAssessments, p.getVal);
 
-                    <div className="bg-gradient-to-br from-[#D4AF37]/15 via-[#181B27] to-[#12141D] border border-[#D4AF37]/30 rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-md">
-                      <div>
-                        <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-wider block">WEAKEST PARAMETER</span>
-                        <span className="text-base sm:text-lg font-black text-white mt-0.5 block">
-                          {weakestParam ? weakestParam.name : "N/A"}
-                        </span>
-                      </div>
-                      <div className="text-xl sm:text-2xl font-black text-[#D4AF37] bg-[#D4AF37]/15 border border-[#D4AF37]/30 px-3.5 py-1 rounded-xl font-mono">
-                        {weakestParam ? weakestParam.avg : "N/A"}
-                      </div>
-                    </div>
-                  </div>
+                    const pPercent = pAvg !== null ? (pAvg / 100) * 100 : 0;
+                    const mPercent = mAvg !== null ? (mAvg / 100) * 100 : 0;
 
-                  {/* 5 Parameters Grid Breakdown */}
-                  <div className="space-y-4 pt-2">
-                    <div className="font-black text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-2">
-                      <Zap className="w-3.5 h-3.5 text-orange-500" />
-                      <span>5 CPI PARAMETERS (PRACTICE VS MATCH)</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3.5">
-                      {PARAM_DEFINITIONS.map((p) => {
-                        const pAvg = getParamAverage(practiceAssessments, p.getVal);
-                        const mAvg = getParamAverage(matchAssessments, p.getVal);
-
-                        const pPercent = pAvg !== null ? (pAvg / 100) * 100 : 0;
-                        const mPercent = mAvg !== null ? (mAvg / 100) * 100 : 0;
-
-                        return (
-                          <div key={p.name} className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-3 hover:shadow-md transition-shadow">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3">
-                              <span className="font-black text-sm text-slate-900 uppercase tracking-tight">{p.name}</span>
-                              <div className="flex items-center gap-3 text-xs font-bold">
-                                <span className="text-slate-600">
-                                  Practice: <strong className="text-orange-600 font-mono font-black">{pAvg !== null ? pAvg : "N/A"}</strong>
-                                </span>
-                                <span className="text-slate-300">•</span>
-                                <span className="text-slate-600">
-                                  Match: <strong className="text-amber-600 font-mono font-black">{mAvg !== null ? mAvg : "N/A"}</strong>
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Progress Bar Rows */}
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2.5 text-[10px] font-bold text-slate-500">
-                                <span className="w-16 shrink-0 uppercase font-black text-slate-600">PRACTICE</span>
-                                <div className="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
-                                  <div
-                                    className="bg-gradient-to-r from-orange-500 to-amber-500 h-full rounded-full transition-all duration-500"
-                                    style={{ width: `${Math.min(100, Math.max(0, pPercent))}%` }}
-                                  />
-                                </div>
-                                <span className="w-8 text-right font-black text-slate-800 font-mono">{pAvg !== null ? pAvg : "N/A"}</span>
-                              </div>
-
-                              <div className="flex items-center gap-2.5 text-[10px] font-bold text-slate-500">
-                                <span className="w-16 shrink-0 uppercase font-black text-slate-600">MATCH</span>
-                                <div className="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
-                                  <div
-                                    className="bg-gradient-to-r from-amber-500 to-yellow-500 h-full rounded-full transition-all duration-500"
-                                    style={{ width: `${Math.min(100, Math.max(0, mPercent))}%` }}
-                                  />
-                                </div>
-                                <span className="w-8 text-right font-black text-slate-800 font-mono">{mAvg !== null ? mAvg : "N/A"}</span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          )}
-
-          {/* TAB 3: ASSESSMENT HISTORY */}
-          {activeTab === "HISTORY" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-                <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                    <span>TEAM ASSESSMENT HISTORY</span>
-                  </h3>
-                  <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                    Complete historical log of practice and match assessments for players in this team squad.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl self-start sm:self-auto border border-slate-200/80">
-                  <button
-                    onClick={() => setHistoryFilter("ALL")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "ALL" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    ALL
-                  </button>
-                  <button
-                    onClick={() => setHistoryFilter("PRACTICE")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "PRACTICE" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    PRACTICE
-                  </button>
-                  <button
-                    onClick={() => setHistoryFilter("MATCH")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                      historyFilter === "MATCH" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    MATCH
-                  </button>
-                </div>
-              </div>
-
-              {/* Assessment List */}
-              {loadingAssessments && practiceAssessments.length === 0 && matchAssessments.length === 0 ? (
-                <div className="text-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
-                  <span className="text-xs font-bold text-slate-500">Loading assessment history...</span>
-                </div>
-              ) : (() => {
-                const combinedList = [
-                  ...practiceAssessments.map(a => ({ ...a, type: "PRACTICE" as const })),
-                  ...matchAssessments.map(a => ({ ...a, type: "MATCH" as const }))
-                ].sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
-
-                const filtered = combinedList.filter(a => historyFilter === "ALL" || a.type === historyFilter);
-
-                if (filtered.length === 0) {
-                  return (
-                    <div className="text-center py-12 bg-slate-50/80 border border-dashed border-slate-200 rounded-3xl p-6">
-                      <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-                      <div className="font-black text-slate-700 text-sm uppercase">NO ASSESSMENT RECORDS FOUND</div>
-                      <p className="text-xs text-slate-400 font-semibold mt-1">
-                        Assessments completed for squad players will automatically appear in this history log.
-                      </p>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="space-y-3">
-                    {filtered.map((item, idx) => (
-                      <div
-                        key={`${item.type}-${item.id}-${idx}`}
-                        className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-2 hover:border-orange-300/80 hover:shadow-md transition-all"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-3">
-                            <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-lg shrink-0 ${
-                              item.type === "PRACTICE"
-                                ? "bg-orange-50 text-orange-700 border border-orange-200"
-                                : "bg-amber-50 text-amber-700 border border-amber-200"
-                            }`}>
-                              {item.type}
+                    return (
+                      <div key={p.name} className="bg-[#0E1017] border border-white/10 rounded-2xl p-4 sm:p-5 space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3">
+                          <span className="font-black text-sm text-white uppercase tracking-tight">{p.name}</span>
+                          <div className="flex items-center gap-3 text-xs font-bold">
+                            <span className="text-zinc-400">
+                              Practice: <strong className="text-[#F5BA4E] font-mono font-black">{pAvg !== null ? pAvg : "N/A"}</strong>
                             </span>
-                            <div className="min-w-0">
-                              <h5 className="font-black text-sm text-slate-900 uppercase truncate">
-                                {item.player?.name || "Squad Player"}
-                              </h5>
-                              <span className="text-xs font-semibold text-slate-400">
-                                {new Date(item.date || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="text-right shrink-0">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                              {item.type === "PRACTICE" ? "PPI SCORE" : "MPI SCORE"}
-                            </span>
-                            <span className="text-base font-black text-slate-900 font-mono">
-                              {formatScore(item.ppiScore || item.mpiScore)}
+                            <span className="text-zinc-600">•</span>
+                            <span className="text-zinc-400">
+                              Match: <strong className="text-[#D4AF37] font-mono font-black">{mAvg !== null ? mAvg : "N/A"}</strong>
                             </span>
                           </div>
                         </div>
 
-                        {item.notes && (
-                          <p className="text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200/80 rounded-xl p-3 italic mt-1">
-                            "{item.notes}"
-                          </p>
-                        )}
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2.5 text-[10px] font-bold text-zinc-400">
+                            <span className="w-16 shrink-0 uppercase font-black text-zinc-300">PRACTICE</span>
+                            <div className="flex-1 bg-[#181B27] h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                              <div
+                                className="bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] h-full rounded-full transition-all duration-500"
+                                style={{ width: `${Math.min(100, Math.max(0, pPercent))}%` }}
+                              />
+                            </div>
+                            <span className="w-8 text-right font-black text-white font-mono">{pAvg !== null ? pAvg : "N/A"}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2.5 text-[10px] font-bold text-zinc-400">
+                            <span className="w-16 shrink-0 uppercase font-black text-zinc-300">MATCH</span>
+                            <div className="flex-1 bg-[#181B27] h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                              <div
+                                className="bg-gradient-to-r from-[#D4AF37] to-[#B8860B] h-full rounded-full transition-all duration-500"
+                                style={{ width: `${Math.min(100, Math.max(0, mPercent))}%` }}
+                              />
+                            </div>
+                            <span className="w-8 text-right font-black text-white font-mono">{mAvg !== null ? mAvg : "N/A"}</span>
+                          </div>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                );
-              })()}
+                    );
+                  })}
+                </div>
+              )}
             </motion.div>
           )}
 
-          {/* TAB 4: TEAM COACH NOTES */}
+          {/* ── TAB 3: COACH NOTES ── */}
           {activeTab === "NOTES" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+              className="rounded-3xl bg-gradient-to-b from-[#181B27]/95 via-[#12141D]/95 to-[#0E1017] border border-white/10 p-5 sm:p-7 shadow-xl space-y-6"
             >
               <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-orange-600 stroke-[2.5]" />
+                <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-[#D4AF37] stroke-[2.5]" />
                   <span>TEAM COACH NOTES</span>
                 </h3>
-                <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                  Record and maintain team-level observations, strategy notes, and coaching feedback.
+                <p className="text-xs font-semibold text-zinc-400 mt-0.5">
+                  Record and maintain squad-level strategy notes, observations, and coaching feedback.
                 </p>
               </div>
 
               {/* Add Note Form */}
-              <form onSubmit={handleSaveTeamNote} className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-4">
-                <div className="font-black text-xs uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                  <Plus className="w-4 h-4 text-orange-600" />
-                  <span>ADD TEAM COACH NOTE</span>
+              <form onSubmit={handleSaveTeamNote} className="bg-[#0E1017] border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4">
+                <div className="font-black text-xs uppercase tracking-wider text-white flex items-center gap-2">
+                  <Plus className="w-4 h-4 text-[#D4AF37]" />
+                  <span>ADD COACH NOTE FOR {team.name.toUpperCase()}</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-black uppercase text-slate-500 tracking-wider mb-1">
-                      Assessment Type
+                    <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-1">
+                      Note Category
                     </label>
                     <select
                       value={noteType}
                       onChange={(e) => setNoteType(e.target.value as any)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer shadow-2xs"
+                      className="w-full bg-[#181B27] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37]"
                     >
-                      <option value="PRACTICE">PRACTICE TEAM NOTE</option>
-                      <option value="MATCH">MATCH TEAM NOTE</option>
+                      <option value="PRACTICE">PRACTICE SESSION NOTE</option>
+                      <option value="MATCH">MATCH ASSESSMENT NOTE</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-black uppercase text-slate-500 tracking-wider mb-1">
+                    <label className="block text-[10px] font-black uppercase text-zinc-400 tracking-wider mb-1">
                       Date
                     </label>
                     <input
@@ -1944,7 +1391,7 @@ export default function TeamPage() {
                       required
                       value={noteDate}
                       onChange={(e) => setNoteDate(e.target.value)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 shadow-2xs"
+                      className="w-full bg-[#181B27] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                 </div>
@@ -1955,8 +1402,8 @@ export default function TeamPage() {
                     required
                     value={noteContent}
                     onChange={(e) => setNoteContent(e.target.value)}
-                    placeholder="Enter team coaching notes, strategy takeaways, or practice focus points..."
-                    className="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 resize-none shadow-2xs"
+                    placeholder="Enter coaching notes, team tactical takeaways, or performance observations..."
+                    className="w-full bg-[#181B27] border border-white/10 rounded-xl p-3.5 text-xs font-medium text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37] resize-none"
                   />
                 </div>
 
@@ -1964,145 +1411,100 @@ export default function TeamPage() {
                   <button
                     type="submit"
                     disabled={isSavingNote || !noteContent.trim()}
-                    className="w-full sm:w-auto justify-center bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white rounded-xl py-2.5 px-6 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/20"
+                    className="bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] hover:from-[#F8C868] disabled:opacity-50 text-[#090A0E] rounded-xl py-2.5 px-6 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#D4AF37]/20"
                   >
                     {isSavingNote ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
-                    <span>SAVE TEAM NOTE</span>
+                    <span>SAVE SQUAD NOTE</span>
                   </button>
                 </div>
               </form>
 
-              {/* Team Notes List */}
-              <div className="space-y-4 pt-2">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                  <span className="font-black text-xs text-slate-700 uppercase tracking-wider">
-                    SAVED TEAM NOTES ({teamNotes.length})
-                  </span>
-
-                  <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl self-start sm:self-auto border border-slate-200/80">
-                    <button
-                      onClick={() => setNoteFilter("ALL")}
-                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "ALL" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800"
-                      }`}
-                    >
-                      ALL
-                    </button>
-                    <button
-                      onClick={() => setNoteFilter("PRACTICE")}
-                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "PRACTICE" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
-                      }`}
-                    >
-                      PRACTICE
-                    </button>
-                    <button
-                      onClick={() => setNoteFilter("MATCH")}
-                      className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        noteFilter === "MATCH" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs" : "text-slate-500 hover:text-slate-800"
-                      }`}
-                    >
-                      MATCH
-                    </button>
-                  </div>
-                </div>
-
+              {/* Notes List */}
+              <div className="space-y-3">
                 {loadingNotes && teamNotes.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
-                    <span className="text-xs font-bold text-slate-500">Loading team notes...</span>
+                  <div className="text-center py-8">
+                    <Loader2 className="w-5 h-5 animate-spin text-[#D4AF37] mx-auto mb-2" />
+                    <span className="text-xs font-bold text-zinc-400">Loading squad notes...</span>
                   </div>
-                ) : (() => {
-                  const filteredNotes = teamNotes.filter(n => noteFilter === "ALL" || n.type === noteFilter);
-
-                  if (filteredNotes.length === 0) {
-                    return (
-                      <div className="text-center py-10 text-slate-400 font-bold text-xs bg-slate-50 rounded-2xl">
-                        No team notes found for selected filter.
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <div className="space-y-3">
-                      {filteredNotes.map((n) => (
-                        <div key={n.id} className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-2.5 hover:shadow-md transition-all">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md ${
-                                n.type === "PRACTICE"
-                                  ? "bg-orange-50 text-orange-700 border border-orange-200"
-                                  : "bg-amber-50 text-amber-700 border border-amber-200"
-                              }`}>
-                                {n.type} TEAM NOTE
-                              </span>
-                              <span className="text-xs font-bold text-slate-400">
-                                {new Date(n.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                              </span>
-                            </div>
-
-                            <button
-                              onClick={() => handleDeleteTeamNote(n.id)}
-                              title="Delete note"
-                              className="text-slate-300 hover:text-rose-600 transition-colors p-1 cursor-pointer"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-
-                          <p className="text-xs font-medium text-slate-800 whitespace-pre-wrap leading-relaxed">
-                            {n.content}
-                          </p>
-
-                          <div className="text-[10px] font-semibold text-slate-400 pt-2 border-t border-slate-100 flex items-center justify-between">
-                            <span>Author: {n.coachName || "Coach"}</span>
-                            <span>Recorded for Squad</span>
-                          </div>
+                ) : teamNotes.length === 0 ? (
+                  <div className="text-center py-8 text-zinc-400 font-bold text-xs bg-[#0E1017] rounded-2xl border border-white/10">
+                    No coach notes recorded for {team.name} yet.
+                  </div>
+                ) : (
+                  teamNotes.map((n) => (
+                    <div key={n.id} className="bg-[#0E1017] border border-white/10 rounded-2xl p-4 sm:p-5 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md ${
+                            n.type === "PRACTICE"
+                              ? "bg-amber-500/15 text-[#F5BA4E] border border-amber-500/30"
+                              : "bg-orange-500/15 text-orange-400 border border-orange-500/30"
+                          }`}>
+                            {n.type} NOTE
+                          </span>
+                          <span className="text-xs font-bold text-zinc-400">
+                            {new Date(n.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                          </span>
                         </div>
-                      ))}
+
+                        <button
+                          onClick={() => handleDeleteTeamNote(n.id)}
+                          title="Delete note"
+                          className="text-zinc-500 hover:text-rose-400 transition-colors p-1 cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <p className="text-xs font-medium text-zinc-200 whitespace-pre-wrap leading-relaxed">
+                        {n.content}
+                      </p>
+
+                      <div className="text-[10px] font-semibold text-zinc-500 pt-2 border-t border-white/5 flex items-center justify-between">
+                        <span>Author: {n.coachName || "Coach"}</span>
+                        <span>Recorded for {team.name}</span>
+                      </div>
                     </div>
-                  );
-                })()}
+                  ))
+                )}
               </div>
             </motion.div>
           )}
 
-          {/* TAB 5: TEAM COMPARISON */}
+          {/* ── TAB 4: COMPARE SQUADS ── */}
           {activeTab === "COMPARISON" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="glass-surface border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xs space-y-5 sm:space-y-6"
+              className="rounded-3xl bg-gradient-to-b from-[#181B27]/95 via-[#12141D]/95 to-[#0E1017] border border-white/10 p-5 sm:p-7 shadow-xl space-y-6"
             >
               <div>
-                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <ArrowRightLeft className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                  <span>TEAM COMPARISON</span>
+                <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+                  <ArrowRightLeft className="w-5 h-5 text-[#D4AF37] stroke-[2.5]" />
+                  <span>COMPARE SQUADS SIDE-BY-SIDE</span>
                 </h3>
-                <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                  Select any two existing teams created by you to compare squad size, CPI averages, 7-parameter scores, and performance side-by-side.
+                <p className="text-xs font-semibold text-zinc-400 mt-0.5">
+                  Select any two existing teams to compare squad size, CPI averages, and parameter performance side-by-side.
                 </p>
               </div>
 
               {/* Team Selectors */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#0E1017] border border-white/10 rounded-2xl p-4 sm:p-5">
                 <div>
-                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                    SELECT TEAM
+                  <label className="block text-xs font-black uppercase text-zinc-400 tracking-wider mb-1.5">
+                    PRIMARY SQUAD
                   </label>
                   <select
                     value={teamAId || ""}
                     onChange={(e) => {
                       const selectedId = Number(e.target.value);
                       setTeamAId(selectedId);
-                      if (teamBId === selectedId) {
-                        setTeamBId(null);
-                      }
+                      if (teamBId === selectedId) setTeamBId(null);
                     }}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer shadow-2xs"
+                    className="w-full bg-[#181B27] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37]"
                   >
-                    <option value="" disabled>-- Select Team --</option>
+                    <option value="" disabled>-- Select Primary Squad --</option>
                     {allTeams.map(t => (
                       <option key={`a-${t.id}`} value={t.id}>{t.name}</option>
                     ))}
@@ -2110,15 +1512,15 @@ export default function TeamPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
+                  <label className="block text-xs font-black uppercase text-zinc-400 tracking-wider mb-1.5">
                     COMPARE WITH
                   </label>
                   <select
                     value={teamBId || ""}
                     onChange={(e) => setTeamBId(e.target.value ? Number(e.target.value) : null)}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-orange-500 cursor-pointer shadow-2xs"
+                    className="w-full bg-[#181B27] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#D4AF37]"
                   >
-                    <option value="">-- Select Team to Compare --</option>
+                    <option value="">-- Select Second Squad to Compare --</option>
                     {allTeams
                       .filter(t => t.id !== teamAId)
                       .map(t => (
@@ -2130,250 +1532,82 @@ export default function TeamPage() {
 
               {loadingComparison ? (
                 <div className="text-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
-                  <span className="text-xs font-bold text-slate-500">Loading comparison data...</span>
+                  <Loader2 className="w-6 h-6 animate-spin text-[#D4AF37] mx-auto mb-2" />
+                  <span className="text-xs font-bold text-zinc-400">Loading squad comparison...</span>
                 </div>
-              ) : (!teamAId || !teamBId || !teamAData || !teamBData || teamAId === teamBId) ? (
-                /* Empty / Initial State Card */
-                <div className="bg-gradient-to-b from-[#181B27]/90 to-[#12141D]/90 border border-white/10 rounded-3xl p-8 sm:p-12 text-center space-y-3">
-                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] mx-auto flex items-center justify-center shadow-inner">
-                    <ArrowRightLeft className="w-8 h-8 stroke-[2]" />
-                  </div>
-                  <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight">
-                    Select another team to compare performance.
-                  </h4>
-                  <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-md mx-auto leading-relaxed">
-                    {allTeams.length <= 1
-                      ? "You currently have 1 team created. Create additional teams under the MY TEAMS tab to enable side-by-side team performance comparisons."
-                      : "Choose a second team from the 'COMPARE WITH' dropdown above to view side-by-side squad analytics, CPI averages, and 7-parameter parameter comparisons."
-                    }
-                  </p>
+              ) : (!teamAId || !teamBId || !teamAData || !teamBData) ? (
+                <div className="text-center py-10 text-zinc-400 font-bold text-xs bg-[#0E1017] rounded-2xl border border-white/10">
+                  Select two squads above to view side-by-side performance comparison.
                 </div>
               ) : (
-                /* Dynamic Comparison View */
-                <div className="space-y-5 sm:space-y-6">
-                  {/* Dynamic Team Names Header */}
-                  <div className="bg-[#12141D] text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
-                      <span className="text-[10px] font-black tracking-widest text-[#F5BA4E] bg-[#D4AF37]/10 px-2.5 py-1 rounded-lg border border-[#D4AF37]/30 uppercase">
-                        SELECTED TEAM
-                      </span>
-                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px]">
-                        {teamAData.team.name}
-                      </h4>
-                    </div>
-
-                    <div className="hidden sm:flex items-center justify-center px-4 py-1 rounded-full bg-[#1B1E2C] border border-white/10 text-[11px] font-black text-zinc-400 uppercase tracking-widest shadow-2xs">
-                      VS
-                    </div>
-
-                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                      <h4 className="text-base sm:text-lg font-black uppercase text-white truncate max-w-[200px] sm:max-w-[260px] text-right">
-                        {teamBData.team.name}
-                      </h4>
-                      <span className="text-[10px] font-black tracking-widest text-[#D4AF37] bg-[#D4AF37]/10 px-2.5 py-1 rounded-lg border border-[#D4AF37]/30 uppercase">
-                        COMPARED WITH
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Side-by-side Overview Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* TEAM 1 CARD */}
-                    <div className="bg-gradient-to-br from-[#181B27]/90 to-[#12141D]/90 border border-[#D4AF37]/30 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
-                      <div className="border-b border-white/8 pb-3 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-widest block">
-                            SELECTED TEAM
-                          </span>
-                          <h4 className="font-black text-base sm:text-lg text-white uppercase truncate">
-                            {teamAData.team.name}
-                          </h4>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">CPI AVG</span>
-                          <span className="text-2xl font-black text-[#D4AF37] font-mono">
-                            {compStatsA ? compStatsA.cpi : "N/A"}
-                          </span>
-                        </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* SQUAD 1 CARD */}
+                  <div className="bg-[#0E1017] border border-[#D4AF37]/30 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div className="flex items-center justify-between border-b border-white/8 pb-3">
+                      <div>
+                        <span className="text-[10px] font-black text-[#F5BA4E] uppercase tracking-wider block">
+                          SQUAD 1
+                        </span>
+                        <h4 className="font-black text-base text-white uppercase truncate">
+                          {teamAData.team.name}
+                        </h4>
                       </div>
-
-                      <div className="grid grid-cols-3 gap-2 bg-[#0E1017] rounded-xl p-3 border border-white/10 text-center shadow-xs">
-                        <div>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PLAYERS</span>
-                          <span className="text-sm font-black text-white">{compStatsA ? compStatsA.squadSize : "N/A"}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PRACTICE PPI</span>
-                          <span className="text-sm font-black text-white font-mono">{compStatsA ? compStatsA.ppi : "N/A"}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">MATCH MPI</span>
-                          <span className="text-sm font-black text-white font-mono">{compStatsA ? compStatsA.mpi : "N/A"}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3 text-xs font-semibold text-zinc-300">
-                        <div>
-                          <span className="font-black text-white uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
-                          {compStatsA && compStatsA.strengths.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {compStatsA.strengths.map((s, i) => (
-                                <span key={i} className="bg-[#D4AF37]/15 text-[#F5BA4E] text-[10px] font-bold px-2 py-0.5 rounded-md border border-[#D4AF37]/30">
-                                  {s}
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
-                          )}
-                        </div>
-
-                        <div>
-                          <span className="font-black text-white uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
-                          {compStatsA && compStatsA.devAreas.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {compStatsA.devAreas.map((d, i) => (
-                                <span key={i} className="bg-white/5 text-zinc-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/10">
-                                  {d}
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
-                          )}
-                        </div>
+                      <div className="text-right">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">TEAM CPI</span>
+                        <span className="text-xl font-black text-[#D4AF37] font-mono">
+                          {compStatsA?.cpi || "N/A"}
+                        </span>
                       </div>
                     </div>
 
-                    {/* TEAM 2 CARD */}
-                    <div className="bg-gradient-to-br from-[#181B27]/90 to-[#12141D]/90 border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
-                      <div className="border-b border-white/8 pb-3 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
-                            COMPARED WITH
-                          </span>
-                          <h4 className="font-black text-base sm:text-lg text-white uppercase truncate">
-                            {teamBData.team.name}
-                          </h4>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">CPI AVG</span>
-                          <span className="text-2xl font-black text-[#D4AF37] font-mono">
-                            {compStatsB ? compStatsB.cpi : "N/A"}
-                          </span>
-                        </div>
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                      <div className="bg-[#181B27] rounded-xl p-2 border border-white/5">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">PLAYERS</span>
+                        <span className="font-black text-white">{compStatsA?.squadSize || 0}</span>
                       </div>
-
-                      <div className="grid grid-cols-3 gap-2 bg-[#0E1017] rounded-xl p-3 border border-white/10 text-center shadow-xs">
-                        <div>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PLAYERS</span>
-                          <span className="text-sm font-black text-white">{compStatsB ? compStatsB.squadSize : "N/A"}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">PRACTICE PPI</span>
-                          <span className="text-sm font-black text-white font-mono">{compStatsB ? compStatsB.ppi : "N/A"}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase block">MATCH MPI</span>
-                          <span className="text-sm font-black text-white font-mono">{compStatsB ? compStatsB.mpi : "N/A"}</span>
-                        </div>
+                      <div className="bg-[#181B27] rounded-xl p-2 border border-white/5">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">PPI</span>
+                        <span className="font-black text-white font-mono">{compStatsA?.ppi || "N/A"}</span>
                       </div>
-
-                      <div className="space-y-3 text-xs font-semibold text-zinc-300">
-                        <div>
-                          <span className="font-black text-white uppercase block text-[11px] mb-1">TEAM STRENGTHS:</span>
-                          {compStatsB && compStatsB.strengths.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {compStatsB.strengths.map((s, i) => (
-                                <span key={i} className="bg-[#D4AF37]/15 text-[#F5BA4E] text-[10px] font-bold px-2 py-0.5 rounded-md border border-[#D4AF37]/30">
-                                  {s}
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
-                          )}
-                        </div>
-
-                        <div>
-                          <span className="font-black text-white uppercase block text-[11px] mb-1">DEVELOPMENT AREAS:</span>
-                          {compStatsB && compStatsB.devAreas.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {compStatsB.devAreas.map((d, i) => (
-                                <span key={i} className="bg-white/5 text-zinc-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-white/10">
-                                  {d}
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-zinc-500 italic text-[11px]">Insufficient assessment data</span>
-                          )}
-                        </div>
+                      <div className="bg-[#181B27] rounded-xl p-2 border border-white/5">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">MPI</span>
+                        <span className="font-black text-white font-mono">{compStatsA?.mpi || "N/A"}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* 5 CPI Parameters Comparison Table */}
-                  <div className="space-y-3 pt-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
-                      <div className="font-black text-xs text-slate-700 uppercase tracking-wider">
-                        5 CPI PARAMETERS COMPARISON
+                  {/* SQUAD 2 CARD */}
+                  <div className="bg-[#0E1017] border border-white/10 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div className="flex items-center justify-between border-b border-white/8 pb-3">
+                      <div>
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider block">
+                          SQUAD 2
+                        </span>
+                        <h4 className="font-black text-base text-white uppercase truncate">
+                          {teamBData.team.name}
+                        </h4>
                       </div>
-
-                      {/* Practice vs Match vs Overall Filter Pills */}
-                      <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                        {(["OVERALL", "PRACTICE", "MATCH"] as const).map((filterKey) => (
-                          <button
-                            key={filterKey}
-                            onClick={() => setCompParamFilter(filterKey)}
-                            className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer ${
-                              compParamFilter === filterKey
-                                ? "bg-white text-slate-900 shadow-sm"
-                                : "text-slate-500 hover:text-slate-900"
-                            }`}
-                          >
-                            {filterKey === "OVERALL" ? "ALL (OVERALL)" : filterKey}
-                          </button>
-                        ))}
+                      <div className="text-right">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">TEAM CPI</span>
+                        <span className="text-xl font-black text-[#D4AF37] font-mono">
+                          {compStatsB?.cpi || "N/A"}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
-                      {PARAM_DEFINITIONS.map((p) => {
-                        const key = compParamFilter === "PRACTICE" ? "prac" : compParamFilter === "MATCH" ? "match" : "overall";
-                        const valA = compStatsA ? compStatsA.paramsMap[p.name]?.[key] : "N/A";
-                        const valB = compStatsB ? compStatsB.paramsMap[p.name]?.[key] : "N/A";
-
-                        const numA = valA !== "N/A" ? Number(valA) : 0;
-                        const numB = valB !== "N/A" ? Number(valB) : 0;
-
-                        return (
-                          <div key={`comp-${p.name}`} className="space-y-2 border-b border-slate-200/60 pb-3 last:border-0 last:pb-0">
-                            <div className="flex items-center justify-between text-xs font-bold">
-                              <span className="text-orange-600 font-black text-sm font-mono">{valA}</span>
-                              <span className="font-black text-slate-900 uppercase text-xs tracking-wider">{p.name}</span>
-                              <span className="text-amber-700 font-black text-sm font-mono">{valB}</span>
-                            </div>
-
-                            {/* Dual Bar Comparison */}
-                            <div className="grid grid-cols-2 gap-2 h-3 bg-slate-200/80 rounded-full overflow-hidden p-0.5">
-                              <div className="flex justify-end bg-slate-200/60 rounded-full overflow-hidden">
-                                <div
-                                  className="bg-gradient-to-l from-orange-500 to-amber-500 h-full rounded-full transition-all duration-300"
-                                  style={{ width: `${Math.min(100, Math.max(0, (numA / 100) * 100))}%` }}
-                                />
-                              </div>
-                              <div className="flex justify-start bg-slate-200/60 rounded-full overflow-hidden">
-                                <div
-                                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
-                                  style={{ width: `${Math.min(100, Math.max(0, (numB / 100) * 100))}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                      <div className="bg-[#181B27] rounded-xl p-2 border border-white/5">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">PLAYERS</span>
+                        <span className="font-black text-white">{compStatsB?.squadSize || 0}</span>
+                      </div>
+                      <div className="bg-[#181B27] rounded-xl p-2 border border-white/5">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">PPI</span>
+                        <span className="font-black text-white font-mono">{compStatsB?.ppi || "N/A"}</span>
+                      </div>
+                      <div className="bg-[#181B27] rounded-xl p-2 border border-white/5">
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase block">MPI</span>
+                        <span className="font-black text-white font-mono">{compStatsB?.mpi || "N/A"}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2383,7 +1617,7 @@ export default function TeamPage() {
         </div>
       )}
 
-      {/* MODAL: ADD PLAYERS TO TEAM */}
+      {/* ── MODAL: ADD PLAYERS TO TEAM ── */}
       <AnimatePresence>
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
@@ -2392,66 +1626,65 @@ export default function TeamPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowAddModal(false)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-[#090A0E]/80 backdrop-blur-md"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.2 }}
-              className="glass-surface border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] z-10"
+              className="bg-[#12141D] border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] z-10"
             >
-              {/* Modal Header */}
-              <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+              {/* Header */}
+              <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#181B27]/80">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <UserPlus className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                    <span>ADD PLAYERS TO SQUAD</span>
+                  <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+                    <UserPlus className="w-5 h-5 text-[#D4AF37] stroke-[2.5]" />
+                    <span>ADD ATHLETES TO {team?.name?.toUpperCase()}</span>
                   </h3>
-                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                    Select players from your coach squad to assign to {team?.name}.
+                  <p className="text-xs font-semibold text-zinc-400 mt-0.5">
+                    Select players from your roster to assign to this squad.
                   </p>
                 </div>
 
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
+                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Modal Search Filter */}
-              <div className="p-3.5 sm:p-4 border-b border-slate-100 bg-white">
+              {/* Search */}
+              <div className="p-3.5 sm:p-4 border-b border-white/10 bg-[#0E1017]">
                 <div className="relative">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search player name or role..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 shadow-2xs"
+                    placeholder="Search player by full name..."
+                    className="w-full bg-[#181B27] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
               </div>
 
-              {/* Modal Player Selection List */}
+              {/* Player list */}
               <div className="p-3.5 sm:p-4 overflow-y-auto space-y-2 flex-1">
                 {mySquad.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400 font-bold text-xs">
-                    No existing players found in your squad. Create players first under PLAYERS tab.
+                  <div className="text-center py-8 text-zinc-400 font-bold text-xs">
+                    No players found in your roster. Add players under the PLAYERS tab first.
                   </div>
                 ) : (
                   (() => {
                     const currentTeamPlayerIds = new Set((team?.players || []).map(p => p.id));
                     const filteredPlayers = mySquad.filter(p =>
-                      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                      (p.role && p.role.toLowerCase().includes(searchQuery.toLowerCase()))
+                      p.name.toLowerCase().includes(searchQuery.toLowerCase())
                     );
 
                     if (filteredPlayers.length === 0) {
                       return (
-                        <div className="text-center py-6 text-slate-400 font-bold text-xs">
+                        <div className="text-center py-6 text-zinc-400 font-bold text-xs">
                           No players match "{searchQuery}"
                         </div>
                       );
@@ -2460,6 +1693,7 @@ export default function TeamPage() {
                     return filteredPlayers.map((player) => {
                       const isAlreadyInTeam = currentTeamPlayerIds.has(player.id);
                       const isSelected = selectedPlayerIds.includes(player.id);
+                      const cpiDisplay = getPlayerCpiScore(player);
 
                       return (
                         <div
@@ -2469,41 +1703,47 @@ export default function TeamPage() {
                           }}
                           className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
                             isAlreadyInTeam
-                              ? "bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed"
+                              ? "bg-[#0E1017] border-white/5 opacity-50 cursor-not-allowed"
                               : isSelected
-                              ? "bg-orange-50/80 border-orange-400 shadow-xs cursor-pointer ring-1 ring-orange-400/50"
-                              : "bg-white border-slate-200 hover:border-slate-300 cursor-pointer hover:shadow-2xs"
+                              ? "bg-[#D4AF37]/15 border-[#D4AF37] shadow-sm cursor-pointer"
+                              : "bg-[#181B27] border-white/5 hover:border-white/20 cursor-pointer"
                           }`}
                         >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 border border-orange-200 flex items-center justify-center text-orange-700 font-black text-sm uppercase shrink-0 overflow-hidden">
-                              {player.imageUrl ? (
-                                <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover rounded-full" />
-                              ) : (
-                                player.name.charAt(0).toUpperCase()
-                              )}
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="w-10 h-10 rounded-full bg-[#1B1E2C] ring-1 ring-[#D4AF37]/40 flex items-center justify-center shrink-0 overflow-hidden">
+                              <img
+                                src={getPlayerImage(player)}
+                                alt={player.name}
+                                className="w-full h-full object-cover rounded-full"
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = "none";
+                                }}
+                              />
                             </div>
 
-                            <div className="min-w-0">
-                              <h5 className="font-black text-xs text-slate-900 uppercase tracking-tight truncate">
+                            {/* FULL PLAYER NAME - NO TRUNCATION */}
+                            <div className="min-w-0 flex-1 pr-2">
+                              <h5 className="font-black text-xs sm:text-sm text-white break-words leading-tight">
                                 {player.name}
                               </h5>
-                              <span className="text-[10px] font-semibold text-slate-500 uppercase">
-                                {player.role || "Player"}
+                              <span className="text-[10px] font-bold text-zinc-400 font-mono mt-0.5 block">
+                                CPI Score: <strong className="text-[#D4AF37]">{cpiDisplay}</strong>
                               </span>
                             </div>
                           </div>
 
                           {isAlreadyInTeam ? (
-                            <span className="text-[10px] font-black text-slate-500 bg-slate-200 px-2 py-1 rounded-md uppercase shrink-0">
-                              IN TEAM
+                            <span className="text-[10px] font-black text-zinc-400 bg-white/5 px-2.5 py-1 rounded-md uppercase shrink-0">
+                              IN SQUAD
                             </span>
                           ) : (
-                            <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
-                              isSelected
-                                ? "bg-orange-500 border-orange-500 text-white"
-                                : "border-slate-300 bg-white"
-                            }`}>
+                            <div
+                              className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
+                                isSelected
+                                  ? "bg-[#D4AF37] border-[#D4AF37] text-[#090A0E]"
+                                  : "border-white/20 bg-[#0E1017]"
+                              }`}
+                            >
                               {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
                             </div>
                           )}
@@ -2514,17 +1754,17 @@ export default function TeamPage() {
                 )}
               </div>
 
-              {/* Modal Footer Actions */}
-              <div className="p-3.5 sm:p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
-                <span className="text-xs font-black text-slate-600">
-                  {selectedPlayerIds.length} Selected
+              {/* Footer */}
+              <div className="p-3.5 sm:p-4 border-t border-white/10 bg-[#0E1017] flex items-center justify-between">
+                <span className="text-xs font-black text-zinc-400">
+                  <strong className="text-[#D4AF37]">{selectedPlayerIds.length}</strong> Selected
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="px-4 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-bold transition-all cursor-pointer"
                   >
                     CANCEL
                   </button>
@@ -2533,7 +1773,7 @@ export default function TeamPage() {
                     type="button"
                     onClick={handleAddSelectedPlayers}
                     disabled={isAddingPlayers || selectedPlayerIds.length === 0}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/20"
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] hover:from-[#F8C868] disabled:opacity-50 text-[#090A0E] text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#D4AF37]/20"
                   >
                     {isAddingPlayers ? (
                       <>
@@ -2543,7 +1783,7 @@ export default function TeamPage() {
                     ) : (
                       <>
                         <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                        <span>ADD PLAYERS</span>
+                        <span>ADD TO SQUAD</span>
                       </>
                     )}
                   </button>
@@ -2554,7 +1794,7 @@ export default function TeamPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL: CREATE NEW TEAM */}
+      {/* ── MODAL: CREATE NEW TEAM ── */}
       <AnimatePresence>
         {showCreateModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
@@ -2563,29 +1803,29 @@ export default function TeamPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowCreateModal(false)}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-[#090A0E]/80 backdrop-blur-md"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.2 }}
-              className="glass-surface border border-slate-200 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden z-10"
+              className="bg-[#12141D] border border-white/10 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden z-10"
             >
-              <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+              <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#181B27]/80">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-orange-600 stroke-[2.5]" />
-                    <span>CREATE NEW TEAM</span>
+                  <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-[#D4AF37] stroke-[2.5]" />
+                    <span>CREATE NEW SQUAD</span>
                   </h3>
-                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                    Organize players into a new dedicated squad.
+                  <p className="text-xs font-semibold text-zinc-400 mt-0.5">
+                    Organize your players into a dedicated team squad.
                   </p>
                 </div>
 
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
+                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -2593,8 +1833,8 @@ export default function TeamPage() {
 
               <form onSubmit={handleCreateTeam} className="p-5 sm:p-6 space-y-4">
                 <div>
-                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                    Team Name <span className="text-orange-600">*</span>
+                  <label className="block text-xs font-black uppercase text-zinc-300 tracking-wider mb-1.5">
+                    Squad Name <span className="text-[#D4AF37]">*</span>
                   </label>
                   <input
                     type="text"
@@ -2602,28 +1842,28 @@ export default function TeamPage() {
                     value={createName}
                     onChange={(e) => setCreateName(e.target.value)}
                     placeholder="e.g. Senior Academy XI / U-19 Squad"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-2xs"
+                    className="w-full bg-[#0E1017] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-black uppercase text-slate-700 tracking-wider mb-1.5">
-                    Team Description <span className="text-slate-400 font-medium">(Optional)</span>
+                  <label className="block text-xs font-black uppercase text-zinc-300 tracking-wider mb-1.5">
+                    Description <span className="text-zinc-500 font-medium">(Optional)</span>
                   </label>
                   <textarea
                     rows={3}
                     value={createDesc}
                     onChange={(e) => setCreateDesc(e.target.value)}
                     placeholder="e.g. Primary squad for 2026 regional championship preparation"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all shadow-2xs resize-none"
+                    className="w-full bg-[#0E1017] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:outline-none focus:border-[#D4AF37] resize-none"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-bold cursor-pointer"
                   >
                     CANCEL
                   </button>
@@ -2631,7 +1871,7 @@ export default function TeamPage() {
                   <button
                     type="submit"
                     disabled={isCreating || !createName.trim()}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-orange-500/20"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F5BA4E] to-[#D4AF37] hover:from-[#F8C868] disabled:opacity-50 text-[#090A0E] text-xs font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#D4AF37]/20"
                   >
                     {isCreating ? (
                       <>
