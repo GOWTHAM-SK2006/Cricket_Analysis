@@ -32,6 +32,7 @@ public class PlayerController {
     private final CoachRepository coachRepository;
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
+    private final com.cpi.cpi_backend.service.NotificationService notificationService;
 
     private PlayerResponse toPlayerResponse(Player player) {
         return toPlayerResponse(player, null, null);
@@ -218,6 +219,7 @@ public class PlayerController {
                 .build();
                 
         Player saved = playerRepository.save(player);
+        notificationService.notifyPlayerAction(creatorCoach, saved, "ADDED");
         return ResponseEntity.ok(toPlayerResponse(saved));
     }
 
@@ -245,6 +247,8 @@ public class PlayerController {
         if (request.getImageUrl() != null) player.setImageUrl(request.getImageUrl());
 
         Player saved = playerRepository.save(player);
+        Coach managedCoach = coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
+        notificationService.notifyPlayerAction(managedCoach, saved, "UPDATED");
         return ResponseEntity.ok(toPlayerResponse(saved));
     }
 
@@ -264,6 +268,9 @@ public class PlayerController {
                 .orElseThrow(() -> new RuntimeException("Player not found"));
 
         checkAccess(player, currentCoach);
+
+        Coach managedCoach = coachRepository.findById(currentCoach.getId()).orElse(currentCoach);
+        notificationService.notifyPlayerAction(managedCoach, player, "REMOVED");
 
         practiceAssessmentRepository.deleteAll(practiceAssessmentRepository.findByPlayerId(player.getId()));
         matchAssessmentRepository.deleteAll(matchAssessmentRepository.findByPlayerId(player.getId()));

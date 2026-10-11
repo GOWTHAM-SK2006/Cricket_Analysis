@@ -44,6 +44,7 @@ public class TeamController {
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final MatchAssessmentRepository matchAssessmentRepository;
     private final TeamNoteRepository teamNoteRepository;
+    private final com.cpi.cpi_backend.service.NotificationService notificationService;
 
     private Coach getManagedCoach(Coach currentCoach) {
         if (currentCoach == null || currentCoach.getId() == null) {
@@ -262,6 +263,7 @@ public class TeamController {
                 .build();
 
         Team saved = teamRepository.save(team);
+        notificationService.notifyTeamAction(coach, saved, "CREATED", "Squad '" + saved.getName() + "' was successfully created with " + (saved.getPlayers() != null ? saved.getPlayers().size() : 0) + " players.");
         return ResponseEntity.ok(toTeamResponse(saved));
     }
 
@@ -306,6 +308,7 @@ public class TeamController {
         }
 
         Team saved = teamRepository.save(team);
+        notificationService.notifyTeamAction(coach, saved, "UPDATED", "Squad details for '" + saved.getName() + "' were updated.");
         return ResponseEntity.ok(toTeamResponse(saved));
     }
 
@@ -348,6 +351,7 @@ public class TeamController {
         }
 
         Team saved = teamRepository.save(team);
+        notificationService.notifyTeamAction(coach, saved, "ROSTER_UPDATED", "Players were successfully added to squad '" + saved.getName() + "'. Total squad size is now " + saved.getPlayers().size() + ".");
         return ResponseEntity.ok(toTeamResponse(saved));
     }
 
@@ -378,6 +382,7 @@ public class TeamController {
 
         team.setPlayers(updatedSquad);
         Team saved = teamRepository.save(team);
+        notificationService.notifyTeamAction(coach, saved, "ROSTER_UPDATED", "A player was removed from squad '" + saved.getName() + "'. Total squad size is now " + saved.getPlayers().size() + ".");
         return ResponseEntity.ok(toTeamResponse(saved));
     }
 
@@ -401,6 +406,7 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to delete this team");
         }
 
+        notificationService.notifyTeamAction(coach, team, "DELETED", "Squad '" + team.getName() + "' has been removed.");
         teamRepository.delete(team);
         return ResponseEntity.noContent().build();
     }

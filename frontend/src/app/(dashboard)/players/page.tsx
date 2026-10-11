@@ -178,7 +178,7 @@ export interface CpiFocusArea {
   detail: string;
 }
 
-export const computeKeyPerformanceHighlightsFromFocusAreas = (
+const computeKeyPerformanceHighlightsFromFocusAreas = (
   focusAreas: { title: string; avg: number }[]
 ) => {
   if (!focusAreas || focusAreas.length === 0) {
@@ -2320,7 +2320,7 @@ const sortedPlayers = [...filteredPlayers].sort((a, b) => {
 
 const squadStats = (() => {
   const total = players.length;
-  if (total === 0) return { total: 0, avgCpi: "N/A", topPlayer: null, assessedCount: 0 };
+  if (total === 0) return { total: 0, avgCpi: "N/A", topPlayer: null as Player | null, assessedCount: 0 };
   
   let assessedCount = 0;
   let cpiSum = 0;
@@ -2525,7 +2525,7 @@ return (
                       : "bg-[#12141D]/90 text-zinc-400 border-white/8 hover:text-white hover:border-white/20"
                   }`}
                 >
-                  {tab.emoji ? <span>{tab.emoji}</span> : <tab.icon className="w-3.5 h-3.5" />}
+                  {tab.emoji ? <span>{tab.emoji}</span> : tab.icon ? <tab.icon className="w-3.5 h-3.5" /> : null}
                   <span>{tab.label}</span>
                   <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                     active ? "bg-[#090A0E]/20 text-[#090A0E]" : "bg-white/5 text-zinc-400"

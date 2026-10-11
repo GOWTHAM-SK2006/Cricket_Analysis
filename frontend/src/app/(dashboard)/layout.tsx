@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import OnboardingTour from "./OnboardingTour";
 import PremiumPlansModal from "@/components/PremiumPlansModal";
+import NotificationPanel from "@/components/NotificationPanel";
 import CricketLoader from "@/components/CricketLoader";
 
 export default function DashboardLayout({
@@ -26,12 +27,38 @@ export default function DashboardLayout({
   const [showTour, setShowTour] = useState(false);
   const [tourPage, setTourPage] = useState<"dashboard" | "players">("dashboard");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [userAvatar, setUserAvatar] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("profileAvatar_default") || localStorage.getItem("userAvatar") || null;
     }
     return null;
   });
+
+  // Fetch real-time notification unread count
+  useEffect(() => {
+    let isMounted = true;
+    const fetchUnread = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        if (!token) return;
+        const res = await api.get(`/notifications/unread-count?_t=${Date.now()}`);
+        if (isMounted && res.data && typeof res.data.unreadCount === "number") {
+          setUnreadCount(res.data.unreadCount);
+        }
+      } catch (err) {
+        // Silently skip if unauthorized or network pending
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000); // 30s background poll
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const handleAvatarUpdate = () => {
@@ -233,10 +260,35 @@ export default function DashboardLayout({
             <span className="font-black">PREMIUM</span>
           </button>
 
-          <button className="relative text-[#9CA3AF] hover:text-[#D4AF37] transition-colors cursor-pointer p-1">
-            <Bell className="w-5.5 h-5.5 stroke-[2]" />
-            <span className="absolute top-0 right-0 w-4 h-4 bg-[#D4AF37] rounded-full text-[9px] font-black text-[#090A0E] flex items-center justify-center border-2 border-[#12141D]">3</span>
-          </button>
+          {/* Notification Bell & Panel */}
+          <div className="relative">
+            <button
+              id="notification-bell-btn"
+              onClick={() => setShowNotificationPanel((prev) => !prev)}
+              className={`relative transition-all cursor-pointer p-1.5 rounded-full ${
+                showNotificationPanel
+                  ? "text-[#D4AF37] bg-white/10"
+                  : "text-[#9CA3AF] hover:text-[#D4AF37] hover:bg-white/5"
+              }`}
+              title="Notifications"
+              aria-label="View notifications"
+            >
+              <Bell className="w-5.5 h-5.5 stroke-[2]" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0 right-0 min-w-4 h-4 px-1 bg-[#D4AF37] rounded-full text-[9px] font-black text-[#090A0E] flex items-center justify-center border-2 border-[#12141D] shadow-sm">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* Notification Slide-out Panel */}
+            <NotificationPanel
+              isOpen={showNotificationPanel}
+              onClose={() => setShowNotificationPanel(false)}
+              onUnreadCountChange={(cnt) => setUnreadCount(cnt)}
+              onOpenPremiumModal={() => setShowPremiumModal(true)}
+            />
+          </div>
           <Link href="/profile" className="flex items-center justify-center cursor-pointer">
             <div className="w-10 h-10 rounded-full bg-[#1B1E2C] border-2 border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-black text-sm uppercase hover:border-[#D4AF37] transition-colors shadow-sm overflow-hidden">
               {userAvatar ? (

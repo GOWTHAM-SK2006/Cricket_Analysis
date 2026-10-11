@@ -26,6 +26,7 @@ public class MatchController {
     private final MatchAssessmentRepository matchAssessmentRepository;
     private final PlayerRepository playerRepository;
     private final CoachRepository coachRepository;
+    private final com.cpi.cpi_backend.service.NotificationService notificationService;
 
     @PostMapping
     @Transactional
@@ -108,6 +109,12 @@ public class MatchController {
                 .notes(request.getNotes())
                 .build();
 
+        Double oldMpi = player.getMpiScore();
+        Double oldPpi = player.getPpiScore();
+        double oldCpi = (oldPpi != null && oldPpi > 0 && oldMpi != null && oldMpi > 0)
+                ? (oldPpi + oldMpi) / 2.0
+                : (oldMpi != null && oldMpi > 0 ? oldMpi : (oldPpi != null ? oldPpi : 0.0));
+
         MatchAssessment saved = matchAssessmentRepository.save(assessment);
 
         // Recalculate Player average MPI
@@ -118,6 +125,16 @@ public class MatchController {
                 .orElse(0.0);
         player.setMpiScore(avgMpi);
         playerRepository.save(player);
+
+        double newCpi = (avgMpi > 0 && oldPpi != null && oldPpi > 0)
+                ? (avgMpi + oldPpi) / 2.0
+                : (avgMpi > 0 ? avgMpi : (oldPpi != null ? oldPpi : 0.0));
+
+        // 1. Notify assessment saved successfully
+        notificationService.notifyAssessmentSaved(managedCoach, player, "Match", mpi, saved.getId());
+
+        // 2. Check for significant score change and notify if threshold met
+        notificationService.checkAndNotifyScoreChange(managedCoach, player, "MPI", oldMpi, avgMpi, oldCpi, newCpi, saved.getId());
 
         return ResponseEntity.ok(saved);
     }

@@ -26,6 +26,7 @@ public class PracticeController {
     private final PracticeAssessmentRepository practiceAssessmentRepository;
     private final PlayerRepository playerRepository;
     private final CoachRepository coachRepository;
+    private final com.cpi.cpi_backend.service.NotificationService notificationService;
 
     @PostMapping
     @Transactional
@@ -106,6 +107,12 @@ public class PracticeController {
                 .notes(request.getNotes())
                 .build();
 
+        Double oldPpi = player.getPpiScore();
+        Double oldMpi = player.getMpiScore();
+        double oldCpi = (oldPpi != null && oldPpi > 0 && oldMpi != null && oldMpi > 0)
+                ? (oldPpi + oldMpi) / 2.0
+                : (oldPpi != null && oldPpi > 0 ? oldPpi : (oldMpi != null ? oldMpi : 0.0));
+
         PracticeAssessment saved = practiceAssessmentRepository.save(assessment);
 
         // Recalculate Player average PPI
@@ -116,6 +123,16 @@ public class PracticeController {
                 .orElse(0.0);
         player.setPpiScore(avgPpi);
         playerRepository.save(player);
+
+        double newCpi = (avgPpi > 0 && oldMpi != null && oldMpi > 0)
+                ? (avgPpi + oldMpi) / 2.0
+                : (avgPpi > 0 ? avgPpi : (oldMpi != null ? oldMpi : 0.0));
+
+        // 1. Notify assessment saved successfully
+        notificationService.notifyAssessmentSaved(managedCoach, player, "Practice", ppi, saved.getId());
+
+        // 2. Check for significant score change and notify if threshold met
+        notificationService.checkAndNotifyScoreChange(managedCoach, player, "PPI", oldPpi, avgPpi, oldCpi, newCpi, saved.getId());
 
         return ResponseEntity.ok(saved);
     }
