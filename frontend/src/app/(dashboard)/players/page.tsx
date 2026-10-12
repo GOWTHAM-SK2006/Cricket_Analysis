@@ -776,15 +776,33 @@ const generatePlayerPdfReport = async (
           } else if (trimmed === "") {
             y += 1.5;
           } else {
-            const wrappedLines = doc.splitTextToSize(line, pageWidth - 28);
-            wrappedLines.forEach((wLine: string) => {
-              checkPageBreak(5);
-              doc.setFontSize(7.5);
-              doc.setFont("helvetica", "normal");
-              doc.setTextColor(51, 65, 85);
-              doc.text(wLine, 14, y);
-              y += 3.6;
-            });
+            const isBullet = trimmed.startsWith("•") || trimmed.startsWith("-") || trimmed.startsWith("*");
+            if (isBullet) {
+              const bulletText = trimmed.replace(/^[•\-*]\s*/, "").trim();
+              const wrappedLines = doc.splitTextToSize(bulletText, pageWidth - 28 - 4.5);
+              wrappedLines.forEach((wLine: string, lineIdx: number) => {
+                checkPageBreak(5);
+                doc.setFontSize(7.5);
+                doc.setFont("helvetica", "normal");
+                if (lineIdx === 0) {
+                  doc.setTextColor(71, 85, 105);
+                  doc.text("•", 14, y);
+                }
+                doc.setTextColor(51, 65, 85);
+                doc.text(wLine, 18, y);
+                y += 3.6;
+              });
+            } else {
+              const wrappedLines = doc.splitTextToSize(line, pageWidth - 28);
+              wrappedLines.forEach((wLine: string) => {
+                checkPageBreak(5);
+                doc.setFontSize(7.5);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(51, 65, 85);
+                doc.text(wLine, 14, y);
+                y += 3.6;
+              });
+            }
           }
         }
         y += 4.0;
@@ -792,24 +810,31 @@ const generatePlayerPdfReport = async (
     });
   }
 
-  y += 2.0;
+  y += 6.0; // Consistent section margin between Section 5 and Section 6
 
   // 6. PERFORMANCE TREND (CPI Trend, PPI Trend, MPI Trend)
-  checkPageBreak(35);
+  checkPageBreak(38);
+
+  const bannerHeight = 6.5;
+  const bannerGap = 3.0; // Even 3.0mm gap between heading banner and trend box
+  const boxHeight = 24.0;
+
+  // Orange Section Heading Banner
   doc.setFillColor(234, 88, 12);
-  doc.roundedRect(14, y, pageWidth - 28, 6.5, 1.5, 1.5, "F");
+  doc.roundedRect(14, y, pageWidth - 28, bannerHeight, 1.5, 1.5, "F");
 
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text("6. PERFORMANCE TREND", 18, y + 4.5);
+  doc.text("6. PERFORMANCE TREND", 18, y + 4.6);
 
-  y += 8.0;
+  y += bannerHeight + bannerGap;
 
+  // Performance Trend Box
   doc.setFillColor(255, 247, 237);
   doc.setDrawColor(253, 186, 116);
   doc.setLineWidth(0.5);
-  doc.roundedRect(14, y, pageWidth - 28, 23, 2.5, 2.5, "FD");
+  doc.roundedRect(14, y, pageWidth - 28, boxHeight, 2.5, 2.5, "FD");
 
   // 1. CPI Trend Calculation
   const trendHistoryMap: Record<string, { timestamp: number; ppi: number | null; mpi: number | null; cpi: number | null }> = {};
@@ -857,15 +882,15 @@ const generatePlayerPdfReport = async (
     const currentCpiVal = cpiNum > 0 ? cpiNum : sortedCpiHistory[0].cpi!;
     const prevCpiVal = (sortedCpiHistory[0].cpi === currentCpiVal) ? sortedCpiHistory[1].cpi! : sortedCpiHistory[0].cpi!;
     if (currentCpiVal > prevCpiVal) {
-      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI \u2014 \u2191 Improving from the previous assessment period.`;
+      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI — Improving from the previous assessment period.`;
     } else if (currentCpiVal < prevCpiVal) {
-      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI \u2014 \u2193 Declining from the previous assessment period.`;
+      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI — Declining from the previous assessment period.`;
     } else {
-      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI \u2014 \u2192 Stable from the previous assessment period.`;
+      cpiTrendText = `CPI Trend: ${currentCpiVal} CPI — Stable from the previous assessment period.`;
     }
   } else if (cpiNum > 0 || sortedCpiHistory.length === 1) {
     const val = cpiNum > 0 ? cpiNum : sortedCpiHistory[0]?.cpi;
-    cpiTrendText = `CPI Trend: ${val} CPI \u2014 Trend: Insufficient data`;
+    cpiTrendText = `CPI Trend: ${val} CPI — Trend: Insufficient data`;
   } else {
     cpiTrendText = `CPI Trend: Trend: Insufficient data`;
   }
@@ -884,15 +909,15 @@ const generatePlayerPdfReport = async (
     const currentPpiVal = ppiNum > 0 ? ppiNum : validPracticeHistory[0].score;
     const prevPpiVal = (validPracticeHistory[0].score === currentPpiVal) ? validPracticeHistory[1].score : validPracticeHistory[0].score;
     if (currentPpiVal > prevPpiVal) {
-      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI \u2014 \u2191 Improving from the previous assessment period.`;
+      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI — Improving from the previous assessment period.`;
     } else if (currentPpiVal < prevPpiVal) {
-      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI \u2014 \u2193 Declining from the previous assessment period.`;
+      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI — Declining from the previous assessment period.`;
     } else {
-      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI \u2014 \u2192 Stable from the previous assessment period.`;
+      ppiTrendText = `PPI Trend: ${currentPpiVal} PPI — Stable from the previous assessment period.`;
     }
   } else if (ppiNum > 0 || validPracticeHistory.length === 1) {
     const val = ppiNum > 0 ? ppiNum : validPracticeHistory[0]?.score;
-    ppiTrendText = `PPI Trend: ${val} PPI \u2014 Trend: Insufficient data`;
+    ppiTrendText = `PPI Trend: ${val} PPI — Trend: Insufficient data`;
   } else {
     ppiTrendText = `PPI Trend: Trend: Insufficient data`;
   }
@@ -911,38 +936,39 @@ const generatePlayerPdfReport = async (
     const currentMpiVal = mpiNum > 0 ? mpiNum : validMatchHistory[0].score;
     const prevMpiVal = (validMatchHistory[0].score === currentMpiVal) ? validMatchHistory[1].score : validMatchHistory[0].score;
     if (currentMpiVal > prevMpiVal) {
-      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI \u2014 \u2191 Improving from the previous assessment period.`;
+      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI — Improving from the previous assessment period.`;
     } else if (currentMpiVal < prevMpiVal) {
-      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI \u2014 \u2193 Declining from the previous assessment period.`;
+      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI — Declining from the previous assessment period.`;
     } else {
-      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI \u2014 \u2192 Stable from the previous assessment period.`;
+      mpiTrendText = `MPI Trend: ${currentMpiVal} MPI — Stable from the previous assessment period.`;
     }
   } else if (mpiNum > 0 || validMatchHistory.length === 1) {
     const val = mpiNum > 0 ? mpiNum : validMatchHistory[0]?.score;
-    mpiTrendText = `MPI Trend: ${val} MPI \u2014 Trend: Insufficient data`;
+    mpiTrendText = `MPI Trend: ${val} MPI — Trend: Insufficient data`;
   } else {
     mpiTrendText = `MPI Trend: Trend: Insufficient data`;
   }
 
+  // Consistent 6.0mm vertical rhythm inside trend box
   doc.setFontSize(8.0);
   doc.setFont("helvetica", "bold");
 
   doc.setTextColor(234, 88, 12);
-  doc.text("•", 18, y + 6.5);
+  doc.text("•", 18, y + 6.0);
   doc.setTextColor(15, 23, 42);
-  doc.text(cpiTrendText, 22, y + 6.5);
+  doc.text(cpiTrendText, 22, y + 6.0);
 
   doc.setTextColor(234, 88, 12);
-  doc.text("•", 18, y + 12.5);
+  doc.text("•", 18, y + 12.0);
   doc.setTextColor(15, 23, 42);
-  doc.text(ppiTrendText, 22, y + 12.5);
+  doc.text(ppiTrendText, 22, y + 12.0);
 
   doc.setTextColor(234, 88, 12);
-  doc.text("•", 18, y + 18.5);
+  doc.text("•", 18, y + 18.0);
   doc.setTextColor(15, 23, 42);
-  doc.text(mpiTrendText, 22, y + 18.5);
+  doc.text(mpiTrendText, 22, y + 18.0);
 
-  y += 28;
+  y += boxHeight + 6.0; // Consistent section spacing before Section 7
 
   // 7. ASSESSMENT HISTORY
   checkPageBreak(30);
@@ -953,16 +979,17 @@ const generatePlayerPdfReport = async (
 
   y += 5.0;
 
-  // Table Header
+  // Table Header (Width: 182mm spanning x = 14 to 196)
+  // Col 1: DATE [14-64] (50mm), Col 2: PPI [64-108] (44mm, center: 86), Col 3: MPI [108-152] (44mm, center: 130), Col 4: CPI [152-196] (44mm, center: 174)
   doc.setFillColor(241, 245, 249);
   doc.rect(14, y, pageWidth - 28, 6.5, "F");
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
-  doc.text("DATE", 18, y + 4.5);
-  doc.text("PRACTICE (PPI)", 75, y + 4.5);
-  doc.text("MATCH (MPI)", 125, y + 4.5);
-  doc.text("CPI", 168, y + 4.5);
+  doc.text("DATE", 18, y + 4.3);
+  doc.text("PRACTICE (PPI)", 86, y + 4.3, { align: "center" });
+  doc.text("MATCH (MPI)", 130, y + 4.3, { align: "center" });
+  doc.text("CPI", 174, y + 4.3, { align: "center" });
 
   y += 6.5;
 
@@ -1006,7 +1033,7 @@ const generatePlayerPdfReport = async (
     doc.setFontSize(7.5);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(100, 116, 139);
-    doc.text("No assessment history records found.", 18, y + 4.5);
+    doc.text("No assessment history records found.", 18, y + 4.3);
   } else {
     sortedHistoryRows.slice(0, 10).forEach((row, idx) => {
       checkPageBreak(6);
@@ -1018,13 +1045,13 @@ const generatePlayerPdfReport = async (
       doc.setFontSize(7.5);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(15, 23, 42);
-      doc.text(row.date, 18, y + 4.0);
-      doc.text(row.ppi, 75, y + 4.0);
-      doc.text(row.mpi, 125, y + 4.0);
+      doc.text(row.date, 18, y + 3.8);
+      doc.text(row.ppi, 86, y + 3.8, { align: "center" });
+      doc.text(row.mpi, 130, y + 3.8, { align: "center" });
 
       doc.setFont("helvetica", "bold");
       doc.setTextColor(194, 65, 12);
-      doc.text(row.cpi, 168, y + 4.0);
+      doc.text(row.cpi, 174, y + 3.8, { align: "center" });
 
       y += 5.5;
     });
@@ -3967,17 +3994,6 @@ return (
                 <p className="text-[11px] sm:text-xs text-zinc-400 font-medium leading-relaxed max-w-md mx-auto pt-0.5">
                   {tierDesc}
                 </p>
-              </div>
-
-              {/* Coach Remarks Input */}
-              <div className="relative pt-0.5">
-                <input
-                  type="text"
-                  value={practiceForm.notes}
-                  onChange={(e) => setPracticeForm({ ...practiceForm, notes: e.target.value })}
-                  placeholder="Coach Remarks & Drill Observations (Optional)..."
-                  className="w-full h-10 sm:h-11 bg-[#1B1E2C] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#D4AF37] transition-all font-montserrat"
-                />
               </div>
 
               {/* Save Assessment Action Button */}
