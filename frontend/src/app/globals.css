@@ -46,6 +46,19 @@ html.dark,
   --text-tertiary: #9CA3AF;
 }
 
+html.light,
+.light {
+  color-scheme: light;
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F1F5F9;
+  --border-color: #E2E8F0;
+  --border-color-light: #CBD5E1;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-tertiary: #64748B;
+}
+
 @theme {
   --color-orange-500: #D4AF37;
   --color-orange-600: #B8860B;
@@ -168,208 +181,488 @@ html.dark .glass-surface {
   box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.35) !important;
 }
 
-/* ------------------ CONSISTENT PALETTE OVERRIDES ------------------ */
-body {
+/* ------------------ DARK MODE OVERRIDES (DEFAULT) ------------------ */
+html:not(.light) body {
   background-color: #090A0E !important;
   color: #F3F4F6 !important;
 }
 
 /* Surface Cards & Containers */
-.bg-white,
-.bg-\[\#FAF9F6\],
-.bg-slate-100\/50,
-.bg-slate-50\/50 {
+html:not(.light) .bg-white,
+html:not(.light) .bg-\[\#FAF9F6\],
+html:not(.light) .bg-slate-100\/50,
+html:not(.light) .bg-slate-50\/50 {
   background-color: #12141D !important;
   color: #F3F4F6 !important;
 }
 
-.bg-slate-50,
-.bg-slate-100 {
+html:not(.light) .bg-slate-50,
+html:not(.light) .bg-slate-100 {
   background-color: #090A0E !important;
   color: #F3F4F6 !important;
 }
 
-.bg-slate-200,
-.bg-slate-200\/80,
-.bg-slate-200\/90 {
+html:not(.light) .bg-slate-200,
+html:not(.light) .bg-slate-200\/80,
+html:not(.light) .bg-slate-200\/90 {
   background-color: #1B1E2C !important;
   color: #FFFFFF !important;
 }
 
-.bg-slate-50\/60,
-.bg-slate-50\/80,
-.bg-slate-50\/90,
-.bg-slate-50\/95,
-.bg-white\/90,
-.bg-white\/95,
-.bg-\[\#FAF9F6\]\/90 {
+html:not(.light) .bg-slate-50\/60,
+html:not(.light) .bg-slate-50\/80,
+html:not(.light) .bg-slate-50\/90,
+html:not(.light) .bg-slate-50\/95,
+html:not(.light) .bg-white\/90,
+html:not(.light) .bg-white\/95,
+html:not(.light) .bg-\[\#FAF9F6\]\/90 {
   background-color: rgba(18, 20, 29, 0.88) !important;
   backdrop-filter: blur(14px) !important;
 }
 
 /* Subtle Borders */
-.border-slate-100,
-.border-slate-200,
-.border-slate-300,
-.border-slate-200\/80,
-.border-slate-200\/90,
-.border-slate-100\/90 {
+html:not(.light) .border-slate-100,
+html:not(.light) .border-slate-200,
+html:not(.light) .border-slate-300,
+html:not(.light) .border-slate-200\/80,
+html:not(.light) .border-slate-200\/90,
+html:not(.light) .border-slate-100\/90 {
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-.border-slate-400 {
+html:not(.light) .border-slate-400 {
   border-color: rgba(255, 255, 255, 0.16) !important;
 }
 
 /* Gold / Accent Borders */
-.border-orange-200,
-.border-orange-200\/80,
-.border-orange-300,
-.border-orange-400,
-.border-orange-400\/40,
-.border-orange-400\/50,
-.border-orange-500\/20,
-.border-orange-500\/30 {
+html:not(.light) .border-orange-200,
+html:not(.light) .border-orange-200\/80,
+html:not(.light) .border-orange-300,
+html:not(.light) .border-orange-400,
+html:not(.light) .border-orange-400\/40,
+html:not(.light) .border-orange-400\/50,
+html:not(.light) .border-orange-500\/20,
+html:not(.light) .border-orange-500\/30 {
   border-color: rgba(212, 175, 55, 0.3) !important;
 }
 
 /* Typography Hierarchy with High Contrast */
-.text-slate-900,
-.text-slate-800 {
+html:not(.light) .text-slate-900,
+html:not(.light) .text-slate-800 {
   color: #FFFFFF !important;
 }
 
-.text-slate-700,
-.text-slate-600 {
+html:not(.light) .text-slate-700,
+html:not(.light) .text-slate-600 {
   color: #F3F4F6 !important;
 }
 
-.text-slate-500,
-.text-zinc-650,
-.text-zinc-600,
-.text-zinc-500 {
+html:not(.light) .text-slate-500,
+html:not(.light) .text-zinc-650,
+html:not(.light) .text-zinc-600,
+html:not(.light) .text-zinc-500 {
   color: #9CA3AF !important;
 }
 
-.text-slate-400,
-.text-zinc-400 {
+html:not(.light) .text-slate-400,
+html:not(.light) .text-zinc-400 {
   color: #6B7280 !important;
 }
 
 /* Form Inputs, Selects & Textareas */
-input,
-select,
-textarea {
+html:not(.light) input,
+html:not(.light) select,
+html:not(.light) textarea {
   background-color: #0E1017 !important;
   color: #FFFFFF !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+html:not(.light) input:focus,
+html:not(.light) select:focus,
+html:not(.light) textarea:focus {
   border-color: #D4AF37 !important;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
 }
 
-input::placeholder,
-textarea::placeholder {
+html:not(.light) input::placeholder,
+html:not(.light) textarea::placeholder {
   color: #6B7280 !important;
 }
 
 /* Gold Badges, Cards & Highlights */
-.text-orange-500,
-.text-orange-600 {
+html:not(.light) .text-orange-500,
+html:not(.light) .text-orange-600 {
   color: #D4AF37 !important;
 }
 
-.bg-orange-50,
-.bg-orange-50\/80,
-.bg-orange-50\/90,
-.bg-orange-100 {
+html:not(.light) .bg-orange-50,
+html:not(.light) .bg-orange-50\/80,
+html:not(.light) .bg-orange-50\/90,
+html:not(.light) .bg-orange-100 {
   background-color: rgba(212, 175, 55, 0.12) !important;
   color: #FCE8B2 !important;
 }
 
-.bg-orange-500,
-.bg-orange-600 {
+html:not(.light) .bg-orange-500,
+html:not(.light) .bg-orange-600 {
   background: linear-gradient(135deg, #E5A93C 0%, #D4AF37 60%, #B8860B 100%) !important;
   color: #090A0E !important;
 }
 
-.hover\:bg-orange-600:hover {
+html:not(.light) .hover\:bg-orange-600:hover {
   background: linear-gradient(135deg, #F5BA4E 0%, #E5B43C 60%, #C99615 100%) !important;
   color: #090A0E !important;
 }
 
 /* Amber / Moderate Status */
-.bg-amber-50 {
+html:not(.light) .bg-amber-50 {
   background-color: rgba(245, 158, 11, 0.12) !important;
 }
 
-.text-amber-700,
-.text-amber-800 {
+html:not(.light) .text-amber-700,
+html:not(.light) .text-amber-800 {
   color: #F59E0B !important;
 }
 
-.border-amber-200,
-.border-amber-200\/80 {
+html:not(.light) .border-amber-200,
+html:not(.light) .border-amber-200\/80 {
   border-color: rgba(245, 158, 11, 0.3) !important;
 }
 
 /* Emerald / Strong Status */
-.bg-emerald-50 {
+html:not(.light) .bg-emerald-50 {
   background-color: rgba(16, 185, 129, 0.12) !important;
 }
 
-.text-emerald-700,
-.text-emerald-800 {
+html:not(.light) .text-emerald-700,
+html:not(.light) .text-emerald-800 {
   color: #10B981 !important;
 }
 
-.border-emerald-200,
-.border-emerald-200\/80 {
+html:not(.light) .border-emerald-200,
+html:not(.light) .border-emerald-200\/80 {
   border-color: rgba(16, 185, 129, 0.3) !important;
 }
 
 /* Rose / Developmental Status */
-.bg-rose-50 {
+html:not(.light) .bg-rose-50 {
   background-color: rgba(239, 68, 68, 0.12) !important;
 }
 
-.text-rose-700,
-.text-rose-800 {
+html:not(.light) .text-rose-700,
+html:not(.light) .text-rose-800 {
   color: #EF4444 !important;
 }
 
-.border-rose-200,
-.border-rose-200\/80 {
+html:not(.light) .border-rose-200,
+html:not(.light) .border-rose-200\/80 {
   border-color: rgba(239, 68, 68, 0.3) !important;
 }
 
 /* Modal Backdrops & Overlays */
-.fixed.inset-0.bg-slate-50\/95,
-.fixed.inset-0.bg-white,
-.fixed.inset-0.bg-white\/80 {
+html:not(.light) .fixed.inset-0.bg-slate-50\/95,
+html:not(.light) .fixed.inset-0.bg-white,
+html:not(.light) .fixed.inset-0.bg-white\/80 {
   background-color: rgba(5, 6, 9, 0.9) !important;
   backdrop-filter: blur(14px) !important;
 }
 
 /* Custom Obsidian Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
+html:not(.light) ::-webkit-scrollbar-track {
   background: #090A0E;
 }
 
-::-webkit-scrollbar-thumb {
+html:not(.light) ::-webkit-scrollbar-thumb {
   background: #252936;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+html:not(.light) ::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
+/* ------------------ LIGHT MODE PALETTE OVERRIDES ------------------ */
+html.light,
+html.light body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  color-scheme: light !important;
+}
+
+/* Main Background Canvas & Root Containers */
+html.light .bg-\[\#090A0E\],
+html.light .bg-\[\#0A0B10\],
+html.light .bg-\[\#0E1017\] {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+/* Cards & Surface Containers */
+html.light .bg-white,
+html.light .bg-\[\#FAF9F6\],
+html.light .bg-\[\#12141D\],
+html.light .bg-\[\#181B27\],
+html.light .bg-\[\#12141D\]\/90,
+html.light .bg-\[\#12141D\]\/95,
+html.light .bg-\[\#181B27\]\/90,
+html.light .bg-\[\#181B27\]\/95,
+html.light .bg-\[\#181B27\]\/98 {
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Secondary Panels, Chips, List Rows, Inner Surfaces */
+html.light .bg-slate-50,
+html.light .bg-slate-100,
+html.light .bg-slate-100\/50,
+html.light .bg-slate-50\/50,
+html.light .bg-\[\#1B1E2C\],
+html.light .bg-\[\#151722\] {
+  background-color: #F1F5F9 !important;
+  background-image: none !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light .bg-slate-200,
+html.light .bg-slate-200\/80,
+html.light .bg-slate-200\/90 {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Translucent Containers & Glass Surfaces */
+html.light .glass-surface {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light .bg-white\/5,
+html.light .bg-white\/8,
+html.light .bg-white\/10,
+html.light .bg-white\/15,
+html.light .bg-white\/20,
+html.light .bg-\[\#090A0E\]\/10,
+html.light .bg-\[\#090A0E\]\/15,
+html.light .bg-\[\#090A0E\]\/20,
+html.light .bg-\[\#090A0E\]\/60 {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Neutralize Dark Gradients on Cards */
+html.light [class*="from-[#181B27]"],
+html.light [class*="from-[#12141D]"],
+html.light [class*="to-[#12141D]"],
+html.light [class*="to-[#0E1017]"],
+html.light [class*="to-[#0A0B10]"] {
+  background-image: none !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Subtle Borders */
+html.light .border-slate-100,
+html.light .border-slate-200,
+html.light .border-slate-300,
+html.light .border-slate-400,
+html.light .border-white\/5,
+html.light .border-white\/8,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/25,
+html.light .border-white\/30,
+html.light .border-white\/40 {
+  border-color: #E2E8F0 !important;
+}
+
+/* Gold / Accent Borders (Preserve CPI Identity) */
+html.light .border-orange-200,
+html.light .border-orange-200\/80,
+html.light .border-orange-300,
+html.light .border-orange-400,
+html.light .border-orange-400\/40,
+html.light .border-orange-400\/50,
+html.light .border-orange-500\/20,
+html.light .border-orange-500\/30,
+html.light .border-\[\#D4AF37\],
+html.light .border-\[\#D4AF37\]\/20,
+html.light .border-\[\#D4AF37\]\/30,
+html.light .border-\[\#D4AF37\]\/35,
+html.light .border-\[\#D4AF37\]\/40,
+html.light .border-\[\#D4AF37\]\/50,
+html.light .border-\[\#D4AF37\]\/60 {
+  border-color: rgba(212, 175, 55, 0.45) !important;
+}
+
+/* Typography Hierarchy with High Readability */
+html.light .text-slate-900,
+html.light .text-slate-800,
+html.light .text-white,
+html.light .text-\[\#FFFFFF\],
+html.light .text-\[\#F3F4F6\],
+html.light .text-zinc-100,
+html.light .text-zinc-200,
+html.light .text-zinc-300 {
+  color: #0F172A !important;
+}
+
+html.light .text-slate-700,
+html.light .text-slate-600 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-500,
+html.light .text-zinc-650,
+html.light .text-zinc-600,
+html.light .text-zinc-500,
+html.light .text-slate-400,
+html.light .text-zinc-400,
+html.light .text-\[\#9CA3AF\],
+html.light .text-\[\#6B7280\] {
+  color: #64748B !important;
+}
+
+/* Form Inputs, Selects & Textareas */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* CPI Gold Badges, Cards & Highlights */
+html.light .text-\[\#D4AF37\],
+html.light .text-\[\#F5BA4E\],
+html.light .text-orange-500,
+html.light .text-orange-600 {
+  color: #B8860B !important;
+}
+
+html.light .bg-orange-50,
+html.light .bg-orange-50\/80,
+html.light .bg-orange-50\/90,
+html.light .bg-orange-100 {
+  background-color: rgba(212, 175, 55, 0.12) !important;
+  color: #8C6508 !important;
+}
+
+html.light .bg-orange-500,
+html.light .bg-orange-600 {
+  background: linear-gradient(135deg, #F5BA4E 0%, #D4AF37 60%, #B8860B 100%) !important;
+  color: #090A0E !important;
+}
+
+html.light .bg-orange-500 *,
+html.light .bg-orange-600 * {
+  color: #090A0E !important;
+}
+
+html.light .hover\:bg-orange-600:hover {
+  background: linear-gradient(135deg, #FAD06C 0%, #E5B43C 60%, #C99615 100%) !important;
+  color: #090A0E !important;
+}
+
+/* Preserve White Text on Solid Buttons */
+html.light .bg-red-600,
+html.light .bg-red-700,
+html.light .bg-red-600 *,
+html.light .bg-red-700 * {
+  color: #FFFFFF !important;
+}
+
+/* Premium Button Text Contrast */
+html.light [class*="from-[#E5A93C]"] *,
+html.light [class*="from-[#F5BA4E]"] * {
+  color: #090A0E !important;
+}
+
+/* Status Badges */
+html.light .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
+html.light .text-amber-700,
+html.light .text-amber-800,
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #D97706 !important;
+}
+html.light .border-amber-200,
+html.light .border-amber-200\/80,
+html.light .border-amber-500\/30 {
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+html.light .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+html.light .text-emerald-700,
+html.light .text-emerald-800,
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #059669 !important;
+}
+html.light .border-emerald-200,
+html.light .border-emerald-200\/80,
+html.light .border-emerald-500\/30 {
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+html.light .bg-rose-50 {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+}
+html.light .text-rose-700,
+html.light .text-rose-800,
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #DC2626 !important;
+}
+html.light .border-rose-200,
+html.light .border-rose-200\/80,
+html.light .border-rose-500\/30 {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+/* Modal Backdrops & Overlays */
+html.light .fixed.inset-0.bg-\[\#090A0E\]\/90,
+html.light .fixed.inset-0.bg-\[\#090A0E\]\/85,
+html.light .fixed.inset-0.bg-\[\#090A0E\]\/80,
+html.light .fixed.inset-0.bg-black\/80,
+html.light .fixed.inset-0.bg-black\/70,
+html.light .fixed.inset-0.bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.55) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Light Mode Slider Thumb Ring */
+html.light .ppi-mpi-slider::-webkit-slider-thumb,
+html.light .ppi-mpi-slider::-moz-range-thumb {
+  border: 3px solid #FFFFFF !important;
+}
+
+/* Light Mode Scrollbars */
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
   background: #D4AF37;
 }

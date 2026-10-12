@@ -12,7 +12,12 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<string | null>(null);
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("theme") as "light" | "dark") || "dark";
+    }
+    return "dark";
+  });
   const [customAvatar, setCustomAvatar] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState<string>("CPI CRICKET ACADEMY");
   const [isEditingCompany, setIsEditingCompany] = useState<boolean>(false);
@@ -24,6 +29,19 @@ export default function ProfilePage() {
 
     const storedTheme = (localStorage.getItem("theme") as "light" | "dark") || "dark";
     setTheme(storedTheme);
+    if (storedTheme === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+
+    const handleThemeChange = () => {
+      const current = (localStorage.getItem("theme") as "light" | "dark") || "dark";
+      setTheme(current);
+    };
+    window.addEventListener("themeChanged", handleThemeChange);
 
     api.get("/profile")
       .then((res) => {
@@ -42,6 +60,10 @@ export default function ProfilePage() {
         console.error("Failed to load profile details", err);
         setLoading(false);
       });
+
+    return () => {
+      window.removeEventListener("themeChanged", handleThemeChange);
+    };
   }, []);
 
   const toggleTheme = (targetTheme: "light" | "dark") => {
@@ -54,6 +76,7 @@ export default function ProfilePage() {
       document.documentElement.classList.add("light");
       document.documentElement.classList.remove("dark");
     }
+    window.dispatchEvent(new Event("themeChanged"));
   };
 
   const handleLogout = () => {
@@ -282,10 +305,11 @@ export default function ProfilePage() {
               <span className="text-xs font-black text-zinc-500 uppercase tracking-widest block">THEME SELECTION</span>
               <div className="grid grid-cols-2 gap-2 mt-1">
                 <button
+                  type="button"
                   onClick={() => toggleTheme("light")}
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
                     theme === "light"
-                      ? "bg-orange-500 text-white border-orange-500 shadow-md"
+                      ? "bg-orange-500 text-[#090A0E] border-orange-500 shadow-md shadow-[#D4AF37]/25"
                       : "bg-slate-100 text-slate-500 border-slate-200 hover:text-slate-900"
                   }`}
                 >
@@ -293,10 +317,11 @@ export default function ProfilePage() {
                   LIGHT MODE
                 </button>
                 <button
+                  type="button"
                   onClick={() => toggleTheme("dark")}
                   className={`flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-sm uppercase transition-all cursor-pointer ${
                     theme === "dark"
-                      ? "bg-orange-500 text-white border-orange-500 shadow-md"
+                      ? "bg-orange-500 text-[#090A0E] border-orange-500 shadow-md shadow-[#D4AF37]/25"
                       : "bg-slate-100 text-slate-500 border-slate-200 hover:text-slate-900"
                   }`}
                 >

@@ -92,9 +92,22 @@ export default function DashboardLayout({
   }, [pathname, role]);
 
   useEffect(() => {
-    document.documentElement.classList.add("dark");
-    document.documentElement.classList.remove("light");
-    localStorage.setItem("theme", "dark");
+    const savedTheme = (localStorage.getItem("theme") as "light" | "dark") || "dark";
+    setTheme(savedTheme);
+    if (savedTheme === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+
+    const handleThemeChange = () => {
+      const current = (localStorage.getItem("theme") as "light" | "dark") || "dark";
+      setTheme(current);
+    };
+    window.addEventListener("themeChanged", handleThemeChange);
+    return () => window.removeEventListener("themeChanged", handleThemeChange);
   }, []);
 
   const toggleTheme = () => {
@@ -108,6 +121,7 @@ export default function DashboardLayout({
       document.documentElement.classList.add("light");
       document.documentElement.classList.remove("dark");
     }
+    window.dispatchEvent(new Event("themeChanged"));
   };
 
   useEffect(() => {
@@ -233,18 +247,18 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-[#090A0E] text-[#F3F4F6] selection:bg-[#D4AF37]/20 pb-24 font-sans">
+    <div className={`min-h-screen ${theme === "light" ? "bg-[#F8FAFC] text-[#0F172A]" : "bg-[#090A0E] text-[#F3F4F6]"} selection:bg-[#D4AF37]/20 pb-24 font-sans`}>
       {/* Top Header – CPI branding left, notification + profile right */}
-      <header className="h-16 border-b border-white/8 bg-[#12141D]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm">
+      <header className={`h-16 border-b ${theme === "light" ? "border-slate-200 bg-white/95" : "border-white/8 bg-[#12141D]/90"} backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm`}>
         {/* Left Side: CPI Logo + Text */}
         <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
           <div className="relative w-9 h-9">
             <Image src="/cpi-logo.png" alt="CPI" fill className="object-contain" />
           </div>
           <div className="leading-none">
-            <span className="text-[11px] font-black tracking-wider text-white uppercase block">CRICKET</span>
+            <span className={`text-[11px] font-black tracking-wider ${theme === "light" ? "text-slate-900" : "text-white"} uppercase block`}>CRICKET</span>
             <span className="text-[11px] font-black tracking-wider text-[#D4AF37] uppercase block">PERFORMANCE</span>
-            <span className="text-[11px] font-black tracking-wider text-white uppercase block">INDEX</span>
+            <span className={`text-[11px] font-black tracking-wider ${theme === "light" ? "text-slate-900" : "text-white"} uppercase block`}>INDEX</span>
           </div>
         </Link>
 
@@ -268,6 +282,8 @@ export default function DashboardLayout({
               className={`relative transition-all cursor-pointer p-1.5 rounded-full ${
                 showNotificationPanel
                   ? "text-[#D4AF37] bg-white/10"
+                  : theme === "light"
+                  ? "text-slate-600 hover:text-[#D4AF37] hover:bg-slate-100"
                   : "text-[#9CA3AF] hover:text-[#D4AF37] hover:bg-white/5"
               }`}
               title="Notifications"
@@ -275,7 +291,7 @@ export default function DashboardLayout({
             >
               <Bell className="w-5.5 h-5.5 stroke-[2]" />
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 min-w-4 h-4 px-1 bg-[#D4AF37] rounded-full text-[9px] font-black text-[#090A0E] flex items-center justify-center border-2 border-[#12141D] shadow-sm">
+                <span className={`absolute top-0 right-0 min-w-4 h-4 px-1 bg-[#D4AF37] rounded-full text-[9px] font-black text-[#090A0E] flex items-center justify-center border-2 ${theme === "light" ? "border-white" : "border-[#12141D]"} shadow-sm`}>
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
@@ -290,7 +306,7 @@ export default function DashboardLayout({
             />
           </div>
           <Link href="/profile" className="flex items-center justify-center cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-[#1B1E2C] border-2 border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-black text-sm uppercase hover:border-[#D4AF37] transition-colors shadow-sm overflow-hidden">
+            <div className={`w-10 h-10 rounded-full ${theme === "light" ? "bg-slate-100" : "bg-[#1B1E2C]"} border-2 border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-black text-sm uppercase hover:border-[#D4AF37] transition-colors shadow-sm overflow-hidden`}>
               {userAvatar ? (
                 <img src={userAvatar} alt="Profile Avatar" className="w-full h-full object-cover rounded-full" />
               ) : userName ? (
@@ -309,7 +325,7 @@ export default function DashboardLayout({
       </main>
 
       {/* Bottom 4-Tab Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-18 bg-[#12141D] border-t border-white/8 z-40 flex items-center justify-around px-2 pb-safe shadow-lg">
+      <nav className={`fixed bottom-0 left-0 right-0 h-18 ${theme === "light" ? "bg-white border-slate-200 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]" : "bg-[#12141D] border-white/8 shadow-lg"} border-t z-40 flex items-center justify-around px-2 pb-safe`}>
         {tabs.map((tab) => {
           const isActive = pathname === tab.path;
           const Icon = tab.icon;
@@ -320,7 +336,7 @@ export default function DashboardLayout({
               href={tab.path}
               prefetch={true}
               className={`flex flex-col items-center justify-center flex-1 h-full py-1.5 transition-all ${
-                isActive ? "text-[#D4AF37] font-black" : "text-[#9CA3AF] font-bold hover:text-white"
+                isActive ? "text-[#D4AF37] font-black" : theme === "light" ? "text-slate-500 font-bold hover:text-slate-900" : "text-[#9CA3AF] font-bold hover:text-white"
               }`}
             >
               <Icon className={`w-5.5 h-5.5 mb-1 ${isActive ? "stroke-[2.5]" : "stroke-[2]"}`} />
@@ -331,7 +347,7 @@ export default function DashboardLayout({
       </nav>
 
       {/* Footer */}
-      <div className="text-center py-6 text-xs text-[#6B7280] font-semibold tracking-wide">
+      <div className={`text-center py-6 text-xs ${theme === "light" ? "text-slate-500" : "text-[#6B7280]"} font-semibold tracking-wide`}>
         © {new Date().getFullYear()} CPI – Cricket Performance Index. All rights reserved.
       </div>
       {showTour && role && (
