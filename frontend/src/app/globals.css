@@ -666,3 +666,319 @@ html.light ::-webkit-scrollbar-thumb {
 html.light ::-webkit-scrollbar-thumb:hover {
   background: #D4AF37;
 }
+
+/* ================================================================
+   LIGHT MODE — LAYOUT WIDTH, SPACING, CONTRAST & RESPONSIVE FIXES
+   Only applied when html.light is active. Dark mode is NOT touched.
+   All selectors follow the same pattern as the existing overrides.
+   ================================================================ */
+
+/* ---- 1. WIDEN DASHBOARD CONTENT ---- */
+/* The layout.tsx uses .cpi-main-light class only in light mode */
+html.light .cpi-main-light {
+  max-width: 72rem !important;
+  padding: 1.5rem;
+}
+
+/* Dashboard page inner container — override max-w-lg (512px → full) */
+html.light .max-w-lg {
+  max-width: 100% !important;
+}
+
+@media (min-width: 1280px) {
+  html.light .cpi-main-light {
+    max-width: 80rem !important;
+    padding: 2rem 3rem !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  html.light .cpi-main-light {
+    max-width: 88rem !important;
+    padding: 2.5rem 4rem !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  html.light .cpi-main-light {
+    max-width: 100% !important;
+    padding: 1.5rem 2rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html.light .cpi-main-light {
+    max-width: 100% !important;
+    padding: 1rem !important;
+  }
+  html.light .max-w-lg {
+    max-width: 100% !important;
+  }
+}
+
+/* ---- 2. BODY CANVAS ---- */
+html.light body {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+/* ---- 3. TEXT CONTRAST — critical fixes ---- */
+/* Section headings: "TODAY'S SNAPSHOT", "QUICK ACTIONS", etc. */
+html.light .text-zinc-300 {
+  color: #1E293B !important;
+}
+
+/* Card labels: "Total Players", "AVERAGE PPI" */
+html.light .text-zinc-400 {
+  color: #475569 !important;
+}
+
+/* Sub-labels: "Squad Roster", "Practice Index" */
+html.light .text-zinc-500 {
+  color: #64748B !important;
+}
+
+/* Muted text */
+html.light .text-zinc-600 {
+  color: #64748B !important;
+}
+
+/* Primary heading text that's white in dark mode */
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+/* Zinc-100/200 text */
+html.light .text-zinc-100 {
+  color: #0F172A !important;
+}
+html.light .text-zinc-200 {
+  color: #1E293B !important;
+}
+
+/* Gold text — darker for white bg contrast */
+html.light .text-\[\#D4AF37\] {
+  color: #9A7315 !important;
+}
+html.light .text-\[\#F5BA4E\] {
+  color: #9A7315 !important;
+}
+html.light .text-\[\#D4AF37\]\/75 {
+  color: #8C6508 !important;
+}
+html.light .text-\[\#D4AF37\]\/80 {
+  color: #8C6508 !important;
+}
+
+/* Status colors — darken for light bg */
+html.light .text-emerald-400 {
+  color: #059669 !important;
+}
+html.light .text-emerald-400\/80 {
+  color: #059669 !important;
+}
+html.light .text-rose-400 {
+  color: #E11D48 !important;
+}
+html.light .text-rose-400\/80 {
+  color: #E11D48 !important;
+}
+
+/* ---- 4. CARD BACKGROUNDS ---- */
+/* Dark gradient cards → white with subtle shadow */
+html.light [class*="from-[#181B27]"][class*="to-[#12141D]"],
+html.light [class*="from-[#181B27]"][class*="to-[#0A0C12]"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+}
+
+/* Category cards in performance chart */
+html.light .bg-\[\#181B27\]\/80 {
+  background-color: #F8FAFC !important;
+}
+html.light .bg-\[\#181B27\]\/80:hover {
+  background-color: #F1F5F9 !important;
+}
+
+/* Inner surfaces */
+html.light .bg-\[\#1B1E2C\] {
+  background-color: #F1F5F9 !important;
+}
+
+/* Dark solid backgrounds → light */
+html.light .bg-\[\#090A0E\]\/80 {
+  background-color: #F1F5F9 !important;
+  border-color: rgba(212,175,55,0.35) !important;
+}
+
+/* "Add Player" secondary button */
+html.light .bg-\[\#12141D\]\/80 {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #334155 !important;
+}
+html.light .bg-\[\#12141D\]\/80:hover {
+  background-color: #E2E8F0 !important;
+  border-color: rgba(212,175,55,0.4) !important;
+  color: #0F172A !important;
+}
+
+/* Distribution bar track */
+html.light .bg-\[\#090A0E\].rounded-full {
+  background-color: #E2E8F0 !important;
+}
+html.light .bg-\[\#1B1E2C\].rounded-full {
+  background-color: #E2E8F0 !important;
+}
+
+/* Badge/pill inside distribution header */
+html.light .bg-\[\#090A0E\].border {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+  color: #475569 !important;
+}
+
+/* ---- 5. BORDER OVERRIDES ---- */
+html.light .border-white\/10 {
+  border-color: #E2E8F0 !important;
+}
+html.light .border-white\/8 {
+  border-color: #E2E8F0 !important;
+}
+
+/* Status-colored borders — soften */
+html.light .border-emerald-500\/25 {
+  border-color: rgba(5,150,105,0.25) !important;
+}
+html.light .border-emerald-500\/50 {
+  border-color: rgba(5,150,105,0.4) !important;
+}
+html.light .border-rose-500\/25 {
+  border-color: rgba(225,29,72,0.25) !important;
+}
+html.light .border-rose-500\/50 {
+  border-color: rgba(225,29,72,0.4) !important;
+}
+html.light .border-\[\#D4AF37\]\/25 {
+  border-color: rgba(154,115,21,0.3) !important;
+}
+html.light .border-\[\#D4AF37\]\/50 {
+  border-color: rgba(154,115,21,0.4) !important;
+}
+
+/* ---- 6. GRADIENT TEXT → SOLID FOR LIGHT MODE ---- */
+/* Coach name gradient text */
+html.light span.bg-clip-text.text-transparent[class*="from-white"] {
+  background-image: none !important;
+  color: #0F172A !important;
+  -webkit-text-fill-color: #0F172A !important;
+}
+
+/* CPI INDEX gradient text */
+html.light span.bg-clip-text.text-transparent[class*="from-[#F5BA4E]"] {
+  background-image: none !important;
+  color: #9A7315 !important;
+  -webkit-text-fill-color: #9A7315 !important;
+}
+
+/* ---- 7. DROP SHADOWS — remove glow effects on light ---- */
+html.light [class*="drop-shadow-[0_0_"] {
+  filter: none !important;
+}
+html.light [class*="shadow-[0_0_"] {
+  /* Preserve box-shadow structure but not neon glow */
+}
+
+/* ---- 8. AMBIENT GLOW CIRCLES — tone down ---- */
+html.light .blur-3xl {
+  opacity: 0.15 !important;
+}
+
+/* ---- 9. STATUS BADGE BACKGROUNDS ---- */
+html.light .bg-emerald-500\/15 {
+  background-color: rgba(5,150,105,0.1) !important;
+}
+html.light .bg-rose-500\/15 {
+  background-color: rgba(225,29,72,0.1) !important;
+}
+html.light .bg-\[\#D4AF37\]\/15 {
+  background-color: rgba(154,115,21,0.08) !important;
+}
+html.light .bg-\[\#D4AF37\]\/10 {
+  background-color: rgba(154,115,21,0.07) !important;
+}
+
+/* ---- 10. PING ANIMATIONS — tone down ---- */
+html.light .animate-ping {
+  opacity: 0.4 !important;
+}
+
+/* ---- 11. KPI CARDS — 4-column on desktop in light mode ---- */
+@media (min-width: 1024px) {
+  html.light .cpi-main-light .grid.grid-cols-2 {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Performance chart category cards — wider gaps on tablet+ */
+@media (min-width: 768px) {
+  html.light .cpi-main-light .grid.grid-cols-3 {
+    gap: 1rem !important;
+  }
+}
+
+/* ---- 12. BOTTOM NAVIGATION — clean & readable ---- */
+html.light nav.bg-white {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.05) !important;
+}
+
+/* Active nav tab */
+html.light .text-\[\#D4AF37\].font-black {
+  color: #B8860B !important;
+}
+
+/* ---- 13. FLOATING AI CHATBOT BUTTON ---- */
+html.light .bg-\[\#090A0E\].text-\[\#D4AF37\] {
+  background-color: #FFFFFF !important;
+  border-color: rgba(154,115,21,0.3) !important;
+}
+
+/* ---- 14. CARD PADDING ENHANCEMENT — bigger on desktop ---- */
+@media (min-width: 1024px) {
+  html.light .cpi-main-light .rounded-2xl.p-4 {
+    padding: 1.5rem !important;
+  }
+  html.light .cpi-main-light .rounded-3xl.p-5 {
+    padding: 2rem !important;
+  }
+}
+
+/* ---- 15. SPACE-Y SECTIONS — slightly more breathing room ---- */
+@media (min-width: 1024px) {
+  html.light .cpi-main-light .space-y-7 > * + * {
+    margin-top: 2.25rem !important;
+  }
+  html.light .cpi-main-light .space-y-3 > * + * {
+    margin-top: 1rem !important;
+  }
+}
+
+/* ---- 16. SECTION HEADINGS — bigger on desktop ---- */
+@media (min-width: 768px) {
+  html.light .cpi-main-light h3.text-\[11px\] {
+    font-size: 0.8125rem !important; /* 13px */
+  }
+}
+
+/* ---- 17. KPI NUMBERS — slightly larger on desktop ---- */
+@media (min-width: 1024px) {
+  html.light .cpi-main-light .text-2xl.font-black {
+    font-size: 2rem !important;
+    line-height: 1 !important;
+  }
+}

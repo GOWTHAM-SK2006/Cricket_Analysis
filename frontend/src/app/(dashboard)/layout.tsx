@@ -320,7 +320,7 @@ export default function DashboardLayout({
       </header>
 
       {/* Main Content Container */}
-      <main className="p-4 md:p-6 max-w-3xl mx-auto">
+      <main className={`${theme === "light" ? "cpi-main-light p-4 md:p-6 lg:p-8 max-w-6xl" : "p-4 md:p-6 max-w-3xl"} mx-auto`}>
         {children}
       </main>
 
