@@ -982,3 +982,318 @@ html.light .bg-\[\#090A0E\].text-\[\#D4AF37\] {
     line-height: 1 !important;
   }
 }
+
+/* ================================================================
+   TEAM MANAGEMENT PAGE — LIGHT MODE TARGETED OVERRIDES
+   Applied only when html.light is active. Dark mode untouched.
+   ================================================================ */
+
+/* ---- Page canvas — soft warm grey instead of blinding white ---- */
+html.light .bg-\[\#090A0E\] {
+  background-color: #F1F5F9 !important;
+}
+
+/* ---- HEADER CARD (from-[#181B27] via-[#12141D] to-[#0A0C12]) ---- */
+/* The general gradient neutraliser covers this but we need shadow + border */
+html.light [class*="from-\[#181B27\]"][class*="via-\[#12141D\]"],
+html.light [class*="from-\[#181B27\]"][class*="to-\[#0A0C12\]"] {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+  background-image: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04) !important;
+}
+
+/* ---- TEAM CARD (from-[#181B27]/95 via-[#12141D]/95 to-[#0E1017]) ---- */
+html.light [class*="from-\[#181B27\]\/95"][class*="to-\[#0E1017\]"],
+html.light [class*="from-\[#181B27\]\/95"][class*="via-\[#12141D\]\/95"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 6px 24px rgba(0,0,0,0.04) !important;
+}
+
+/* ---- INNER DARK SURFACES (score cells, form bg, etc.) ---- */
+html.light .bg-\[\#0E1017\] {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* ---- TEAM SELECTOR STRIP — unselected pills ---- */
+/* bg-[#12141D] used for unselected team pills */
+html.light .bg-\[\#12141D\] {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #334155 !important;
+}
+html.light .bg-\[\#12141D\]:hover {
+  background-color: #F8FAFC !important;
+  border-color: rgba(154,115,21,0.35) !important;
+}
+
+/* ---- NEW TEAM dashed pill ---- */
+html.light .bg-\[\#12141D\]\/60 {
+  background-color: rgba(241,245,249,0.9) !important;
+  border-color: #CBD5E1 !important;
+  color: #64748B !important;
+}
+
+/* ---- TAB BAR (bg-[#0E1017] rounded-2xl) ---- */
+/* The tab container has a dark pill background in dark mode */
+html.light .bg-\[\#0E1017\].rounded-2xl {
+  background-color: #E9EEF5 !important;
+  border-color: #D1D9E6 !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+
+/* Active tab — gold gradient stays, just ensure text is dark */
+html.light .bg-gradient-to-r.from-\[\#F5BA4E\].via-\[\#D4AF37\].to-\[\#B8860B\] {
+  box-shadow: 0 2px 8px rgba(212,175,55,0.3) !important;
+}
+
+/* Inactive tab text in the tab bar */
+html.light .text-zinc-400 {
+  color: #475569 !important;
+}
+
+/* ---- SEARCH + ACTIONS BAR (bg-[#12141D] border) ---- */
+html.light .bg-\[\#12141D\].border.rounded-2xl {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+
+/* Search input inner (bg-[#0E1017]) */
+html.light .bg-\[\#0E1017\].border.rounded-xl {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+html.light .bg-\[\#0E1017\].border.rounded-xl:focus {
+  border-color: #D4AF37 !important;
+}
+
+/* ---- PLAYER CARDS (from-[#181B27]/95 to-[#12141D]/95) ---- */
+html.light [class*="from-\[#181B27\]\/95"][class*="to-\[#12141D\]\/95"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04) !important;
+}
+html.light [class*="from-\[#181B27\]\/95"][class*="to-\[#12141D\]\/95"]:hover {
+  border-color: rgba(154,115,21,0.4) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(154,115,21,0.12) !important;
+}
+
+/* Player avatar ring */
+html.light .ring-\[\#D4AF37\]\/40 {
+  --tw-ring-color: rgba(154,115,21,0.3) !important;
+}
+
+/* Player avatar background */
+html.light .bg-\[\#1B1E2C\] {
+  background-color: #EFF2F7 !important;
+}
+
+/* ---- PLAYER SCORE CELLS (bg-[#0E1017] rounded-xl) ---- */
+html.light .bg-\[\#0E1017\].rounded-xl {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Player name hover */
+html.light .hover\:text-\[\#F5BA4E\]:hover {
+  color: #9A7315 !important;
+}
+
+/* Player score divider line */
+html.light .border-t.border-white\/8 {
+  border-color: #E2E8F0 !important;
+}
+
+/* ---- ANALYTICS SECTION ---- */
+html.light [class*="from-\[#181B27\]\/95"][class*="via-\[#12141D\]\/95"][class*="to-\[#0E1017\]"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04) !important;
+}
+
+/* Analytics parameter row cards (bg-[#0E1017] border rounded-2xl) */
+html.light .bg-\[\#0E1017\].border.rounded-2xl {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+/* Analytics bar tracks (bg-[#181B27]) */
+html.light .bg-\[\#181B27\].h-2\.5,
+html.light .bg-\[\#181B27\].rounded-full {
+  background-color: #DDE3EC !important;
+}
+
+/* Progress bar track alternative */
+html.light [class="flex-1 bg-\[#181B27\] h-2\.5 rounded-full overflow-hidden p-0\.5 border border-white\/5"] {
+  background-color: #DDE3EC !important;
+  border-color: #D1D9E6 !important;
+}
+
+/* ---- COACH NOTES SECTION ---- */
+/* Note add form (bg-[#0E1017] border rounded-2xl) */
+html.light form.bg-\[\#0E1017\].border.rounded-2xl {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Each note card */
+html.light .bg-\[\#0E1017\].border.border-white\/10.rounded-2xl {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+/* Note divider */
+html.light .border-t.border-white\/5 {
+  border-color: #F1F5F9 !important;
+}
+
+/* Note content text */
+html.light .text-zinc-200.whitespace-pre-wrap {
+  color: #1E293B !important;
+}
+
+/* ---- COMPARE SQUADS SECTION ---- */
+/* Squad selector container */
+html.light .grid.grid-cols-1.sm\:grid-cols-2.gap-4.bg-\[\#0E1017\] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Comparison result cards */
+html.light .bg-\[\#0E1017\].border.\[\#D4AF37\]\/30.rounded-2xl {
+  background-color: #FFFFFF !important;
+  border-color: rgba(154,115,21,0.3) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+}
+
+/* ---- INLINE EDIT FORM ---- */
+html.light form.bg-\[\#0E1017\].border.border-white\/10.rounded-2xl {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+html.light .bg-\[\#181B27\].border.border-white\/10.rounded-xl {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+/* ---- EMPTY STATE CARD ---- */
+html.light [class*="from-\[#181B27\]\/90"][class*="to-\[#12141D\]\/90"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+
+/* Empty state border-dashed */
+html.light .border-dashed.border-white\/15 {
+  border-color: #CBD5E1 !important;
+}
+
+/* ---- NO SEARCH RESULTS pill ---- */
+html.light .text-center.py-8.text-zinc-400.font-bold.text-xs.bg-\[\#12141D\].rounded-2xl {
+  background-color: #F8FAFC !important;
+  color: #64748B !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* ---- MODAL FORMS (Create team, Add Players modals) ---- */
+html.light .fixed.inset-0.z-50.flex.items-center.justify-center .bg-\[\#12141D\],
+html.light .fixed.inset-0.z-50.flex.items-center.justify-center .bg-\[\#181B27\] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* ---- REPORT BUTTON ---- */
+html.light .bg-\[\#12141D\]\/90 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #334155 !important;
+}
+html.light .bg-\[\#12141D\]\/90:hover,
+html.light .hover\:bg-\[\#181B27\]:hover {
+  background-color: #EFF2F7 !important;
+  border-color: rgba(154,115,21,0.3) !important;
+}
+
+/* ---- SCROLL INDICATOR: active team label ---- */
+html.light .text-zinc-500 strong.text-white {
+  color: #0F172A !important;
+}
+
+/* ---- COMPARISON PARAMETER ROWS ---- */
+html.light .grid.grid-cols-1.sm\:grid-cols-2.gap-4 .bg-\[\#0E1017\] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* ---- AMBIENT BACKGROUND GLOWS — hide on light ---- */
+html.light [class*="bg-[radial-gradient(circle,rgba(212,175,55"] {
+  opacity: 0 !important;
+}
+
+/* ---- SECTION LABEL text-zinc-400 beside icon ---- */
+html.light span.text-zinc-400 {
+  color: #475569 !important;
+}
+
+/* ---- Border-b divider inside team card header ---- */
+html.light .border-b.border-white\/8 {
+  border-color: #E9EEF5 !important;
+}
+
+/* ---- ACTIVE SQUAD badge (emerald) — ensure readable ---- */
+html.light .bg-emerald-500\/15.border.border-emerald-500\/30 {
+  background-color: rgba(5,150,105,0.08) !important;
+  border-color: rgba(5,150,105,0.25) !important;
+}
+
+/* ---- Gold CPI badge bg ---- */
+html.light .bg-\[\#D4AF37\]\/10 {
+  background-color: rgba(154,115,21,0.07) !important;
+}
+html.light .bg-\[\#D4AF37\]\/15 {
+  background-color: rgba(154,115,21,0.08) !important;
+}
+html.light .bg-\[\#D4AF37\]\/8 {
+  background-color: rgba(154,115,21,0.06) !important;
+}
+
+/* ---- White/5 backgrounds used in edit cancel/buttons ---- */
+html.light .bg-white\/5,
+html.light .hover\:bg-white\/10:hover {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+}
+
+/* ---- ADD PLAYERS button in search bar ---- */
+html.light .bg-\[\#D4AF37\]\/15 {
+  background-color: rgba(154,115,21,0.08) !important;
+  border-color: rgba(154,115,21,0.3) !important;
+}
+html.light .hover\:bg-\[\#D4AF37\]:hover {
+  background-color: #D4AF37 !important;
+  color: #090A0E !important;
+}
+
+/* ---- No teams / empty state text ---- */
+html.light .text-zinc-400.text-xs.sm\:text-sm.font-medium {
+  color: #64748B !important;
+}
+html.light h2.text-white.uppercase {
+  color: #0F172A !important;
+}
+
+/* ---- Bar track in analytics — direct bg-[#181B27] inside flex ---- */
+html.light div.flex-1.bg-\[\#181B27\] {
+  background-color: #DDE3EC !important;
+}
