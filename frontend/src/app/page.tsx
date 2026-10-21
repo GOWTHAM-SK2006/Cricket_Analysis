@@ -210,7 +210,7 @@ export default function Home() {
         <motion.div style={{ y: springY, opacity: heroOpacity }} className="relative z-10 max-w-5xl mx-auto px-6 text-center">
           {/* Live badge */}
           <motion.div initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "backOut" }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 text-[#FCE8B2] text-xs font-black mb-7 shadow-lg shadow-[#D4AF37]/10"
+            className="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 text-[#FCE8B2] text-xs font-black mb-7 shadow-lg shadow-[#D4AF37]/10"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
@@ -225,7 +225,7 @@ export default function Home() {
           >
             Cricket&nbsp;Performance
             <br />
-            <span style={{ background: "linear-gradient(135deg, #FCE8B2 0%, #E5A93C 35%, #D4AF37 60%, #B8860B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            <span className="hero-gradient-heading" style={{ background: "linear-gradient(135deg, #FCE8B2 0%, #E5A93C 35%, #D4AF37 60%, #B8860B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               Intelligence&nbsp;(CPI)
             </span>
           </motion.h1>
@@ -236,7 +236,7 @@ export default function Home() {
           >
             Are we training properly? If not, what must we do better?{" "}
             <br className="hidden sm:inline" />
-            <span className="text-[#FCE8B2]/80">The premier analytics platform designed for cricket coaches.</span>
+            <span className="hero-desc-gold text-[#FCE8B2]/80">The premier analytics platform designed for cricket coaches.</span>
           </motion.p>
 
           {/* CTA buttons */}
@@ -254,7 +254,7 @@ export default function Home() {
               </motion.span>
             </Link>
             <Link href="/login"
-              className="h-14 px-9 rounded-2xl text-base font-black text-[#D4AF37] border border-[#D4AF37]/35 inline-flex items-center justify-center gap-2 bg-[#D4AF37]/8 backdrop-blur-sm hover:bg-[#D4AF37]/15 hover:border-[#D4AF37]/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-[#D4AF37]/15 cursor-pointer"
+              className="hero-login-btn h-14 px-9 rounded-2xl text-base font-black text-[#D4AF37] border border-[#D4AF37]/35 inline-flex items-center justify-center gap-2 bg-[#D4AF37]/8 backdrop-blur-sm hover:bg-[#D4AF37]/15 hover:border-[#D4AF37]/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-[#D4AF37]/15 cursor-pointer"
             >Log In</Link>
           </motion.div>
 

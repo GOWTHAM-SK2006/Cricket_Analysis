@@ -673,32 +673,32 @@ html.light ::-webkit-scrollbar-thumb:hover {
    All selectors follow the same pattern as the existing overrides.
    ================================================================ */
 
-/* ---- 1. WIDEN DASHBOARD CONTENT ---- */
-/* The layout.tsx uses .cpi-main-light class only in light mode */
+/* ================================================================
+   1. WIDEN DASHBOARD — MAIN CONTAINER & INNER CONTENT
+   The dashboard page.tsx wraps all content in:
+     <motion.div className="... max-w-lg mx-auto ...">  (= 512 px cap)
+   In light mode we must remove that cap so the main container
+   (which layout.tsx already sets to max-w-6xl / cpi-main-light)
+   actually fills the screen.
+   ================================================================ */
+
+/* Main <main> wrapper — set by layout.tsx */
 html.light .cpi-main-light {
-  max-width: 72rem !important;
-  padding: 1.5rem;
+  max-width: 72rem !important;   /* 1152 px — comfortable desktop width */
+  width: 100% !important;
+  padding: 1.5rem 2rem !important;
+  box-sizing: border-box !important;
 }
 
-/* Dashboard page inner container — override max-w-lg (512px → full) */
-html.light .max-w-lg {
+/* Remove the 512-px cap on the dashboard inner motion.div
+   max-w-lg targets exactly the dashboard root container */
+html.light .max-w-lg,
+html.light .cpi-main-light .max-w-lg {
   max-width: 100% !important;
+  width: 100% !important;
 }
 
-@media (min-width: 1280px) {
-  html.light .cpi-main-light {
-    max-width: 80rem !important;
-    padding: 2rem 3rem !important;
-  }
-}
-
-@media (min-width: 1536px) {
-  html.light .cpi-main-light {
-    max-width: 88rem !important;
-    padding: 2.5rem 4rem !important;
-  }
-}
-
+/* Tablet — full width with comfortable side padding */
 @media (min-width: 768px) and (max-width: 1023px) {
   html.light .cpi-main-light {
     max-width: 100% !important;
@@ -706,6 +706,31 @@ html.light .max-w-lg {
   }
 }
 
+/* Desktop — generous width */
+@media (min-width: 1024px) {
+  html.light .cpi-main-light {
+    max-width: 72rem !important;
+    padding: 2rem 2.5rem !important;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1280px) {
+  html.light .cpi-main-light {
+    max-width: 80rem !important;
+    padding: 2rem 3rem !important;
+  }
+}
+
+/* XL desktop */
+@media (min-width: 1536px) {
+  html.light .cpi-main-light {
+    max-width: 88rem !important;
+    padding: 2.5rem 4rem !important;
+  }
+}
+
+/* Mobile */
 @media (max-width: 767px) {
   html.light .cpi-main-light {
     max-width: 100% !important;
@@ -713,16 +738,22 @@ html.light .max-w-lg {
   }
   html.light .max-w-lg {
     max-width: 100% !important;
+    width: 100% !important;
   }
 }
 
-/* ---- 2. BODY CANVAS ---- */
+/* ================================================================
+   2. BODY CANVAS — soft cool grey instead of blinding white
+   ================================================================ */
 html.light body {
   background-color: #F1F5F9 !important;
   color: #0F172A !important;
 }
 
-/* ---- 3. TEXT CONTRAST — critical fixes ---- */
+/* ================================================================
+   3. TEXT CONTRAST — all dashboard text elements
+   ================================================================ */
+
 /* Section headings: "TODAY'S SNAPSHOT", "QUICK ACTIONS", etc. */
 html.light .text-zinc-300 {
   color: #1E293B !important;
@@ -743,12 +774,12 @@ html.light .text-zinc-600 {
   color: #64748B !important;
 }
 
-/* Primary heading text that's white in dark mode */
+/* Primary heading text (white in dark mode) */
 html.light .text-white {
   color: #0F172A !important;
 }
 
-/* Zinc-100/200 text */
+/* Zinc-100/200 */
 html.light .text-zinc-100 {
   color: #0F172A !important;
 }
@@ -756,7 +787,7 @@ html.light .text-zinc-200 {
   color: #1E293B !important;
 }
 
-/* Gold text — darker for white bg contrast */
+/* Gold text — darken for white-bg contrast */
 html.light .text-\[\#D4AF37\] {
   color: #9A7315 !important;
 }
@@ -770,7 +801,7 @@ html.light .text-\[\#D4AF37\]\/80 {
   color: #8C6508 !important;
 }
 
-/* Status colors — darken for light bg */
+/* Status colours — darken for light bg */
 html.light .text-emerald-400 {
   color: #059669 !important;
 }
@@ -784,30 +815,43 @@ html.light .text-rose-400\/80 {
   color: #E11D48 !important;
 }
 
-/* ---- 4. CARD BACKGROUNDS ---- */
-/* Dark gradient cards → white with subtle shadow */
+/* ================================================================
+   4. CARD BACKGROUNDS — dark gradients → white with soft shadows
+   ================================================================ */
+
+/* Hero welcome card + KPI cards (from-[#181B27] to-[#12141D]) */
 html.light [class*="from-[#181B27]"][class*="to-[#12141D]"],
 html.light [class*="from-[#181B27]"][class*="to-[#0A0C12]"] {
   background: #FFFFFF !important;
   background-image: none !important;
   border-color: #E2E8F0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.05) !important;
 }
 
-/* Category cards in performance chart */
+/* CPI Performance Chart outer card */
+html.light [class*="from-[#181B27]\/95"][class*="to-[#12141D]\/95"] {
+  background: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.05) !important;
+}
+
+/* Category cards inside chart (BEST / AVG / LOW) */
 html.light .bg-\[\#181B27\]\/80 {
   background-color: #F8FAFC !important;
+  border-color: rgba(226,232,240,0.8) !important;
 }
-html.light .bg-\[\#181B27\]\/80:hover {
+html.light .bg-\[\#181B27\]\/80:hover,
+html.light .hover\:bg-\[\#1B1E2C\]:hover {
   background-color: #F1F5F9 !important;
 }
 
-/* Inner surfaces */
+/* Icon badge backgrounds inside KPI cards */
 html.light .bg-\[\#1B1E2C\] {
-  background-color: #F1F5F9 !important;
+  background-color: #EFF2F7 !important;
 }
 
-/* Dark solid backgrounds → light */
+/* Dark solid background panel (CPI distribution badge pill) */
 html.light .bg-\[\#090A0E\]\/80 {
   background-color: #F1F5F9 !important;
   border-color: rgba(212,175,55,0.35) !important;
@@ -819,28 +863,32 @@ html.light .bg-\[\#12141D\]\/80 {
   border-color: #CBD5E1 !important;
   color: #334155 !important;
 }
-html.light .bg-\[\#12141D\]\/80:hover {
+html.light .bg-\[\#12141D\]\/80:hover,
+html.light .hover\:bg-\[\#181B27\]\/80:hover {
   background-color: #E2E8F0 !important;
   border-color: rgba(212,175,55,0.4) !important;
   color: #0F172A !important;
 }
 
-/* Distribution bar track */
-html.light .bg-\[\#090A0E\].rounded-full {
+/* Distribution progress-bar track */
+html.light .bg-\[\#090A0E\].rounded-full,
+html.light .h-3\.5.bg-\[\#090A0E\] {
   background-color: #E2E8F0 !important;
 }
 html.light .bg-\[\#1B1E2C\].rounded-full {
   background-color: #E2E8F0 !important;
 }
 
-/* Badge/pill inside distribution header */
+/* Small badge/pill inside distribution header (total players count) */
 html.light .bg-\[\#090A0E\].border {
   background-color: #F1F5F9 !important;
   border-color: #E2E8F0 !important;
   color: #475569 !important;
 }
 
-/* ---- 5. BORDER OVERRIDES ---- */
+/* ================================================================
+   5. BORDER OVERRIDES
+   ================================================================ */
 html.light .border-white\/10 {
   border-color: #E2E8F0 !important;
 }
@@ -848,7 +896,7 @@ html.light .border-white\/8 {
   border-color: #E2E8F0 !important;
 }
 
-/* Status-colored borders — soften */
+/* Status-coloured borders */
 html.light .border-emerald-500\/25 {
   border-color: rgba(5,150,105,0.25) !important;
 }
@@ -868,40 +916,46 @@ html.light .border-\[\#D4AF37\]\/50 {
   border-color: rgba(154,115,21,0.4) !important;
 }
 
-/* ---- 6. GRADIENT TEXT → SOLID FOR LIGHT MODE ---- */
-/* Coach name gradient text */
+/* ================================================================
+   6. GRADIENT TEXT → SOLID FOR LIGHT MODE
+   ================================================================ */
+
+/* Coach name gradient */
 html.light span.bg-clip-text.text-transparent[class*="from-white"] {
   background-image: none !important;
   color: #0F172A !important;
   -webkit-text-fill-color: #0F172A !important;
 }
 
-/* CPI INDEX gradient text */
+/* CPI INDEX gradient */
 html.light span.bg-clip-text.text-transparent[class*="from-[#F5BA4E]"] {
   background-image: none !important;
   color: #9A7315 !important;
   -webkit-text-fill-color: #9A7315 !important;
 }
 
-/* ---- 7. DROP SHADOWS — remove glow effects on light ---- */
+/* ================================================================
+   7. REMOVE NEON/GLOW EFFECTS
+   ================================================================ */
 html.light [class*="drop-shadow-[0_0_"] {
   filter: none !important;
 }
-html.light [class*="shadow-[0_0_"] {
-  /* Preserve box-shadow structure but not neon glow */
-}
 
-/* ---- 8. AMBIENT GLOW CIRCLES — tone down ---- */
+/* ================================================================
+   8. AMBIENT GLOW CIRCLES — invisible on light
+   ================================================================ */
 html.light .blur-3xl {
-  opacity: 0.15 !important;
+  opacity: 0.08 !important;
 }
 
-/* ---- 9. STATUS BADGE BACKGROUNDS ---- */
+/* ================================================================
+   9. STATUS BADGE BACKGROUNDS
+   ================================================================ */
 html.light .bg-emerald-500\/15 {
-  background-color: rgba(5,150,105,0.1) !important;
+  background-color: rgba(5,150,105,0.10) !important;
 }
 html.light .bg-rose-500\/15 {
-  background-color: rgba(225,29,72,0.1) !important;
+  background-color: rgba(225,29,72,0.10) !important;
 }
 html.light .bg-\[\#D4AF37\]\/15 {
   background-color: rgba(154,115,21,0.08) !important;
@@ -910,31 +964,49 @@ html.light .bg-\[\#D4AF37\]\/10 {
   background-color: rgba(154,115,21,0.07) !important;
 }
 
-/* ---- 10. PING ANIMATIONS — tone down ---- */
+/* ================================================================
+   10. PING ANIMATIONS — tone down in light
+   ================================================================ */
 html.light .animate-ping {
   opacity: 0.4 !important;
 }
 
-/* ---- 11. KPI CARDS — 4-column on desktop in light mode ---- */
+/* ================================================================
+   11. KPI CARDS GRID — 2 → 4 columns on desktop for space usage
+   ================================================================ */
 @media (min-width: 1024px) {
+  /* KPI snapshot grid: 2-col → 4-col */
   html.light .cpi-main-light .grid.grid-cols-2 {
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: 1rem !important;
+    gap: 1.25rem !important;
   }
 }
 
-/* Performance chart category cards — wider gaps on tablet+ */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet: stay 2-col but with better gap */
+  html.light .cpi-main-light .grid.grid-cols-2 {
+    gap: 1rem !important;
+  }
+  /* Performance chart 3-col gap */
   html.light .cpi-main-light .grid.grid-cols-3 {
     gap: 1rem !important;
   }
 }
 
-/* ---- 12. BOTTOM NAVIGATION — clean & readable ---- */
-html.light nav.bg-white {
+@media (min-width: 1024px) {
+  /* Performance chart 3-col gap */
+  html.light .cpi-main-light .grid.grid-cols-3 {
+    gap: 1.25rem !important;
+  }
+}
+
+/* ================================================================
+   12. BOTTOM NAVIGATION — white, clean, readable
+   ================================================================ */
+html.light nav {
   background-color: #FFFFFF !important;
   border-color: #E2E8F0 !important;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.05) !important;
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.06) !important;
 }
 
 /* Active nav tab */
@@ -942,45 +1014,132 @@ html.light .text-\[\#D4AF37\].font-black {
   color: #B8860B !important;
 }
 
-/* ---- 13. FLOATING AI CHATBOT BUTTON ---- */
+/* ================================================================
+   13. FLOATING AI CHATBOT BUTTON
+   ================================================================ */
 html.light .bg-\[\#090A0E\].text-\[\#D4AF37\] {
   background-color: #FFFFFF !important;
   border-color: rgba(154,115,21,0.3) !important;
 }
 
-/* ---- 14. CARD PADDING ENHANCEMENT — bigger on desktop ---- */
+/* ================================================================
+   14. CARD PADDING — more generous on desktop
+   ================================================================ */
+@media (min-width: 768px) {
+  /* KPI cards */
+  html.light .cpi-main-light .rounded-2xl.p-4 {
+    padding: 1.25rem !important;
+  }
+  /* Welcome hero card */
+  html.light .cpi-main-light .rounded-3xl.p-5 {
+    padding: 1.75rem !important;
+  }
+}
+
 @media (min-width: 1024px) {
+  /* KPI cards on desktop */
   html.light .cpi-main-light .rounded-2xl.p-4 {
     padding: 1.5rem !important;
   }
+  /* Welcome hero card on desktop */
   html.light .cpi-main-light .rounded-3xl.p-5 {
+    padding: 2rem !important;
+  }
+  /* Performance chart card */
+  html.light .cpi-main-light .rounded-3xl.p-5.sm\:p-6 {
     padding: 2rem !important;
   }
 }
 
-/* ---- 15. SPACE-Y SECTIONS — slightly more breathing room ---- */
+/* ================================================================
+   15. SECTION SPACING — breathing room on larger screens
+   ================================================================ */
+@media (min-width: 768px) {
+  html.light .cpi-main-light .space-y-7 > * + * {
+    margin-top: 2rem !important;
+  }
+  html.light .cpi-main-light .space-y-3 > * + * {
+    margin-top: 0.875rem !important;
+  }
+}
+
 @media (min-width: 1024px) {
   html.light .cpi-main-light .space-y-7 > * + * {
-    margin-top: 2.25rem !important;
+    margin-top: 2.5rem !important;
   }
   html.light .cpi-main-light .space-y-3 > * + * {
     margin-top: 1rem !important;
   }
 }
 
-/* ---- 16. SECTION HEADINGS — bigger on desktop ---- */
+/* ================================================================
+   16. SECTION HEADINGS — slightly larger text on desktop
+   ================================================================ */
 @media (min-width: 768px) {
   html.light .cpi-main-light h3.text-\[11px\] {
     font-size: 0.8125rem !important; /* 13px */
+    letter-spacing: 0.1em !important;
   }
 }
 
-/* ---- 17. KPI NUMBERS — slightly larger on desktop ---- */
-@media (min-width: 1024px) {
-  html.light .cpi-main-light .text-2xl.font-black {
-    font-size: 2rem !important;
+/* ================================================================
+   17. KPI METRIC NUMBERS — larger on desktop
+   ================================================================ */
+@media (min-width: 768px) {
+  html.light .cpi-main-light .text-2xl.font-black,
+  html.light .cpi-main-light .text-2xl.sm\:text-3xl.font-black {
+    font-size: 1.875rem !important;
     line-height: 1 !important;
   }
+}
+
+@media (min-width: 1024px) {
+  html.light .cpi-main-light .text-2xl.font-black,
+  html.light .cpi-main-light .text-2xl.sm\:text-3xl.font-black {
+    font-size: 2.25rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* ================================================================
+   18. QUICK ACTION BUTTONS — taller & more padded on desktop
+   ================================================================ */
+@media (min-width: 768px) {
+  html.light .cpi-main-light .h-13 {
+    height: 3.75rem !important;
+    font-size: 0.9375rem !important;
+  }
+  html.light .cpi-main-light .space-y-2\.5 > * + * {
+    margin-top: 0.875rem !important;
+  }
+}
+
+/* ================================================================
+   19. WELCOME HERO CARD — richer light-mode treatment
+   ================================================================ */
+/* The welcome card gradient is already overridden to white by rule 4.
+   We add a gold-tinted top border and a subtle left-side glow. */
+html.light .cpi-main-light .rounded-3xl[class*="border-[#D4AF37]\/30"] {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFFDF7 100%) !important;
+  background-image: linear-gradient(135deg, #FFFFFF 0%, #FFFDF7 100%) !important;
+  border-color: rgba(154,115,21,0.3) !important;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.06),
+    0 12px 32px rgba(0,0,0,0.05),
+    inset 0 1px 0 rgba(212,175,55,0.15) !important;
+}
+
+/* ================================================================
+   20. ICON BADGE BACKGROUNDS INSIDE KPI CARDS
+   ================================================================ */
+/* Gold icon badge (e.g. AVERAGE CPI card) */
+html.light .cpi-main-light .bg-\[\#D4AF37\]\/15 {
+  background-color: rgba(154,115,21,0.10) !important;
+}
+/* Neutral icon badge (Total Players, PPI, MPI cards) */
+html.light .cpi-main-light .bg-\[\#1B1E2C\].border.border-white\/10 {
+  background-color: #EFF2F7 !important;
+  border-color: #E2E8F0 !important;
 }
 
 /* ================================================================
@@ -1296,4 +1455,234 @@ html.light h2.text-white.uppercase {
 /* ---- Bar track in analytics — direct bg-[#181B27] inside flex ---- */
 html.light div.flex-1.bg-\[\#181B27\] {
   background-color: #DDE3EC !important;
+}
+
+/* ================================================================
+   LANDING PAGE HERO -- LIGHT MODE TARGETED FIXES  (v2 — full overhaul)
+   Scoped exclusively to html.light. Dark mode is NOT touched.
+   Fixes: invisible badge, pale-gold heading, washed-out subtitle,
+   faint floating badges, and all secondary text contrast issues.
+   ================================================================ */
+
+/* ── Hero section canvas: pure white + very subtle warm tint ── */
+html.light section.relative.min-h-screen {
+  background: linear-gradient(160deg, #FFFFFF 0%, #FAFAF7 60%, #F5F3EC 100%) !important;
+}
+
+/* ── Particle canvas: reduce opacity so dots don't drown on white ── */
+html.light section.relative.min-h-screen canvas {
+  opacity: 0.35 !important;
+}
+
+/* ── Background glow blobs: tone down drastically on white ── */
+html.light section.relative.min-h-screen .absolute.inset-0.pointer-events-none > div {
+  opacity: 0.15 !important;
+}
+
+/* ── HERO HEADING h1: "Cricket Performance" — dark navy ── */
+html.light section.relative.min-h-screen h1 {
+  color: #0F172A !important;
+  -webkit-text-fill-color: #0F172A !important;
+}
+
+/* ── "Intelligence (CPI)" gradient span — deep, saturated gold ── */
+html.light .hero-gradient-heading {
+  background: linear-gradient(
+    135deg,
+    #B8860B 0%,
+    #9A7315 40%,
+    #7A5C08 75%,
+    #5C4406 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+}
+
+/* ── "Platform v1.0 Live" badge ── */
+html.light .hero-badge {
+  background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(184,134,11,0.08) 100%) !important;
+  border-color: rgba(154, 115, 21, 0.60) !important;
+  color: #6B4F06 !important;
+  box-shadow: 0 1px 8px rgba(154,115,21,0.15), 0 0 0 1px rgba(154,115,21,0.08) !important;
+  backdrop-filter: none !important;
+}
+
+/* Badge ping dot: keep gold but more visible */
+html.light .hero-badge .animate-ping {
+  background-color: #B8860B !important;
+  opacity: 0.6 !important;
+}
+html.light .hero-badge span > span.relative.inline-flex {
+  background-color: #B8860B !important;
+}
+
+/* ── Hero subtitle paragraph — dark slate ── */
+html.light section.relative.min-h-screen p.text-\[\#9CA3AF\] {
+  color: #334155 !important;
+}
+
+/* ── "The premier analytics platform..." highlighted span ── */
+html.light .hero-desc-gold {
+  color: #475569 !important;
+  opacity: 1 !important;
+  font-style: italic;
+}
+
+/* ── "Start Coaching Now" CTA button — gold gradient (unchanged, dark text already) ── */
+/* No change needed; button uses #090A0E text on gold bg, readable in both modes */
+
+/* ── "Log In" secondary button ── */
+html.light .hero-login-btn {
+  color: #7A5C08 !important;
+  border-color: rgba(154, 115, 21, 0.55) !important;
+  background-color: rgba(212, 175, 55, 0.08) !important;
+  backdrop-filter: none !important;
+}
+html.light .hero-login-btn:hover {
+  color: #5C4406 !important;
+  border-color: rgba(154, 115, 21, 0.80) !important;
+  background-color: rgba(212, 175, 55, 0.15) !important;
+}
+
+/* ── Floating info badges (Live Analytics / AI-Powered / Tournament Ready) ── */
+html.light section .absolute.hidden.lg\:flex[class*="border-[#D4AF37]"] {
+  border-color: rgba(154, 115, 21, 0.45) !important;
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06) !important;
+  color: #6B4F06 !important;
+}
+
+/* ── Floating badge icon color ── */
+html.light section .absolute.hidden.lg\:flex[class*="border-[#D4AF37]"] svg {
+  color: #9A7315 !important;
+  stroke: #9A7315 !important;
+}
+
+/* ── Scroll hint "DISCOVER MORE" ── */
+html.light section.relative.min-h-screen .mt-16 span {
+  color: #475569 !important;
+}
+
+/* ── Scroll chevron ── */
+html.light section.relative.min-h-screen .mt-16 svg {
+  color: #9A7315 !important;
+}
+
+/* ── STATS SECTION: borders, cards ── */
+html.light section.relative.py-20 {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* ── FEATURES SECTION heading badge "PLATFORM FEATURES" ── */
+html.light section.relative.py-24 span.inline-block {
+  color: #7A5C08 !important;
+  border-color: rgba(154,115,21,0.45) !important;
+  background-color: rgba(212,175,55,0.10) !important;
+}
+
+/* ── Feature section h2 "Everything a coach needs" ── */
+html.light section.relative.py-24 h2 {
+  color: #0F172A !important;
+}
+
+/* ── Feature section description text ── */
+html.light section.relative.py-24 > div > div > div > p {
+  color: #475569 !important;
+}
+
+/* ── Feature cards: light mode treatment ── */
+html.light section.relative.py-24 .group.relative.rounded-2xl {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04) !important;
+}
+html.light section.relative.py-24 .group.relative.rounded-2xl:hover {
+  border-color: rgba(154,115,21,0.40) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(154,115,21,0.12) !important;
+}
+html.light section.relative.py-24 .group.relative.rounded-2xl h3 {
+  color: #0F172A !important;
+}
+html.light section.relative.py-24 .group.relative.rounded-2xl p {
+  color: #475569 !important;
+}
+
+/* ── CTA BANNER SECTION ── */
+html.light section.relative.py-28 h2 {
+  color: #0F172A !important;
+}
+html.light section.relative.py-28 p {
+  color: #475569 !important;
+}
+html.light section.relative.py-28 .inline-flex span {
+  color: #7A5C08 !important;
+}
+
+/* ── FOOTER ── */
+html.light footer {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+html.light footer span.text-sm {
+  color: #475569 !important;
+}
+html.light footer p {
+  color: #64748B !important;
+}
+
+/* ── NAV: branding text ── */
+html.light nav span.text-lg {
+  color: #0F172A !important;
+}
+html.light nav span.text-\[\#D4AF37\] {
+  color: #9A7315 !important;
+}
+
+/* ── NAV: "Log in" link ── */
+html.light nav a.text-\[\#9CA3AF\] {
+  color: #475569 !important;
+}
+html.light nav a.text-\[\#9CA3AF\]:hover {
+  color: #0F172A !important;
+}
+
+/* ── Scroll hint "DISCOVER MORE" text ── */
+html.light .mt-16 .text-xs.font-bold.uppercase.tracking-widest {
+  color: #475569 !important;
+}
+
+/* ── Stat cards in light mode ── */
+html.light .flex.flex-col.items-center.gap-1.p-6.rounded-2xl {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
+}
+
+/* Stat value number (gold) */
+html.light .flex.flex-col.items-center.gap-1.p-6.rounded-2xl span:first-child {
+  color: #9A7315 !important;
+}
+
+/* Stat label */
+html.light .flex.flex-col.items-center.gap-1.p-6.rounded-2xl span:last-child {
+  color: #64748B !important;
+}
+
+/* ── Platform v1.0 Live badge — all child text inside hero-badge ── */
+html.light .hero-badge * {
+  color: inherit !important;
+}
+
+/* ── text-[#FCE8B2] used inside badge: override to dark gold ── */
+html.light .text-\[\#FCE8B2\] {
+  color: #6B4F06 !important;
+}
+
+/* ── Scroll hint chevron ── */
+html.light .text-\[\#D4AF37\]\/60 {
+  color: #9A7315 !important;
+  opacity: 1 !important;
 }
