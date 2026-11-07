@@ -38,34 +38,62 @@ export const api = axios.create({
 
 const getCache = new Map<string, { data: any; timestamp: number }>();
 const inFlightRequests = new Map<string, Promise<any>>();
-const CACHE_TTL_MS = 120_000; // 2 minutes in-memory client cache
+// Shortened TTL: 15 seconds for general GETs to prevent stale screens, while preventing duplicate rapid fires
+const CACHE_TTL_MS = 15_000;
+
+export const clearApiCache = (urlPrefix?: string) => {
+  if (urlPrefix) {
+    for (const key of getCache.keys()) {
+      if (key.startsWith(urlPrefix)) {
+        getCache.delete(key);
+      }
+    }
+    for (const key of inFlightRequests.keys()) {
+      if (key.startsWith(urlPrefix)) {
+        inFlightRequests.delete(key);
+      }
+    }
+  } else {
+    getCache.clear();
+    inFlightRequests.clear();
+  }
+};
 
 const originalGet = api.get.bind(api);
 api.get = function <T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R> {
-  const cached = getCache.get(url);
-  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
-    // Background revalidation
-    if (!inFlightRequests.has(url)) {
-      const revalidatePromise = originalGet<T, R, D>(url, config)
-        .then((res: any) => {
-          getCache.set(url, { data: res.data, timestamp: Date.now() });
-          return res;
-        })
-        .catch(() => {})
-        .finally(() => {
-          inFlightRequests.delete(url);
-        });
-      inFlightRequests.set(url, revalidatePromise);
-    }
+  const isNoCache = config?.headers?.['Cache-Control'] === 'no-cache' || config?.params?._nocache;
+  const cached = isNoCache ? null : getCache.get(url);
 
-    // Instant 0ms response
-    return Promise.resolve({
-      data: cached.data,
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: config || {},
-    } as unknown as R);
+  // If cache exists and is fresh (and not an empty array that might be stale)
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
+    // Only use cache if it has data or is very fresh (< 5s)
+    const isEmptyList = Array.isArray(cached.data) && cached.data.length === 0;
+    const cacheAge = Date.now() - cached.timestamp;
+    
+    if (!isEmptyList || cacheAge < 5_000) {
+      // Background revalidation
+      if (!inFlightRequests.has(url)) {
+        const revalidatePromise = originalGet<T, R, D>(url, config)
+          .then((res: any) => {
+            getCache.set(url, { data: res.data, timestamp: Date.now() });
+            return res;
+          })
+          .catch(() => {})
+          .finally(() => {
+            inFlightRequests.delete(url);
+          });
+        inFlightRequests.set(url, revalidatePromise);
+      }
+
+      // Instant response
+      return Promise.resolve({
+        data: cached.data,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: config || {},
+      } as unknown as R);
+    }
   }
 
   // Deduplicate concurrent in-flight requests to the same URL

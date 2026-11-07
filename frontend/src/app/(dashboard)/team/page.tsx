@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { api } from "@/lib/api";
+import { api, clearApiCache } from "@/lib/api";
 import {
   Users2, Plus, Loader2, UserPlus, Trash2, Search,
   Edit2, Check, X, Shield, Sparkles, User, AlertCircle,
   FileText, Download, TrendingUp, TrendingDown, ArrowRightLeft,
   Calendar, CheckCircle2, Award, Target, Flame, ChevronDown,
-  ChevronRight, BarChart2, Clock, Zap
+  ChevronRight, BarChart2, Clock, Zap, RefreshCw
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -228,45 +228,69 @@ export default function TeamPage() {
   const [loadingComparison, setLoadingComparison] = useState(false);
   const [compParamFilter, setCompParamFilter] = useState<"OVERALL" | "PRACTICE" | "MATCH">("OVERALL");
 
-  const fetchTeamData = async () => {
-    try {
-      const [allTeamsRes, squadRes] = await Promise.all([
-        api.get("/teams").catch(() => ({ data: [] })),
-        api.get("/players").catch(() => ({ data: [] }))
-      ]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-      const teamsList = Array.isArray(allTeamsRes.data) ? allTeamsRes.data : [];
-      setAllTeams(teamsList);
-      if (typeof window !== "undefined") {
-        try {
-          sessionStorage.setItem("cpi_teams_cache", JSON.stringify(teamsList));
-          if (Array.isArray(squadRes.data)) {
-            sessionStorage.setItem("cpi_players_cache", JSON.stringify(squadRes.data));
-          }
-        } catch {}
+  const fetchTeamData = async (forceNetwork = false) => {
+    try {
+      if (forceNetwork) {
+        setIsRefreshing(true);
+        clearApiCache("/teams");
+        clearApiCache("/players");
       }
 
-      setTeam(prev => {
-        if (prev && teamsList.some(t => t.id === prev.id)) {
-          const updated = teamsList.find(t => t.id === prev.id) || prev;
-          setEditName(updated.name || "");
-          setEditDesc(updated.description || "");
-          return updated;
-        }
-        const primary = teamsList[0] || null;
-        if (primary) {
-          setEditName(primary.name || "");
-          setEditDesc(primary.description || "");
-          setTeamAId(primary.id);
-        }
-        return primary;
-      });
+      const requestConfig = forceNetwork ? { headers: { "Cache-Control": "no-cache" } } : undefined;
 
-      setMySquad(Array.isArray(squadRes.data) ? squadRes.data : []);
+      const [allTeamsRes, squadRes] = await Promise.all([
+        api.get("/teams", requestConfig).catch((err) => {
+          console.warn("[TeamPage] /teams fetch warning:", err);
+          return null; // Return null so we know it errored rather than a true empty array
+        }),
+        api.get("/players", requestConfig).catch((err) => {
+          console.warn("[TeamPage] /players fetch warning:", err);
+          return null;
+        })
+      ]);
+
+      // Only update state and sessionStorage if the API actually responded
+      if (allTeamsRes && Array.isArray(allTeamsRes.data)) {
+        const teamsList = allTeamsRes.data;
+        setAllTeams(teamsList);
+        if (typeof window !== "undefined") {
+          try {
+            sessionStorage.setItem("cpi_teams_cache", JSON.stringify(teamsList));
+          } catch {}
+        }
+
+        setTeam(prev => {
+          if (prev && teamsList.some(t => t.id === prev.id)) {
+            const updated = teamsList.find(t => t.id === prev.id) || prev;
+            setEditName(updated.name || "");
+            setEditDesc(updated.description || "");
+            return updated;
+          }
+          const primary = teamsList[0] || null;
+          if (primary) {
+            setEditName(primary.name || "");
+            setEditDesc(primary.description || "");
+            setTeamAId(primary.id);
+          }
+          return primary;
+        });
+      }
+
+      if (squadRes && Array.isArray(squadRes.data)) {
+        setMySquad(squadRes.data);
+        if (typeof window !== "undefined") {
+          try {
+            sessionStorage.setItem("cpi_players_cache", JSON.stringify(squadRes.data));
+          } catch {}
+        }
+      }
     } catch (err) {
       console.error("Failed to load team data:", err);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -811,6 +835,18 @@ export default function TeamPage() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            onClick={() => fetchTeamData(true)}
+            disabled={isRefreshing}
+            className="px-3.5 py-3 rounded-2xl bg-[#12141D]/90 hover:bg-[#181B27] text-zinc-300 hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 border border-white/10 hover:border-[#D4AF37]/40 shadow-sm"
+            title="Refresh Teams from Server"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-[#D4AF37] ${isRefreshing ? "animate-spin" : ""}`} />
+            <span className="hidden sm:inline">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setShowCreateModal(true)}
             className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] hover:from-[#F8C868] hover:to-[#C69212] text-[#090A0E] font-black text-xs uppercase tracking-wider py-3 px-5 sm:px-6 rounded-2xl shadow-lg shadow-[#D4AF37]/25 hover:shadow-[#D4AF37]/40 transition-all cursor-pointer flex items-center justify-center gap-2 border border-[#D4AF37]/50"
           >
@@ -909,15 +945,28 @@ export default function TeamPage() {
               Create your first team squad (e.g. "Senior Academy XI" or "U-19 Squad") to group athletes, assign players, and track collective CPI benchmarks.
             </p>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setShowCreateModal(true)}
-            className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] rounded-2xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#D4AF37]/25 cursor-pointer inline-flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" />
-            <span>CREATE YOUR FIRST TEAM</span>
-          </motion.button>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gradient-to-r from-[#F5BA4E] via-[#D4AF37] to-[#B8860B] text-[#090A0E] rounded-2xl py-3.5 px-8 font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#D4AF37]/25 cursor-pointer inline-flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>CREATE YOUR FIRST TEAM</span>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => fetchTeamData(true)}
+              disabled={isRefreshing}
+              className="bg-white/5 hover:bg-white/10 border border-white/15 text-zinc-300 hover:text-white rounded-2xl py-3.5 px-6 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-2"
+            >
+              <RefreshCw className={`w-4 h-4 text-[#D4AF37] ${isRefreshing ? "animate-spin" : ""}`} />
+              <span>{isRefreshing ? "RE-CHECKING..." : "RELOAD TEAMS"}</span>
+            </motion.button>
+          </div>
         </motion.div>
       )}
 

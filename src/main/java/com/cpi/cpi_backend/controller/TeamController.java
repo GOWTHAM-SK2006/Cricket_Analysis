@@ -164,16 +164,35 @@ public class TeamController {
 
     @GetMapping
     @Transactional
-    @Cacheable(value = CacheNames.TEAMS, key = "'coach:' + #currentCoach.id")
     public ResponseEntity<List<TeamResponse>> getMyTeams(@AuthenticationPrincipal Coach currentCoach) {
         Coach coach = getManagedCoach(currentCoach);
-        List<Team> teams = new ArrayList<>(teamRepository.findByCoachIdWithPlayersAndCoach(coach.getId()));
-        String queryMethod = "teamRepository.findByCoachIdWithPlayersAndCoach(" + coach.getId() + ")";
+        List<Team> teams;
+        String queryMethod;
 
-        // Auto-initialize primary team if coach has players or existing system data but zero teams linked
+        if (coach.getRole() == Role.ADMIN) {
+            teams = new ArrayList<>(teamRepository.findAll());
+            queryMethod = "teamRepository.findAll() [ADMIN]";
+        } else {
+            teams = new ArrayList<>(teamRepository.findByCoachIdWithPlayersAndCoach(coach.getId()));
+            queryMethod = "teamRepository.findByCoachIdWithPlayersAndCoach(" + coach.getId() + ")";
+
+            // If coach has no teams linked directly, check if this coach is linked to players via invite
+            if (teams.isEmpty()) {
+                java.util.Optional<Player> matchedByInvite = playerRepository.findFirstByNameIgnoreCase(coach.getName());
+                if (matchedByInvite.isPresent() && matchedByInvite.get().getCreatorCoach() != null) {
+                    Long parentCoachId = matchedByInvite.get().getCreatorCoach().getId();
+                    teams = new ArrayList<>(teamRepository.findByCoachIdWithPlayersAndCoach(parentCoachId));
+                    if (!teams.isEmpty()) {
+                        queryMethod = "teamRepository.findByCoachIdWithPlayersAndCoach(" + parentCoachId + ") [Parent Coach Match]";
+                    }
+                }
+            }
+        }
+
+        // Auto-initialize primary team if coach has players but zero teams linked
         if (teams.isEmpty()) {
             List<Player> coachPlayers = playerRepository.findByCreatorCoachId(coach.getId());
-            if (coachPlayers.isEmpty() && playerRepository.count() > 0) {
+            if (coachPlayers.isEmpty() && coach.getRole() == Role.ADMIN) {
                 coachPlayers = playerRepository.findAll();
             }
             if (!coachPlayers.isEmpty()) {
@@ -186,9 +205,6 @@ public class TeamController {
                 Team saved = teamRepository.save(defaultTeam);
                 teams = List.of(saved);
                 queryMethod = "teamRepository.save(Main Team) [Primary Team Auto-Link]";
-            } else if (teamRepository.count() > 0) {
-                teams = new ArrayList<>(teamRepository.findAll());
-                queryMethod = "teamRepository.findAll() [System Fallback]";
             }
         }
 

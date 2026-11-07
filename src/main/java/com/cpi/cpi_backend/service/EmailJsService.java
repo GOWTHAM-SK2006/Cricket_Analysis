@@ -19,13 +19,13 @@ import java.util.Map;
 @Service
 public class EmailJsService {
 
-    @Value("${emailjs.service.id:service_sna4bhn}")
+    @Value("${emailjs.service.id:service_7vlz60o}")
     private String serviceId;
 
-    @Value("${emailjs.public.key:7CbeUxPc80DgrWhTF}")
+    @Value("${emailjs.public.key:Riqji8HiQFxJKSV5s}")
     private String publicKey;
 
-    @Value("${emailjs.private.key:l1xiu3a3RBWXjqo0PQUUm}")
+    @Value("${emailjs.private.key:wehMs2PeOMyIUHwGiCynw}")
     private String privateKey;
 
     @Value("${emailjs.template.id:template_1m7vlod}")
